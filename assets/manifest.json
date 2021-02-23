@@ -1,0 +1,21 @@
+{
+  "short_name": "DualDelivery",
+  "name": "TUGraz Dual Delivery",
+  "start_url": "./dbp-dualdelivery.html",
+  "icons": [
+    {
+      "src": "local/dbp-dualdelivery/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "local/dbp-dualdelivery/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "background_color": "#245B78",
+  "display": "standalone",
+  "theme_color": "#E4154B"
+}
+

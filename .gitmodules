@@ -1,0 +1,3 @@
+[submodule "vendor/toolkit"]
+	path = vendor/toolkit
+	url = git@gitlab.tugraz.at:dbp/web-components/toolkit.git

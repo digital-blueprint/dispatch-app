@@ -1,0 +1,18 @@
+{
+  "element": "dbp-dd-activity",
+  "module_src": "dbp-dd-activity.js",
+  "routing_name": "dd-activity",
+  "name": {
+    "de": "Dual Delivery Aktivität",
+    "en": "Dual Delivery Activity"
+  },
+  "short_name": {
+    "de": "Dual Delivery Aktivität",
+    "en": "Dual Delivery Activity"
+  },
+  "description": {
+    "de": "Erlaubt .....",
+    "en": "Allows ....."
+  },
+  "subscribe": "lang:lang,entry-point-url:entry-point-url,auth:auth"
+}

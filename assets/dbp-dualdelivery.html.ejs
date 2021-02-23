@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" type="image/x-icon" href="<%= getPrivateUrl('favicon.ico') %>">
+    <link rel="icon" type="image/svg+xml" href="<%= getPrivateUrl('favicon.svg') %>" sizes="any">
+
+    <!-- PWA manfiest file -->
+    <link rel="manifest" href="<%= getUrl(name + '.manifest.json') %>">
+
+    <!-- Loading spinner -->
+    <script type="module">
+        import {Spinner} from '<%= getPrivateUrl('spinner.js') %>';
+        customElements.define('dbp-loading-spinner', Spinner);
+    </script>
+
+    <!-- App bundles-->
+    <script type="module" src="<%= getUrl(name + '.js') %>"></script>
+
+    <!-- Prevent Chrome/Edge from suggesting to translate the page -->
+    <meta name="google" content="notranslate">
+
+    <!-- Font related CSS -->
+    <style>
+        @import "<%= getPrivateUrl('fonts/source-sans-pro/300.css') %>";
+        @import "<%= getPrivateUrl('fonts/source-sans-pro/400.css') %>";
+        @import "<%= getPrivateUrl('fonts/source-sans-pro/600.css') %>";
+
+        body {
+            font-family: 'Source Sans Pro', 'Calibri', 'Arial', 'sans-serif';
+            font-weight: 300;
+            margin: 0;
+        }
+
+        /* TU-Graz style override */
+        html {
+            --dbp-override-primary-bg-color: #245b78;
+            --dbp-override-primary-button-border: solid 1px #245b78;
+            --dbp-override-info-bg-color: #245b78;
+            --dbp-override-danger-bg-color: #e4154b;
+            --dbp-override-warning-bg-color: #ffe183;
+            --dbp-override-warning-text-color: black;
+            --dbp-override-success-bg-color: #259207;
+        }
+    </style>
+
+    <!-- Preloading/Preconnecting -->
+    <link rel="preconnect" href="<%= entryPointURL %>">
+    <link rel="preconnect" href="<%= keyCloakBaseURL %>">
+</head>
+
+<body>
+<dbp-provider id="root"
+              lang="de" entry-point-url="<%= entryPointURL %>"
+              <%= buildInfo.env !== 'production' ? 'show-nextcloud-file-picker' : '' %>
+              nextcloud-web-app-password-url="<%= nextcloudWebAppPasswordURL %>"
+              nextcloud-webdav-url="<%= nextcloudWebDavURL %>"
+              nextcloud-name="<%= nextcloudName %>"
+              nextcloud-file-url="<%= nextcloudFileURL %>"
+              initial-file-handling-state>
+    <<%= name %>
+        subscribe="lang:lang,entry-point-url:entry-point-url"
+        auth requested-login-status analytics-event
+        src="<%= getUrl(name + '.topic.metadata.json') %>"
+        base-path="<%= getUrl('') %>"
+        keycloak-config='{"url": "<%= keyCloakBaseURL %>", "realm": "tugraz", "clientId": "<%= keyCloakClientId %>", "silentCheckSsoRedirectUri": "<%= getUrl('silent-check-sso.html') %>"}'
+        matomo-url='<%= matomoUrl %>'
+        matomo-site-id='<%= matomoSiteId %>'
+        git-info='<%= buildInfo.info %>'
+        build-url='<%= buildInfo.url %>'
+        build-time='<%= buildInfo.time %>'
+        env='<%= buildInfo.env %>'
+    ><dbp-loading-spinner></dbp-loading-spinner></<%= name %>>
+</dbp-provider>
+
+<!-- Error handling for too old browsers -->
+<script src="<%= getPrivateUrl('browser-check.js') %>" defer></script>
+<noscript>Diese Applikation benötigt Javascript / This application requires Javascript</noscript>
+</body>
+</html>

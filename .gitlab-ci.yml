@@ -1,0 +1,84 @@
+image: registry.gitlab.tugraz.at/dbp/apps/dualdelivery/main:v1
+
+cache:
+  key: $CI_PROJECT_PATH
+  paths:
+    - _yarn_cache
+    - _cypress_cache
+
+before_script:
+  - 'git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.tugraz.at/".insteadOf "git@gitlab.tugraz.at:"'
+  - git submodule sync
+  - git submodule update --init
+  - yarn config set cache-folder "$CI_PROJECT_DIR/_yarn_cache"
+  - export CYPRESS_CACHE_FOLDER="$CI_PROJECT_DIR/_cypress_cache"
+
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  script:
+    - yarn install
+    - APP_ENV=development yarn run build
+    - yarn run test-full
+
+linting:
+  stage: test
+  allow_failure: true
+  script:
+    - yarn install
+    - yarn run lint
+
+.deploy_defaults: &deploy_defaults
+  except:
+    - schedules
+  stage: deploy
+  script:
+    # Add ssh key
+    - mkdir -p ~/.ssh
+    - echo "${DEPLOY_KEY}" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -t rsa "${DEPLOY_HOST}" >> ~/.ssh/known_hosts
+    # Deploy
+    - dep deploy "${CI_ENVIRONMENT_NAME}"
+    - echo "Deployed to ${CI_ENVIRONMENT_URL}"
+    # Simple health check
+    - curl --max-time 10 --retry 3 --output /dev/null --silent --show-error --fail --location "${CI_ENVIRONMENT_URL}"
+
+deploy_demo:
+  only:
+    refs:
+      - demo
+  environment:
+    name: demo
+    url: https://frontend-demo.tugraz.at/apps/dualdelivery
+  variables:
+    DEPLOY_HOST: mw01-dev.tugraz.at
+    DEPLOY_KEY: "$DEPLOY_SSH_KEY"
+  <<: *deploy_defaults
+
+deploy_development:
+  only:
+    refs:
+      - master
+  environment:
+    name: development
+    url: https://mw-frontend-dev.tugraz.at/apps/dualdelivery
+  variables:
+    DEPLOY_HOST: mw01-dev.tugraz.at
+    DEPLOY_KEY: "$DEPLOY_SSH_KEY"
+  <<: *deploy_defaults
+
+deploy_production:
+  only:
+    refs:
+      - production
+  environment:
+    name: production
+    url: https://dualdelivery.tugraz.at
+  variables:
+    DEPLOY_HOST: mw01-prod.tugraz.at
+    DEPLOY_KEY: "$DEPLOY_SSH_KEY"
+  <<: *deploy_defaults

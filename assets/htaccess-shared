@@ -1,0 +1,3 @@
+# This is used for our hashed shared resources.
+# They should be immutable, but rollup doesn't do content based hashing so there might be corner cases
+Header set Cache-Control "public, max-age=86400"
