@@ -16,6 +16,9 @@ before_script:
 stages:
   - test
   - deploy
+  - e2e-stage1
+  - e2e-stage2
+  - e2e-stage3
 
 test:
   stage: test
@@ -82,3 +85,47 @@ deploy_production:
     DEPLOY_HOST: mw01-prod.tugraz.at
     DEPLOY_KEY: "$DEPLOY_SSH_KEY"
   <<: *deploy_defaults
+
+# For docker images see:
+# https://github.com/cypress-io/cypress-docker-images/tree/master/browsers#cypressbrowsers
+
+.e2e_test_defaults: &e2e_test_defaults
+  only:
+    refs:
+      - master
+  # We don't need artifacts from previous runs
+  dependencies: []
+  script:
+    - git clone https://gitlab.tugraz.at/dbp/middleware/e2e-tests.git --depth 1
+    - cd e2e-tests
+    - yarn install
+    #    - ./node_modules/.bin/cypress run --browser "$BROWSER" --spec "cypress/integration/dual-delivery/*.spec.js"
+    - xvfb-run ./node_modules/.bin/cypress run --browser "$BROWSER" --headed --spec "cypress/integration/dual-delivery/*.spec.js"
+  artifacts:
+    paths:
+      - e2e-tests/cypress/videos/*
+      - e2e-tests/cypress/screenshots/*
+    expire_in: 4 week
+    when: always
+
+ff75:
+  image: cypress/browsers:node13.8.0-chrome81-ff75
+  stage: e2e-stage1
+  variables:
+    MOZ_FORCE_DISABLE_E10S: 'true'
+    BROWSER: 'firefox'
+  <<: *e2e_test_defaults
+
+chrome84:
+  image: cypress/browsers:node14.7.0-chrome84
+  stage: e2e-stage2
+  variables:
+    BROWSER: 'chrome'
+  <<: *e2e_test_defaults
+
+edge88:
+  image: cypress/browsers:node14.10.1-edge88
+  stage: e2e-stage3
+  variables:
+    BROWSER: 'edge'
+  <<: *e2e_test_defaults
