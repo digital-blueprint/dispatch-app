@@ -1,4 +1,5 @@
 FROM nextcloud:20-apache
+RUN apt-get update && apt-get install -y ghostscript && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 COPY entrypoint.sh /
 
