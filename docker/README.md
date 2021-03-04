@@ -15,6 +15,12 @@ Head over to <http://localhost:8081/index.php/settings/admin/fulltextsearch> and
 
 ![nextcloud-fulltextsearch-config](nextcloud-fulltextsearch-config.png)
 
+To start the indexer run:
+
+```bash
+make fulltextsearch-index
+```
+
 ## Check nextcloud.log
 
 For debugging you can show the `nextcloud.log`:
