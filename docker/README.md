@@ -21,6 +21,12 @@ To start the indexer run:
 make fulltextsearch-index
 ```
 
+### Note
+
+Turn off OCR: I currently get an exception
+`Error: Call to a member function getContent() on string in /var/www/html/apps/files_fulltextsearch/lib/Service/FilesService.php:719`
+when I have OCR turned on, best to turn it off at the moment.
+
 ## Check nextcloud.log
 
 For debugging you can show the `nextcloud.log`:
