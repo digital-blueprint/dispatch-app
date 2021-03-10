@@ -3,6 +3,9 @@
 bash:
 	docker-compose exec nextcloud su -c "bash" www-data
 
+root-bash:
+	docker-compose exec nextcloud bash
+
 maintenance-mode-off:
 	docker-compose exec nextcloud su -c "./occ maintenance:mode --off" www-data
 
