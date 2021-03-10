@@ -21,6 +21,18 @@ To start the indexer run:
 make fulltextsearch-index
 ```
 
+To constantly index new files in the foreground run:
+
+```bash
+make fulltextsearch-live
+```
+
+To stop the indexer (e.g. in case of an exception) run:
+
+```bash
+make fulltextsearch-stop
+```
+
 ### Note
 
 Turn off OCR: I currently get an exception

@@ -11,11 +11,12 @@ maintenance-mode-off:
 
 fulltextsearch-index:
 	docker-compose exec nextcloud su -c "./occ fulltextsearch:index" www-data
-	#docker-compose run --rm nextcloud su -c "./occ fulltextsearch:index" www-data
 
 fulltextsearch-live:
 	docker-compose exec nextcloud su -c "./occ fulltextsearch:live" www-data
-#	docker-compose run --rm nextcloud su -c "./occ fulltextsearch:live" www-data
+
+fulltextsearch-stop:
+	docker-compose exec nextcloud su -c "./occ fulltextsearch:stop" www-data
 
 show-log:
 	docker-compose exec nextcloud tail -f /var/www/html/data/nextcloud.log
