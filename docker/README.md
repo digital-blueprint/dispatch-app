@@ -37,7 +37,7 @@ make fulltextsearch-stop
 
 Turn off OCR: I currently get an exception
 `Error: Call to a member function getContent() on string in /var/www/html/apps/files_fulltextsearch/lib/Service/FilesService.php:719`
-when I have OCR turned on, best to turn it off at the moment.
+when I have OCR turned on, best to turn it off at the moment (see [#100](https://github.com/nextcloud/files_fulltextsearch/issues/100)).
 
 ## Check nextcloud.log
 
