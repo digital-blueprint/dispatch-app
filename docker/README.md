@@ -11,7 +11,7 @@ login to your Nextcloud instance.
 
 ## Full text search config
 
-Head over to <http://localhost:8081/index.php/settings/admin/fulltextsearch> and setup the service like shown in the sreenshot.
+Head over to <http://localhost:8081/index.php/settings/admin/fulltextsearch> and setup the service like shown in the screenshot.
 
 ![nextcloud-fulltextsearch-config](nextcloud-fulltextsearch-config.png)
 
