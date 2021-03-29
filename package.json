@@ -48,7 +48,7 @@
     "@open-wc/scoped-elements": "^1.1.1",
     "fabric": "^4.2.0",
     "file-saver": "^2.0.2",
-    "i18next": "^19.5.1",
+    "i18next": "^20.0.0",
     "jszip": "^3.5.0",
     "lit-element": "^2.3.1",
     "lit-html": "^1.2.1",
