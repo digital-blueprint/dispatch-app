@@ -55,12 +55,15 @@
 <body>
 <dbp-provider id="root"
               lang="de" entry-point-url="<%= entryPointURL %>"
-              <%= buildInfo.env !== 'production' ? 'show-nextcloud-file-picker' : '' %>
+              show-nextcloud-file-picker
+              <%= buildInfo.env !== 'production' ? 'show-clipboard' : '' %>
+              <%= buildInfo.env !== 'production' ? 'allow-annotating' : '' %>
               nextcloud-web-app-password-url="<%= nextcloudWebAppPasswordURL %>"
               nextcloud-webdav-url="<%= nextcloudWebDavURL %>"
               nextcloud-name="<%= nextcloudName %>"
               nextcloud-file-url="<%= nextcloudFileURL %>"
-              initial-file-handling-state>
+              initial-file-handling-state
+              clipboard-files>
     <<%= name %>
         subscribe="lang:lang,entry-point-url:entry-point-url"
         auth requested-login-status analytics-event

@@ -6,6 +6,7 @@
   "private": true,
   "workspaces": [
     "vendor/toolkit/packages/*",
+    "vendor/signature",
     "."
   ],
   "devDependencies": {
@@ -45,6 +46,7 @@
     "@dbp-toolkit/language-select": "^0.2.0",
     "@dbp-toolkit/notification": "^0.2.0",
     "@dbp-toolkit/person-profile": "^0.2.0",
+    "@dbp-apps/signature": "^1.0.0",
     "@open-wc/scoped-elements": "^1.1.1",
     "fabric": "^4.2.0",
     "file-saver": "^2.0.2",

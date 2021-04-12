@@ -80,6 +80,8 @@ export default (async () => {
     input: (appEnv != 'test') ? [
       'src/' + pkg.name + '.js',
       'src/dbp-dd-activity.js',
+      'vendor/signature/src/dbp-qualified-signature-pdf-upload.js',
+      'vendor/signature/src/dbp-official-signature-pdf-upload.js',
     ] : glob.sync('test/**/*.js'),
     output: {
       dir: 'dist',
@@ -174,10 +176,11 @@ Dependencies:
         }),
         copy({
             targets: [
-                {src: 'assets/*-placeholder.png', dest: 'dist/' + await getDistPath(pkg.name)},
+                {src: 'vendor/signature/assets/*-placeholder.png', dest: 'dist/local/@dbp-apps/signature'},
                 {src: 'assets/*.css', dest: 'dist/' + await getDistPath(pkg.name)},
                 {src: 'assets/*.ico', dest: 'dist/' + await getDistPath(pkg.name)},
                 {src: 'assets/*.metadata.json', dest: 'dist'},
+                {src: 'vendor/signature/src/*.metadata.json', dest: 'dist'},
                 {src: 'assets/*.svg', dest: 'dist/' + await getDistPath(pkg.name)},
                 {src: 'assets/htaccess-shared', dest: 'dist/shared/', rename: '.htaccess'},
                 {src: 'assets/icon-*.png', dest: 'dist/' + await getDistPath(pkg.name)},
@@ -185,11 +188,11 @@ Dependencies:
                 {src: 'assets/silent-check-sso.html', dest:'dist'},
                 {
                     src: await getPackagePath('pdfjs-dist', 'es5/build/pdf.worker.js'),
-                    dest: 'dist/' + await getDistPath(pkg.name, 'pdfjs'),
+                    dest: 'dist/local/@dbp-apps/signature/pdfjs',
                     // enable signatures in pdf preview
                     transform: (contents) => contents.toString().replace('"Sig"', '"Sig-patched-show-anyway"')
                 },
-                {src: await getPackagePath('pdfjs-dist', 'cmaps/*'), dest: 'dist/' + await getDistPath(pkg.name, 'pdfjs')}, // do we want all map files?
+                {src: await getPackagePath('pdfjs-dist', 'cmaps/*'), dest: 'dist/local/@dbp-apps/signature/pdfjs'}, // do we want all map files?
                 {src: await getPackagePath('@dbp-toolkit/font-source-sans-pro', 'files/*'), dest: 'dist/' + await getDistPath(pkg.name, 'fonts/source-sans-pro')},
                 {src: await getPackagePath('@dbp-toolkit/common', 'src/spinner.js'), dest: 'dist/' + await getDistPath(pkg.name)},
                 {src: await getPackagePath('@dbp-toolkit/common', 'misc/browser-check.js'), dest: 'dist/' + await getDistPath(pkg.name)},
