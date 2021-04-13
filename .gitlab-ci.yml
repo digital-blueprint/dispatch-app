@@ -1,4 +1,4 @@
-image: registry.gitlab.tugraz.at/dbp/apps/dualdelivery/main:v1
+image: registry.gitlab.tugraz.at/dbp/topics/dualdelivery/main:v1
 
 cache:
   key: $CI_PROJECT_PATH

@@ -3,4 +3,4 @@
 	url = git@gitlab.tugraz.at:dbp/web-components/toolkit.git
 [submodule "vendor/signature"]
 	path = vendor/signature
-	url = git@gitlab.tugraz.at:dbp/apps/signature.git
+	url = git@gitlab.tugraz.at:dbp/topics/signature.git

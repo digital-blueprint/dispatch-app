@@ -1,12 +1,12 @@
 # Dual Delivery Application
 
-[GitLab Repository](https://gitlab.tugraz.at/dbp/apps/dualdelivery)
+[GitLab Repository](https://gitlab.tugraz.at/dbp/topics/dualdelivery)
 
 ## Local development
 
 ```bash
 # get the source
-git clone git@gitlab.tugraz.at:dbp/apps/dualdelivery.git
+git clone git@gitlab.tugraz.at:dbp/topics/dualdelivery.git
 cd dualdelivery
 git submodule update --init
 
