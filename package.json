@@ -6,8 +6,7 @@
   "private": true,
   "workspaces": [
     "vendor/toolkit/packages/*",
-    "vendor/signature",
-    "."
+    "vendor/signature"
   ],
   "devDependencies": {
     "@babel/core": "^7.10.3",
