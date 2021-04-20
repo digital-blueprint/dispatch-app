@@ -886,9 +886,9 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@digital-blueprint/annotpdf@^1.0.13a":
+"@digital-blueprint/annotpdf@^1.0.13-a":
   version "1.0.13-a"
-  resolved "https://registry.npmjs.org/@digital-blueprint/annotpdf/-/annotpdf-1.0.13-a.tgz#f588188a6e745dabcafa7756ca2c8b24a74e43f6"
+  resolved "https://registry.yarnpkg.com/@digital-blueprint/annotpdf/-/annotpdf-1.0.13-a.tgz#f588188a6e745dabcafa7756ca2c8b24a74e43f6"
   integrity sha512-Nr/YcOYswe5XZG9NnjBVOa+tz5uNcQD1vg41pirbW7/zsnu0W48xjcCIpf46PkWsjAf+NxBRQB+i8gx/n0iQIg==
   dependencies:
     "@types/crypto-js" "^4.0.1"
@@ -3238,13 +3238,6 @@ i18next@*, i18next@^19.8.4:
   version "19.8.9"
   resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.8.9.tgz#ee3175cf1edcd142b45eca49d23079edaa1e6fcc"
   integrity sha512-cyLeJv7tg3MP+bRNbNe9CleiBGfkCeEKr0DKY2MBPYE1vIQGu4mQ3qlTCmW1tcZi9fMqSI4G2mGBO+JwoIQSbQ==
-  dependencies:
-    "@babel/runtime" "^7.12.0"
-
-i18next@^19.5.1:
-  version "19.9.2"
-  resolved "https://registry.npmjs.org/i18next/-/i18next-19.9.2.tgz#ea5a124416e3c5ab85fddca2c8e3c3669a8da397"
-  integrity sha512-0i6cuo6ER6usEOtKajUUDj92zlG+KArFia0857xxiEHAQcUwh/RtOQocui1LPJwunSYT574Pk64aNva1kwtxZg==
   dependencies:
     "@babel/runtime" "^7.12.0"
 
