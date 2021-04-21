@@ -1,9 +1,12 @@
 {
-  "name": "dbp-dualdelivery",
-  "version": "1.0.0",
+  "name": "@dbp-topics/dualdelivery",
+  "version": "1.0.1",
   "main": "src/dbp-dualdelivery.js",
   "license": "LGPL-2.1-or-later",
-  "private": true,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "workspaces": [
     "vendor/toolkit/packages/*",
     "vendor/signature"

@@ -78,7 +78,7 @@ export default (async () => {
     let privatePath = await getDistPath(pkg.name)
     return {
     input: (appEnv != 'test') ? [
-      'src/' + pkg.name + '.js',
+      'src/dbp-dualdelivery.js',
       'src/dbp-dd-activity.js',
       'vendor/signature/src/dbp-qualified-signature-pdf-upload.js',
       'vendor/signature/src/dbp-official-signature-pdf-upload.js',
