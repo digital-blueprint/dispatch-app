@@ -78,7 +78,7 @@ export default (async () => {
     let privatePath = await getDistPath(pkg.name);
     return {
     input: (appEnv != 'test') ? [
-      'src/dbp-dualdelivery.js',
+      'src/' + pkg.internalName + '.js',
       'src/dbp-dd-activity.js',
       'vendor/signature/src/dbp-qualified-signature-pdf-upload.js',
       'vendor/signature/src/dbp-official-signature-pdf-upload.js',
@@ -120,7 +120,7 @@ export default (async () => {
             isVisible: (name) => {
                 return !config.hiddenActivities.includes(name);
             },
-            name: 'dbp-dualdelivery',
+            name: pkg.internalName,
             entryPointURL: config.entryPointURL,
             nextcloudWebAppPasswordURL: config.nextcloudWebAppPasswordURL,
             nextcloudWebDavURL: config.nextcloudWebDavURL,
@@ -215,7 +215,7 @@ Dependencies:
           contentBase: '.',
           host: '127.0.0.1',
           port: 8001,
-          historyApiFallback: config.basePath + 'dbp-dualdelivery.html',
+          historyApiFallback: config.basePath + pkg.internalName + '.html',
           https: useHTTPS ? await generateTLSConfig() : false,
           headers: {
               'Content-Security-Policy': config.CSP
