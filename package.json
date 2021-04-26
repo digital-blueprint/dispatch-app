@@ -1,7 +1,7 @@
 {
   "name": "@dbp-topics/dualdelivery",
   "internalName": "dbp-dualdelivery",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "src/dbp-dualdelivery.js",
   "license": "LGPL-2.1-or-later",
   "private": true,
@@ -51,7 +51,7 @@
     "@dbp-toolkit/language-select": "^0.2.0",
     "@dbp-toolkit/notification": "^0.2.0",
     "@dbp-toolkit/person-profile": "^0.2.0",
-    "@dbp-apps/signature": "^1.0.0",
+    "@dbp-topics/signature": "^1.0.0",
     "@open-wc/scoped-elements": "^1.1.1",
     "fabric": "^4.2.0",
     "file-saver": "^2.0.2",
