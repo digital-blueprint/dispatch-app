@@ -10,7 +10,7 @@ import serve from 'rollup-plugin-serve';
 import urlPlugin from "@rollup/plugin-url";
 import license from 'rollup-plugin-license';
 import del from 'rollup-plugin-delete';
-import emitEJS from 'rollup-plugin-emit-ejs'
+import emitEJS from 'rollup-plugin-emit-ejs';
 import {getBabelOutputPlugin} from '@rollup/plugin-babel';
 import appConfig from './app.config.js';
 import {getPackagePath, getBuildInfo, generateTLSConfig, getDistPath} from './vendor/toolkit/rollup.utils.js';
@@ -75,7 +75,7 @@ img-src * blob: data:`;
 
 
 export default (async () => {
-    let privatePath = await getDistPath(pkg.name)
+    let privatePath = await getDistPath(pkg.name);
     return {
     input: (appEnv != 'test') ? [
       'src/dbp-dualdelivery.js',
