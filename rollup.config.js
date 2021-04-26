@@ -120,7 +120,7 @@ export default (async () => {
             isVisible: (name) => {
                 return !config.hiddenActivities.includes(name);
             },
-            name: pkg.name,
+            name: 'dbp-dualdelivery',
             entryPointURL: config.entryPointURL,
             nextcloudWebAppPasswordURL: config.nextcloudWebAppPasswordURL,
             nextcloudWebDavURL: config.nextcloudWebDavURL,
