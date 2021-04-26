@@ -34,6 +34,19 @@ linting:
     - yarn install
     - yarn run lint
 
+publish:
+  stage: deploy
+  only:
+    refs:
+      - master
+  script:
+    # https://www.npmjs.com/settings/dbp-deploy/tokens
+    # NPM_TOKEN needs to be a "Publish" token with 2FA disabled!
+    - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
+    - yarn install
+    - yarn run build
+    - yarn run publish
+
 .deploy_defaults: &deploy_defaults
   except:
     - schedules

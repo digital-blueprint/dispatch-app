@@ -1,6 +1,6 @@
 {
   "name": "@dbp-topics/dualdelivery",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "src/dbp-dualdelivery.js",
   "license": "LGPL-2.1-or-later",
   "private": true,
@@ -72,6 +72,6 @@
     "test": "rollup -c --environment APP_ENV:test && karma start --singleRun",
     "test-full": "rollup -c --environment FORCE_FULL,APP_ENV:test && karma start --singleRun",
     "lint": "eslint .",
-    "publish": "sed -i 's/\"private\": true/\"private\": false/' package.json && can-npm-publish --verbose 2>&1 && yarn run build && npm publish --access public 2>&1; sed -i 's/\"private\": false/\"private\": true/' package.json"
+    "publish": "sed -i 's/\"private\": true/\"private\": false/' package.json && can-npm-publish --verbose 2>&1 && npm publish --access public 2>&1; sed -i 's/\"private\": false/\"private\": true/' package.json"
   }
 }
