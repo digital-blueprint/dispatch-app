@@ -180,7 +180,7 @@ Dependencies:
                 {src: 'assets/*.svg', dest: 'dist/' + await getDistPath(pkg.name)},
                 {src: 'assets/htaccess-shared', dest: 'dist/shared/', rename: '.htaccess'},
                 {src: 'assets/icon-*.png', dest: 'dist/' + await getDistPath(pkg.name)},
-                {src: 'assets/manifest.json', dest: 'dist', rename: pkg.name + '.manifest.json'},
+                {src: 'assets/manifest.json', dest: 'dist', rename: pkg.internalName + '.manifest.json'},
                 {src: 'assets/silent-check-sso.html', dest:'dist'},
                 {
                     src: await getPackagePath('pdfjs-dist', 'es5/build/pdf.worker.js'),
