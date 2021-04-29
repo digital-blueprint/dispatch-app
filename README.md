@@ -115,7 +115,7 @@ for example like this:
     
     <!-- Error handling for too old browsers -->
     <script src="https://unpkg.com/@dbp-topics/dualdelivery@1.0.8/dist/local/@dbp-topics/dualdelivery/browser-check.js" defer></script>
-    <noscript>Diese Applikation benötigt Javascript / This application requires Javascript</noscript>
+    <noscript>Diese Applikation benÃ¶tigt Javascript / This application requires Javascript</noscript>
 </body>
 </html>
 ```
