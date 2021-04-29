@@ -2,7 +2,7 @@
 
 [GitLab Repository](https://gitlab.tugraz.at/dbp/topics/dualdelivery) |
 [npmjs package](https://www.npmjs.com/package/@dbp-topics/dualdelivery) |
-[unpkg cdn](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
+[Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
 
 ## Local development
 
@@ -28,15 +28,15 @@ To use the Nextcloud functionality you need a running Nextcloud server with the
 [webapppassword](https://gitlab.tugraz.at/DBP/Middleware/Nextcloud/webapppassword) Nextcloud app like this
 [Nextcloud Development Environment](https://gitlab.tugraz.at/DBP/Middleware/Nextcloud/webapppassword/-/tree/master/docker).
 
-## Using this app as pre-build package
+## Using this app as pre-built package
 
-Not only you can use this app as pre-build package installing from [npmjs](https://www.npmjs.com/package/@dbp-topics/dualdelivery) via:
+Not only you can use this app as pre-built package installed from [npmjs](https://www.npmjs.com/package/@dbp-topics/dualdelivery) via:
 
 ```bash
 npm install @dbp-topics/dualdelivery
 ```
 
-But you can also use this app directly from the [unpkg cdn](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
+But you can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
 for example like this:
 
 ```html
@@ -122,9 +122,9 @@ for example like this:
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
-## Using a single activity as pre-build package
+## Using a single activity as pre-built package
 
-You can also use a single activity directly from the [unpkg cdn](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
+You can also use a single activity directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
 for example the `dbp-qualified-signature-pdf-upload` activity to qualifiedly sign PDF documents like this:
 
 ```html
