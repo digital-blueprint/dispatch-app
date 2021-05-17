@@ -1,6 +1,6 @@
 # Dual Delivery Application
 
-[GitLab Repository](https://gitlab.tugraz.at/dbp/topics/dualdelivery) |
+[GitLab Repository](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery) |
 [npmjs package](https://www.npmjs.com/package/@dbp-topics/dualdelivery) |
 [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
 
