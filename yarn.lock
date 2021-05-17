@@ -950,6 +950,15 @@
     esquery "^1.4.0"
     jsdoctypeparser "^9.0.0"
 
+"@es-joy/jsdoccomment@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@es-joy/jsdoccomment/-/jsdoccomment-0.6.0.tgz#8926a8184df0968860f8c69b3bfc52efa6aeaa30"
+  integrity sha512-zT1EtysKMITJ7vE4RvOJqitxk/Str6It8hq+fykxkwLuTyzgak+TnVuVSIyovT/qrEz3i46ypCSXgNtIDYwNOg==
+  dependencies:
+    comment-parser "^1.1.5"
+    esquery "^1.4.0"
+    jsdoctypeparser "^9.0.0"
+
 "@eslint/eslintrc@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.3.0.tgz#d736d6963d7003b6514e6324bec9c602ac340318"
@@ -2686,6 +2695,21 @@ eslint-plugin-jsdoc@^33.0.0:
   integrity sha512-6Avc2czg/mh0zmuU3H4v2xTXOALl9OiMGpn55nBDydhU684cVgvn2VtXm1JgH+2TW5SxEDnX3o/FUgda7LgVYA==
   dependencies:
     "@es-joy/jsdoccomment" "^0.4.4"
+    comment-parser "1.1.5"
+    debug "^4.3.1"
+    esquery "^1.4.0"
+    jsdoctypeparser "^9.0.0"
+    lodash "^4.17.21"
+    regextras "^0.7.1"
+    semver "^7.3.5"
+    spdx-expression-parse "^3.0.1"
+
+eslint-plugin-jsdoc@^34.0.0:
+  version "34.6.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-34.6.3.tgz#5a4770ae33fa429785936d6a3b61576d088b8c39"
+  integrity sha512-ixty4/Zl7cZ0fcvqQAWKuTzQ5hnWIirZOuJrzLtWV0RwF4E70/WG5vLXyppxDFbLCiwmYXjSkiqBfcKfm4VA3Q==
+  dependencies:
+    "@es-joy/jsdoccomment" "^0.6.0"
     comment-parser "1.1.5"
     debug "^4.3.1"
     esquery "^1.4.0"
