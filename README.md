@@ -37,7 +37,7 @@ npm install @dbp-topics/dualdelivery
 ```
 
 But you can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
-for example like this: [dbp-dualdelivery/index.html](examples/dbp-dualdelivery/index.html)
+for example like this: [dbp-dualdelivery/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples/dbp-dualdelivery/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
@@ -45,6 +45,6 @@ Note that you will need a Keycloak server along with a client id for the domain 
 
 You can also use a single activity directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
 for example the `dbp-qualified-signature-pdf-upload` activity to qualifiedly sign PDF documents like this:
-[dbp-qualified-signature-pdf-upload/index.html](examples/dbp-qualified-signature-pdf-upload/index.html)
+[dbp-qualified-signature-pdf-upload/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples/dbp-qualified-signature-pdf-upload/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
