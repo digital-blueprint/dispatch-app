@@ -48,3 +48,8 @@ for example the `dbp-qualified-signature-pdf-upload` activity to qualifiedly sig
 [dbp-qualified-signature-pdf-upload/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples/dbp-qualified-signature-pdf-upload/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
+
+## Exposed CSS variables
+
+- `--dbp-override-image-nextcloud` is used to override the cloud image on the connection screen of the Nextcloud file picker
+    - example CSS: `html { --dbp-override-image-nextcloud: url(/icons/nextcloud.svg); }`
