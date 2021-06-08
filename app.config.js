@@ -10,6 +10,8 @@ export default {
         nextcloudName: 'TU Graz cloud',
         pdfAsQualifiedlySigningServer: 'https://sig-dev.tugraz.at',
         hiddenActivities: [],
+        siteName: 'TU Graz',
+        siteSubName: 'Graz University of Technology'
     },
     bs: {
         basePath: '/dist/',
@@ -22,6 +24,8 @@ export default {
         nextcloudName: 'TU Graz cloud',
         pdfAsQualifiedlySigningServer: 'https://sig-dev.tugraz.at',
         hiddenActivities: [],
+        siteName: 'TU Graz',
+        siteSubName: 'Graz University of Technology'
     },
     development: {
         basePath: '/apps/dualdelivery/',
@@ -34,6 +38,8 @@ export default {
         nextcloudName: 'TU Graz cloud',
         pdfAsQualifiedlySigningServer: 'https://sig-dev.tugraz.at',
         hiddenActivities: [],
+        siteName: 'TU Graz',
+        siteSubName: 'Graz University of Technology'
     },
     demo: {
         basePath: '/apps/dualdelivery/',
@@ -46,6 +52,8 @@ export default {
         nextcloudName: 'TU Graz cloud',
         pdfAsQualifiedlySigningServer: 'https://sig-test.tugraz.at',
         hiddenActivities: [],
+        siteName: 'TU Graz',
+        siteSubName: 'Graz University of Technology'
     },
     production: {
         basePath: '/',
@@ -58,5 +66,7 @@ export default {
         nextcloudName: '',
         pdfAsQualifiedlySigningServer: 'https://sig.tugraz.at',
         hiddenActivities: [],
+        siteName: 'TU Graz',
+        siteSubName: 'Graz University of Technology'
     },
 };
