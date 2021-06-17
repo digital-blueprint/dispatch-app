@@ -99,7 +99,7 @@
     build-time='<%= buildInfo.time %>'
     env='<%= buildInfo.env %>'
 ><dbp-loading-spinner></dbp-loading-spinner>
-<div slot="name">
+<template slot="name">
     TU Graz<br />
     <dbp-translated subscribe="lang">
         <div slot="de">
@@ -109,11 +109,11 @@
             Graz University of Technology
         </div>
     </dbp-translated>
-</div>
-<div slot="logo">
+</template>
+<template slot="logo">
     <dbp-tugraz-logo id="main-logo" subscribe="lang"></dbp-tugraz-logo>
-</div>
-<div slot="footer-links">
+</template>
+<template slot="footer-links">
     <dbp-translated subscribe="lang">
         <div slot="de" class="footer-links">
             <a target="_blank" rel="noopener" href="https://www.tugraz.at/ueber-diese-seite/datenschutzerklaerung/">Datenschutz</a>
@@ -126,7 +126,7 @@
             <a rel="noopener" href="mailto:it-support@tugraz.at">Contact</a>
         </div>
     </dbp-translated>
-</div>
+</template>
 </<%= name %>>
 
 <!-- Error handling for too old browsers -->
