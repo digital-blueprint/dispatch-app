@@ -184,7 +184,7 @@ Dependencies:
                 {src: 'assets/manifest.json', dest: 'dist', rename: pkg.internalName + '.manifest.json'},
                 {src: 'assets/silent-check-sso.html', dest:'dist'},
                 {
-                    src: await getPackagePath('pdfjs-dist', 'es5/build/pdf.worker.js'),
+                    src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
                     dest: 'dist/local/@dbp-topics/signature/pdfjs',
                     // enable signatures in pdf preview
                     transform: (contents) => contents.toString().replace('"Sig"', '"Sig-patched-show-anyway"')
