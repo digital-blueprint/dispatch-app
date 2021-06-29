@@ -53,3 +53,6 @@ Note that you will need a Keycloak server along with a client id for the domain 
 
 - `--dbp-override-image-nextcloud` is used to override the cloud image on the connection screen of the Nextcloud file picker
     - example CSS: `html { --dbp-override-image-nextcloud: url(/icons/nextcloud.svg); }`
+
+## Design Note
+To ensure a uniform and responsive design the activity should occupy 100% of the window width when the activity width is less than 768 px.
