@@ -64,12 +64,12 @@ If you are not using the `provider-root` attribute to "terminate" all provider a
 you need to manually add these attributes so that the topic will work properly:
 
 ```html
-<dbp-signature
+<dbp-dualdelivery
     auth
     requested-login-status
     analytics-event
     initial-file-handling-state
     clipboard-files
 >
-</dbp-signature>
+</dbp-dualdelivery>
 ```
