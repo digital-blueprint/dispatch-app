@@ -1,16 +1,15 @@
-import {createI18nInstance} from './i18n.js';
+import {createInstance} from './i18n.js';
 import {css, html} from 'lit-element';
 import {ScopedElementsMixin} from '@open-wc/scoped-elements';
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
 
-const i18n = createI18nInstance();
-
 class DdActivity extends ScopedElementsMixin(DBPLitElement) {
     constructor() {
         super();
-        this.lang = i18n.language;
+        this._i18n = createInstance();
+        this.lang = this._i18n.language;
     }
 
     static get scopedElements() {
@@ -28,7 +27,7 @@ class DdActivity extends ScopedElementsMixin(DBPLitElement) {
         changedProperties.forEach((oldValue, propName) => {
             switch (propName) {
                 case "lang":
-                    i18n.changeLanguage(this.lang);
+                    this._i18n.changeLanguage(this.lang);
                     break;
             }
         });
@@ -103,6 +102,7 @@ class DdActivity extends ScopedElementsMixin(DBPLitElement) {
     }
 
     render() {
+        const i18n = this._i18n;
         return html`
             <h2>${i18n.t('dd-activity.headline')}</h2>
             <p class="subheadline">
