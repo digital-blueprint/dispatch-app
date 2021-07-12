@@ -8,7 +8,7 @@ module.exports = {
         removeUnusedKeys: true,
         lngs: ['en','de'],
         func: {
-            list: ['i18n.t', 'i18nKey']
+            list: ['i18n.t']
         },
         resource: {
             loadPath: 'src/i18n/{{lng}}/{{ns}}.json',
