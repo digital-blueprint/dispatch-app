@@ -180,6 +180,8 @@ Dependencies:
                 {src: 'assets/*.svg', dest: 'dist/' + await getDistPath(pkg.name)},
                 {src: 'assets/htaccess-shared', dest: 'dist/shared/', rename: '.htaccess'},
                 {src: 'assets/icon-*.png', dest: 'dist/' + await getDistPath(pkg.name)},
+                {src: 'assets/apple-*.png', dest: 'dist/' + await getDistPath(pkg.name)},
+                {src: 'assets/safari-*.svg', dest: 'dist/' + await getDistPath(pkg.name)},
                 {src: 'assets/icons/*', dest: 'dist/icons'},
                 {src: 'assets/manifest.json', dest: 'dist', rename: pkg.internalName + '.manifest.json'},
                 {src: 'assets/silent-check-sso.html', dest:'dist'},

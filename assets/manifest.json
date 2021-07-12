@@ -1,21 +1,56 @@
 {
   "short_name": "DualDelivery",
-  "name": "TUGraz Dual Delivery",
-  "start_url": "./dbp-dualdelivery.html",
+  "name": "TU Graz Dual Delivery",
+  "start_url": "./",
   "icons": [
     {
-      "src": "local/@dbp-topics/dualdelivery/icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "local/@dbp-topics/dualdelivery/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
     },
     {
-      "src": "local/@dbp-topics/dualdelivery/icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "local/@dbp-topics/dualdelivery/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "local/@dbp-topics/dualdelivery/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "local/@dbp-topics/dualdelivery/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "local/@dbp-topics/dualdelivery/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "local/@dbp-topics/dualdelivery/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "local/@dbp-topics/dualdelivery/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "local/@dbp-topics/dualdelivery/icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "local/@dbp-topics/dualdelivery/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
-  "background_color": "#245B78",
+  "background_color": "#FEFEFE",
   "display": "standalone",
-  "theme_color": "#E4154B"
+  "theme_color": "#FFFFFF"
 }
 
