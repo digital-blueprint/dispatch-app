@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg49" width="53" height="53" version="1.1" viewBox="0 0 14.023 14.023" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <metadata id="metadata53">
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <style id="style2"><![CDATA[.B{fill:#c8c7c7}.C{fill:#231f20}]]></style>
+ <path id="path4" class="B" d="m0.41352 6.0395v0.313l5.866 3.295 5.927-3.295v-0.313l-5.897 3.295z" fill="#c8c7c7"/>
+ <path id="path6" class="C" d="m6.2785 9.6465 5.927-3.295v-0.313l-5.896 3.296z" fill="#231f20"/>
+ <path id="path8" class="B" d="m0.41352 7.6785v0.312l5.866 3.295 5.927-3.295v-0.312l-5.897 3.295z" fill="#c8c7c7"/>
+ <path id="path10" class="C" d="m6.2785 11.286 5.927-3.295v-0.312l-5.896 3.295z" fill="#231f20"/>
+ <path id="path12" class="B" d="m0.41352 9.3175v0.313l5.866 3.295 5.927-3.295v-0.313l-5.896 3.295z" fill="#c8c7c7"/>
+ <path id="path14" class="C" d="m6.2785 12.924 5.927-3.295v-0.312l-5.897 3.295z" fill="#231f20"/>
+ <path id="path16" class="B" d="m9.2575 6.0885-1.474-0.824 1.474-0.824 1.474 0.824z" fill="#c8c7c7"/>
+ <use id="use18" class="C" transform="translate(.41352 1.0975)" width="100%" height="100%" fill="#231f20" xlink:href="#B"/>
+ <path id="path20" d="m9.1875 4.3925-1.474-0.824 1.474-0.824 1.474 0.824z" fill="#656263"/>
+ <use id="use22" class="C" transform="translate(.41352 1.0975)" x="-1.474" y="0.82300001" width="100%" height="100%" fill="#231f20" xlink:href="#B"/>
+ <use id="use24" class="B" transform="translate(.41352 1.0975)" x="-2.948" width="100%" height="100%" fill="#c8c7c7" xlink:href="#B"/>
+ <g id="g32" transform="translate(.41352 1.0975)" fill="#7b7979">
+  <use id="use26" x="-1.474" y="-0.824" width="100%" height="100%" xlink:href="#B"/>
+  <use id="use28" x="-1.474" y="-2.471" width="100%" height="100%" xlink:href="#B"/>
+  <path id="path30" d="m4.422 2.471-1.474-0.824 1.474-0.824 1.474 0.824z"/>
+ </g>
+ <use id="use34" class="B" transform="translate(.41352 1.0975)" x="-4.4219999" y="-0.824" width="100%" height="100%" fill="#c8c7c7" xlink:href="#B"/>
+ <path id="path36" class="C" d="m12.136 2.7445-1.473-0.824 1.473-0.823 1.474 0.824z" fill="#231f20"/>
+ <g id="g42" class="B" transform="translate(.41352 1.0975)" fill="#c8c7c7">
+  <path id="path38" d="m8.844 6.589-1.474-0.823 1.474-0.824 1.474 0.824z"/>
+  <use id="use40" y="1.647" width="100%" height="100%" xlink:href="#B"/>
+ </g>
+ <use id="use44" class="C" transform="translate(.41352 1.0975)" x="-4.4219999" y="0.82300001" width="100%" height="100%" fill="#231f20" xlink:href="#B"/>
+ <defs id="defs47">
+  <path id="B" d="m7.37 5.766-1.474-0.824 1.474-0.824 1.474 0.824z"/>
+ </defs>
+</svg>

@@ -30,22 +30,34 @@ To use the Nextcloud functionality you need a running Nextcloud server with the
 
 ## Using this app as pre-built package
 
-Not only you can use this app as pre-built package installed from [npmjs](https://www.npmjs.com/package/@dbp-topics/dualdelivery) via:
+### Install app
+
+If you want to install the DBP Dualdelivery App in a new folder `dualdelivery-app` you can call:
 
 ```bash
-npm install @dbp-topics/dualdelivery
+npx @digital-blueprint/cli install-app dualdelivery dualdelivery-app
 ```
 
-But you can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
+Afterwards you can point your Apache web-server to `dualdelivery-app/public`.
+
+You can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
 for example like this: [dbp-dualdelivery/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples/dbp-dualdelivery/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
+### Update app
+
+If you want to update the DBP Dualdelivery App in the current folder you can call:
+
+```bash
+npx @digital-blueprint/cli update-app dualdelivery
+```
+
 ## Using a single activity as pre-built package
 
 You can also use a single activity directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
-for example the `dbp-qualified-signature-pdf-upload` activity to qualifiedly sign PDF documents like this:
-[dbp-qualified-signature-pdf-upload/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples/dbp-qualified-signature-pdf-upload/index.html)
+for example the `dbp-qualified-dualdelivery-pdf-upload` activity to qualifiedly sign PDF documents like this:
+[dbp-qualified-dualdelivery-pdf-upload/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples/dbp-qualified-dualdelivery-pdf-upload/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
