@@ -182,7 +182,7 @@ Dependencies:
                 {src: 'assets/icon-*.png', dest: 'dist/' + await getDistPath(pkg.name)},
                 {src: 'assets/apple-*.png', dest: 'dist/' + await getDistPath(pkg.name)},
                 {src: 'assets/safari-*.svg', dest: 'dist/' + await getDistPath(pkg.name)},
-                {src: 'assets/icons/*', dest: 'dist/icons'},
+                {src: 'assets/images/*', dest: 'dist/images'},
                 {src: 'assets/manifest.json', dest: 'dist', rename: pkg.internalName + '.manifest.json'},
                 {src: 'assets/silent-check-sso.html', dest:'dist'},
                 {
