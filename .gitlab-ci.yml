@@ -65,9 +65,9 @@ deploy_demo:
       - demo
   environment:
     name: demo
-    url: https://frontend-demo.tugraz.at/apps/dualdelivery
+    url: https://dbp-demo.tugraz.at/apps/dualdelivery
   variables:
-    DEPLOY_HOST: mw01-dev.tugraz.at
+    DEPLOY_HOST: vpu01-demo.tugraz.at
     DEPLOY_KEY: "$DEPLOY_SSH_KEY"
   <<: *deploy_defaults
 

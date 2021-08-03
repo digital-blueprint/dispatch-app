@@ -29,7 +29,7 @@ set('rsync_dest','{{release_path}}');
 // Hosts
 host('demo')
     ->stage('demo')
-    ->hostname('mw@mw01-dev.tugraz.at')
+    ->hostname('mw@vpu01-demo.tugraz.at')
     ->set('deploy_path', '/home/mw/demo/deploy/apps/dualdelivery');
 
 host('development')
