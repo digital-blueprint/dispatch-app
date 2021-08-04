@@ -27,7 +27,7 @@ export default {
     },
     development: {
         basePath: '/apps/dualdelivery/',
-        entryPointURL: 'https://mw-dev.tugraz.at',
+        entryPointURL: 'https://api-dev.tugraz.at',
         keyCloakBaseURL: 'https://auth-dev.tugraz.at/auth',
         keyCloakRealm: 'tugraz-vpu',
         keyCloakClientId: 'dualdelivery-dev_tugraz_at-DUALDELIVERY',
