@@ -190,8 +190,6 @@ Dependencies:
                 {
                     src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
                     dest: 'dist/local/@dbp-topics/signature/pdfjs',
-                    // enable signatures in pdf preview
-                    transform: (contents) => contents.toString().replace('"Sig"', '"Sig-patched-show-anyway"')
                 },
                 {src: await getPackagePath('pdfjs-dist', 'cmaps/*'), dest: 'dist/local/@dbp-topics/signature/pdfjs'}, // do we want all map files?
                 {src: await getPackagePath('@dbp-toolkit/font-source-sans-pro', 'files/*'), dest: 'dist/' + await getDistPath(pkg.name, 'fonts/source-sans-pro')},
