@@ -59,7 +59,7 @@
     "jszip": "^3.5.0",
     "lit-element": "^2.3.1",
     "lit-html": "^1.2.1",
-    "pdfjs-dist": "^2.4.456",
+    "pdfjs-dist": "2.10.377",
     "universal-router": "^9.0.1",
     "webdav": "^4.0.0"
   },
