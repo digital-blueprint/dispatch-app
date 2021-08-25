@@ -41,9 +41,9 @@ export default {
     demo: {
         basePath: '/apps/dualdelivery/',
         entryPointURL: 'https://api-demo.tugraz.at',
-        keyCloakBaseURL: 'https://auth-test.tugraz.at/auth',
-        keyCloakRealm: 'tugraz',
-        keyCloakClientId: 'dualdelivery-demo_tugraz_at-DUALDELIVERY',
+        keyCloakBaseURL: 'https://auth-demo.tugraz.at/auth',
+        keyCloakRealm: 'tugraz-vpu',
+        keyCloakClientId: 'dbp-dual-delivery',
         matomoUrl: 'https://analytics.tugraz.at/',
         matomoSiteId: 131,
         nextcloudBaseURL: 'https://cloud.tugraz.at',
