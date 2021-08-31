@@ -30,7 +30,7 @@ export default {
         entryPointURL: 'https://api-dev.tugraz.at',
         keyCloakBaseURL: 'https://auth-dev.tugraz.at/auth',
         keyCloakRealm: 'tugraz-vpu',
-        keyCloakClientId: 'dualdelivery-dev_tugraz_at-DUALDELIVERY',
+        keyCloakClientId: 'dbp-dual-delivery',
         matomoUrl: 'https://analytics.tugraz.at/',
         matomoSiteId: 131,
         nextcloudBaseURL: 'https://nc-dev.tugraz.at/pers',
