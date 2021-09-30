@@ -32,10 +32,10 @@ To use the Nextcloud functionality you need a running Nextcloud server with the
 
 ### Install app
 
-If you want to install the DBP Dualdelivery App in a new folder `dualdelivery-app` you can call:
+If you want to install the DBP Dualdelivery App in a new folder `dualdelivery-app` with a path prefix `/` you can call:
 
 ```bash
-npx @digital-blueprint/cli install-app dualdelivery dualdelivery-app
+npx @digital-blueprint/cli install-app dualdelivery dualdelivery-app /
 ```
 
 Afterwards you can point your Apache web-server to `dualdelivery-app/public`.
