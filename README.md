@@ -40,6 +40,11 @@ npx @digital-blueprint/cli install-app dualdelivery dualdelivery-app /
 
 Afterwards you can point your Apache web-server to `dualdelivery-app/public`.
 
+Make sure you are allowing `.htaccess` files in your Apache configuration.
+
+Also make sure to add all of your resources you are using (like your API and Keycloak servers) to the
+`Content-Security-Policy` in your `dualdelivery-app/public/.htaccess`, so the browser allows access to those sites.
+
 You can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
 for example like this: [dbp-dualdelivery/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples/dbp-dualdelivery/index.html)
 
