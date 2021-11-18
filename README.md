@@ -71,6 +71,10 @@ Note that you will need a Keycloak server along with a client id for the domain 
 - `--dbp-override-image-nextcloud` is used to override the cloud image on the connection screen of the Nextcloud file picker
     - example CSS: `html { --dbp-override-image-nextcloud: url(/icons/nextcloud.svg); }`
 
+## "dbp-greenlight" Slots
+
+These are common slots for the appshell. You can find the documentation of these slot in the `README.md` of the appshell webcomponent.
+
 ## Design Note
 
 To ensure a uniform and responsive design the activity should occupy 100% of the window width when the activity width is less than 768 px.
