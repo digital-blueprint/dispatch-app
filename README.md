@@ -71,7 +71,7 @@ Note that you will need a Keycloak server along with a client id for the domain 
 - `--dbp-override-image-nextcloud` is used to override the cloud image on the connection screen of the Nextcloud file picker
     - example CSS: `html { --dbp-override-image-nextcloud: url(/icons/nextcloud.svg); }`
 
-## "dbp-greenlight" Slots
+## "dbp-dualdelivery" Slots
 
 These are common slots for the appshell. You can find the documentation of these slot in the `README.md` of the appshell webcomponent.
 
