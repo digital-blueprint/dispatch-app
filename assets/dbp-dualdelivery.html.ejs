@@ -80,61 +80,67 @@
     build-url='<%= buildInfo.url %>'
     build-time='<%= buildInfo.time %>'
     env='<%= buildInfo.env %>'
+html-overrides="global-override"
 ><dbp-loading-spinner></dbp-loading-spinner>
-<template slot="name">
-    TU Graz<br />
-    <dbp-translated subscribe="lang">
-        <div slot="de">
-            Technische Universität Graz
-        </div>
-        <div slot="en">
-            Graz University of Technology
-        </div>
-    </dbp-translated>
-</template>
-<template slot="logo">
-    <style>
-        #main-logo {
-            padding: 0 50px 0 0;
-        }
-    </style>
-    <dbp-tugraz-logo id="main-logo" subscribe="lang"></dbp-tugraz-logo>
-</template>
-<template slot="footer-links">
-    <style>
-        .footer-links {
-            margin-top: 0.5em;
-        }
-
-        .footer-links a {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-            padding: 0;
-            margin-left: 1em;
-            transition: background-color 0.15s ease 0s, color 0.15s ease 0s;
-            color: #6c757d;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .footer-links a:hover {
-            color: #fff;
-            background-color: #000;
-        }
-    </style>
-    <dbp-translated subscribe="lang">
-        <div slot="de" class="footer-links">
-            <a target="_blank" rel="noopener" href="https://www.tugraz.at/ueber-diese-seite/datenschutzerklaerung/">Datenschutz</a>
-            <a target="_blank" rel="noopener" href="https://www.tugraz.at/ueber-diese-seite/impressum/">Impressum</a>
-            <a rel="noopener" href="mailto:it-support@tugraz.at">Kontakt</a>
-        </div>
-        <div slot="en" class="footer-links">
-            <a target="_blank" rel="noopener" href="https://www.tugraz.at/en/about-this-page/privacy-policy/">Privacy Policy</a>
-            <a target="_blank" rel="noopener" href="https://www.tugraz.at/en/about-this-page/legal-notice/">Legal Notice</a>
-            <a rel="noopener" href="mailto:it-support@tugraz.at">Contact</a>
-        </div>
-    </dbp-translated>
-</template>
 </<%= name %>>
+
+<template id="global-override">
+    <template id="<%= name %>">
+        <div slot="name">
+            TU Graz<br />
+            <dbp-translated subscribe="lang">
+                <div slot="de">
+                    Technische Universität Graz
+                </div>
+                <div slot="en">
+                    Graz University of Technology
+                </div>
+            </dbp-translated>
+        </div>
+        <div slot="logo">
+            <style>
+                #main-logo {
+                    padding: 0 50px 0 0;
+                }
+            </style>
+            <dbp-tugraz-logo id="main-logo" subscribe="lang"></dbp-tugraz-logo>
+        </div>
+        <div slot="footer-links">
+            <style>
+                .footer-links {
+                    margin-top: 0.5em;
+                }
+
+                .footer-links a {
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+                    padding: 0;
+                    margin-left: 1em;
+                    transition: background-color 0.15s ease 0s, color 0.15s ease 0s;
+                    color: #6c757d;
+                    cursor: pointer;
+                    text-decoration: none;
+                }
+
+                .footer-links a:hover {
+                    color: #fff;
+                    background-color: #000;
+                }
+            </style>
+            <dbp-translated subscribe="lang">
+                <div slot="de" class="footer-links">
+                    <a target="_blank" rel="noopener" href="https://www.tugraz.at/ueber-diese-seite/datenschutzerklaerung/">Datenschutz</a>
+                    <a target="_blank" rel="noopener" href="https://www.tugraz.at/ueber-diese-seite/impressum/">Impressum</a>
+                    <a rel="noopener" href="mailto:aktuell-und-offiziell@tugraz.at">Kontakt</a>
+                </div>
+                <div slot="en" class="footer-links">
+                    <a target="_blank" rel="noopener" href="https://www.tugraz.at/en/about-this-page/privacy-policy/">Privacy Policy</a>
+                    <a target="_blank" rel="noopener" href="https://www.tugraz.at/en/about-this-page/legal-notice/">Legal Notice</a>
+                    <a rel="noopener" href="mailto:aktuell-und-offiziell@tugraz.at">Contact</a>
+                </div>
+            </dbp-translated>
+        </div>
+    </template>
+</template>
 
 <!-- Error handling for too old browsers -->
 <script src="<%= getPrivateUrl('browser-check.js') %>" defer></script>
