@@ -1,7 +1,7 @@
 {
   "name": "@dbp-topics/dualdelivery",
   "internalName": "dbp-dualdelivery",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "main": "src/dbp-dualdelivery.js",
   "license": "LGPL-2.1-or-later",
   "private": true,
