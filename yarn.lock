@@ -917,12 +917,12 @@
     crypto-js "^4.0.0"
     pako "^1.0.10"
 
-"@es-joy/jsdoccomment@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@es-joy/jsdoccomment/-/jsdoccomment-0.12.0.tgz#47de05d86e9728ae3a5f1c57d6e9b63b07c6dc98"
-  integrity sha512-Gw4/j9v36IKY8ET+W0GoOzrRw17xjf21EIFFRL3zx21fF5MnqmeNpNi+PU/LKjqLpPb2Pw2XdlJbYM31VVo/PQ==
+"@es-joy/jsdoccomment@0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@es-joy/jsdoccomment/-/jsdoccomment-0.13.0.tgz#90ffe2006981ff66d3f4fd2f05949487f0fca089"
+  integrity sha512-APVqbVPGOprb4BmjEnwbSzV+V2e/6DVIUnZG3zdW5uWXWkN0DKMCpiIy2TdBauoANKYO7RQpO8cTjIYNVSKwUA==
   dependencies:
-    comment-parser "1.2.4"
+    comment-parser "1.3.0"
     esquery "^1.4.0"
     jsdoc-type-pratt-parser "2.0.0"
 
@@ -2114,11 +2114,6 @@ commander@^6.2.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
   integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
 
-comment-parser@1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/comment-parser/-/comment-parser-1.2.4.tgz#489f3ee55dfd184a6e4bffb31baba284453cb760"
-  integrity sha512-pm0b+qv+CkWNriSTMsfnjChF9kH0kxz55y44Wo5le9qLxMj5xDQAaEd9ZN1ovSuk9CsrncWaFwgpOMg7ClJwkw==
-
 comment-parser@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/comment-parser/-/comment-parser-1.3.0.tgz#68beb7dbe0849295309b376406730cd16c719c44"
@@ -2641,11 +2636,11 @@ escodegen@^1.11.1:
     source-map "~0.6.1"
 
 eslint-plugin-jsdoc@^37.0.0:
-  version "37.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-37.1.0.tgz#88ccd4a70453f0660f0e14e9a67b91a324c32cfd"
-  integrity sha512-DpkFzX5Sqkqzy4MCgowhDXmusWcF1Gn7wYnphdGfWmIkoQr6SwL0jEtltGAVyF5Rj6ACi6ydw0oCCI5hF3yz6w==
+  version "37.2.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-37.2.0.tgz#233690a37fa2e2abbe1f4f28ab676641dc8b3710"
+  integrity sha512-ca7s/DD1mMObZQ2Y0n0DO/KnFV+FqCX6ztir8pcSuylg3GGCREIisn36P/0cRySuWW/7Y7MNCuUDqtKdgLPU7Q==
   dependencies:
-    "@es-joy/jsdoccomment" "0.12.0"
+    "@es-joy/jsdoccomment" "0.13.0"
     comment-parser "1.3.0"
     debug "^4.3.3"
     escape-string-regexp "^4.0.0"
@@ -2741,9 +2736,9 @@ eslint@^8.0.0:
     v8-compile-cache "^2.0.3"
 
 eslint@^8.0.1:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.4.0.tgz#2fa01b271cafc28addc2719e551acff5e89f5230"
-  integrity sha512-kv0XQcAQJL/VD9THQKhTQZVqkJKA+tIj/v2ZKNaIHRAADcJWFb+B/BAewUYuF6UVg1s2xC5qXVoDk0G8sKGeTA==
+  version "8.4.1"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.4.1.tgz#d6531bbf3e598dffd7c0c7d35ec52a0b30fdfa2d"
+  integrity sha512-TxU/p7LB1KxQ6+7aztTnO7K0i+h0tDi81YRY9VzB6Id71kNz+fFYnf5HD5UOQmxkzcoa0TlVZf9dpMtUv0GpWg==
   dependencies:
     "@eslint/eslintrc" "^1.0.5"
     "@humanwhocodes/config-array" "^0.9.2"
@@ -3554,9 +3549,9 @@ i18next@*:
     "@babel/runtime" "^7.12.0"
 
 i18next@^21.4.2:
-  version "21.5.4"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.5.4.tgz#55ab39c31cc0b4f9f58c3a599db50c4515698284"
-  integrity sha512-ukwRJpLhYg4EUfCOtbaKjlwF71qyel1XMXQN78OkQMcaQG68UzlYgLC6g2fhoTNBvoH2tJkaaqzDumhC9skAhA==
+  version "21.6.0"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.6.0.tgz#257abf455b24136640a20728b44cf59f60cdeb5c"
+  integrity sha512-RjNuACL35wWZgtkyMcjcCmK7R72u3P6jTNbGKzrvHGI9M0iK5Vn1DsBIwOByppaXLIbe0viJ79Nz2h8w1UwPoQ==
   dependencies:
     "@babel/runtime" "^7.12.0"
 
@@ -5420,9 +5415,9 @@ rollup-pluginutils@^2.6.0:
     estree-walker "^0.6.1"
 
 rollup@^2.18.1:
-  version "2.60.2"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.60.2.tgz#3f45ace36a9b10b4297181831ea0719922513463"
-  integrity sha512-1Bgjpq61sPjgoZzuiDSGvbI1tD91giZABgjCQBKM5aYLnzjq52GoDuWVwT/cm/MCxCMPU8gqQvkj8doQ5C8Oqw==
+  version "2.61.1"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.61.1.tgz#1a5491f84543cf9e4caf6c61222d9a3f8f2ba454"
+  integrity sha512-BbTXlEvB8d+XFbK/7E5doIcRtxWPRiqr0eb5vQ0+2paMM04Ye4PZY5nHOQef2ix24l/L0SpLd5hwcH15QHPdvA==
   optionalDependencies:
     fsevents "~2.3.2"
 
