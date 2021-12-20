@@ -52,14 +52,7 @@
     "@dbp-toolkit/person-profile": "^0.2.0",
     "@dbp-topics/signature": "^1.0.0",
     "@open-wc/scoped-elements": "^2.0.0",
-    "fabric": "^4.2.0",
-    "file-saver": "^2.0.2",
-    "i18next": "^21.4.2",
-    "jszip": "^3.5.0",
-    "lit": "^2.0.0",
-    "pdfjs-dist": "2.10.377",
-    "universal-router": "^9.0.1",
-    "webdav": "^4.0.0"
+    "lit": "^2.0.0"
   },
   "scripts": {
     "build": "rollup -c",
