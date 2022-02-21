@@ -50,7 +50,7 @@
     "@dbp-toolkit/language-select": "^0.2.0",
     "@dbp-toolkit/notification": "^0.2.0",
     "@dbp-toolkit/person-profile": "^0.2.0",
-    "@dbp-topics/signature": "^1.0.0",
+    "@dbp-topics/signature": "^2.0.0",
     "@open-wc/scoped-elements": "^2.0.0",
     "lit": "^2.0.0"
   },
