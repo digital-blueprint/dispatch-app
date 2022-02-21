@@ -990,6 +990,30 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
+"@dbp-topics/signature@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@dbp-topics/signature/-/signature-2.0.0.tgz#844bc35c4d21aefb83690215d87ba3c7e7acb67c"
+  integrity sha512-MqxuZVYmJ2owfufYwWa4TkIjU8F1F12ocxyJof5ODMRIDqqhdKjOrkjE8TMC8hxbcNTLz7+qOc6T2/S4ECoKSA==
+  dependencies:
+    "@dbp-toolkit/app-shell" "^0.2.0"
+    "@dbp-toolkit/auth" "^0.2.0"
+    "@dbp-toolkit/common" "^0.2.0"
+    "@dbp-toolkit/file-handling" "^0.2.0"
+    "@dbp-toolkit/font-source-sans-pro" "^0.2.0"
+    "@dbp-toolkit/language-select" "^0.2.0"
+    "@dbp-toolkit/notification" "^0.2.0"
+    "@dbp-toolkit/organization-select" "^0.2.0"
+    "@dbp-toolkit/person-profile" "^0.2.0"
+    "@digital-blueprint/annotpdf" "^1.0.13-a"
+    "@open-wc/scoped-elements" "^2.0.0"
+    fabric "^4.2.0"
+    file-saver "^2.0.2"
+    i18next "^21.4.2"
+    jszip "^3.5.0"
+    lit "^2.0.0"
+    pdfjs-dist "^2.12.313"
+    universal-router "^9.0.1"
+
 "@digital-blueprint/annotpdf@^1.0.13-a":
   version "1.0.13-a"
   resolved "https://registry.yarnpkg.com/@digital-blueprint/annotpdf/-/annotpdf-1.0.13-a.tgz#f588188a6e745dabcafa7756ca2c8b24a74e43f6"
