@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="white"/>
 
+    <!-- Meta Data for Search Engines -->
+    <meta title="Dualdelivery | My University">
+    <meta name="description" content="Dual delivery description" />
+
+    <!-- Meta Data for open graph(facebook & co) -->
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Dualdelivery | My University" />
+    <meta property="og:description" content="Dual delivery description" />
+    <meta property="og:url" content="https://dualdelivery.my-university.at/" />
+    <meta property="og:site_name" content="dualdelivery" />
+
     <!-- Favicons -->
     <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
@@ -45,13 +57,55 @@
 
         /* style override */
         html {
-            --dbp-override-primary-bg-color: #245b78;
-            --dbp-override-primary-button-border: solid 1px #245b78;
-            --dbp-override-info-bg-color: #245b78;
-            --dbp-override-danger-bg-color: #e4154b;
-            --dbp-override-warning-bg-color: #ffe183;
-            --dbp-override-warning-text-color: black;
-            --dbp-override-success-bg-color: #259207;
+        }
+
+        .light-theme{
+            --dbp-override-background: white;
+            --dbp-override-content: black;
+
+            --dbp-override-primary: #2a4491;
+            --dbp-override-secondary: black;
+            --dbp-override-secondary-surface: white;
+            --dbp-override-on-secondary-surface: black;
+            --dbp-override-secondary-surface-border-color: black;
+
+            --dbp-override-muted: #767676;
+            --dbp-override-accent: #c24f68;
+            --dbp-override-info: #2a4491;
+            --dbp-override-success: #188018;
+            --dbp-override-warning: #c15500;
+            --dbp-override-warning-surface: #ffad4d;
+            --dbp-override-on-warning-surface: black;
+            --dbp-override-danger: #de3535;
+
+            --dbp-override-border: 1px solid black;
+
+            --dbp-override-hover-background-color: black;
+            --dbp-override-hover-color: white;
+        }
+
+        .dark-theme{
+            --dbp-override-background: #151515;
+            --dbp-override-content: white;
+
+            --dbp-override-primary: #8ca4eb;
+            --dbp-override-secondary: white;
+            --dbp-override-secondary-surface: #151515;
+            --dbp-override-on-secondary-surface: white;
+            --dbp-override-secondary-surface-border-color: #151515;
+
+            --dbp-override-muted: #666666;
+            --dbp-override-accent: #c24f68;
+            --dbp-override-info: #8ca4eb;
+            --dbp-override-success: #7acc79;
+            --dbp-override-warning: #f99a41;
+            --dbp-override-on-warning-surface: black;
+            --dbp-override-danger: #de3535;
+
+            --dbp-override-border: 1px solid white;
+
+            --dbp-override-hover-background-color: white;
+            --dbp-override-hover-color: #151515;
         }
     </style>
 </head>
@@ -67,6 +121,8 @@
     base-path="/"
     keycloak-config='{"url": "https://auth-demo.tugraz.at/auth", "realm": "tugraz-vpu", "clientId": "auth-dev-mw-frontend-local", "silentCheckSsoRedirectUri": "/app/silent-check-sso.html"}'
     env='local'
+    themes='[{"class": "light-theme", "icon": "sun", "name": "Light Mode"},
+            {"class": "dark-theme", "icon": "night", "name": "Dark Mode"}]'
 ><dbp-loading-spinner></dbp-loading-spinner>
 </dbp-dualdelivery>
 

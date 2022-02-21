@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="white"/>
 
+    <!-- Meta Data for Search Engines -->
+    <meta title="Dualdelivery | My University">
+    <meta name="description" content="Dual delivery description" />
+
+    <!-- Meta Data for open graph(facebook & co) -->
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Dualdelivery | My University" />
+    <meta property="og:description" content="Dual delivery description" />
+    <meta property="og:url" content="https://dualdelivery.my-university.at/" />
+    <meta property="og:site_name" content="dualdelivery" />
+
     <!-- Favicons -->
     <link rel="shortcut icon" type="image/x-icon" href="<%= getPrivateUrl('favicon.ico') %>">
     <link rel="icon" type="image/svg+xml" href="<%= getPrivateUrl('favicon.svg') %>" sizes="any">
@@ -37,21 +49,39 @@
         @import "<%= getPrivateUrl('fonts/source-sans-pro/400.css') %>";
         @import "<%= getPrivateUrl('fonts/source-sans-pro/600.css') %>";
 
-        body {
+        html {
             font-family: 'Source Sans Pro', 'Calibri', 'Arial', 'sans-serif';
             font-weight: 300;
+            font-size: 16px;
+        }
+
+        body {
             margin: 0;
         }
 
         /* TU-Graz style override */
         html {
-            --dbp-override-primary-bg-color: #245b78;
-            --dbp-override-primary-button-border: solid 1px #245b78;
-            --dbp-override-info-bg-color: #245b78;
-            --dbp-override-danger-bg-color: #e4154b;
-            --dbp-override-warning-bg-color: #ffe183;
-            --dbp-override-warning-text-color: black;
-            --dbp-override-success-bg-color: #259207;
+            --dbp-override-background: white;
+            --dbp-override-content: black;
+
+            --dbp-override-primary: #245b78;
+            --dbp-override-secondary: black;
+            --dbp-override-secondary-surface: white;
+            --dbp-override-on-secondary-surface: black;
+            --dbp-override-secondary-surface-border-color: black;
+
+            --dbp-override-muted: #5c5856;
+            --dbp-override-accent: #e4154b;
+            --dbp-override-info: #245b78;
+            --dbp-override-success: #138800;
+            --dbp-override-warning: #af6405;
+            --dbp-override-warning-surface: #ffad4d;
+            --dbp-override-on-warning-surface: black;
+            --dbp-override-danger: #e4154b;
+
+            --dbp-override-border: 1px solid black;
+
+
             --dbp-override-image-nextcloud: url(<%= getUrl('') %>images/nextcloud.svg);
         }
     </style>
@@ -80,7 +110,7 @@
     build-url='<%= buildInfo.url %>'
     build-time='<%= buildInfo.time %>'
     env='<%= buildInfo.env %>'
-html-overrides="global-override"
+    html-overrides="global-override"
 ><dbp-loading-spinner></dbp-loading-spinner>
 </<%= name %>>
 
