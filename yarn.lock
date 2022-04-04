@@ -2775,9 +2775,9 @@ eslint-plugin-jsdoc@^37.0.0:
     spdx-expression-parse "^3.0.1"
 
 eslint-plugin-jsdoc@^38.0.0:
-  version "38.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-38.1.0.tgz#7d3e6ea2b3f1c400f38206b380e84c4e4f0c2011"
-  integrity sha512-FhqyrPFTLiD1bhC7RFe3M51kWno0vkvo1jaOyRQNZeVS1hwc6HTe3eH3lWZtfhXhNKCA+eHZtxWvMfFx6E4AaQ==
+  version "38.1.6"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-38.1.6.tgz#7dfa2a6d38f550935c6a3668a1fc5a05b19e4069"
+  integrity sha512-n4s95oYlg0L43Bs8C0dkzIldxYf8pLCutC/tCbjIdF7VDiobuzPI+HZn9Q0BvgOvgPNgh5n7CSStql25HUG4Tw==
   dependencies:
     "@es-joy/jsdoccomment" "~0.22.1"
     comment-parser "1.3.1"
