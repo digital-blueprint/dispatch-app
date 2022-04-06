@@ -42,15 +42,15 @@
     "selfsigned": "^2.0.0"
   },
   "dependencies": {
-    "@dbp-toolkit/app-shell": "^0.2.0",
-    "@dbp-toolkit/auth": "^0.2.0",
-    "@dbp-toolkit/common": "^0.2.0",
-    "@dbp-toolkit/file-handling": "^0.2.0",
+    "@dbp-toolkit/app-shell": "^0.3.0",
+    "@dbp-toolkit/auth": "^0.3.0",
+    "@dbp-toolkit/common": "^0.3.0",
+    "@dbp-toolkit/file-handling": "^0.3.0",
     "@dbp-toolkit/font-source-sans-pro": "^0.2.0",
-    "@dbp-toolkit/language-select": "^0.2.0",
-    "@dbp-toolkit/notification": "^0.2.0",
+    "@dbp-toolkit/language-select": "^0.3.0",
+    "@dbp-toolkit/notification": "^0.3.0",
     "@dbp-toolkit/person-profile": "^0.2.0",
-    "@dbp-topics/signature": "^2.0.0",
+    "@dbp-topics/signature": "^2.1.0",
     "@open-wc/scoped-elements": "^2.0.0",
     "lit": "^2.0.0"
   },
