@@ -1,7 +1,7 @@
 {
     "dd-activity": {
+        "description-text": "description text",
         "headline": "Dual Delivery Aktivität",
-        "sub-headline": "Sub headline text folgt ...",
-        "description-text": "description text"
+        "sub-headline": "Sub headline text folgt ..."
     }
 }

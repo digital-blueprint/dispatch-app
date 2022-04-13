@@ -3,6 +3,7 @@ module.exports = {
     output: './',
     options: {
         debug: false,
+        sort: true,
         removeUnusedKeys: true,
         lngs: ['en', 'de'],
         func: {
@@ -11,6 +12,7 @@ module.exports = {
         resource: {
             loadPath: 'src/i18n/{{lng}}/{{ns}}.json',
             savePath: 'src/i18n/{{lng}}/{{ns}}.json',
+            jsonIndent: 4,
         },
     },
 };
