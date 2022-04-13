@@ -26,7 +26,7 @@
         "eslint": "^8.0.1",
         "eslint-plugin-jsdoc": "^39.0.0",
         "glob": "^7.1.6",
-        "i18next-scanner": "^3.0.0",
+        "i18next-parser": "^6.3.0",
         "karma": "^6.0.0",
         "karma-chrome-launcher": "^3.1.0",
         "karma-firefox-launcher": "^2.1.0",
@@ -59,7 +59,7 @@
     },
     "scripts": {
         "build": "rollup -c",
-        "i18next": "i18next-scanner",
+        "i18next": "i18next",
         "format": "yarn run format:eslint && yarn run format:prettier",
         "format:eslint": "eslint \"**/*.{js,ts}\" --fix",
         "format:prettier": "prettier \"**/*.{js,json,ts}\" --write",
