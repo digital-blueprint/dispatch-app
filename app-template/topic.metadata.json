@@ -1,21 +1,21 @@
 {
-  "name": {
-    "de": "Dual Delivery",
-    "en": "Duale Zustellung"
-  },
-  "short_name": {
-    "de": "Dual Delivery",
-    "en": "Duale Zustellung"
-  },
-  "description": {
-    "de": "Mit dieser Applikation können Sie ......",
-    "en": "With this application you can ......"
-  },
-  "routing_name": "dualdelivery",
-  "activities": [
-    {"path": "/app/dbp-dd-activity.metadata.json"},
-    {"path": "/app/dbp-qualified-signature-pdf-upload.metadata.json"},
-    {"path": "/app/dbp-official-signature-pdf-upload.metadata.json"}
-  ],
-  "attributes": []
+    "name": {
+        "de": "Dual Delivery",
+        "en": "Duale Zustellung"
+    },
+    "short_name": {
+        "de": "Dual Delivery",
+        "en": "Duale Zustellung"
+    },
+    "description": {
+        "de": "Mit dieser Applikation können Sie ......",
+        "en": "With this application you can ......"
+    },
+    "routing_name": "dualdelivery",
+    "activities": [
+        {"path": "/app/dbp-dd-activity.metadata.json"},
+        {"path": "/app/dbp-qualified-signature-pdf-upload.metadata.json"},
+        {"path": "/app/dbp-official-signature-pdf-upload.metadata.json"}
+    ],
+    "attributes": []
 }

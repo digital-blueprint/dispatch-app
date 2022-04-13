@@ -13,20 +13,20 @@ class DdActivity extends ScopedElementsMixin(DBPLitElement) {
     }
 
     static get scopedElements() {
-        return { };
+        return {};
     }
 
     static get properties() {
         return {
             ...super.properties,
-            lang: { type: String },
+            lang: {type: String},
         };
     }
 
     update(changedProperties) {
         changedProperties.forEach((oldValue, propName) => {
             switch (propName) {
-                case "lang":
+                case 'lang':
                     this._i18n.changeLanguage(this.lang);
                     break;
             }
@@ -49,8 +49,8 @@ class DdActivity extends ScopedElementsMixin(DBPLitElement) {
             h2 {
                 margin-bottom: 10px;
             }
-            
-            .subheadline{
+
+            .subheadline {
                 font-style: italic;
                 padding-left: 2em;
                 margin-top: -5px;
@@ -62,12 +62,8 @@ class DdActivity extends ScopedElementsMixin(DBPLitElement) {
         const i18n = this._i18n;
         return html`
             <h2>${i18n.t('dd-activity.headline')}</h2>
-            <p class="subheadline">
-                ${i18n.t('dd-activity.sub-headline')}
-            </p>
-            <p>
-                ${i18n.t('dd-activity.description-text')}
-            </p>
+            <p class="subheadline">${i18n.t('dd-activity.sub-headline')}</p>
+            <p>${i18n.t('dd-activity.description-text')}</p>
         `;
     }
 }

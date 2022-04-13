@@ -4,19 +4,19 @@ import '../src/dbp-dd-activity';
 import '../src/dbp-dualdelivery.js';
 
 suite('dbp-dualdelivery-activity basics', () => {
-  let node;
+    let node;
 
-  suiteSetup(async () => {
-    node = document.createElement('dbp-dualdelivery-activity');
-    document.body.appendChild(node);
-    await node.updateComplete;
-  });
+    suiteSetup(async () => {
+        node = document.createElement('dbp-dualdelivery-activity');
+        document.body.appendChild(node);
+        await node.updateComplete;
+    });
 
-  suiteTeardown(() => {
-    node.remove();
-  });
+    suiteTeardown(() => {
+        node.remove();
+    });
 
-  test('should render', () => {
-    assert(node.shadowRoot !== undefined);
-  });
+    test('should render', () => {
+        assert(node.shadowRoot !== undefined);
+    });
 });

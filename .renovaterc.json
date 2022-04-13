@@ -1,14 +1,9 @@
 {
-  "extends": [
-    "config:base",
-    "group:allNonMajor",
-    "schedule:weekly",
-    "docker:disable"
-  ],
-  "ignorePresets": [":prHourlyLimit2"],
-  "rangeStrategy": "update-lockfile",
-  "composer": {
-    "enabled": false
-  },
-  "cloneSubmodules": true
+    "extends": ["config:base", "group:allNonMajor", "schedule:weekly", "docker:disable"],
+    "ignorePresets": [":prHourlyLimit2"],
+    "rangeStrategy": "update-lockfile",
+    "composer": {
+        "enabled": false
+    },
+    "cloneSubmodules": true
 }
