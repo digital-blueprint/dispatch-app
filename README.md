@@ -4,6 +4,11 @@
 [npmjs package](https://www.npmjs.com/package/@dbp-topics/dualdelivery) |
 [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
 
+## Prerequisites
+
+- You need the [API server](https://gitlab.tugraz.at/dbp/relay/dbp-relay-server-template) running
+- You need the [DBP API Dual Delivery Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/api-dual-delivery-bundle)
+
 ## Local development
 
 ```bash
