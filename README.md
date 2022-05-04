@@ -2,7 +2,9 @@
 
 [GitLab Repository](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery) |
 [npmjs package](https://www.npmjs.com/package/@dbp-topics/dualdelivery) |
-[Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
+[Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/) |
+[Dual Delivery Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/api-dual-delivery-bundle)
+
 
 ## Prerequisites
 
