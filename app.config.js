@@ -46,7 +46,7 @@ export default {
         keyCloakClientId: 'dbp-dual-delivery',
         matomoUrl: 'https://analytics.tugraz.at/',
         matomoSiteId: 131,
-        nextcloudBaseURL: 'https://cloud.tugraz.at',
+        nextcloudBaseURL: 'https://cloud-demo.tugraz.at',
         nextcloudName: 'TU Graz cloud',
         pdfAsQualifiedlySigningServer: 'https://sig-test.tugraz.at',
         hiddenActivities: [],
