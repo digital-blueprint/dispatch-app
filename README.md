@@ -5,6 +5,7 @@
 [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/) |
 [Dual Delivery Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/api-dual-delivery-bundle)
 
+Dual delivery description
 
 ## Prerequisites
 
@@ -39,7 +40,7 @@ To use the Nextcloud functionality you need a running Nextcloud server with the
 
 ### Install app
 
-If you want to install the DBP Dualdelivery App in a new folder `dualdelivery-app` with a path prefix `/` you can call:
+If you want to install the dbp dualdelivery app in a new folder `dualdelivery-app` with a path prefix `/` you can call:
 
 ```bash
 npx @digital-blueprint/cli install-app dualdelivery dualdelivery-app /
@@ -59,7 +60,7 @@ Note that you will need a Keycloak server along with a client id for the domain 
 
 ### Update app
 
-If you want to update the DBP Dualdelivery App in the current folder you can call:
+If you want to update the dbp dualdelivery app in the current folder you can call:
 
 ```bash
 npx @digital-blueprint/cli update-app dualdelivery
@@ -73,31 +74,54 @@ for example the `dbp-qualified-dualdelivery-pdf-upload` activity to qualifiedly 
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
-## Exposed CSS variables
+## Activities
 
-- `--dbp-override-image-nextcloud` is used to override the cloud image on the connection screen of the Nextcloud file picker
-    - example CSS: `html { --dbp-override-image-nextcloud: url(/icons/nextcloud.svg); }`
+This app has the following activities:
+- `dbp-dd-activity`
+- `dbp-qualified-signature-pdf-upload`
+- `dbp-official-signature-pdf-upload`
 
-## "dbp-dualdelivery" Slots
+You can find the documentation of these activities in the [qualified dualdelivery activities documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/src).
 
-These are common slots for the appshell. You can find the documentation of these slot in the `README.md` of the appshell webcomponent.
+## Adapt app
 
-## Design Note
+### Functionality
 
-To ensure a uniform and responsive design the activity should occupy 100% of the window width when the activity width is less than 768 px.
+You can add multiple attributes to the `<dbp-greenlight>` tag.
 
-## Mandatory attributes
+| attribute name | value | Link to description |
+|----------------|-------| ------------|
+| `provider-root` | Boolean | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
+| `lang`         | String | [language-select](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/language-select#attributes) | 
+| `entry-point-url` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
+| `keycloak-config` | Object | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
+| `base-path` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
+| `src` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
+| `html-overrides` | String | [common](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/common#overriding-slots-in-nested-web-components) |
+| `themes` | Array | [theme-switcher](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/theme-switcher#themes-attribute) |
+| `darkModeThemeOverride` | String | [theme-switcher](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/theme-switcher#themes-attribute) |
+
+#### Mandatory attributes
 
 If you are not using the `provider-root` attribute to "terminate" all provider attributes
 you need to manually add these attributes so that the topic will work properly:
 
 ```html
 <dbp-dualdelivery
-    auth
-    requested-login-status
-    analytics-event
-    initial-file-handling-state
-    clipboard-files
+        auth
+        requested-login-status
+        analytics-event
+        initial-file-handling-state
+        clipboard-files
 >
 </dbp-dualdelivery>
 ```
+
+### Design
+
+For frontend design customizations, such as logo, colors, font, favicon, and more, take a look at the [theming documentation](https://dbp-demo.tugraz.at/dev-guide/frontend/theming/).
+
+## "dbp-dualdelivery" slots
+
+These are common slots for the app-shell. You can find the documentation of these slots in the [app-shell documentation](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell).
+For the app specific slots take a look at the [greenlight activities](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/src).
