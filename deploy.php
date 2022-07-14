@@ -30,17 +30,17 @@ set('rsync_dest','{{release_path}}');
 host('demo')
     ->stage('demo')
     ->hostname('mw@vpu01-demo.tugraz.at')
-    ->set('deploy_path', '/home/mw/demo/deploy/apps/dualdelivery');
+    ->set('deploy_path', '/home/mw/demo/deploy/apps/dispatch');
 
 host('development')
     ->stage('development')
     ->hostname('mw@mw01-dev.tugraz.at')
-    ->set('deploy_path', '/home/mw/dev/deploy/apps/dualdelivery');
+    ->set('deploy_path', '/home/mw/dev/deploy/apps/dispatch');
 
 host('production')
     ->stage('production')
     ->hostname('mw@mw01-prod.tugraz.at')
-    ->set('deploy_path', '/home/mw/prod_dualdelivery/deploy');
+    ->set('deploy_path', '/home/mw/prod_dispatch/deploy');
 
 task('build', function () {
     $stage = get('stage');

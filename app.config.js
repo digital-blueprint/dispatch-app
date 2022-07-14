@@ -26,7 +26,7 @@ export default {
         hiddenActivities: [],
     },
     development: {
-        basePath: '/apps/dualdelivery/',
+        basePath: '/apps/dispatch/',
         entryPointURL: 'https://api-dev.tugraz.at',
         keyCloakBaseURL: 'https://auth-dev.tugraz.at/auth',
         keyCloakRealm: 'tugraz-vpu',
@@ -39,7 +39,7 @@ export default {
         hiddenActivities: [],
     },
     demo: {
-        basePath: '/apps/dualdelivery/',
+        basePath: '/apps/dispatch/',
         entryPointURL: 'https://api-demo.tugraz.at',
         keyCloakBaseURL: 'https://auth-demo.tugraz.at/auth',
         keyCloakRealm: 'tugraz-vpu',
@@ -56,7 +56,7 @@ export default {
         entryPointURL: 'https://api.tugraz.at',
         keyCloakBaseURL: 'https://auth.tugraz.at/auth',
         keyCloakRealm: 'tugraz',
-        keyCloakClientId: 'dualdelivery_tugraz_at',
+        keyCloakClientId: 'dispatch_tugraz_at',
         matomoUrl: 'https://analytics.tugraz.at/',
         matomoSiteId: 137,
         nextcloudBaseURL: '',

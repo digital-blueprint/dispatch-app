@@ -1,8 +1,8 @@
 {
-    "name": "@dbp-topics/dualdelivery",
-    "internalName": "dbp-dualdelivery",
-    "version": "1.1.1",
-    "main": "src/dbp-dualdelivery.js",
+    "name": "@dbp-topics/dispatch",
+    "internalName": "dbp-dispatch",
+    "version": "1.2.0",
+    "main": "src/dbp-dispatch.js",
     "license": "LGPL-2.1-or-later",
     "private": true,
     "publishConfig": {

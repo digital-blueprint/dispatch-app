@@ -14,8 +14,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Dualdelivery | My University" />
     <meta property="og:description" content="Dual delivery description" />
-    <meta property="og:url" content="https://dualdelivery.my-university.at/" />
-    <meta property="og:site_name" content="dualdelivery" />
+    <meta property="og:url" content="https://dispatch.my-university.at/" />
+    <meta property="og:site_name" content="dispatch" />
 
     <!-- Favicons -->
     <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico">
@@ -33,21 +33,21 @@
 
     <!-- Loading spinner -->
     <script type="module">
-        import {Spinner} from '/app/local/@dbp-topics/dualdelivery/spinner.js';
+        import {Spinner} from '/app/local/@dbp-topics/dispatch/spinner.js';
         customElements.define('dbp-loading-spinner', Spinner);
     </script>
 
     <!-- App bundles-->
-    <script type="module" src="/app/dbp-dualdelivery.js"></script>
+    <script type="module" src="/app/dbp-dispatch.js"></script>
 
     <!-- Prevent Chrome/Edge from suggesting to translate the page -->
     <meta name="google" content="notranslate">
 
     <!-- Font related CSS -->
     <style>
-        @import "/app/local/@dbp-topics/dualdelivery/fonts/source-sans-pro/300.css";
-        @import "/app/local/@dbp-topics/dualdelivery/fonts/source-sans-pro/400.css";
-        @import "/app/local/@dbp-topics/dualdelivery/fonts/source-sans-pro/600.css";
+        @import "/app/local/@dbp-topics/dispatch/fonts/source-sans-pro/300.css";
+        @import "/app/local/@dbp-topics/dispatch/fonts/source-sans-pro/400.css";
+        @import "/app/local/@dbp-topics/dispatch/fonts/source-sans-pro/600.css";
 
         body {
             font-family: 'Source Sans Pro', 'Calibri', 'Arial', 'sans-serif';
@@ -111,23 +111,23 @@
 </head>
 
 <body>
-<dbp-dualdelivery
+<dbp-dispatch
     provider-root
     id="app"
     lang="de" entry-point-url="https://api-demo.tugraz.at"
     allow-annotating
     html-overrides="global-override"
-    src="/dbp-dualdelivery.topic.metadata.json"
+    src="/dbp-dispatch.topic.metadata.json"
     base-path="/"
     keycloak-config='{"url": "https://auth-demo.tugraz.at/auth", "realm": "tugraz-vpu", "clientId": "auth-dev-mw-frontend-local", "silentCheckSsoRedirectUri": "/app/silent-check-sso.html"}'
     env='local'
     themes='[{"class": "light-theme", "icon": "sun", "name": "Light Mode"},
             {"class": "dark-theme", "icon": "night", "name": "Dark Mode"}]'
 ><dbp-loading-spinner></dbp-loading-spinner>
-</dbp-dualdelivery>
+</dbp-dispatch>
 
 <template id="global-override">
-    <template id="dbp-dualdelivery">
+    <template id="dbp-dispatch">
         <div slot="name">
             DBP<br />
             <dbp-translated subscribe="lang">
@@ -143,7 +143,7 @@
 </template>
 
 <!-- Error handling for too old browsers -->
-<script src="/app/local/@dbp-topics/dualdelivery/browser-check.js" defer></script>
+<script src="/app/local/@dbp-topics/dispatch/browser-check.js" defer></script>
 <noscript>Diese Applikation benötigt Javascript / This application requires Javascript</noscript>
 </body>
 </html>

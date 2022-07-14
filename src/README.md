@@ -1,11 +1,11 @@
 # Dual delivery activities
 
 Here you can find the individual activities of the `dual delivery` app.
-If you want to use the whole app look at [dual delivery documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery).
+If you want to use the whole app look at [dual delivery documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch).
 
 ## Usage of an activity
 
-You can use every activity alone. Take a look at our examples [here](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples).
+You can use every activity alone. Take a look at our examples [here](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/examples).
 
 ## Activities
 
@@ -58,12 +58,12 @@ If you are not using the `provider-root` attribute to "terminate" all provider a
 you need to manually add these attributes so that the topic will work properly:
 
 ```html
-<dbp-dualdelivery
+<dbp-dispatch
         auth
         requested-login-status
         analytics-event
         initial-file-handling-state
         clipboard-files
 >
-</dbp-dualdelivery>
+</dbp-dispatch>
 ```

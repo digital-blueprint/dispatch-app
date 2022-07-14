@@ -3,12 +3,12 @@
     "module_src": "dbp-dd-activity.js",
     "routing_name": "dd-activity",
     "name": {
-        "de": "Dual Delivery Aktivität",
-        "en": "Dual Delivery Activity"
+        "de": "Dispatch Aktivität",
+        "en": "Dispatch Activity"
     },
     "short_name": {
-        "de": "Dual Delivery Aktivität",
-        "en": "Dual Delivery Activity"
+        "de": "Dispatch Aktivität",
+        "en": "Dispatch Activity"
     },
     "description": {
         "de": "Erlaubt .....",

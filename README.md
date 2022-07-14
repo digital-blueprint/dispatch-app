@@ -1,23 +1,23 @@
-# Dual Delivery Application
+# Dispatch Application
 
-[GitLab Repository](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery) |
-[npmjs package](https://www.npmjs.com/package/@dbp-topics/dualdelivery) |
-[Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/) |
-[Dual Delivery Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/api-dual-delivery-bundle)
+[GitLab Repository](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch) |
+[npmjs package](https://www.npmjs.com/package/@dbp-topics/dispatch) |
+[Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/) |
+[Dispatch Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/api-dual-delivery-bundle)
 
 Dual delivery description
 
 ## Prerequisites
 
 - You need the [API server](https://gitlab.tugraz.at/dbp/relay/dbp-relay-server-template) running
-- You need the [DBP API Dual Delivery Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/api-dual-delivery-bundle)
+- You need the [DBP Dispatch Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/dbp-relay-dispatch-bundle)
 
 ## Local development
 
 ```bash
 # get the source
-git clone git@gitlab.tugraz.at:dbp/topics/dualdelivery.git
-cd dualdelivery
+git clone git@gitlab.tugraz.at:dbp/topics/dispatch.git
+cd dispatch
 git submodule update --init
 
 # install dependencies
@@ -40,37 +40,37 @@ To use the Nextcloud functionality you need a running Nextcloud server with the
 
 ### Install app
 
-If you want to install the dbp dualdelivery app in a new folder `dualdelivery-app` with a path prefix `/` you can call:
+If you want to install the dbp dispatch app in a new folder `dispatch-app` with a path prefix `/` you can call:
 
 ```bash
-npx @digital-blueprint/cli install-app dualdelivery dualdelivery-app /
+npx @digital-blueprint/cli install-app dispatch dispatch-app /
 ```
 
-Afterwards you can point your Apache web-server to `dualdelivery-app/public`.
+Afterwards you can point your Apache web-server to `dispatch-app/public`.
 
 Make sure you are allowing `.htaccess` files in your Apache configuration.
 
 Also make sure to add all of your resources you are using (like your API and Keycloak servers) to the
-`Content-Security-Policy` in your `dualdelivery-app/public/.htaccess`, so the browser allows access to those sites.
+`Content-Security-Policy` in your `dispatch-app/public/.htaccess`, so the browser allows access to those sites.
 
-You can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
-for example like this: [dbp-dualdelivery/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples/dbp-dualdelivery/index.html)
+You can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/)
+for example like this: [dbp-dispatch/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/examples/dbp-dispatch/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
 ### Update app
 
-If you want to update the dbp dualdelivery app in the current folder you can call:
+If you want to update the dbp dispatch app in the current folder you can call:
 
 ```bash
-npx @digital-blueprint/cli update-app dualdelivery
+npx @digital-blueprint/cli update-app dispatch
 ```
 
 ## Using a single activity as pre-built package
 
-You can also use a single activity directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dualdelivery/)
-for example the `dbp-qualified-dualdelivery-pdf-upload` activity to qualifiedly sign PDF documents like this:
-[dbp-qualified-dualdelivery-pdf-upload/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/examples/dbp-qualified-dualdelivery-pdf-upload/index.html)
+You can also use a single activity directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/)
+for example the `dbp-qualified-dispatch-pdf-upload` activity to qualifiedly sign PDF documents like this:
+[dbp-qualified-dispatch-pdf-upload/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/examples/dbp-qualified-dispatch-pdf-upload/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
@@ -81,7 +81,7 @@ This app has the following activities:
 - `dbp-qualified-signature-pdf-upload`
 - `dbp-official-signature-pdf-upload`
 
-You can find the documentation of these activities in the [qualified dualdelivery activities documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/src).
+You can find the documentation of these activities in the [qualified dispatch activities documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/src).
 
 ## Adapt app
 
@@ -107,21 +107,21 @@ If you are not using the `provider-root` attribute to "terminate" all provider a
 you need to manually add these attributes so that the topic will work properly:
 
 ```html
-<dbp-dualdelivery
+<dbp-dispatch
         auth
         requested-login-status
         analytics-event
         initial-file-handling-state
         clipboard-files
 >
-</dbp-dualdelivery>
+</dbp-dispatch>
 ```
 
 ### Design
 
 For frontend design customizations, such as logo, colors, font, favicon, and more, take a look at the [theming documentation](https://dbp-demo.tugraz.at/dev-guide/frontend/theming/).
 
-## "dbp-dualdelivery" slots
+## "dbp-dispatch" slots
 
 These are common slots for the app-shell. You can find the documentation of these slots in the [app-shell documentation](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell).
-For the app specific slots take a look at the [greenlight activities](https://gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/-/tree/master/src).
+For the app specific slots take a look at the [greenlight activities](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/src).

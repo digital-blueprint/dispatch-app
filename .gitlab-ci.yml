@@ -1,4 +1,4 @@
-image: registry.gitlab.tugraz.at/dbp/dual-delivery/dualdelivery/main:v1
+image: registry.gitlab.tugraz.at/dbp/dual-delivery/dispatch/main:v1
 
 cache:
   key: $CI_PROJECT_PATH
@@ -65,7 +65,7 @@ deploy_demo:
       - demo
   environment:
     name: demo
-    url: https://dbp-demo.tugraz.at/apps/dualdelivery
+    url: https://dbp-demo.tugraz.at/apps/dispatch
   variables:
     DEPLOY_HOST: vpu01-demo.tugraz.at
     DEPLOY_KEY: "$DEPLOY_SSH_KEY"
@@ -77,7 +77,7 @@ deploy_development:
       - master
   environment:
     name: development
-    url: https://dbp-dev.tugraz.at/apps/dualdelivery
+    url: https://dbp-dev.tugraz.at/apps/dispatch
   variables:
     DEPLOY_HOST: mw01-dev.tugraz.at
     DEPLOY_KEY: "$DEPLOY_SSH_KEY"
@@ -89,7 +89,7 @@ deploy_production:
       - production
   environment:
     name: production
-    url: https://dualdelivery.tugraz.at
+    url: https://dispatch.tugraz.at
   variables:
     DEPLOY_HOST: mw01-prod.tugraz.at
     DEPLOY_KEY: "$DEPLOY_SSH_KEY"
