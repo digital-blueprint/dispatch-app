@@ -16,7 +16,7 @@ Dual delivery description
 
 ```bash
 # get the source
-git clone git@gitlab.tugraz.at:dbp/topics/dispatch.git
+git clone git@gitlab.tugraz.at:dbp/dual-delivery/dispatch.git
 cd dispatch
 git submodule update --init
 
@@ -33,8 +33,8 @@ yarn test
 Jump to <http://localhost:8001> and you should get a Single Sign On login page.
 
 To use the Nextcloud functionality you need a running Nextcloud server with the
-[webapppassword](https://gitlab.tugraz.at/DBP/Middleware/Nextcloud/webapppassword) Nextcloud app like this
-[Nextcloud Development Environment](https://gitlab.tugraz.at/DBP/Middleware/Nextcloud/webapppassword/-/tree/master/docker).
+[webapppassword](https://gitlab.tugraz.at/dbp/nextcloud/webapppassword) Nextcloud app like this
+[Nextcloud Development Environment](https://gitlab.tugraz.at/dbp/nextcloud/webapppassword/-/tree/master/docker).
 
 ## Using this app as pre-built package
 
@@ -43,7 +43,7 @@ To use the Nextcloud functionality you need a running Nextcloud server with the
 If you want to install the dbp dispatch app in a new folder `dispatch-app` with a path prefix `/` you can call:
 
 ```bash
-npx @digital-blueprint/cli install-app dispatch dispatch-app /
+npx @digital-blueprint/cli@latest install-app dispatch dispatch-app /
 ```
 
 Afterwards you can point your Apache web-server to `dispatch-app/public`.
@@ -63,7 +63,7 @@ Note that you will need a Keycloak server along with a client id for the domain 
 If you want to update the dbp dispatch app in the current folder you can call:
 
 ```bash
-npx @digital-blueprint/cli update-app dispatch
+npx @digital-blueprint/cli@latest update-app dispatch
 ```
 
 ## Using a single activity as pre-built package
