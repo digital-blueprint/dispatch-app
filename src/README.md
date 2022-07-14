@@ -1,7 +1,7 @@
-# Dual delivery activities
+# Dispatch activities
 
-Here you can find the individual activities of the `dual delivery` app.
-If you want to use the whole app look at [dual delivery documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch).
+Here you can find the individual activities of the `dispatch` app.
+If you want to use the whole app look at [dispatch documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch).
 
 ## Usage of an activity
 

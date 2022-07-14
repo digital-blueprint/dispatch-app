@@ -5,7 +5,7 @@
 [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/) |
 [Dispatch Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/api-dual-delivery-bundle)
 
-Dual delivery description
+TODO: Dispatch description
 
 ## Prerequisites
 

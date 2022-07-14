@@ -1,7 +1,7 @@
 {
     "name": "@dbp-topics/dispatch",
     "internalName": "dbp-dispatch",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "main": "src/dbp-dispatch.js",
     "license": "LGPL-2.1-or-later",
     "private": true,

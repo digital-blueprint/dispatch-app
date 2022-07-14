@@ -100,7 +100,7 @@ e2e_tests:
     refs:
       - master
   variables:
-    E2E_PROJECT: dual-delivery
+    E2E_PROJECT: dispatch
   stage: e2e
   trigger:
     project: dbp/e2e-tests
