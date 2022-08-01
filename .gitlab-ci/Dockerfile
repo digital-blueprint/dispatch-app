@@ -20,14 +20,20 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.lis
 RUN apt-get update && apt-get install -y \
     nodejs \
     yarn \
-    chromium \
-    # libgbm1: newer chromium from puppeteer
-    libgbm1 \
-    firefox-esr \
     composer \
     php-zip \
+    php-curl \
     rsync \
     sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+# only get dependencies of chromium/firefox
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    chromium \
+    firefox-esr \
+    && apt-get remove -y \
+    chromium \
+    firefox-esr \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -u 1000 -ms /bin/bash user
