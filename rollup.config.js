@@ -211,7 +211,7 @@ Dependencies:
                         dest: 'dist/local/@dbp-topics/signature/pdfjs',
                     }, // do we want all map files?
                     {
-                        src: await getPackagePath('@dbp-toolkit/font-source-sans-pro', 'files/*'),
+                        src: await getPackagePath('@tugraz/font-source-sans-pro', 'files/*'),
                         dest: 'dist/' + (await getDistPath(pkg.name, 'fonts/source-sans-pro')),
                     },
                     {
