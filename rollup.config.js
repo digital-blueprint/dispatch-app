@@ -87,7 +87,8 @@ export default (async () => {
             appEnv != 'test'
                 ? [
                       'src/' + pkg.internalName + '.js',
-                      'src/dbp-dd-activity.js',
+                      'src/dbp-show-requests.js',
+                      'src/dbp-dispatch-activity.js',
                       'vendor/signature/src/dbp-qualified-signature-pdf-upload.js',
                       'vendor/signature/src/dbp-official-signature-pdf-upload.js',
                   ]
@@ -189,6 +190,7 @@ Dependencies:
                     {src: 'assets/*.css', dest: 'dist/' + (await getDistPath(pkg.name))},
                     {src: 'assets/*.ico', dest: 'dist/' + (await getDistPath(pkg.name))},
                     {src: 'assets/*.metadata.json', dest: 'dist'},
+                    {src: 'src/*.metadata.json', dest: 'dist'},
                     {src: 'vendor/signature/src/*.metadata.json', dest: 'dist'},
                     {src: 'assets/*.svg', dest: 'dist/' + (await getDistPath(pkg.name))},
                     {src: 'assets/htaccess-shared', dest: 'dist/shared/', rename: '.htaccess'},

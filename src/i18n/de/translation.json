@@ -1,7 +1,27 @@
 {
-    "dd-activity": {
-        "description-text": "description text",
-        "headline": "Dispatch Aktivität",
-        "sub-headline": "Sub headline text folgt ..."
-    }
+    "dispatch-activity": {
+        "description-text": "Dispatch Aktivität description text"
+    },
+    "show-requests": {
+        "description-text": "Hier können Sie die Liste aller Ihrer bisher angelegten Versandaufträge einsehen und diese bearbeiten, löschen oder abschließen. Alternativ können Sie auch einen ",
+        "create-new-request": "neuen Versandauftrag anlegen",
+        "dispatch-orders": "Angelegte Versandaufträge:",
+        "edit-button-text": "Editieren",
+        "delete-button-text": "Löschen",
+        "date-created": "Erstelldatum",
+        "date-submitted": "Übertragungsdatum",
+        "empty-date-submitted": "Dieser Auftrag wurde noch nicht weitergeleitet.",
+        "sender-family-name": "Familienname",
+        "sender-given-name": "Vorname",
+        "sender-postal-address": "Postadresse",
+        "sender": "Absender",
+        "files": "Dateien",
+        "empty-files-text": "(Noch) keine Dateien angehängt",
+        "recipients": "Empfänger",
+        "no-recipients-text": "(Noch) keine Empfänger angegeben",
+        "submit-button-text": "Zum Versand freigeben",
+        "id": "ID"
+    },
+    "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
+    "loading-message": "Lädt..."
 }

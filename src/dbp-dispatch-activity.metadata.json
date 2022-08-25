@@ -1,7 +1,7 @@
 {
-    "element": "dbp-dd-activity",
-    "module_src": "dbp-dd-activity.js",
-    "routing_name": "dd-activity",
+    "element": "dbp-dispatch-activity",
+    "module_src": "dbp-dispatch-activity.js",
+    "routing_name": "dispatch-activity",
     "name": {
         "de": "Dispatch Aktivität",
         "en": "Dispatch Activity"

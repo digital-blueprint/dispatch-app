@@ -1,0 +1,18 @@
+{
+  "element": "dbp-show-requests",
+  "module_src": "dbp-show-requests.js",
+  "routing_name": "show-requests",
+  "name": {
+    "de": "Versandaufträge anzeigen",
+    "en": "Show Requests"
+  },
+  "short_name": {
+    "de": "Versandaufträge anzeigen",
+    "en": "Show dispatch orders"
+  },
+  "description": {
+    "de": "Zeigt eine Liste aller Versandaufträge.",
+    "en": "Shows a list of all dispatch orders."
+  },
+  "subscribe": "lang:lang,entry-point-url:entry-point-url,auth:auth"
+}

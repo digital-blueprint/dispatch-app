@@ -1,7 +1,27 @@
 {
-    "dd-activity": {
-        "description-text": "description text",
-        "headline": "Dispatch Activity",
-        "sub-headline": "Sub headline text follows ..."
-    }
+    "dispatch-activity": {
+        "description-text": "Dispatch Activity description text"
+    },
+    "show-requests": {
+        "description-text": "Here you can view the list of all your created dispatch orders and edit, delete or submit. You can also ",
+        "create-new-request": "create new dispatch order",
+        "dispatch-orders": "Dispatch orders:",
+        "edit-button-text": "Edit",
+        "delete-button-text": "Delete",
+        "date-created": "Date created",
+        "date-submitted": "Date submitted",
+        "empty-date-submitted": "This order has not been forwarded yet.",
+        "family-name": "Family name",
+        "given-name": "Given name",
+        "postal-address": "Postal address",
+        "sender": "Sender",
+        "files": "Files",
+        "empty-files-text": "No files attached (yet)",
+        "recipients": "Recipients",
+        "no-recipients-text": "No recipients specified (yet)",
+        "submit-button-text": "Release for dispatch",
+        "id": "ID"
+    },
+    "error-login-message": "You need to be logged in to use this function!",
+    "loading-message": "Loading..."
 }
