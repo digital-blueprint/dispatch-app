@@ -101,8 +101,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @returns {object} response
      */
     async getListOfDispatchRequests() {
-        let response;
-
         const options = {
             method: 'GET',
             headers: {
@@ -110,7 +108,30 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: "Bearer " + this.auth.token
             },
         };
-        response = await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests', options);
-        return response;
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests', options);
+    }
+
+    /**
+     * Sends a dispatch post request
+     *
+     * @returns {object} response
+     */
+    async sendCreateDispatchRequest() {
+        let body = {
+            "senderGivenName": this.senderGivenName,
+            "senderFamilyName": this.senderFamilyName,
+            "senderPostalAddress": this.senderPostalAddress
+        };
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+            body: JSON.stringify(body),
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests', options);
     }
 }

@@ -88,7 +88,7 @@ export default (async () => {
                 ? [
                       'src/' + pkg.internalName + '.js',
                       'src/dbp-show-requests.js',
-                      'src/dbp-dispatch-activity.js',
+                      'src/dbp-create-request.js',
                       'vendor/signature/src/dbp-qualified-signature-pdf-upload.js',
                       'vendor/signature/src/dbp-official-signature-pdf-upload.js',
                   ]

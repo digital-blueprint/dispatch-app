@@ -1,6 +1,13 @@
 {
-    "dispatch-activity": {
-        "description-text": "Dispatch Activity description text"
+    "create-request": {
+        "description-text": "Here you can create a new dispatch order. After you have created a dispatch order, you can view it in the list of your dispatch orders, edit it and then release it for dispatch.",
+        "successfully-requested-title": "Successfully created",
+        "successfully-requested-text": "The dispatch order has been created successfully. You can now edit it in the next step.",
+        "sender-family-name": "Sender family name",
+        "sender-given-name": "Sender given name",
+        "sender-postal-address": "Postal address",
+        "create-request-button-text": "Create dispatch request",
+        "empty-fields-given": "Please fill in all fields!"
     },
     "show-requests": {
         "description-text": "Here you can view the list of all your created dispatch orders and edit, delete or submit. You can also ",
@@ -11,9 +18,9 @@
         "date-created": "Date created",
         "date-submitted": "Date submitted",
         "empty-date-submitted": "This order has not been forwarded yet.",
-        "family-name": "Family name",
-        "given-name": "Given name",
-        "postal-address": "Postal address",
+        "sender-family-name": "Family name",
+        "sender-given-name": "Given name",
+        "sender-postal-address": "Postal address",
         "sender": "Sender",
         "files": "Files",
         "empty-files-text": "No files attached (yet)",

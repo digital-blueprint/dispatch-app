@@ -200,7 +200,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                            @click="${(e) => {
                                 this.dispatchEvent(
                                     new CustomEvent('dbp-show-activity', {
-                                        detail: {name: 'dispatch-activity'},
+                                        detail: {name: 'create-request'},
                                     })
                                 );
                                 e.preventDefault();

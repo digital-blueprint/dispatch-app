@@ -1,6 +1,6 @@
 import {assert} from 'chai';
 
-import '../src/dbp-dispatch-activity';
+import '../src/dbp-create-request';
 import '../src/dbp-dispatch.js';
 
 suite('dbp-dispatch-activity basics', () => {

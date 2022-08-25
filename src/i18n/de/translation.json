@@ -1,6 +1,13 @@
 {
-    "dispatch-activity": {
-        "description-text": "Dispatch Aktivität description text"
+    "create-request": {
+        "description-text": "Hier können Sie einen neuen Versandauftrag anlegen. Nachdem Sie einen Versandauftrag erstellt haben, können Sie diesen in der Liste Ihrer Versandaufträge einsehen, bearbeiten und anschließend für den Versand freigeben.",
+        "successfully-requested-title": "Erfolgreich erstellt!",
+        "successfully-requested-text": "Der Versandauftrag wurde erfolgreich angelegt. Sie können diesen nun im nächsten Schritt weiter bearbeiten.",
+        "sender-family-name": "Absender Familienname",
+        "sender-given-name": "Absender Vorname",
+        "sender-postal-address": "Absender Postadresse",
+        "create-request-button-text": "Versandauftrag erstellen",
+        "empty-fields-given": "Bitte füllen Sie alle Felder aus!"
     },
     "show-requests": {
         "description-text": "Hier können Sie die Liste aller Ihrer bisher angelegten Versandaufträge einsehen und diese bearbeiten, löschen oder abschließen. Alternativ können Sie auch einen ",
