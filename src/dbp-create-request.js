@@ -113,6 +113,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 });
             } else {
                 // TODO show error code specific notification
+                send({
+                    "summary": i18n.t('create-request.error-requested-title'),
+                    "body": i18n.t('create-request.error-requested-text'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
             }
         } finally {
             // TODO

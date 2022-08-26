@@ -7,7 +7,9 @@
         "sender-given-name": "Sender given name",
         "sender-postal-address": "Postal address",
         "create-request-button-text": "Create dispatch request",
-        "empty-fields-given": "Please fill in all fields!"
+        "empty-fields-given": "Please fill in all fields!",
+        "error-requested-title": "Errr!",
+        "error-requested-text": "There was an error."
     },
     "show-requests": {
         "description-text": "Here you can view the list of all your created dispatch orders and edit, delete or submit. You can also ",
@@ -27,7 +29,30 @@
         "recipients": "Recipients",
         "no-recipients-text": "No recipients specified (yet)",
         "submit-button-text": "Release for dispatch",
-        "id": "ID"
+        "id": "ID",
+        "delete-dialog-title": "Delete dispatch order",
+        "delete-dialog-text": "Do you really want to delete this dispatch order? Please note that this will also delete all saved attachments and recipients.",
+        "delete-not-allowed-title": "Not allowed!",
+        "delete-not-allowed-text": "This action is no longer allowed for dispatch orders that have already been released.",
+        "successfully-deleted-title": "Successfully deleted!",
+        "successfully-deleted-text": "The dispatch order was successfully deleted.",
+        "successfully-submitted-title": "Successfully submitted!",
+        "successfully-submitted-text": "The dispatch order has been successfully submitted and will be dispatched.",
+        "submit-dialog-title": "Submit dispatch order",
+        "submit-dialog-text": "Do you really want to release this dispatch order?",
+        "empty-fields-submitted-title": "Error!",
+        "empty-fields-submitted-text": "Not all required fields have been completed or a file has not yet been uploaded for dispatch. Please complete your information and try again.",
+        "detailed-dispatch-order": "Edit dispatch order",
+        "back-to-list": "Back to the list of all dispatch orders",
+        "add-recipient-button-text": "Add recipient",
+        "add-files-button-text": "Add file(s)",
+        "edit-sender-dialog-title": "Edit sender",
+        "modal-close": "Close modal",
+        "edit-sender-fn-dialog-label": "Family name",
+        "edit-sender-gn-dialog-label": "Given name",
+        "edit-sender-pa-dialog-label": "Postal address",
+        "edit-sender-dialog-button-cancel": "Cancel",
+        "edit-sender-dialog-button-ok": "Confirm"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."

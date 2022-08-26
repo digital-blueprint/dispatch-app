@@ -3,11 +3,11 @@
     "module_src": "dbp-create-request.js",
     "routing_name": "create-request",
     "name": {
-        "de": "Versandauftrag anlegen",
+        "de": "Versandauftrag erstellen",
         "en": "Create dispatch order"
     },
     "short_name": {
-        "de": "Versandauftrag anlegen",
+        "de": "Versandauftrag erstellen",
         "en": "Create dispatch order"
     },
     "description": {

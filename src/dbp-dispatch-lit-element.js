@@ -112,6 +112,24 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     /**
+     * Gets the dispatch request of the current logged in user with the given identifier
+     *
+     * @param identifier
+     * @returns {object} response
+     */
+    async getDispatchRequest(identifier) {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: "Bearer " + this.auth.token
+            },
+        };
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+    }
+
+
+    /**
      * Sends a dispatch post request
      *
      * @returns {object} response
@@ -133,5 +151,41 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests', options);
+    }
+
+    /**
+     * Sends a delete dispatch request
+     *
+     * @param identifier
+     * @returns {object} response
+     */
+    async sendDeleteDispatchRequest(identifier) {
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+    }
+
+    /**
+     * Sends a submit dispatch request
+     *
+     * @param identifier
+     * @returns {object} response
+     */
+    async sendSubmitDispatchRequest(identifier) {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier + '/submit', options);
     }
 }
