@@ -137,6 +137,35 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
     }
 
+    async confirmEditSender() {
+        const i18n = this._i18n;
+        let id = this.currentItem.identifier;
+        let senderGivenName = this._('#tf-edit-sender-gn-dialog').value;
+        let senderFamilyName = this._('#tf-edit-sender-fn-dialog').value;
+        let senderPostalAddress = this._('#tf-edit-sender-pa-dialog').value;
+
+        let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderPostalAddress);
+
+        let responseBody = await response.json();
+        if (responseBody !== undefined && response.status === 200) {
+            send({
+                "summary": i18n.t('show-requests.successfully-updated-sender-title'),
+                "body": i18n.t('show-requests.successfully-updated-sender-text'),
+                "type": "success",
+                "timeout": 5,
+            });
+
+            this.currentItem = responseBody;
+            // let resp = await this.getDispatchRequest(id);
+            // let responseBody = await resp.json();
+            // if (responseBody !== undefined && responseBody.status !== 403) {
+            //     this.currentItem = responseBody;
+            // }
+        } else {
+            // TODO error handling
+        }
+    }
+
     parseListOfRequests(response) {
         let list = [];
 
@@ -574,7 +603,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     class="modal-close"
                                     aria-label="Close modal"
                                     @click="${() => {
-                                        // TODO
+                                        MicroModal.close(this._('#edit-sender-modal'));
                                     }}">
                                 <dbp-icon
                                         title="${i18n.t('show-requests.modal-close')}"
@@ -650,8 +679,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         class="button select-button is-primary"
                                         id="edit-sender-confirm-btn"
                                         @click="${() => {
-                                            // TODO
-                                            console.log('confirm pressed');
+                                            this.confirmEditSender().then(r => {
+                                                MicroModal.close(this._('#edit-sender-modal'));
+                                            });
                                         }}">
                                     ${i18n.t('show-requests.edit-sender-dialog-button-ok')}
                                 </button>

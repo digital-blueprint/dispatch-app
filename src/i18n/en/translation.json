@@ -52,7 +52,9 @@
         "edit-sender-gn-dialog-label": "Given name",
         "edit-sender-pa-dialog-label": "Postal address",
         "edit-sender-dialog-button-cancel": "Cancel",
-        "edit-sender-dialog-button-ok": "Confirm"
+        "edit-sender-dialog-button-ok": "Confirm",
+        "successfully-updated-sender-title": "Successfully updated!",
+        "successfully-updated-sender-text": "The sender was successfully changed."
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."

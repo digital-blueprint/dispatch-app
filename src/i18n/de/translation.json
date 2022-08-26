@@ -52,7 +52,9 @@
         "edit-sender-gn-dialog-label": "Vorname",
         "edit-sender-pa-dialog-label": "Adresse",
         "edit-sender-dialog-button-cancel": "Abbrechen",
-        "edit-sender-dialog-button-ok": "Übernehmen"
+        "edit-sender-dialog-button-ok": "Übernehmen",
+        "successfully-updated-sender-title": "Erfolgreich geändert!",
+        "successfully-updated-sender-text": "Der Absender wurde erfolgreich geändert."
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."

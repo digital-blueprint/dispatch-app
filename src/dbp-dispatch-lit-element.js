@@ -172,6 +172,37 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     /**
+     * Sends a put dispatch request
+     *
+     * @param identifier
+     * @param senderGivenName
+     * @param senderFamilyName
+     * @param senderPostalAddress
+     * @param senderGivenName
+     * @param senderFamilyName
+     * @param senderPostalAddress
+     * @returns {object} response
+     */
+    async sendEditDispatchRequest(identifier, senderGivenName, senderFamilyName, senderPostalAddress) {
+        let body = {
+            "senderGivenName": senderGivenName,
+            "senderFamilyName": senderFamilyName,
+            "senderPostalAddress": senderPostalAddress
+        };
+
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+            body: JSON.stringify(body),
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+    }
+
+    /**
      * Sends a submit dispatch request
      *
      * @param identifier
