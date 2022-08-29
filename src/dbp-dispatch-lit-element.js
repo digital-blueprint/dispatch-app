@@ -128,7 +128,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
     }
 
-
     /**
      * Sends a dispatch post request
      *
@@ -138,7 +137,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let body = {
             "senderGivenName": this.senderGivenName,
             "senderFamilyName": this.senderFamilyName,
-            "senderPostalAddress": this.senderPostalAddress
+            "senderAddressCountry": this.senderAddressCountry,
+            "senderPostalCode": this.senderPostalCode,
+            "senderAddressLocality": this.senderAddressLocality,
+            "senderStreetAddress": this.senderStreetAddress,
+            "senderBuildingNumber": this.senderBuildingNumber
         };
 
         const options = {
@@ -177,17 +180,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param identifier
      * @param senderGivenName
      * @param senderFamilyName
-     * @param senderPostalAddress
-     * @param senderGivenName
-     * @param senderFamilyName
-     * @param senderPostalAddress
+     * @param senderAddressCountry
+     * @param senderPostalCode
+     * @param senderAddressLocality
+     * @param senderStreetAddress
+     * @param senderBuildingNumber
      * @returns {object} response
      */
-    async sendEditDispatchRequest(identifier, senderGivenName, senderFamilyName, senderPostalAddress) {
+    async sendEditDispatchRequest(identifier, senderGivenName, senderFamilyName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber) {
         let body = {
             "senderGivenName": senderGivenName,
             "senderFamilyName": senderFamilyName,
-            "senderPostalAddress": senderPostalAddress
+            "senderAddressCountry": senderAddressCountry,
+            "senderPostalCode": senderPostalCode,
+            "senderAddressLocality": senderAddressLocality,
+            "senderStreetAddress": senderStreetAddress,
+            "senderBuildingNumber": senderBuildingNumber
         };
 
         const options = {
@@ -218,5 +226,42 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier + '/submit', options);
+    }
+
+    /**
+     * Sends a dispatch request-recipients post request
+     *
+     * @param id
+     * @param givenName
+     * @param familyName
+     * @param addressCountry
+     * @param postalCode
+     * @param addressLocality
+     * @param streetAddress
+     * @param buildingNumber
+     * @returns {object} response
+     */
+    async sendAddRequestRecipientsRequest(id, givenName, familyName, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber) {
+        let body = {
+            "dispatchRequestIdentifier": id,
+            "givenName": givenName,
+            "familyName": familyName,
+            "addressCountry": addressCountry,
+            "postalCode": postalCode,
+            "addressLocality": addressLocality,
+            "streetAddress": streetAddress,
+            "buildingNumber": buildingNumber
+        };
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+            body: JSON.stringify(body),
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients', options);
     }
 }

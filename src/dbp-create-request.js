@@ -20,7 +20,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.senderGivenName = "";
         this.senderFamilyName = "";
-        this.senderPostalAddress = "";
+        this.senderAddressCountry = "";
+        this.senderPostalCode = "";
+        this.senderAddressLocality = "";
+        this.senderStreetAddress = "";
+        this.senderBuildingNumber = "";
         this.emptyFieldsGiven = false;
     }
 
@@ -41,7 +45,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             senderGivenName: {type: String, attribute: false},
             senderFamilyName: {type: String, attribute: false},
-            senderPostalAddress: {type: String, attribute: false},
+            senderAddressCountry: {type: String, attribute: false},
+            senderPostalCode: {type: String, attribute: false},
+            senderAddressLocality: {type: String, attribute: false},
+            senderStreetAddress: {type: String, attribute: false},
+            senderBuildingNumber: {type: String, attribute: false},
             emptyFieldsGiven: {type: Boolean, attribute: false},
         };
     }
@@ -76,17 +84,53 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
     }
 
-    processSenderPostalAddressInput(event) {
-        this.senderPostalAddress = "";
-        if (this._('#sender-postal-address').value !== '') {
-            this.senderPostalAddress = this._('#sender-postal-address').value;
+    processSenderAddressCountryInput(event) {
+        this.senderAddressCountry = "";
+        if (this._('#sender-address-country').value !== '') {
+            this.senderAddressCountry = this._('#sender-address-country').value;
         } else {
-            this.senderPostalAddress = '';
+            this.senderAddressCountry = '';
+        }
+    }
+
+    processSenderPostalCodeInput(event) {
+        this.senderPostalCode = "";
+        if (this._('#sender-postal-code').value !== '') {
+            this.senderPostalCode = this._('#sender-postal-code').value;
+        } else {
+            this.senderPostalCode = '';
+        }
+    }
+
+    processSenderAddressLocalityInput(event) {
+        this.senderAddressLocality = "";
+        if (this._('#sender-address-locality').value !== '') {
+            this.senderAddressLocality = this._('#sender-address-locality').value;
+        } else {
+            this.senderAddressLocality = '';
+        }
+    }
+
+    processSenderStreetAddressInput(event) {
+        this.senderStreetAddress = "";
+        if (this._('#sender-street-address').value !== '') {
+            this.senderStreetAddress = this._('#sender-street-address').value;
+        } else {
+            this.senderStreetAddress = '';
+        }
+    }
+
+    processSenderBuildingNumberInput(event) {
+        this.senderBuildingNumber = "";
+        if (this._('#sender-building-number').value !== '') {
+            this.senderBuildingNumber = this._('#sender-building-number').value;
+        } else {
+            this.senderBuildingNumber = '';
         }
     }
 
     async _onCreateRequestButtonClicked(event) {
-        if (this.senderPostalAddress === '' || this.senderFamilyName === '' || this.senderGivenName === '') {
+        if (this.senderBuildingNumber === '' || this.senderStreetAddress === '' || this.senderAddressLocality === '' || this.senderPostalCode === '' || this.senderAddressCountry === '' || this.senderFamilyName === '' || this.senderGivenName === '') {
             this.emptyFieldsGiven = true;
             console.log("some fields are empty");
             return;
@@ -103,7 +147,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             if (responseBody !== undefined && response.status === 201) {
                 this._('#sender-given-name').value = '';
                 this._('#sender-family-name').value = '';
-                this._('#sender-postal-address').value = '';
+                this._('#sender-address-country').value = '';
+                this._('#sender-postal-code').value = '';
+                this._('#sender-address-locality').value = '';
+                this._('#sender-street-address').value = '';
+                this._('#sender-building-number').value = '';
 
                 send({
                     "summary": i18n.t('create-request.successfully-requested-title'),
@@ -202,10 +250,38 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                         </div>
                         <div class="field">
-                            <label class="label">${i18n.t('create-request.sender-postal-address')}</label>
+                            <label class="label">${i18n.t('create-request.sender-address-country')}</label>
                             <div class="control">
-                                <input type="text" class="input" id="sender-postal-address" placeholder="" name="senderPostalAddress"
-                                       .value="${this.senderPostalAddress}" @input="${(event) => {this.processSenderPostalAddressInput(event);}}">
+                                <input type="text" class="input" id="sender-address-country" placeholder="" name="senderAddressCountry"
+                                       .value="${this.senderAddressCountry}" @input="${(event) => {this.processSenderAddressCountryInput(event);}}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">${i18n.t('create-request.sender-postal-code')}</label>
+                            <div class="control">
+                                <input type="text" class="input" id="sender-postal-code" placeholder="" name="senderPostalCode"
+                                       .value="${this.senderPostalCode}" @input="${(event) => {this.processSenderPostalCodeInput(event);}}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">${i18n.t('create-request.sender-address-locality')}</label>
+                            <div class="control">
+                                <input type="text" class="input" id="sender-address-locality" placeholder="" name="senderAddressLocality"
+                                       .value="${this.senderAddressLocality}" @input="${(event) => {this.processSenderAddressLocalityInput(event);}}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">${i18n.t('create-request.sender-street-address')}</label>
+                            <div class="control">
+                                <input type="text" class="input" id="sender-street-address" placeholder="" name="senderStreetAddress"
+                                       .value="${this.senderStreetAddress}" @input="${(event) => {this.processSenderStreetAddressInput(event);}}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">${i18n.t('create-request.sender-building-number')}</label>
+                            <div class="control">
+                                <input type="text" class="input" id="sender-building-number" placeholder="" name="senderBuildingNumber"
+                                       .value="${this.senderBuildingNumber}" @input="${(event) => {this.processSenderBuildingNumberInput(event);}}">
                             </div>
                         </div>
                         <div class="btn">
