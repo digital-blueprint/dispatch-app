@@ -130,14 +130,14 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     async _onCreateRequestButtonClicked(event) {
-        if (this.senderBuildingNumber === '' || this.senderStreetAddress === '' || this.senderAddressLocality === '' || this.senderPostalCode === '' || this.senderAddressCountry === '' || this.senderFamilyName === '' || this.senderGivenName === '') {
-            this.emptyFieldsGiven = true;
-            console.log("some fields are empty");
-            return;
-        } else {
-            console.log("all fields are set");
+        // if (this.senderBuildingNumber === '' || this.senderStreetAddress === '' || this.senderAddressLocality === '' || this.senderPostalCode === '' || this.senderAddressCountry === '' || this.senderFamilyName === '' || this.senderGivenName === '') {
+        //     this.emptyFieldsGiven = true;
+        //     console.log("some fields are empty");
+        //     return;
+        // } else {
+        //     console.log("all fields are set");
             this.emptyFieldsGiven = false;
-        }
+        // }
 
         const i18n = this._i18n;
         try {
@@ -252,7 +252,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <div class="field">
                             <label class="label">${i18n.t('create-request.sender-address-country')}</label>
                             <div class="control">
-                                <input type="text" class="input" id="sender-address-country" placeholder="" name="senderAddressCountry"
+                                <input type="text" class="input" id="sender-address-country" placeholder="" maxlength="2" name="senderAddressCountry"
                                        .value="${this.senderAddressCountry}" @input="${(event) => {this.processSenderAddressCountryInput(event);}}">
                             </div>
                         </div>
