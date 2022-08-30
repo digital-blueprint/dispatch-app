@@ -10,6 +10,7 @@ import { send } from '@dbp-toolkit/common/notification';
 import {Activity} from './activity.js';
 import metadata from './dbp-show-requests.metadata.json';
 import MicroModal from './micromodal.es';
+import {FileSource} from '@dbp-toolkit/file-handling';
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -27,12 +28,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem = null;
         this.currentRecipient = null;
 
+        this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
         this.nextcloudWebDavURL = "";
         this.nextcloudName = "";
         this.nextcloudFileURL = "";
         this.nextcloudAuthInfo = "";
-        this.fileHandlingEnabledTargets = "";
     }
 
     static get scopedElements() {
@@ -40,7 +41,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-icon': Icon,
             'dbp-mini-spinner': MiniSpinner,
             'dbp-loading-button': LoadingButton,
-            'dbp-inline-notification': InlineNotification
+            'dbp-inline-notification': InlineNotification,
+            'dbp-file-source': FileSource,
         };
     }
 
@@ -58,12 +60,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             currentItem: { type: Object, attribute: false },
             currentRecipient: { type: Object, attribute: false },
 
-            nextcloudWebAppPasswordURL: { type: String, attribute: false },
-            nextcloudWebDavURL: { type: String, attribute: false },
-            nextcloudName: { type: String, attribute: false },
-            nextcloudFileURL: { type: String, attribute: false },
-            nextcloudAuthInfo: { type: String, attribute: false },
-            fileHandlingEnabledTargets: { type: String, attribute: false },
+            fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
+            nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
+            nextcloudWebDavURL: {type: String, attribute: 'nextcloud-webdav-url'},
+            nextcloudName: {type: String, attribute: 'nextcloud-name'},
+            nextcloudFileURL: {type: String, attribute: 'nextcloud-file-url'},
+            nextcloudAuthInfo: {type: String, attribute: 'nextcloud-auth-info'},
         };
     }
 
@@ -77,6 +79,47 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         });
 
         super.update(changedProperties);
+    }
+
+    /*
+    * Open  file source
+    *
+    */
+    openFileSource() {
+        const fileSource = this._('#file-source');
+        if (fileSource) {
+            this._('#file-source').openDialog();
+        }
+    }
+
+    async onFileSelected(event) {
+        await this.addFile(event.detail.file);
+    }
+
+    async addFile(file) {
+        const i18n = this._i18n;
+        let id = this.currentItem.identifier;
+        console.log(file);
+
+        let response = await this.sendAddFileToRequest(id, file);
+
+        let responseBody = await response.json();
+        if (responseBody !== undefined && response.status === 201) {
+            send({
+                "summary": i18n.t('show-requests.successfully-added-file-title'),
+                "body": i18n.t('show-requests.successfully-added-file-text'),
+                "type": "success",
+                "timeout": 5,
+            });
+
+            let resp = await this.getDispatchRequest(id);
+            let responseBody = await resp.json();
+            if (responseBody !== undefined && responseBody.status !== 403) {
+                this.currentItem = responseBody;
+            }
+        } else {
+            // TODO error handling
+        }
     }
 
     async addRecipientToRequest(event, item) {
@@ -200,8 +243,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             return;
         }
 
-        // TODO check if everything is set correctly + send request
-        if (item.files && item.recipients.length > 0 && item.senderFamilyName && item.senderGivenName && item.senderAddressCountry && item.senderPostalCode && item.senderAddressLocality && item.senderStreetAddress && item.senderBuildingNumber) {
+        if (item.files && item.files.length > 0 && item.recipients && item.recipients.length > 0) {
 
             if(confirm(i18n.t('show-requests.submit-dialog-text'))) {
                 let response = await this.sendSubmitDispatchRequest(item.identifier);
@@ -282,6 +324,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let responseBody = await response.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
+                console.log(this.requestList);
             }
         } finally {
             this.initialRequestsLoading = false;
@@ -538,7 +581,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             <span>${i18n.t('show-requests.files')}:</span>
                             <div class="files-data">
                                 ${i.files.map(file => html`
-                                    ${file.dispatchRequestIdentifier}<br>
+                                    ${file.name}, 
                                 `)}
                                  <div class="no-files ${classMap({hidden: !this.isLoggedIn() || i.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
                             </div>
@@ -587,7 +630,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         </div>
                         <div class="border">
                     `)}
-                    <span class="control ${classMap({hidden: this.isLoggedIn() && !this.initialCheckinsLoading})}">
+                    <span class="control ${classMap({hidden: this.isLoggedIn() && !this.initialRequestsLoading})}">
                         <span class="loading">
                             <dbp-mini-spinner text=${i18n.t('loading-message')}></dbp-mini-spinner>
                         </span>
@@ -654,15 +697,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             <span>${i18n.t('show-requests.files')}:</span>
                             <div class="files-data">
                                 ${this.currentItem.files.map(file => html`
-                                    ${file.dispatchRequestIdentifier}<br>
+                                    ${file.name}<br>
                                 `)}
                                  <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
                                 <dbp-loading-button id="add-files-btn"
                                                 ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                 value="${i18n.t('show-requests.add-files-button-text')}" 
                                                 @click="${(event) => { 
-                                                    console.log("on add files clicked"); 
-                                                   
+                                                    console.log("on add files clicked");
+                                                    this.openFileSource();
                                                 }}" 
                                                 title="${i18n.t('show-requests.add-files-button-text')}"
                                 >
@@ -670,7 +713,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </dbp-loading-button>
                                 <dbp-file-source
                                       id="file-source"
-                                      context="${i18n.t('show-request.filepicker-context')}"
+                                      context="${i18n.t('show-requests.filepicker-context')}"
                                       allowed-mime-types="image/*,application/pdf,.pdf"
                                       nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
                                       nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
@@ -680,12 +723,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                       enabled-targets="${this.fileHandlingEnabledTargets}"
                                       decompress-zip
                                       lang="${this.lang}"
-                                      text="${i18n.t('show-request.filepicker-context')}"
+                                      text="${i18n.t('show-requests.filepicker-context')}"
                                       button-label="${i18n.t(
-                                            'show-request.filepicker-button-title'
+                                            'show-requests.filepicker-button-title'
                                       )}"
                                       number-of-files="1"
-                                      @dbp-file-source-file-selected="">
+                                      @dbp-file-source-file-selected="${this.onFileSelected}">
                                 </dbp-file-source>
                             </div>
 
@@ -753,6 +796,20 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         </div>
                     ` : ``}
                 </div>
+
+                <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView })}">
+                    <a href="#" title="${i18n.t('show-requests.back-to-recipients-list')}"
+                       @click="${(e) => {
+                           this.showListView = false;
+                           this.showDetailsView = true;
+                           this.showEditRecipientView = false;
+                           this.currentRecipient = null;
+                       }}"
+                    >
+                        <dbp-icon name="chevron-left"></dbp-icon>
+                        ${i18n.t('show-requests.back-to-recipients-list')}.
+                    </a>
+                </span>
 
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView })}">
                     ${i18n.t('show-requests.recipients')}:

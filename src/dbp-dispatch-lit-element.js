@@ -288,4 +288,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients/' + recipientId, options);
     }
+
+    async sendAddFileToRequest(id, file) {
+        let formData = new FormData();
+        formData.append('dispatchRequestIdentifier', id);
+        formData.append('file', file);
+
+        const options = {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+            body: formData,
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-files', options);
+    }
 }

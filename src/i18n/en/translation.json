@@ -87,7 +87,12 @@
         "edit-recipient-dialog-button-cancel": "Abbrechen",
         "edit-recipient-dialog-button-ok": "Übernehmen",
         "successfully-edited-recipient-title": "Erfolgreich geändert!",
-        "successfully-edited-recipient-text": "Der Empfänger wurde erfolgreich geändert."
+        "successfully-edited-recipient-text": "Der Empfänger wurde erfolgreich geändert.",
+        "back-to-recipients-list": "Back to the list of all recipients",
+        "filepicker-context": "Upload documents for dispatch request",
+        "filepicker-button-title": "Select documents",
+        "successfully-added-file-title": "Successfully uploaded!",
+        "successfully-added-file-text": "The selected file was successfully uploaded to the dispatch request."
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."

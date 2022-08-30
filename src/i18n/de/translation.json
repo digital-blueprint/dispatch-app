@@ -80,8 +80,6 @@
         "successfully-added-recipient-title": "Erfolgreich hinzugefügt!",
         "successfully-added-recipient-text": "Der Empfänger wurde erfolgreich hinzugefügt.",
         "edit-recipient-button-text": "Empfänger bearbeiten",
-        "show-request.filepicker-context": "",
-        "show-request.filepicker-button-title": "",
         "edit-recipient-dialog-title": "Empfänger bearbeiten",
         "edit-recipient-fn-dialog-label": "Familienname",
         "edit-recipient-gn-dialog-label": "Vorname",
@@ -93,7 +91,12 @@
         "edit-recipient-dialog-button-cancel": "Abbrechen",
         "edit-recipient-dialog-button-ok": "Übernehmen",
         "successfully-edited-recipient-title": "Erfolgreich geändert!",
-        "successfully-edited-recipient-text": "Der Empfänger wurde erfolgreich geändert."
+        "successfully-edited-recipient-text": "Der Empfänger wurde erfolgreich geändert.",
+        "back-to-recipients-list": "Zurück zur Liste aller Empfänger",
+        "filepicker-context": "Dokumente für den Versand auswählen",
+        "filepicker-button-title": "Dokumente auswählen",
+        "successfully-added-file-title": "Erfolgreich hochgeladen!",
+        "successfully-added-file-text": "Die ausgewählte Datei wurde erfolgreich zum Versandauftrag hinzugefügt."
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."
