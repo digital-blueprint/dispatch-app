@@ -324,7 +324,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let responseBody = await response.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
-                console.log(this.requestList);
             }
         } finally {
             this.initialRequestsLoading = false;
@@ -532,6 +531,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading()})}">
                 
                 <h2>${this.activity.getName(this.lang)}</h2>
+                
                 <p class="subheadline">
                     <slot name="description">
                         ${this.activity.getDescription(this.lang)}
@@ -569,19 +569,33 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             
                             <span>${i18n.t('show-requests.sender')}:</span>
                             <div class="sender-data">
-                                ${i18n.t('show-requests.sender-family-name')}: ${i.senderFamilyName}<br>
-                                ${i18n.t('show-requests.sender-given-name')}: ${i.senderGivenName}<br>
-                                ${i18n.t('show-requests.sender-address-country')}: ${i.senderAddressCountry}<br>
-                                ${i18n.t('show-requests.sender-postal-code')}: ${i.senderPostalCode}<br>
-                                ${i18n.t('show-requests.sender-address-locality')}: ${i.senderAddressLocality}<br>
-                                ${i18n.t('show-requests.sender-street-address')}: ${i.senderStreetAddress}<br>
-                                ${i18n.t('show-requests.sender-building-number')}: ${i.senderBuildingNumber}
+                                ${i.senderFamilyName ? html`
+                                        ${i18n.t('show-requests.sender-family-name')}: ${i.senderFamilyName}<br>
+                                ` : ``}
+                                ${i.senderGivenName ? html`
+                                        ${i18n.t('show-requests.sender-given-name')}: ${i.senderGivenName}<br>
+                                ` : ``}
+                                ${i.senderAddressCountry ? html`
+                                        ${i18n.t('show-requests.sender-address-country')}: ${i.senderAddressCountry}<br>
+                                ` : ``}
+                                ${i.senderPostalCode ? html`
+                                        ${i18n.t('show-requests.sender-postal-code')}: ${i.senderPostalCode}<br>
+                                ` : ``}
+                                ${i.senderAddressLocality ? html`
+                                        ${i18n.t('show-requests.sender-address-locality')}: ${i.senderAddressLocality}<br>
+                                ` : ``}
+                                ${i.senderStreetAddress ? html`
+                                        ${i18n.t('show-requests.sender-street-address')}: ${i.senderStreetAddress}<br>
+                                ` : ``}
+                                ${i.senderBuildingNumber ? html`
+                                        ${i18n.t('show-requests.sender-building-number')}: ${i.senderBuildingNumber}
+                                ` : ``}
                             </div>
 
                             <span>${i18n.t('show-requests.files')}:</span>
                             <div class="files-data">
                                 ${i.files.map(file => html`
-                                    ${file.name}, 
+                                    ${file.name}<br>
                                 `)}
                                  <div class="no-files ${classMap({hidden: !this.isLoggedIn() || i.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
                             </div>
@@ -667,14 +681,28 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             
                             <span>${i18n.t('show-requests.sender')}:</span>
                             <div class="sender-data-btn">
-                                  <div class="sender-data">
-                                    ${i18n.t('show-requests.sender-family-name')}: ${this.currentItem.senderFamilyName}<br>
-                                    ${i18n.t('show-requests.sender-given-name')}: ${this.currentItem.senderGivenName}<br>
-                                    ${i18n.t('show-requests.sender-address-country')}: ${this.currentItem.senderAddressCountry}<br>
-                                      ${i18n.t('show-requests.sender-postal-code')}: ${this.currentItem.senderPostalCode}<br>
-                                      ${i18n.t('show-requests.sender-address-locality')}: ${this.currentItem.senderAddressLocality}<br>
-                                      ${i18n.t('show-requests.sender-street-address')}: ${this.currentItem.senderStreetAddress}<br>
-                                      ${i18n.t('show-requests.sender-building-number')}: ${this.currentItem.senderBuildingNumber}
+                                <div class="sender-data">
+                                    ${this.currentItem.senderFamilyName ? html`
+                                        ${i18n.t('show-requests.sender-family-name')}: ${this.currentItem.senderFamilyName}<br>
+                                    ` : ``}
+                                    ${this.currentItem.senderGivenName ? html`
+                                        ${i18n.t('show-requests.sender-given-name')}: ${this.currentItem.senderGivenName}<br>
+                                    ` : ``}
+                                    ${this.currentItem.senderAddressCountry ? html`
+                                        ${i18n.t('show-requests.sender-address-country')}: ${this.currentItem.senderAddressCountry}<br>
+                                    ` : ``}
+                                    ${this.currentItem.senderPostalCode ? html`
+                                        ${i18n.t('show-requests.sender-postal-code')}: ${this.currentItem.senderPostalCode}<br>
+                                    ` : ``}
+                                    ${this.currentItem.senderAddressLocality ? html`
+                                        ${i18n.t('show-requests.sender-address-locality')}: ${this.currentItem.senderAddressLocality}<br>
+                                    ` : ``}
+                                    ${this.currentItem.senderStreetAddress ? html`
+                                        ${i18n.t('show-requests.sender-street-address')}: ${this.currentItem.senderStreetAddress}<br>
+                                    ` : ``}
+                                    ${this.currentItem.senderBuildingNumber ? html`
+                                        ${i18n.t('show-requests.sender-building-number')}: ${this.currentItem.senderBuildingNumber}
+                                    ` : ``}
                                 </div>
                                 <dbp-loading-button id="edit-btn"
                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted}"

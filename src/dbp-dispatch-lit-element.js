@@ -217,12 +217,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @returns {object} response
      */
     async sendSubmitDispatchRequest(identifier) {
+        let body = {};
+
         const options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/ld+json',
                 Authorization: 'Bearer ' + this.auth.token,
             },
+            body: JSON.stringify(body),
         };
 
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier + '/submit', options);
