@@ -52,6 +52,8 @@
         "@dbp-toolkit/notification": "^0.3.0",
         "@dbp-toolkit/person-profile": "^0.2.0",
         "@dbp-topics/signature": "^2.1.0",
+        "@tugraz/font-source-sans-pro": "^0.2.4",
+        "@tugraz/web-components": "^0.3.6",
         "@open-wc/scoped-elements": "^2.1.0",
         "@tugraz/font-source-sans-pro": "^0.2.4",
         "@tugraz/web-components": "^0.3.6",
