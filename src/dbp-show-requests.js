@@ -1021,7 +1021,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-fn-dialog"
                                             id="tf-add-recipient-fn-dialog"
-                                            value=""
+                                            value="Mustermann"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -1038,7 +1038,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-gn-dialog"
                                             id="tf-add-recipient-gn-dialog"
-                                            value=""
+                                            value="Max"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -1055,7 +1055,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-ac-dialog"
                                             id="tf-add-recipient-ac-dialog"
-                                            value=""
+                                            value="AT"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -1072,7 +1072,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-pc-dialog"
                                             id="tf-add-recipient-pc-dialog"
-                                            value=""
+                                            value="8010"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -1089,7 +1089,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-al-dialog"
                                             id="tf-add-recipient-al-dialog"
-                                            value=""
+                                            value="Graz"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -1106,7 +1106,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-sa-dialog"
                                             id="tf-add-recipient-sa-dialog"
-                                            value=""
+                                            value="Am Grund"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -1123,7 +1123,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-bn-dialog"
                                             id="tf-add-recipient-bn-dialog"
-                                            value=""
+                                            value="1"
                                             @input="${() => {
                                                 // TODO
                                             }}"
