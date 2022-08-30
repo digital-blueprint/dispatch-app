@@ -289,7 +289,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 value="${i18n.t('create-request.create-request-button-text')}"
                                                 @click="${this._onCreateRequestButtonClicked}" 
                                                 title="${i18n.t('create-request.create-request-button-text')}" 
-                                                ?disabled=${this.senderGivenName === '' || this.senderFamilyName === '' || this.senderPostalAddress === ''}
+                                                ?disabled="false"
                             ></dbp-loading-button>
                         </div>
                     </div>
