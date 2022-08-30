@@ -113,25 +113,28 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     async updateRecipient(event, item) {
         const i18n = this._i18n;
-        let id = this.currentRecipient.identifier;
-        let givenName = this._('#tf-add-recipient-gn-dialog').value;
-        let familyName = this._('#tf-add-recipient-fn-dialog').value;
-        let addressCountry = this._('#tf-add-recipient-ac-dialog').value;
-        let postalCode = this._('#tf-add-recipient-pc-dialog').value;
-        let addressLocality = this._('#tf-add-recipient-al-dialog').value;
-        let streetAddress = this._('#tf-add-recipient-sa-dialog').value;
-        let buildingNumber = this._('#tf-add-recipient-bn-dialog').value;
+        let id = this.currentItem.identifier;
+        let recipientId = this.currentRecipient.identifier;
+        let givenName = this._('#tf-edit-recipient-gn-dialog').value;
+        let familyName = this._('#tf-edit-recipient-fn-dialog').value;
+        let addressCountry = this._('#tf-edit-recipient-ac-dialog').value;
+        let postalCode = this._('#tf-edit-recipient-pc-dialog').value;
+        let addressLocality = this._('#tf-edit-recipient-al-dialog').value;
+        let streetAddress = this._('#tf-edit-recipient-sa-dialog').value;
+        let buildingNumber = this._('#tf-edit-recipient-bn-dialog').value;
 
-        let response = await this.sendAddRequestRecipientsRequest(id, givenName, familyName, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
+        let response = await this.sendUpdateRecipientRequest(recipientId, id, givenName, familyName, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
 
         let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 201) {
+        if (responseBody !== undefined && response.status === 200) {
             send({
-                "summary": i18n.t('show-requests.successfully-added-recipient-title'),
-                "body": i18n.t('show-requests.successfully-added-recipient-text'),
+                "summary": i18n.t('show-requests.successfully-edited-recipient-title'),
+                "body": i18n.t('show-requests.successfully-edited-recipient-text'),
                 "type": "success",
                 "timeout": 5,
             });
+
+            // this.currentRecipient = responseBody;
 
             let resp = await this.getDispatchRequest(id);
             let responseBody = await resp.json();

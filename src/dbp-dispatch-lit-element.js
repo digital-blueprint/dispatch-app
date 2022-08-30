@@ -264,4 +264,28 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients', options);
     }
+
+    async sendUpdateRecipientRequest(recipientId, id, givenName, familyName, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber) {
+        let body = {
+            "dispatchRequestIdentifier": id,
+            "givenName": givenName,
+            "familyName": familyName,
+            "addressCountry": addressCountry,
+            "postalCode": postalCode,
+            "addressLocality": addressLocality,
+            "streetAddress": streetAddress,
+            "buildingNumber": buildingNumber
+        };
+
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+            body: JSON.stringify(body),
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients/' + recipientId, options);
+    }
 }
