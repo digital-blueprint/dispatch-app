@@ -307,4 +307,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-files', options);
     }
+
+    async sendDeleteFileRequest(id) {
+        const options = {
+            method: 'DELETE',
+            headers: {
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-files/' + id, options);
+    }
 }

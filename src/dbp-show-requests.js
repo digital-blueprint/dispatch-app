@@ -25,6 +25,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.showListView = true;
         this.showDetailsView = false;
         this.showEditRecipientView = false;
+        this.showEditFilesView = false;
         this.currentItem = null;
         this.currentRecipient = null;
 
@@ -57,6 +58,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             showListView: { type: Boolean, attribute: false },
             showDetailsView: { type: Boolean, attribute: false },
             showEditRecipientView: { type: Boolean, attribute: false },
+            showEditFilesView: { type: Boolean, attribute: false },
             currentItem: { type: Object, attribute: false },
             currentRecipient: { type: Object, attribute: false },
 
@@ -112,6 +114,30 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 "timeout": 5,
             });
 
+            let resp = await this.getDispatchRequest(id);
+            let responseBody = await resp.json();
+            if (responseBody !== undefined && responseBody.status !== 403) {
+                this.currentItem = responseBody;
+            }
+        } else {
+            // TODO error handling
+        }
+    }
+
+    async deleteFile(file) {
+        const i18n = this._i18n;
+        console.log(file);
+
+        let response = await this.sendDeleteFileRequest(file.identifier, file);
+        if (response.status === 204) {
+            send({
+                "summary": i18n.t('show-requests.successfully-deleted-file-title'),
+                "body": i18n.t('show-requests.successfully-deleted-file-text'),
+                "type": "success",
+                "timeout": 5,
+            });
+
+            let id = this.currentItem.identifier;
             let resp = await this.getDispatchRequest(id);
             let responseBody = await resp.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
@@ -428,9 +454,23 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 padding-bottom: 1em;
             }
             
-            .recipient-entry .border {
+            .recipient-entry .border,
+            .file-entry .border {
                 margin-left: -1.5em;
                 margin-bottom: 1em;
+            }
+            
+            .file-entry {
+                display: flex;
+                justify-content: space-between;
+            }
+            
+            #add-file-2-btn {
+                margin-top: 1em;
+            }
+
+            .delete-file-btn {
+                margin-top: 0.5em;
             }
             
             .rec-2-btns {
@@ -555,11 +595,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     </p>
                 </slot>
 
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.showEditRecipientView })}">
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.showEditRecipientView || this.showEditFilesView })}">
                     ${i18n.t('show-requests.dispatch-orders')}
                 </h3>
                 
-                <div class="requests ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.showEditRecipientView })}">
+                <div class="requests ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.showEditRecipientView || this.showEditFilesView })}">
                     ${this.requestList.map(i => html`
                         <div class="request-item">
                             <span>${i18n.t('show-requests.id')}:</span> ${i.identifier}<br>
@@ -654,7 +694,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 
                 </div>
 
-                <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showEditRecipientView })}">
+                <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showEditRecipientView || this.showEditFilesView })}">
                     <a href="#" title="${i18n.t('show-requests.back-to-list')}"
                        @click="${(e) => {
                            this.showListView = true;
@@ -667,11 +707,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     </a>
                 </span>
                 
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showEditRecipientView })}">
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showEditRecipientView || this.showEditFilesView })}">
                     ${i18n.t('show-requests.detailed-dispatch-order')}:
                 </h3>
 
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showEditRecipientView })}">
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showEditRecipientView || this.showEditFilesView })}">
                     ${ this.currentItem ? html`
                         <div class="request-item details">
                             <span>${i18n.t('show-requests.id')}:</span> ${this.currentItem.identifier}<br>
@@ -706,7 +746,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </div>
                                 <dbp-loading-button id="edit-btn"
                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                        value="${i18n.t('show-requests.edit-button-text')}" 
+                                                        value="${i18n.t('show-requests.edit-sender-button-text')}" 
                                                         @click="${(event) => { 
                                                             console.log("on edit sender clicked");
                                                             MicroModal.show(this._('#edit-sender-modal'), {
@@ -716,9 +756,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 },
                                                             });
                                                         }}" 
-                                                        title="${i18n.t('show-requests.edit-button-text')}"
+                                                        title="${i18n.t('show-requests.edit-sender-button-text')}"
                                 >
-                                    ${i18n.t('show-requests.edit-button-text')}
+                                    ${i18n.t('show-requests.edit-sender-button-text')}
                                 </dbp-loading-button>
                             </div>
                             
@@ -739,32 +779,46 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 >
                                     ${i18n.t('show-requests.add-files-button-text')}
                                 </dbp-loading-button>
-                                <dbp-file-source
-                                      id="file-source"
-                                      context="${i18n.t('show-requests.filepicker-context')}"
-                                      allowed-mime-types="image/*,application/pdf,.pdf"
-                                      nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
-                                      nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
-                                      nextcloud-name="${this.nextcloudName}"
-                                      nextcloud-file-url="${this.nextcloudFileURL}"
-                                      nexcloud-auth-info="${this.nextcloudAuthInfo}"
-                                      enabled-targets="${this.fileHandlingEnabledTargets}"
-                                      decompress-zip
-                                      lang="${this.lang}"
-                                      text="${i18n.t('show-requests.filepicker-context')}"
-                                      button-label="${i18n.t(
-                                            'show-requests.filepicker-button-title'
-                                      )}"
-                                      number-of-files="1"
-                                      @dbp-file-source-file-selected="${this.onFileSelected}">
-                                </dbp-file-source>
+                                <dbp-loading-button id="edit-files-btn"
+                                                ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                value="${i18n.t('show-requests.edit-files-button-text')}" 
+                                                @click="${(event) => {
+                                                    console.log("on edit files clicked");
+                                                    this.showListView = false;
+                                                    this.showDetailsView = false;
+                                                    this.showEditRecipientView = false;
+                                                    this.showEditFilesView = true;
+                                                }}" 
+                                                title="${i18n.t('show-requests.edit-files-button-text')}"
+                                >
+                                    ${i18n.t('show-requests.edit-files-button-text')}
+                                </dbp-loading-button>
+                              
                             </div>
+                            <dbp-file-source
+                                  id="file-source"
+                                  context="${i18n.t('show-requests.filepicker-context')}"
+                                  allowed-mime-types="image/*,application/pdf,.pdf"
+                                  nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
+                                  nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
+                                  nextcloud-name="${this.nextcloudName}"
+                                  nextcloud-file-url="${this.nextcloudFileURL}"
+                                  nexcloud-auth-info="${this.nextcloudAuthInfo}"
+                                  enabled-targets="${this.fileHandlingEnabledTargets}"
+                                  decompress-zip
+                                  lang="${this.lang}"
+                                  text="${i18n.t('show-requests.filepicker-context')}"
+                                  button-label="${i18n.t(
+                                            'show-requests.filepicker-button-title'
+                                    )}"
+                                  number-of-files="1"
+                                  @dbp-file-source-file-selected="${this.onFileSelected}">
+                            </dbp-file-source>
 
                             <span>${i18n.t('show-requests.recipients')}:</span>
                             <div class="recipients-data">
                                 ${this.currentItem.recipients.map(j => html`
-                                    ${j.familyName}<br>
-                                    ${j.givenName}<br>
+                                    ${j.familyName} ${j.givenName}<br>
                                     <br>
                                 `)}
                                 <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
@@ -786,16 +840,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </dbp-loading-button>
                             <dbp-loading-button id="edit-recipient-btn"
                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                    value="${i18n.t('show-requests.edit-recipient-button-text')}" 
+                                                    value="${i18n.t('show-requests.edit-recipients-button-text')}" 
                                                     @click="${(event) => {
-                                                        console.log("on edit recipient clicked");
+                                                        console.log("on edit recipients clicked");
                                                         this.showListView = false;
                                                         this.showDetailsView = false;
                                                         this.showEditRecipientView = true;
                                                     }}" 
-                                                    title="${i18n.t('show-requests.edit-recipient-button-text')}"
+                                                    title="${i18n.t('show-requests.edit-recipients-button-text')}"
                                 >
-                                    ${i18n.t('show-requests.edit-recipient-button-text')}
+                                    ${i18n.t('show-requests.edit-recipients-button-text')}
                             </dbp-loading-button>
                             </div>
                             <div class="request-buttons">
@@ -825,8 +879,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     ` : ``}
                 </div>
 
-                <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView })}">
-                    <a href="#" title="${i18n.t('show-requests.back-to-recipients-list')}"
+                <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditFilesView })}">
+                    <a href="#" title="${i18n.t('show-requests.back-to-entry-list')}"
                        @click="${(e) => {
                            this.showListView = false;
                            this.showDetailsView = true;
@@ -835,15 +889,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                        }}"
                     >
                         <dbp-icon name="chevron-left"></dbp-icon>
-                        ${i18n.t('show-requests.back-to-recipients-list')}.
+                        ${i18n.t('show-requests.back-to-entry-list')}.
                     </a>
                 </span>
 
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView })}">
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditFilesView })}">
                     ${i18n.t('show-requests.recipients')}:
                 </h3>
-                
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView })}">
+
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditFilesView})}">
                     ${ this.currentItem && this.currentItem.recipients ? html`
                         <div class="request-item details">
                             ${this.currentItem.recipients.map(j => html`
@@ -888,9 +942,67 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 this.loading = false;
                                                             },
                                                         });
-                                                    }}" 
+                                                    }}"
                                                     title="${i18n.t('show-requests.add-recipient-button-text')}"
                                 >${i18n.t('show-requests.add-recipient-button-text')}</dbp-loading-button>
+                            </div>
+                        </div>
+                    ` : `` }
+                </div>
+
+                <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditRecipientView })}">
+                    <a href="#" title="${i18n.t('show-requests.back-to-entry-list')}"
+                       @click="${(e) => {
+                           this.showListView = false;
+                           this.showDetailsView = true;
+                           this.showEditRecipientView = false;
+                           this.showEditFilesView = false;
+                       }}"
+                    >
+                        <dbp-icon name="chevron-left"></dbp-icon>
+                        ${i18n.t('show-requests.back-to-entry-list')}.
+                    </a>
+                </span>
+                
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditRecipientView })}">
+                    ${i18n.t('show-requests.files')}:
+                </h3>
+                
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditRecipientView})}">
+                    ${ this.currentItem && this.currentItem.files ? html`
+                        <div class="request-item details">
+                            ${this.currentItem.files.map(j => html`
+                                <div class="file-entry">
+                                    <div class="file-data">
+                                        <strong>${j.name}</strong><br>
+                                        ${j.contentSize}<br>
+                                        ${j.fileFormat}<br>
+                                    </div>
+                                    <dbp-loading-button class="delete-file-btn"
+                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                    value="${i18n.t('show-requests.delete-file-button-text')}" 
+                                                    @click="${(event) => {
+                                                        console.log("on delete file clicked");
+                                                        this.deleteFile(j);
+                                                    }}" 
+                                                    title="${i18n.t('show-requests.delete-file-button-text')}"
+                                        >
+                                            ${i18n.t('show-requests.delete-file-button-text')}
+                                    </dbp-loading-button>
+                                </div>
+                                <div class="border"></div>
+                            `)}
+                            <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files.length !== 0})}">${i18n.t('show-requests.no-files-text')}</div>
+                            <div class="rec-2-btns">
+                                <dbp-loading-button id="add-file-2-btn"
+                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                    value="${i18n.t('show-requests.add-files-button-text')}" 
+                                                    @click="${(event) => {
+                                                        console.log("on add file clicked");
+                                                        this.openFileSource();
+                                                    }}" 
+                                                    title="${i18n.t('show-requests.add-files-button-text')}"
+                                >${i18n.t('show-requests.add-files-button-text')}</dbp-loading-button>
                             </div>
                         </div>
                     ` : `` }

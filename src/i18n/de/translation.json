@@ -38,6 +38,7 @@
         "no-recipients-text": "(Noch) keine Empfänger angegeben",
         "submit-button-text": "Zum Versand freigeben",
         "id": "ID",
+        "edit-sender-button-text": "Bearbeiten",
         "delete-dialog-title": "Versandauftrag löschen",
         "delete-dialog-text": "Möchten Sie diesen Versandauftrag wirklich löschen? Bitte beachten Sie, dass dabei auch alle gespeicherten Anhänge und Empfänger gelöscht werden.",
         "delete-not-allowed-title": "Nicht erlaubt!",
@@ -79,6 +80,7 @@
         "add-recipient-dialog-button-ok": "Übernehmen",
         "successfully-added-recipient-title": "Erfolgreich hinzugefügt!",
         "successfully-added-recipient-text": "Der Empfänger wurde erfolgreich hinzugefügt.",
+        "edit-recipients-button-text": "Bearbeiten",
         "edit-recipient-button-text": "Empfänger bearbeiten",
         "edit-recipient-dialog-title": "Empfänger bearbeiten",
         "edit-recipient-fn-dialog-label": "Familienname",
@@ -92,11 +94,13 @@
         "edit-recipient-dialog-button-ok": "Übernehmen",
         "successfully-edited-recipient-title": "Erfolgreich geändert!",
         "successfully-edited-recipient-text": "Der Empfänger wurde erfolgreich geändert.",
-        "back-to-recipients-list": "Zurück zur Liste aller Empfänger",
+        "back-to-entry-list": "Zurück zum Versandauftrag",
         "filepicker-context": "Dokumente für den Versand auswählen",
         "filepicker-button-title": "Dokumente auswählen",
         "successfully-added-file-title": "Erfolgreich hochgeladen!",
-        "successfully-added-file-text": "Die ausgewählte Datei wurde erfolgreich zum Versandauftrag hinzugefügt."
+        "successfully-added-file-text": "Die ausgewählte Datei wurde erfolgreich zum Versandauftrag hinzugefügt.",
+        "edit-files-button-text": "Bearbeiten",
+        "delete-file-button-text": "Löschen"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."
