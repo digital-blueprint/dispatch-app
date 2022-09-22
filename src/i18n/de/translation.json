@@ -100,7 +100,9 @@
         "successfully-added-file-title": "Erfolgreich hochgeladen!",
         "successfully-added-file-text": "Die ausgewählte Datei wurde erfolgreich zum Versandauftrag hinzugefügt.",
         "edit-files-button-text": "Bearbeiten",
-        "delete-file-button-text": "Löschen"
+        "delete-file-button-text": "Löschen",
+        "successfully-deleted-file-title": "Erfolgreich gelöscht!",
+        "successfully-deleted-file-text": "Die Datei wurde erfolgreich gelöscht."
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."

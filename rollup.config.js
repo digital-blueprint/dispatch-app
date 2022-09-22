@@ -231,7 +231,7 @@ Dependencies:
                         src: await getPackagePath('tabulator-tables', 'dist/css'),
                         dest:
                             'dist/' +
-                            (await getDistPath('@dbp-toolkit/file-handling', 'tabulator-tables')),
+                            (await getDistPath('@dbp-topics/dispatch', 'tabulator-tables')),
                     },
                 ],
             }),
