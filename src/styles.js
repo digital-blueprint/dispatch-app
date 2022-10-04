@@ -213,8 +213,24 @@ export function getShowDispatchRequestsCss() {
         /*    color: var(--dbp-on-content-surface);*/
         /*}*/
 
-        .tabulator .tabulator-header .tabulator-col {
+        .tabulator .tabulator-header .tabulator-col[tabulator-field="details"] {
             min-height: 37px !important;
+            display: inline-block !important;
+            font-weight: 400;
+        }
+        
+        .tabulator-responsive-collapse table {
+            border-spacing: 1em;
+            width: 100%;
+            border-top: var(--dbp-border);
+        }
+
+        /*.tabulator-row .tabulator-responsive-collapse {*/
+        /*    border-top: var(--dbp-border);*/
+        /*}*/
+        
+        .tabulator-responsive-collapse table tr td {
+            vertical-align: top;
         }
 
         .tabulator .tabulator-footer {
