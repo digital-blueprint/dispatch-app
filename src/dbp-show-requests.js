@@ -599,6 +599,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     setControlsHtml(item) {
         const icon_tag = this.getScopedTagName('dbp-icon');
         let div = this.createScopedElement('div');
+        div.classList.add('tabulator-icon-buttons');
 
         if (item.dateSubmitted) {
             let icon_search = `<${icon_tag} name="search" class="edit-items"></${icon_tag}>`;
@@ -706,6 +707,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getTabulatorStyles()}
             /*${commonStyles.getRadioAndCheckboxCss()}*/
             ${dispatchStyles.getShowDispatchRequestsCss()}
+            
+            .tabulator-icon-buttons {
+                display: flex;
+            }
 
             .search-wrapper {
                 display: flex;
