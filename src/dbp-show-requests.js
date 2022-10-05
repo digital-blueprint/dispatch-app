@@ -27,8 +27,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.requestList = [];
         this.showListView = true;
         this.showDetailsView = false;
-        this.showEditRecipientView = false;
-        this.showEditFilesView = false;
         this.currentItem = null;
         this.currentRecipient = null;
 
@@ -64,8 +62,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             requestList: { type: Array, attribute: false },
             showListView: { type: Boolean, attribute: false },
             showDetailsView: { type: Boolean, attribute: false },
-            showEditRecipientView: { type: Boolean, attribute: false },
-            showEditFilesView: { type: Boolean, attribute: false },
             currentItem: { type: Object, attribute: false },
             currentRecipient: { type: Object, attribute: false },
 
@@ -643,7 +639,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
             btn_submit.innerHTML += icon_submit;
             div.appendChild(btn_submit);
-            //div.innerHTML += icon_delete + ` ` + icon_edit + ` ` + icon_submit;
         }
 
         return div;
@@ -692,6 +687,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.initialRequestsLoading = false;
             this._initialFetchDone = true;
         }
+    }
+
+    convertToReadableDate(inputDate) {
+        const d = Date.parse(inputDate);
+        const timestamp = new Date(d);
+        const year = timestamp.getFullYear();
+        const month = ('0' + (timestamp.getMonth() + 1)).slice(-2);
+        const date = ('0' + timestamp.getDate()).slice(-2);
+        const hours = ('0' + timestamp.getHours()).slice(-2);
+        const minutes = ('0' + timestamp.getMinutes()).slice(-2);
+        return date + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
     }
 
     static get styles() {
@@ -795,7 +801,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
             
             .sender-data {
-                margin: 0.5em 0 0.5em 1em;
+                /*margin: 0.5em 0 0.5em 16px;*/
+                margin: 0.5em 0 0.5em 1px;
+                line-height: 1.5;
             }
 
             .request-buttons {
@@ -831,9 +839,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
             
             .back-navigation dbp-icon {
-                font-size: 0.8em;
+                font-size: 0.9em;
                 padding-right: 7px;
-                padding-bottom: 2px;
             }
             
             .edit-recipient-btn {
@@ -982,10 +989,23 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
             
             .left-side {
-                margin: 15px;
+                margin: 18px;
                 display: flex;
                 flex-direction: column;
                 gap: 2px;
+            }
+            
+            .left-side div {
+                word-break: break-all;
+            }
+            
+            .file.card .left-side {
+                padding-bottom: 1.4em;
+            }
+
+            .file.card .left-side div:first-child {
+                padding-bottom: 0.2em;
+                font-weight: 400;
             }
             
             .right-side {
@@ -1004,6 +1024,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             
             .recipients-data, .files-data {
                margin-top: 0.5em;
+            }
+            
+            .status-green {
+                color: var(--dbp-override-success);
+            }
+            
+            .status-orange {
+                color: var(--dbp-override-warning-surface);
+            }
+            
+            .back-container {
+                padding-top: 1em;
+                padding-bottom: 0.5em;
             }
         `;
     }
@@ -1060,72 +1093,75 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     </p>
                 </slot>
 
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.showEditRecipientView || this.showEditFilesView })}">
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
                     ${i18n.t('show-requests.dispatch-orders')}
                 </h3>
-
-                <div class="table-wrapper">
-                    <div class="selected-buttons">
-                        <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.showEditRecipientView || this.showEditFilesView })}"
-                            <div class="search-wrapper ">
-                                <div id="extendable-searchbar">
-                                    <input type="text" id="searchbar" placeholder="Suchen">
-                                    <dbp-button class="button" id="search-button" title="Suchen">
-                                        <dbp-icon name="search"></dbp-icon>
-                                    </dbp-button>
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
+                    <div class="table-wrapper">
+                        <div class="selected-buttons">
+                            <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}"
+                                <div class="search-wrapper ">
+                                    <div id="extendable-searchbar">
+                                        <input type="text" id="searchbar" placeholder="Suchen">
+                                        <dbp-button class="button" id="search-button" title="Suchen">
+                                            <dbp-icon name="search"></dbp-icon>
+                                        </dbp-button>
+                                    </div>
                                 </div>
+                                <dbp-button class="button is-icon ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
+                                            ?disabled="${this.loading}"
+                                            value=""
+                                            @click="${(event) => { console.log('open settings'); }}"
+                                            title="">
+                                    <dbp-icon name="iconoir_settings"></dbp-icon>
+                                </dbp-button>
                             </div>
-                            <dbp-button class="button is-icon ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.showEditRecipientView || this.showEditFilesView })}" id="open-settings-btn"
-                                        ?disabled="${this.loading}"
-                                        value=""
-                                        @click="${(event) => { console.log('open settings'); }}"
-                                        title="">
-                                <dbp-icon name="iconoir_settings"></dbp-icon>
-                            </dbp-button>
+                            <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
+                                <dbp-loading-button id="delete-all-btn"
+                                                    ?disabled="${this.loading}"
+                                                    value="${i18n.t('show-requests.delete-button-text')}"
+                                                    @click="${(event) => { this.deleteSelected(event); }}"
+                                                    title="${i18n.t('show-requests.delete-button-text')}"
+                                >
+                                    ${i18n.t('show-requests.delete-button-text')}
+                                </dbp-loading-button>
+                                <dbp-loading-button id="submit-all-btn"
+                                                    type="is-primary"
+                                                    ?disabled="${this.loading}"
+                                                    value="${i18n.t('show-requests.submit-button-text')}"
+                                                    @click="${(event) => { this.submitSelected(event); }}"
+                                                    title="${i18n.t('show-requests.submit-button-text')}"
+                                >
+                                    ${i18n.t('show-requests.submit-button-text')}
+                                </dbp-loading-button>
+                            </div>
                         </div>
-                        <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.showEditRecipientView || this.showEditFilesView })}">
-                            <dbp-loading-button id="delete-all-btn"
-                                                ?disabled="${this.loading}"
-                                                value="${i18n.t('show-requests.delete-button-text')}"
-                                                @click="${(event) => { this.deleteSelected(event); }}"
-                                                title="${i18n.t('show-requests.delete-button-text')}"
-                            >
-                                ${i18n.t('show-requests.delete-button-text')}
-                            </dbp-loading-button>
-                            <dbp-loading-button id="submit-all-btn"
-                                                type="is-primary"
-                                                ?disabled="${this.loading}"
-                                                value="${i18n.t('show-requests.submit-button-text')}"
-                                                @click="${(event) => { this.submitSelected(event); }}"
-                                                title="${i18n.t('show-requests.submit-button-text')}"
-                            >
-                                ${i18n.t('show-requests.submit-button-text')}
-                            </dbp-loading-button>
+                        <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
+                            <table id="dispatch-requests-table" class=""></table>
                         </div>
-                    </div>
-                    <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.showEditRecipientView || this.showEditFilesView })}">
-                        <table id="dispatch-requests-table" class=""></table>
                     </div>
                 </div>
                 
-                <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showEditRecipientView || this.showEditFilesView })}">
-                    <a href="#" title="${i18n.t('show-requests.back-to-list')}"
-                       @click="${(e) => {
-                           this.showListView = true;
-                           this.showDetailsView = false;
-                           this.currentItem = null;
-                       }}"
-                    >
-                        <dbp-icon name="chevron-left"></dbp-icon>
-                        ${i18n.t('show-requests.back-to-list')}.
-                    </a>
-                </span>
+                <div class="back-container">
+                    <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView })}">
+                        <a href="#" title="${i18n.t('show-requests.back-to-list')}"
+                           @click="${(e) => {
+                               this.showListView = true;
+                               this.showDetailsView = false;
+                               this.currentItem = null;
+                           }}"
+                        >
+                            <dbp-icon name="chevron-left"></dbp-icon>
+                            ${i18n.t('show-requests.back-to-list')}.
+                        </a>
+                    </span>
+                </div>
                 
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showEditRecipientView || this.showEditFilesView })}">
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView})}">
                     ${i18n.t('show-requests.detailed-dispatch-order')}:
                 </h3>
 
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showEditRecipientView || this.showEditFilesView })}">
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView })}">
                     ${ this.currentItem ? html`
                         <div class="request-item
                          details">
@@ -1137,12 +1173,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="line"></div>
                                 <div>
                                     <div class="section-titles">${i18n.t('show-requests.submit-status')}</div>
-                                    <div>${this.currentItem.dateSubmitted ? i18n.t('show-requests.status-completed') : i18n.t('show-requests.empty-date-submitted')}</div>
+                                    <div>${this.currentItem.dateSubmitted ? html`<span class="status-green">●</span> ${i18n.t('show-requests.status-completed')}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
                                 </div>
                                 <div class="line"></div>
                                 <div>
                                     <div class="section-titles">${i18n.t('show-requests.date-created')}</div>
-                                    <div>${this.currentItem.dateCreated}</div>
+                                    <div>${this.convertToReadableDate(this.currentItem.dateCreated)}</div>
                                 </div>
                             </div>
                             
@@ -1209,31 +1245,18 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             value=""
                                                             @click="${(event) => {
                                                                 console.log("on show file clicked");
-                                                                //TODO
+                                                                //TODO show file viewer with pdf
                                                             }}"
                                                             title="${i18n.t('show-requests.show-file-button-text')}">
-                                                    <dbp-icon name="magnifier"></dbp-icon>
+                                                    <dbp-icon name="search"></dbp-icon>
                                                 </dbp-button>
-                                                <!-- <dbp-button id="edit-files-btn"
-                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                             value=""
-                                                             @click="${(event) => {
-                                                                 // console.log("on edit files clicked");
-                                                                 // this.showListView = false;
-                                                                 // this.showDetailsView = false;
-                                                                 // this.showEditRecipientView = false;
-                                                                 // this.showEditFilesView = true;
-                                                             }}"
-                                                             title="${i18n.t('show-requests.edit-files-button-text')}">
-                                                     <dbp-icon name="pencil"></dbp-icon>
-                                                 </dbp-button>-->
                                                 <dbp-button id="delete-file-btn"
                                                             class="button is-icon"
                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                             value=""
                                                             @click="${(event) => {
                                                                 console.log("on delete file clicked");
-                                                                //TODO
+                                                                this.deleteFile(file);
                                                             }}"
                                                             title="${i18n.t('show-requests.delete-file-button-text')}">
                                                     <dbp-icon name="trash"></dbp-icon>
@@ -1253,14 +1276,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                     value="${i18n.t('show-requests.add-recipient-button-text')}" 
                                                     @click="${(event) => {
-                        console.log("on add recipient clicked");
-                        MicroModal.show(this._('#add-recipient-modal'), {
-                            disableScroll: true,
-                            onClose: (modal) => {
-                                this.loading = false;
-                            },
-                        });
-                    }}" 
+                                                        console.log("on add recipient clicked");
+                                                        MicroModal.show(this._('#add-recipient-modal'), {
+                                                            disableScroll: true,
+                                                            onClose: (modal) => {
+                                                                this.loading = false;
+                                                            },
+                                                        });
+                                                    }}" 
                                                     title="${i18n.t('show-requests.add-recipient-button-text')}">
                                         ${i18n.t('show-requests.add-recipient-button-text')}
                                     </dbp-loading-button>
@@ -1278,15 +1301,23 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <div>${recipient.addressCountry}</div>
                                         </div>
                                         <div class="right-side">
-                                                <dbp-button id="show-file-btn"
+                                                <dbp-button id="show-recipient-btn"
                                                             class="button is-icon"
                                                             value=""
                                                             @click="${(event) => {
-                                                                console.log("on show file clicked");
-                                                                //TODO
+                                                                console.log("on show recipient clicked");
+                                                                //TODO do not allow editing
+                                                                this.currentRecipient = recipient;
+                                                                MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                    disableScroll: true,
+                                                                    onClose: (modal) => {
+                                                                        this.loading = false;
+                                                                        this.currentRecipient = null;
+                                                                    },
+                                                                });
                                                             }}"
-                                                            title="${i18n.t('show-requests.show-file-button-text')}">
-                                                    <dbp-icon name="magnifier"></dbp-icon>
+                                                            title="${i18n.t('show-requests.show-recipient-button-text')}">
+                                                    <dbp-icon name="search"></dbp-icon>
                                                 </dbp-button>
                                                 <dbp-button id="edit-recipient-btn"
                                                             class="button is-icon"
@@ -1294,10 +1325,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                              value=""
                                                              @click="${(event) => {
                                                                  console.log("on edit recipients clicked");
-                                                                 this.showListView = false;
-                                                                 this.showDetailsView = false;
-                                                                 this.showEditRecipientView = true;
-                                                            }}"
+                                                                 MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                    disableScroll: true,
+                                                                    onClose: (modal) => {
+                                                                        this.loading = false;
+                                                                        this.currentRecipient = null;
+                                                                    },
+                                                                 });
+                                                             }}"
                                                              title="${i18n.t('show-requests.edit-recipients-button-text')}">
                                                      <dbp-icon name="pencil"></dbp-icon>
                                                  </dbp-button>
@@ -1343,135 +1378,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                         </div>
                     ` : ``}
-                </div>
-
-                <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditFilesView })}">
-                    <a href="#" title="${i18n.t('show-requests.back-to-entry-list')}"
-                       @click="${(e) => {
-                           this.showListView = false;
-                           this.showDetailsView = true;
-                           this.showEditRecipientView = false;
-                           this.currentRecipient = null;
-                       }}"
-                    >
-                        <dbp-icon name="chevron-left"></dbp-icon>
-                        ${i18n.t('show-requests.back-to-entry-list')}.
-                    </a>
-                </span>
-
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditFilesView })}">
-                    ${i18n.t('show-requests.recipients')}:
-                </h3>
-
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditFilesView})}">
-                    ${ this.currentItem && this.currentItem.recipients ? html`
-                        <div class="request-item details">
-                            ${this.currentItem.recipients.map(j => html`
-                                <div class="recipient-entry">
-                                    <div class="recipient-data">
-                                        <strong>${j.familyName}</strong> ${j.givenName}<br>
-                                        ${j.postalCode} ${j.addressLocality}<br>
-                                        ${j.streetAddress} ${j.buildingNumber}<br>
-                                        ${j.addressCountry}
-                                    </div>
-                                    <dbp-loading-button class="edit-recipient-btn"
-                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                    value="${i18n.t('show-requests.edit-recipient-button-text')}" 
-                                                    @click="${(event) => {
-                                                        console.log("on edit recipient clicked");
-                                                        this.currentRecipient = j;
-                                                        MicroModal.show(this._('#edit-recipient-modal'), {
-                                                            disableScroll: true,
-                                                            onClose: (modal) => {
-                                                                this.loading = false;
-                                                                this.currentRecipient = null;
-                                                            },
-                                                        });
-                                                    }}" 
-                                                    title="${i18n.t('show-requests.edit-recipient-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.edit-recipient-button-text')}
-                                    </dbp-loading-button>
-                                    <div class="border"></div>
-                                </div>
-                            `)}
-                            <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
-                            <div class="rec-2-btns">
-                                <dbp-loading-button id="add-recipient-2-btn"
-                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                    value="${i18n.t('show-requests.add-recipient-button-text')}" 
-                                                    @click="${(event) => {
-                                                        console.log("on add recipient clicked");
-                                                        MicroModal.show(this._('#add-recipient-modal'), {
-                                                            disableScroll: true,
-                                                            onClose: (modal) => {
-                                                                this.loading = false;
-                                                            },
-                                                        });
-                                                    }}"
-                                                    title="${i18n.t('show-requests.add-recipient-button-text')}"
-                                >${i18n.t('show-requests.add-recipient-button-text')}</dbp-loading-button>
-                            </div>
-                        </div>
-                    ` : `` }
-                </div>
-
-                <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditRecipientView })}">
-                    <a href="#" title="${i18n.t('show-requests.back-to-entry-list')}"
-                       @click="${(e) => {
-                           this.showListView = false;
-                           this.showDetailsView = true;
-                           this.showEditRecipientView = false;
-                           this.showEditFilesView = false;
-                       }}"
-                    >
-                        <dbp-icon name="chevron-left"></dbp-icon>
-                        ${i18n.t('show-requests.back-to-entry-list')}.
-                    </a>
-                </span>
-                
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditRecipientView })}">
-                    ${i18n.t('show-requests.files')}:
-                </h3>
-                
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || this.showDetailsView || this.showEditRecipientView})}">
-                    ${ this.currentItem && this.currentItem.files ? html`
-                        <div class="request-item details">
-                            ${this.currentItem.files.map(j => html`
-                                <div class="file-entry">
-                                    <div class="file-data">
-                                        <strong>${j.name}</strong><br>
-                                        ${j.contentSize}<br>
-                                        ${j.fileFormat}<br>
-                                    </div>
-                                    <dbp-loading-button class="delete-file-btn"
-                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                    value="${i18n.t('show-requests.delete-file-button-text')}" 
-                                                    @click="${(event) => {
-                                                        console.log("on delete file clicked");
-                                                        this.deleteFile(j);
-                                                    }}" 
-                                                    title="${i18n.t('show-requests.delete-file-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.delete-file-button-text')}
-                                    </dbp-loading-button>
-                                </div>
-                                <div class="border"></div>
-                            `)}
-                            <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files.length !== 0})}">${i18n.t('show-requests.no-files-text')}</div>
-                            <div class="rec-2-btns">
-                                <dbp-loading-button id="add-file-2-btn"
-                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                    value="${i18n.t('show-requests.add-files-button-text')}" 
-                                                    @click="${(event) => {
-                                                        console.log("on add file clicked");
-                                                        this.openFileSource();
-                                                    }}" 
-                                                    title="${i18n.t('show-requests.add-files-button-text')}"
-                                >${i18n.t('show-requests.add-files-button-text')}</dbp-loading-button>
-                            </div>
-                        </div>
-                    ` : `` }
                 </div>
             </div>
             
