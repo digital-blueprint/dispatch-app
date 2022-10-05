@@ -722,6 +722,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 display: flex;
                 justify-content: space-between;
             }
+
+            .tabulator-responsive-collapse table tr td:first-child {
+                width: min-content;
+            }
             
             #extendable-searchbar {
                 flex-grow: 1;
@@ -743,6 +747,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 position: absolute;
                 right: 0px;
                 top: 0px;
+            }
+            
+            #open-settings-btn {
+                margin-top: -0.3em;
             }
 
             .edit-items {
@@ -796,7 +804,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 padding-top: 0.5em;
             }
             
-            .request-item.details .recipients-data {
+            .request-item.details .recipients-data,
+            .request-item.details .files-data {
                 display: grid;
                 gap: 1.5em;
                 grid-template-columns: 1fr 1fr 1fr;
@@ -808,7 +817,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             
             .request-item.details .request-buttons {
                 padding-top: 1.5em;
-                border-top: var(--dbp-override-border);
+                border-top: 1px solid #5c5856;
             }
             
             .request-item.details .sender-data-btn {
@@ -928,7 +937,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             #add-recipient-modal-title,
             #edit-recipient-modal-title {
                 margin: 0;
-                padding: 0;
+                padding: 0.25em 0 0 0;
             }
             
             .line {
@@ -964,23 +973,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 flex-direction: row;
                 justify-content: space-between;
             }
-
-            .request-item.details .files-data {
-                display: flex;
-                flex-direction: row;
-                gap: 20px;
-                /*justify-content: space-between;*/
-            }
             
             .card {
                 display: grid;
                 grid-template-columns: 4fr min-content;
                 border: 1px solid #5c5856;
                 min-width: 320px;
-            }
-            
-            .recipient.card {
-                
             }
             
             .left-side {
