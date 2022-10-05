@@ -623,7 +623,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         div.classList.add('tabulator-icon-buttons');
 
         if (item.dateSubmitted) {
-            let icon_search = `<${icon_tag} name="search" class="edit-items"></${icon_tag}>`;
+            let icon_search = `<${icon_tag} name="keyword-research" class="edit-items"></${icon_tag}>`;
             let btn = this.createScopedElement('dbp-button');
             btn.classList.add('button', 'edit-btn', 'is-icon');
             btn.addEventListener('click', async event => {
@@ -1147,7 +1147,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <div id="extendable-searchbar">
                                         <input type="text" id="searchbar" placeholder="Suchen">
                                         <dbp-button class="button" id="search-button" title="Suchen">
-                                            <dbp-icon name="search"></dbp-icon>
+                                            <dbp-icon name="keyword-research"></dbp-icon>
                                         </dbp-button>
                                     </div>
                                 </div>
@@ -1291,7 +1291,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 //TODO show file viewer with pdf
                                                             }}"
                                                             title="${i18n.t('show-requests.show-file-button-text')}">
-                                                    <dbp-icon name="search"></dbp-icon>
+                                                    <dbp-icon name="keyword-research"></dbp-icon>
                                                 </dbp-button>
                                                 <dbp-button id="delete-file-btn"
                                                             class="button is-icon"
@@ -1360,7 +1360,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 });
                                                             }}"
                                                             title="${i18n.t('show-requests.show-recipient-button-text')}">
-                                                    <dbp-icon name="search"></dbp-icon>
+                                                    <dbp-icon name="keyword-research"></dbp-icon>
                                                 </dbp-button>
                                                 <dbp-button id="edit-recipient-btn"
                                                             class="button is-icon"
