@@ -292,6 +292,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients/' + recipientId, options);
     }
 
+    async sendDeleteRecipientRequest(id) {
+        const options = {
+            method: 'DELETE',
+            headers: {
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients/' + id, options);
+    }
+
     async sendAddFileToRequest(id, file) {
         let formData = new FormData();
         formData.append('dispatchRequestIdentifier', id);

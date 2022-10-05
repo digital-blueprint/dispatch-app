@@ -14,6 +14,7 @@ import {FileSource} from '@dbp-toolkit/file-handling';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import * as dispatchStyles from './styles';
 import {name as pkgName} from './../package.json';
+import {humanFileSize} from '@dbp-toolkit/common/i18next';
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -445,6 +446,30 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
     }
 
+    async deleteRecipient(recipient) {
+        const i18n = this._i18n;
+        console.log(recipient);
+
+        let response = await this.sendDeleteRecipientRequest(recipient.identifier);
+        if (response.status === 204) {
+            send({
+                "summary": i18n.t('show-requests.successfully-deleted-recipient-title'),
+                "body": i18n.t('show-requests.successfully-deleted-recipient-text'),
+                "type": "success",
+                "timeout": 5,
+            });
+
+            let id = this.currentItem.identifier;
+            let resp = await this.getDispatchRequest(id);
+            let responseBody = await resp.json();
+            if (responseBody !== undefined && responseBody.status !== 403) {
+                this.currentItem = responseBody;
+            }
+        } else {
+            // TODO error handling
+        }
+    }
+
     async editRequest(event, item) {
         this.showListView = false;
         this.showDetailsView = true;
@@ -802,7 +827,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             
             .sender-data {
                 /*margin: 0.5em 0 0.5em 16px;*/
-                margin: 0.5em 0 0.5em 1px;
+                margin: 0 0 0.5em 1px;
                 line-height: 1.5;
             }
 
@@ -888,7 +913,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             #edit-sender-modal-box, 
             #add-recipient-modal-box,
-            #edit-recipient-modal-box {
+            #edit-recipient-modal-box,
+            #show-recipient-modal-box {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -903,7 +929,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             #edit-sender-modal-box header.modal-header,
             #add-recipient-modal-box header.modal-header,
-            #edit-recipient-modal-box header.modal-header {
+            #edit-recipient-modal-box header.modal-header,
+            #show-recipient-modal-box header.modal-header {
                 padding: 0px;
                 display: flex;
                 justify-content: space-between;
@@ -911,7 +938,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             #edit-sender-modal-box footer.modal-footer .modal-footer-btn,
             #add-recipient-modal-box footer.modal-footer .modal-footer-btn,
-            #edit-recipient-modal-box footer.modal-footer .modal-footer-btn {
+            #edit-recipient-modal-box footer.modal-footer .modal-footer-btn,
+            #show-recipient-modal-box footer.modal-footer .modal-footer-btn {
                 padding: 0px;
                 display: flex;
                 justify-content: space-between;
@@ -919,7 +947,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             #edit-sender-modal-content,
             #add-recipient-modal-content,
-            #edit-recipient-modal-content {
+            #edit-recipient-modal-content,
+            #show-recipient-modal-content {
                 display: flex;
                 padding-left: 0px;
                 padding-right: 0px;
@@ -936,13 +965,27 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             #edit-sender-modal-content .nf-label,
             #add-recipient-modal-content .nf-label,
-            #edit-recipient-modal-content .nf-label {
+            #edit-recipient-modal-content .nf-label{
                 padding-bottom: 2px;
+            }
+            
+            #show-recipient-modal-content .nf-label {
+                background-color: var(--dbp-primary-surface);
+                color: var(--dbp-on-primary-surface);
+                padding: 0px 20px 12px 40px;
+                text-align: right;
+            }
+            
+            #show-recipient-modal-content .modal-content-item {
+                display: grid;
+                grid-template-columns: 1fr 2fr;
+                gap: 10px;
             }
             
             #edit-sender-modal-title,
             #add-recipient-modal-title,
-            #edit-recipient-modal-title {
+            #edit-recipient-modal-title,
+            #show-recipient-modal-title {
                 margin: 0;
                 padding: 0.25em 0 0 0;
             }
@@ -970,7 +1013,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
             
             .section-titles {
-                font-size: 1.5em;
+                font-size: 1.3em;
                 color: #5c5856;
                 text-transform: uppercase;
                 padding-bottom: 0.5em;
@@ -1235,9 +1278,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         <div class="file card">
                                             <div class="left-side">
                                                 <div>${file.name}</div>
-                                                <div>${file.contentSize}</div>
+                                                <div>${humanFileSize(file.contentSize)}</div>
                                                 <div>${file.fileFormat}</div>
-                                                <div>${file.dateCreated}</div>
+                                                <div>${this.convertToReadableDate(file.dateCreated)}</div>
                                             </div>
                                             <div class="right-side">
                                                 <dbp-button id="show-file-btn"
@@ -1306,9 +1349,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             value=""
                                                             @click="${(event) => {
                                                                 console.log("on show recipient clicked");
-                                                                //TODO do not allow editing
                                                                 this.currentRecipient = recipient;
-                                                                MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                
+                                                                MicroModal.show(this._('#show-recipient-modal'), {
                                                                     disableScroll: true,
                                                                     onClose: (modal) => {
                                                                         this.loading = false;
@@ -1325,6 +1368,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                              value=""
                                                              @click="${(event) => {
                                                                  console.log("on edit recipients clicked");
+                                                                 this.currentRecipient = recipient;
                                                                  MicroModal.show(this._('#edit-recipient-modal'), {
                                                                     disableScroll: true,
                                                                     onClose: (modal) => {
@@ -1342,7 +1386,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             value=""
                                                             @click="${(event) => {
                                                                 console.log("on delete recipient clicked");
-                                                                //TODO
+                                                                this.deleteRecipient(recipient);
                                                             }}"
                                                             title="${i18n.t('show-requests.delete-recipient-button-text')}">
                                                     <dbp-icon name="trash"></dbp-icon>
@@ -1913,6 +1957,95 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-ok')}
                                 </button>
                             </div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal micromodal-slide" id="show-recipient-modal" aria-hidden="true">
+                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
+                    <div class="modal-container"
+                         id="show-recipient-modal-box"
+                         role="dialog"
+                         aria-modal="true"
+                         aria-labelledby="show-recipient-modal-title">
+                        <header class="modal-header">
+                            <h3 id="show-recipient-modal-title">
+                                ${i18n.t('show-requests.show-recipient-dialog-title')}
+                            </h3>
+                            <button
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    class="modal-close"
+                                    aria-label="Close modal"
+                                    @click="${() => {
+                                        MicroModal.close(this._('#show-recipient-modal'));
+                                    }}">
+                                <dbp-icon
+                                        title="${i18n.t('show-requests.modal-close')}"
+                                        name="close"
+                                        class="close-icon"></dbp-icon>
+                            </button>
+                        </header>
+                        <main class="modal-content" id="show-recipient-modal-content">
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-recipient-fn-dialog-label')}:
+                                </div>
+                                <div>
+                                    ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-recipient-gn-dialog-label')}:
+                                </div>
+                                <div>
+                                    ${this.currentRecipient && this.currentRecipient.givenName ? this.currentRecipient.givenName : ``}
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}:
+                                </div>
+                                <div>
+                                    ${this.currentRecipient && this.currentRecipient.addressCountry ? this.currentRecipient.addressCountry : ``}
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-recipient-pc-dialog-label')}:
+                                </div>
+                                <div>
+                                    ${this.currentRecipient && this.currentRecipient.postalCode ? this.currentRecipient.postalCode : ``}
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-recipient-al-dialog-label')}:
+                                </div>
+                                <div>
+                                    ${this.currentRecipient && this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : ``}
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-recipient-sa-dialog-label')}:
+                                </div>
+                                <div>
+                                    ${this.currentRecipient && this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : ``}
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-recipient-bn-dialog-label')}:
+                                </div>
+                                <div>
+                                    ${this.currentRecipient && this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : ``}
+                                </div>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <div class="modal-footer-btn"></div>
                         </footer>
                     </div>
                 </div>

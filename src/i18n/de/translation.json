@@ -84,6 +84,7 @@
         "edit-recipients-button-text": "Bearbeiten",
         "edit-recipient-button-text": "Empfänger bearbeiten",
         "edit-recipient-dialog-title": "Empfänger bearbeiten",
+        "show-recipient-dialog-title": "Empfängerdetails",
         "edit-recipient-fn-dialog-label": "Familienname",
         "edit-recipient-gn-dialog-label": "Vorname",
         "edit-recipient-ac-dialog-label": "Land",
@@ -103,7 +104,9 @@
         "edit-files-button-text": "Bearbeiten",
         "delete-file-button-text": "Löschen",
         "successfully-deleted-file-title": "Erfolgreich gelöscht!",
-        "successfully-deleted-file-text": "Die Datei wurde erfolgreich gelöscht."
+        "successfully-deleted-file-text": "Die Datei wurde erfolgreich gelöscht.",
+        "successfully-deleted-recipient-title": "Erfolgreich gelöscht!",
+        "successfully-deleted-recipient-text": "Der Empfänger wurde erfolgreich gelöscht."
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."

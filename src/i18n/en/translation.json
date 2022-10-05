@@ -80,6 +80,7 @@
         "edit-recipients-button-text": "Edit",
         "edit-recipient-button-text": "Edit recipient",
         "edit-recipient-dialog-title": "Edit recipient",
+        "show-recipient-dialog-title": "Show recipient",
         "edit-recipient-fn-dialog-label": "Family name",
         "edit-recipient-gn-dialog-label": "Given name",
         "edit-recipient-ac-dialog-label": "Country",
@@ -99,7 +100,9 @@
         "edit-files-button-text": "Edit",
         "delete-file-button-text": "Delete",
         "successfully-deleted-file-title": "Successfully deleted!",
-        "successfully-deleted-file-text": "The file was successfully deleted."
+        "successfully-deleted-file-text": "The file was successfully deleted.",
+        "successfully-deleted-recipient-title": "Successfully deleted!",
+        "successfully-deleted-recipient-text": "The recipient was successfully deleted."
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."
