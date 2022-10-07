@@ -3,12 +3,16 @@
         "description-text": "Here you can create a new dispatch order. After you have created a dispatch order, you can view it in the list of your dispatch orders, edit it and then release it for dispatch.",
         "successfully-requested-title": "Successfully created",
         "successfully-requested-text": "The dispatch order has been created successfully. You can now edit it in the next step.",
-        "sender-family-name": "Sender family name",
-        "sender-given-name": "Sender given name",
-        "sender-postal-address": "Postal address",
+        "sender-family-name": "Family name",
+        "sender-given-name": "Given name",
+        "sender-address-country":  "Country",
+        "sender-postal-code":  "Postal code",
+        "sender-address-locality": "Address locality",
+        "sender-street-address":  "Street address",
+        "sender-building-number": "Building number",
         "create-request-button-text": "Create dispatch request",
         "empty-fields-given": "Please fill in all fields!",
-        "error-requested-title": "Errr!",
+        "error-requested-title": "Error!",
         "error-requested-text": "There was an error."
     },
     "show-requests": {
@@ -102,7 +106,8 @@
         "successfully-deleted-file-title": "Successfully deleted!",
         "successfully-deleted-file-text": "The file was successfully deleted.",
         "successfully-deleted-recipient-title": "Successfully deleted!",
-        "successfully-deleted-recipient-text": "The recipient was successfully deleted."
+        "successfully-deleted-recipient-text": "The recipient was successfully deleted.",
+        "show-detailed-dispatch-order": "Show dispatch order"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."
