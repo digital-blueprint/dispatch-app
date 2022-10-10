@@ -1117,6 +1117,41 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 gap: 10px;
             }
              */
+            
+            @media only screen and (orientation: portrait) and (max-width: 768px) {
+                
+                #searchbar {
+                    width: 100%;
+                    height: 40px;
+                }
+                
+                #search-button {
+                    position: absolute;
+                    right: 0px;
+                    top: 0px;
+                    height: 40px;
+                    box-sizing: border-box;
+                }
+                
+                #open-settings-btn {
+                    margin-top: 0;
+                }
+                
+                .table-wrapper {
+                    flex-direction: column;
+                    gap: 1em;
+                }
+                
+                .edit-selection-buttons {
+                    display: flex;
+                    flex-direction: column-reverse;
+                    gap: 1em;
+                }
+                
+                .filter-buttons {
+                    width: calc(100% - 45px);
+                }
+            }
 
             @media only screen and (max-width: 859.9px) {
                 .request-item.details .recipients-data,
@@ -1251,7 +1286,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="search-wrapper ">
                                     <div id="extendable-searchbar">
                                         <input type="text" id="searchbar" placeholder="Suchen">
-                                        <dbp-button class="button" id="search-button" title="Suchen">
+                                        <dbp-button class="button is-icon" id="search-button" title="Suchen">
                                             <dbp-icon name="search"></dbp-icon>
                                         </dbp-button>
                                     </div>
