@@ -80,6 +80,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             switch (propName) {
                 case 'lang':
                     this._i18n.changeLanguage(this.lang);
+                    if (this.dispatchRequestsTable) {
+                        this.dispatchRequestsTable.setLocale(this.lang);
+                    }
                     break;
             }
         });
@@ -236,6 +239,36 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         },
                     },
                 ],
+                langs: {
+                    'en': {
+                        'pagination': {
+                            'page_size': 'Page size',
+                            'page_size_title': 'Page size',
+                            'first': '<span class="mobile-hidden">First</span>',
+                            'first_title': 'First Page',
+                            'last': '<span class="mobile-hidden">Last</span>',
+                            'last_title': 'Last Page',
+                            'prev': '<span class="mobile-hidden">Prev</span>',
+                            'prev_title': 'Prev Page',
+                            'next': '<span class="mobile-hidden">Next</span>',
+                            'next_title': 'Next Page'
+                        }
+                    },
+                    'de': {
+                        'pagination': {
+                            'page_size': 'Einträge pro Seite',
+                            'page_size_title': 'Einträge pro Seite',
+                            'first': '<span class="mobile-hidden">Erste</span>',
+                            'first_title': 'Erste Seite',
+                            'last': '<span class="mobile-hidden">Letzte</span>',
+                            'last_title': 'Letzte Seite',
+                            'prev': '<span class="mobile-hidden">Vorherige</span>',
+                            'prev_title': 'Vorherige Seite',
+                            'next': '<span class="mobile-hidden">Nächste</span>',
+                            'next_title': 'Nächste Seite'
+                        }
+                    }
+                },
                 initialSort: [
                     { column: 'dateCreated', dir: 'desc' },
                     { column: 'status', dir: 'desc' },
@@ -243,6 +276,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
             this.dispatchRequestsTable.on("dataLoaded", this.dataLoadedFunction.bind(this));
             this.dispatchRequestsTable.on("tableBuilt", this.tableBuiltFunction.bind(this));
+            this.dispatchRequestsTable.setLocale(this.lang);
         });
     }
 
@@ -707,6 +741,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 this.requestList = this.parseListOfRequests(responseBody);
                 let tableObject = this.createTableObject(this.requestList);
                 this.dispatchRequestsTable.setData(tableObject);
+                this.dispatchRequestsTable.setLocale(this.lang);
             }
         } finally {
             this.initialRequestsLoading = false;
