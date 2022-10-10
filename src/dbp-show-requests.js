@@ -834,7 +834,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             .request-buttons {
                 display: flex;
                 justify-content: space-between;
-                padding-top: 0.5em;
+                /*padding-top: 0.5em;*/
+                padding-top: 1.5em;
+
+                /*flex-direction: row;*/
+                /*justify-content: flex-end;*/
+                /*gap: 0.5em;*/
             }
             
             .request-item.details .recipients-data,
@@ -1072,7 +1077,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             
             .back-container {
                 padding-top: 1em;
-                padding-bottom: 0.5em;
+                /*padding-bottom: 0.5em;*/
             }
             
             .section-title-counts {
@@ -1112,6 +1117,75 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 gap: 10px;
             }
              */
+
+            @media only screen and (max-width: 859.9px) {
+                .request-item.details .recipients-data,
+                .request-item.details .files-data {
+                    gap: 1.5em;
+                    grid-template-columns: 1fr;
+                }
+                
+                .details.header {
+                    grid-template-columns: unset;
+                    gap: 0.5em;
+                    text-align: left;
+                }
+                
+                .header-btn {
+                    flex-direction: column;
+                    padding-bottom: 1em;
+                }
+                
+                .request-buttons {
+                    flex-direction: column-reverse;
+                    gap: 1em;
+                }
+                
+                .request-buttons .submit-button,
+                .request-buttons .edit-buttons {
+                    display: flex;
+                    flex-direction: column;
+                }
+                
+                .details.sender .header-btn {
+                    flex-direction: row;
+                    padding-bottom: 0;
+                }
+                
+                .sender-data {
+                        margin-bottom: 0;
+                }
+            }
+            
+            @media only screen and (max-width: 369.9px) {
+                .card {
+                    min-width: 30px;
+                    max-width: 320px;
+                }
+            } 
+
+            @media only screen and (min-width: 370px) and (max-width: 859.9px) {
+                .card {
+                    min-width: 320px;
+                    max-width: unset;
+                }
+            }
+
+            @media only screen and (min-width: 860px) and (max-width: 949.9px) {
+                .request-item.details .recipients-data,
+                .request-item.details .files-data {
+                    gap: 0.5em;
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+
+            @media only screen and (min-width: 950px) and (max-width: 1250px) {
+                .request-item.details .recipients-data,
+                .request-item.details .files-data {
+                    gap: 1.5em;
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
         `;
     }
 
@@ -1229,6 +1303,31 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             ${i18n.t('show-requests.back-to-list')}.
                         </a>
                     </span>
+                    ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
+                                <div class="request-buttons">
+                                    <div class="edit-buttons">
+                                        <dbp-loading-button id="delete-btn" 
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
+                                                            value="${i18n.t('show-requests.delete-button-text')}" 
+                                                            @click="${(event) => { this.deleteRequest(event, this.currentItem); }}" 
+                                                            title="${i18n.t('show-requests.delete-button-text')}"
+                                        >
+                                            ${i18n.t('show-requests.delete-button-text')}
+                                        </dbp-loading-button>
+                                    </div>
+                                    <div class="submit-button">
+                                        <dbp-loading-button type="is-primary"
+                                                            id="submit-btn" 
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
+                                                            value="${i18n.t('show-requests.submit-button-text')}" 
+                                                            @click="${(event) => { this.submitRequest(event, this.currentItem); }}" 
+                                                            title="${i18n.t('show-requests.submit-button-text')}"
+                                        >
+                                            ${i18n.t('show-requests.submit-button-text')}
+                                        </dbp-loading-button>
+                                    </div>
+                                </div>` : ``
+                    }
                 </div>
                 
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView})}">
@@ -1441,31 +1540,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
                               
                             </div>
-                            ${!this.currentItem.dateSubmitted ? html`
-                                <div class="request-buttons">
-                                    <div class="edit-buttons">
-                                        <dbp-loading-button id="delete-btn" 
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
-                                                            value="${i18n.t('show-requests.delete-button-text')}" 
-                                                            @click="${(event) => { this.deleteRequest(event, this.currentItem); }}" 
-                                                            title="${i18n.t('show-requests.delete-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.delete-button-text')}
-                                        </dbp-loading-button>
-                                    </div>
-                                    <div class="submit-button">
-                                        <dbp-loading-button type="is-primary"
-                                                            id="submit-btn" 
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
-                                                            value="${i18n.t('show-requests.submit-button-text')}" 
-                                                            @click="${(event) => { this.submitRequest(event, this.currentItem); }}" 
-                                                            title="${i18n.t('show-requests.submit-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.submit-button-text')}
-                                        </dbp-loading-button>
-                                    </div>
-                                </div>` : ``
-                            }
                         </div>
                     ` : ``}
                 </div>
