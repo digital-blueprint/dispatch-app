@@ -1,10 +1,10 @@
 import {createInstance} from './i18n.js';
-import {css, html} from 'lit';
+import {css, unsafeCSS, html} from 'lit';
 import {ScopedElementsMixin} from '@open-wc/scoped-elements';
 import DBPDispatchLitElement from "./dbp-dispatch-lit-element";
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
-import {LoadingButton, Icon, MiniSpinner, InlineNotification} from "@dbp-toolkit/common";
+import {LoadingButton, Icon, MiniSpinner, InlineNotification, getIconSVGURL} from "@dbp-toolkit/common";
 import {classMap} from "lit/directives/class-map.js";
 import { send } from '@dbp-toolkit/common/notification';
 import {Activity} from './activity.js';
@@ -107,6 +107,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.updateComplete.then(() => {
             const that = this;
 
+            let paginationElement = this._('.tabulator-paginator');
+
             // see: http://tabulator.info/docs/5.1
             this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
                 layout: 'fitColumns',
@@ -116,7 +118,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 pagination: 'local',
                 paginationSize: 10,
                 paginationSizeSelector: true,
-                // columnHeaderVertAlign: 'middle',
+                paginationElement: paginationElement,
                 columnHeaderVertAlign: 'bottom', //align header contents to bottom of cell
                 columnDefaults: {
                     vertAlign: 'middle',
@@ -276,7 +278,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
             this.dispatchRequestsTable.on("dataLoaded", this.dataLoadedFunction.bind(this));
             this.dispatchRequestsTable.on("tableBuilt", this.tableBuiltFunction.bind(this));
-            this.dispatchRequestsTable.setLocale(this.lang);
         });
     }
 
@@ -1051,6 +1052,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 text-transform: uppercase;
                 padding-bottom: 0.5em;
             }
+            
             .header-btn {
                 display: flex;
                 flex-direction: row;
@@ -1152,6 +1154,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 gap: 10px;
             }
              */
+
+            .tabulator .tabulator-footer .tabulator-paginator .tabulator-page[disabled] {
+                opacity: 0.4;
+            }
+            
+            .tabulator .tabulator-footer .tabulator-page {
+                display: inline-block;
+                margin: 0 2px;
+                padding: 2px 5px;
+                border: 1px solid #aaa;
+                border-radius: 3px;
+                background: hsla(0,0%,100%,.2);
+            }
             
             @media only screen and (orientation: portrait) and (max-width: 768px) {
                 
@@ -1185,6 +1200,123 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 
                 .filter-buttons {
                     width: calc(100% - 45px);
+                }
+
+                .mobile-hidden {
+                    display: none;
+                }
+                
+                button[data-page="prev"], button[data-page="next"], button[data-page="first"], button[data-page="last"] {
+                    display: block;
+                    white-space: nowrap !important;
+                    overflow: hidden;
+                    line-height: 0;
+                }
+
+                button[data-page="prev"]:after, button[data-page="next"]:after, button[data-page="first"]:after, button[data-page="last"]:after {
+                    content: '\\00a0\\00a0\\00a0\\00a0';
+                    background-color: var(--dbp-content);
+                    -webkit-mask-repeat: no-repeat;
+                    mask-repeat: no-repeat;
+                    -webkit-mask-position: center center;
+                    mask-position: center center;
+                    padding: 0 0 0.25% 0;
+                    -webkit-mask-size: 1.5rem !important;
+                    mask-size: 1.4rem !important;
+                }
+
+                .tabulator .tabulator-footer .tabulator-paginator .tabulator-page {
+                    border: none;
+                }
+                
+                button[data-page="prev"]:after {
+                    -webkit-mask-image: url("${unsafeCSS(getIconSVGURL('chevron-left'))}");
+                    mask-image: url("${unsafeCSS(getIconSVGURL('chevron-left'))}");
+                }
+
+                button[data-page="next"]:after {
+                    -webkit-mask-image: url("${unsafeCSS(getIconSVGURL('chevron-right'))}");
+                    mask-image: url("${unsafeCSS(getIconSVGURL('chevron-right'))}");
+                }
+
+                button[data-page="first"]:after {
+                    content: '\\00a0\\00a0\\00a0\\00a0\\00a0\\00a0\\00a0';
+                    -webkit-mask-image: url("${unsafeCSS(getIconSVGURL('angle-double-left'))}");
+                    mask-image: url("${unsafeCSS(getIconSVGURL('angle-double-left'))}");
+                }
+
+                button[data-page="last"]:after {
+                    content: '\\00a0\\00a0\\00a0\\00a0\\00a0\\00a0\\00a0';
+                    -webkit-mask-image: url("${unsafeCSS(getIconSVGURL('angle-double-right'))}");
+                    mask-image: url("${unsafeCSS(getIconSVGURL('angle-double-right'))}");
+                }
+
+                .tabulator .tabulator-footer .tabulator-footer-contents .tabulator-paginator .tabulator-pages {
+                    display: none;
+                }
+                
+                .tabulator .tabulator-footer .tabulator-paginator {
+                    text-align: center;
+                }
+                
+                .tabulator .tabulator-footer .tabulator-paginator label {
+                    display: none;
+                }
+                
+                .tabulator .tabulator-footer .tabulator-paginator .tabulator-page {
+                    border: none;
+                }
+                
+                .tabulator .tabulator-footer .tabulator-paginator .tabulator-page-size {
+                    padding-right: 1.5em;
+                    background-size: auto 40%;
+                }
+                
+                #custom-pagination {
+                    position: sticky;
+                    bottom: 0px;
+                    z-index: 10;
+                }
+                
+                .tabulator-footer {
+                    position: sticky;
+                    bottom: 0px;
+                    z-index: 10;
+                }
+                                
+                .tabulator {
+                    overflow: visible;
+                }
+
+                .element-right {
+                    margin-left: 12px;
+                    padding: 0 0 12px 0;
+                }
+
+                .element-right.first {
+                    padding-top: 0;
+                }
+
+                .element-left {
+                    text-align: left;
+                    padding: 10px 5px 10px 5px;
+                    background-color: inherit;
+                    color: inherit;
+                    font-weight: 400;
+                    border-top: 1px solid #3333;
+                }
+
+                .element-left.first {
+                    margin-top: 10px;
+                    border-top: 0;
+                }
+
+                .btn-row-left {
+                    display: flex;
+                    justify-content: space-between;
+                    flex-direction: row;
+                    gap: 4px;
+                    height: 40px;
                 }
             }
 
@@ -1356,6 +1488,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         </div>
                         <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
                             <table id="dispatch-requests-table" class=""></table>
+                            <div class='tabulator' id='custom-pagination'>
+                                <div class='tabulator-footer'>
+                                    <div class='tabulator-footer-contents'>
+                                        <span class='tabulator-paginator'></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
