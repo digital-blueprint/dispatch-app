@@ -869,14 +869,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             .request-buttons {
                 display: flex;
-                justify-content: space-between;
-                /*padding-top: 0.5em;*/
-                padding-top: 1.5em;
-
-                /*flex-direction: row;*/
-                /*justify-content: flex-end;*/
-                /*gap: 0.5em;*/
+                justify-content: flex-end;
+                gap: 3px;
+                margin-top: -1.5em;
+                padding-bottom: 1.5em;
             }
+            
             
             .request-item.details .recipients-data,
             .request-item.details .files-data {
@@ -1561,6 +1559,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             ${i18n.t('show-requests.back-to-list')}.
                         </a>
                     </span>
+                </div>
+                
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView})}">
+                    ${this.currentItem && this.currentItem.dateSubmitted ? i18n.t('show-requests.show-detailed-dispatch-order') : i18n.t('show-requests.detailed-dispatch-order')}:
+                </h3>
+
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView })}">
+
                     ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
                                 <div class="request-buttons">
                                     <div class="edit-buttons">
@@ -1586,13 +1592,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
                                 </div>` : ``
                     }
-                </div>
-                
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView})}">
-                    ${this.currentItem && this.currentItem.dateSubmitted ? i18n.t('show-requests.show-detailed-dispatch-order') : i18n.t('show-requests.detailed-dispatch-order')}:
-                </h3>
-
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView })}">
+                    
                     ${ this.currentItem ? html`
                         <div class="request-item
                          details">
