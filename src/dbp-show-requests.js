@@ -970,7 +970,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 flex-direction: column;
                 justify-content: space-between;
                 padding: 15px 20px 20px;
-                height: fit-content;
+                height: auto;
+                min-height: fit-content;
                 min-width: 320px;
                 max-width: 400px;
             }
@@ -984,6 +985,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 justify-content: space-between;
             }
 
+            #show-recipient-modal-box header.modal-header {
+                padding: 0 10px 20px 0;
+            }
+
             #edit-sender-modal-box footer.modal-footer .modal-footer-btn,
             #add-recipient-modal-box footer.modal-footer .modal-footer-btn,
             #edit-recipient-modal-box footer.modal-footer .modal-footer-btn,
@@ -992,6 +997,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 display: flex;
                 justify-content: space-between;
             }
+            
+             #show-recipient-modal-box footer.modal-footer .modal-footer-btn {
+                padding: 0 10px 10px 0;
+              }
 
             #edit-sender-modal-content,
             #add-recipient-modal-content,
@@ -1167,6 +1176,28 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 border-radius: 3px;
                 background: hsla(0,0%,100%,.2);
             }
+
+            .tabulator-cell[tabulator-field=controls] {
+                justify-content: flex-end!important;
+            }
+            
+            .tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-content .tabulator-col-sorter {
+                position: unset;
+            }
+            
+            .tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-content .tabulator-col-title-holder {
+                display: inline-flex;
+            }
+            
+            #search-button dbp-icon {
+                top: -4px;
+            }
+            
+            #open-settings-btn dbp-icon,
+            .card .button.is-icon dbp-icon,
+            .header-btn .button.is-icon dbp-icon {
+                font-size: 1.3em;
+            }
             
             @media only screen and (orientation: portrait) and (max-width: 768px) {
                 
@@ -1182,7 +1213,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     height: 40px;
                     box-sizing: border-box;
                 }
-                
+
+                #search-button dbp-icon {
+                    top: 0px;
+                }
+
+
                 #open-settings-btn {
                     margin-top: 0;
                 }
@@ -1200,6 +1236,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 
                 .filter-buttons {
                     width: calc(100% - 45px);
+                }
+
+                #show-recipient-modal-box {
+                    height: 100%;
+                }
+                
+                #show-recipient-modal-box header.modal-header {
+                    padding: 0;
+                }
+
+                #show-recipient-modal-box .detailed-recipient-modal-content-wrapper {
+                    grid-template-columns: unset;
+                    max-height: calc(100vh - 70px);
                 }
 
                 .mobile-hidden {
