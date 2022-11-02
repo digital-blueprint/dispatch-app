@@ -35,7 +35,7 @@
         "mocha": "^10.0.0",
         "playwright-core": "^1.21.0",
         "prettier": "^2.6.2",
-        "rollup": "^2.18.1",
+        "rollup": "^3.2.5",
         "rollup-plugin-copy": "^3.3.0",
         "rollup-plugin-delete": "^2.0.0",
         "rollup-plugin-emit-ejs": "^3.1.0",
@@ -59,17 +59,17 @@
         "lit": "^2.0.0"
     },
     "scripts": {
-        "build": "rollup -c",
+        "build": "rollup --bundleConfigAsCjs -c",
         "i18next": "i18next",
         "format": "yarn run format:eslint && yarn run format:prettier",
         "format:eslint": "eslint \"**/*.{js,ts}\" --fix",
         "format:prettier": "prettier \"**/*.{js,json,ts}\" --write",
-        "watch": "rollup -c --watch",
+        "watch": "rollup --bundleConfigAsCjs -c --watch",
         "watch-local": "yarn run watch",
-        "watch-full": "rollup -c --watch --environment FORCE_FULL",
-        "watch-bs": "rollup -c --watch --environment APP_ENV:bs",
-        "test": "rollup -c --environment APP_ENV:test && karma start --singleRun",
-        "test-full": "rollup -c --environment FORCE_FULL,APP_ENV:test && karma start --singleRun",
+        "watch-full": "rollup --bundleConfigAsCjs -c --watch --environment FORCE_FULL",
+        "watch-bs": "rollup --bundleConfigAsCjs -c --watch --environment APP_ENV:bs",
+        "test": "rollup --bundleConfigAsCjs -c --environment APP_ENV:test && karma start --singleRun",
+        "test-full": "rollup --bundleConfigAsCjs -c --environment FORCE_FULL,APP_ENV:test && karma start --singleRun",
         "lint": "eslint .",
         "publish": "sed -i 's/\"private\": true/\"private\": false/' package.json && can-npm-publish --verbose 2>&1 && npm publish --access public 2>&1; sed -i 's/\"private\": false/\"private\": true/' package.json"
     }
