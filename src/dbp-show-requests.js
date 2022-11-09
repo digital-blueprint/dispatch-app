@@ -4,7 +4,7 @@ import {ScopedElementsMixin} from '@open-wc/scoped-elements';
 import DBPDispatchLitElement from "./dbp-dispatch-lit-element";
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
-import {LoadingButton, Icon, MiniSpinner, InlineNotification, getIconSVGURL} from "@dbp-toolkit/common";
+import {LoadingButton, IconButton, Icon, MiniSpinner, InlineNotification, getIconSVGURL} from "@dbp-toolkit/common";
 import {classMap} from "lit/directives/class-map.js";
 import { send } from '@dbp-toolkit/common/notification';
 import {Activity} from './activity.js';
@@ -48,6 +48,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-icon': Icon,
             'dbp-mini-spinner': MiniSpinner,
             'dbp-loading-button': LoadingButton,
+            'dbp-icon-button': IconButton,
             'dbp-inline-notification': InlineNotification,
             'dbp-file-source': FileSource,
         };
@@ -683,51 +684,42 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     setControlsHtml(item) {
-        const icon_tag = this.getScopedTagName('dbp-icon');
         let div = this.createScopedElement('div');
         div.classList.add('tabulator-icon-buttons');
 
         if (item.dateSubmitted) {
-            let icon_search = `<${icon_tag} name="keyword-research" class="edit-items"></${icon_tag}>`;
-            let btn = this.createScopedElement('button');
-            btn.classList.add('button', 'edit-btn', 'is-icon');
+            let btn = this.createScopedElement('dbp-icon-button');
             btn.addEventListener('click', async event => {
                 this.editRequest(event, item);
                 event.stopPropagation();
             });
-            btn.innerHTML += icon_search;
+            btn.setAttribute('icon-name', 'keyword-research');
             div.appendChild(btn);
         } else {
-            let icon_edit = `<${icon_tag} name="pencil" class="edit-items" 
-                                @click="${(event) => { this.editRequest(event, item); }}"
-                             ></${icon_tag}>`;
-            let btn_edit = this.createScopedElement('button');
-            btn_edit.classList.add('button', 'edit-btn', 'is-icon');
+            let btn_edit = this.createScopedElement('dbp-icon-button');
             btn_edit.addEventListener('click', async event => {
                 this.editRequest(event, item);
                 event.stopPropagation();
             });
-            btn_edit.innerHTML += icon_edit;
+            btn_edit.setAttribute('icon-name', 'pencil');
             div.appendChild(btn_edit);
 
-            let icon_delete = `<${icon_tag} name="trash" class="edit-items"></${icon_tag}>`;
-            let btn_delete = this.createScopedElement('button');
-            btn_delete.classList.add('button', 'edit-btn', 'is-icon');
+            let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.addEventListener('click', async event => {
                 this.deleteRequest(event, item);
                 event.stopPropagation();
             });
-            btn_delete.innerHTML += icon_delete;
+            btn_delete.setAttribute('icon-name', 'trash');
+
             div.appendChild(btn_delete);
 
-            let icon_submit = `<${icon_tag} name="send-diagonal" class="edit-items"></${icon_tag}>`;
-            let btn_submit = this.createScopedElement('button');
-            btn_submit.classList.add('button', 'edit-btn', 'is-icon');
+            let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.addEventListener('click', async event => {
                 this.submitRequest(event, item);
                 event.stopPropagation();
             });
-            btn_submit.innerHTML += icon_submit;
+            btn_submit.setAttribute('icon-name', 'send-diagonal');
+
             div.appendChild(btn_submit);
         }
 
@@ -807,6 +799,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             
             .tabulator-icon-buttons {
                 display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 0.5rem;
             }
 
             .search-wrapper {
@@ -818,6 +813,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             .table-wrapper {
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
             }
 
             .tabulator-responsive-collapse table tr td:first-child {
@@ -825,6 +821,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
             
             #extendable-searchbar {
+                display: flex;
                 flex-grow: 1;
                 position: relative;
             }
@@ -841,9 +838,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
             
             #search-button {
-                position: absolute;
-                right: 0px;
-                top: 0px;
+                margin-left: -40px;
+                font-size: 1rem;
             }
             
             #open-settings-btn {
@@ -852,7 +848,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             .edit-items {
                 font-size: 1.6rem;
-                margin-right: 1rem;
             }
             
             .tabulator-row, .tabulator-row.tabulator-row-even, .tabulator-row.tabulator-row-odd {
@@ -969,6 +964,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             .selected-buttons {
                 display: flex;
                 flex-direction: row;
+                align-items: center;
+                gap: 0.5rem;
                 justify-content: space-between;
             }
 
@@ -1530,18 +1527,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="search-wrapper ">
                                     <div id="extendable-searchbar">
                                         <input type="text" id="searchbar" placeholder="Suchen">
-                                        <button class="button is-icon" id="search-button" title="Suchen">
-                                            <dbp-icon name="search"></dbp-icon>
-                                        </button>
+                                        <dbp-icon-button id="search-button" title="Suchen" icon-name="search"></dbp-icon-button>
                                     </div>
                                 </div>
-                                <button class="button is-icon ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
+                                <dbp-icon-button class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
                                             ?disabled="${this.loading}"
-                                            value=""
-                                            @click="${(event) => { console.log('open settings'); }}"
-                                            title="">
-                                    <dbp-icon name="iconoir_settings"></dbp-icon>
-                                </button>
+                                            @click="${() => { console.log('open settings'); }}"
+                                            title="TODO"
+                                            icon-name="iconoir_settings"></dbp-icon-button>
                             </div>
                             <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
                                 <dbp-loading-button id="delete-all-btn"
@@ -1647,10 +1640,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="header-btn">
                                     <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                                     ${!this.currentItem.dateSubmitted ? html`
-                                        <button id="edit-btn"
-                                                    class="button is-icon"
+                                        <dbp-icon-button id="edit-btn"
                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                    value=""
                                                     @click="${(event) => {
                                                         console.log("on edit sender clicked");
                                                         MicroModal.show(this._('#edit-sender-modal'), {
@@ -1660,9 +1651,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             },
                                                         });
                                                     }}"
-                                                    title="${i18n.t('show-requests.edit-sender-button-text')}">
-                                            <dbp-icon name="pencil"></dbp-icon>
-                                        </button>` : ``}
+                                                    title="${i18n.t('show-requests.edit-sender-button-text')}" 
+                                                    icon-name="pencil"></dbp-icon-button>` : ``}
                                 </div>
                                 <div class="sender-data">
                                     ${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
@@ -1706,28 +1696,22 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <div>${this.convertToReadableDate(file.dateCreated)}</div>
                                             </div>
                                             <div class="right-side">
-                                                <button id="show-file-btn"
-                                                            class="button is-icon"
-                                                            value=""
+                                                <dbp-icon-button id="show-file-btn"
                                                             @click="${(event) => {
                                                                 console.log("on show file clicked");
                                                                 //TODO show file viewer with pdf
                                                             }}"
-                                                            title="${i18n.t('show-requests.show-file-button-text')}">
-                                                    <dbp-icon name="keyword-research"></dbp-icon>
-                                                </button>
+                                                            title="${i18n.t('show-requests.show-file-button-text')}"
+                                                            icon-name="keyword-research"></dbp-icon-button>
                                                 ${!this.currentItem.dateSubmitted ? html`
-                                                    <button id="delete-file-btn"
-                                                                class="button is-icon"
+                                                    <dbp-icon-button id="delete-file-btn"
                                                                 ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                                value=""
                                                                 @click="${(event) => {
                                                                     console.log("on delete file clicked");
                                                                     this.deleteFile(file);
                                                                 }}"
-                                                                title="${i18n.t('show-requests.delete-file-button-text')}">
-                                                        <dbp-icon name="trash"></dbp-icon>
-                                                    </button>` : ``
+                                                                title="${i18n.t('show-requests.delete-file-button-text')}" 
+                                                                icon-name="trash"></dbp-icon-button>` : ``
                                                 }
                                             </div>
                                         </div>
@@ -1773,9 +1757,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <div>${recipient.addressCountry}</div>
                                         </div>
                                         <div class="right-side">
-                                                <button id="show-recipient-btn"
-                                                            class="button is-icon"
-                                                            value=""
+                                                <dbp-icon-button id="show-recipient-btn"
                                                             @click="${(event) => {
                                                                 console.log("on show recipient clicked");
                                                                 this.currentRecipient = recipient;
@@ -1788,14 +1770,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                     },
                                                                 });
                                                             }}"
-                                                            title="${i18n.t('show-requests.show-recipient-button-text')}">
-                                                    <dbp-icon name="keyword-research"></dbp-icon>
-                                                </button>
+                                                            title="${i18n.t('show-requests.show-recipient-button-text')}"
+                                                            icon-name="keyword-research"></dbp-icon></dbp-icon-button>
                                                 ${!this.currentItem.dateSubmitted ? html`
-                                                    <button id="edit-recipient-btn"
-                                                                class="button is-icon"
+                                                    <dbp-icon-button id="edit-recipient-btn"
                                                                  ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                                 value=""
                                                                  @click="${(event) => {
                                                                      console.log("on edit recipients clicked");
                                                                      this.currentRecipient = recipient;
@@ -1807,20 +1786,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                         },
                                                                      });
                                                                  }}"
-                                                                 title="${i18n.t('show-requests.edit-recipients-button-text')}">
-                                                         <dbp-icon name="pencil"></dbp-icon>
-                                                     </button>
-                                                    <button id="delete-recipient-btn"
-                                                                class="button is-icon"
+                                                                 title="${i18n.t('show-requests.edit-recipients-button-text')}"
+                                                                 icon-name="pencil"></dbp-icon-button>
+                                                    <dbp-icon-button id="delete-recipient-btn"
                                                                 ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                                value=""
                                                                 @click="${(event) => {
                                                                     console.log("on delete recipient clicked");
                                                                     this.deleteRecipient(recipient);
                                                                 }}"
-                                                                title="${i18n.t('show-requests.delete-recipient-button-text')}">
-                                                        <dbp-icon name="trash"></dbp-icon>
-                                                    </button>` : ``
+                                                                title="${i18n.t('show-requests.delete-recipient-button-text')}"
+                                                                icon-name="trash"></dbp-icon-button>` : ``
                                                 }
                                         </div>
                                     </div>
