@@ -841,10 +841,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 margin-left: -40px;
                 font-size: 1rem;
             }
-            
-            #open-settings-btn {
-                margin-top: -0.3em;
-            }
 
             .edit-items {
                 font-size: 1.6rem;
