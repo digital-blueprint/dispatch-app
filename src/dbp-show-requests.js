@@ -689,7 +689,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         if (item.dateSubmitted) {
             let icon_search = `<${icon_tag} name="keyword-research" class="edit-items"></${icon_tag}>`;
-            let btn = this.createScopedElement('dbp-button');
+            let btn = this.createScopedElement('button');
             btn.classList.add('button', 'edit-btn', 'is-icon');
             btn.addEventListener('click', async event => {
                 this.editRequest(event, item);
@@ -701,7 +701,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let icon_edit = `<${icon_tag} name="pencil" class="edit-items" 
                                 @click="${(event) => { this.editRequest(event, item); }}"
                              ></${icon_tag}>`;
-            let btn_edit = this.createScopedElement('dbp-button');
+            let btn_edit = this.createScopedElement('button');
             btn_edit.classList.add('button', 'edit-btn', 'is-icon');
             btn_edit.addEventListener('click', async event => {
                 this.editRequest(event, item);
@@ -711,7 +711,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             div.appendChild(btn_edit);
 
             let icon_delete = `<${icon_tag} name="trash" class="edit-items"></${icon_tag}>`;
-            let btn_delete = this.createScopedElement('dbp-button');
+            let btn_delete = this.createScopedElement('button');
             btn_delete.classList.add('button', 'edit-btn', 'is-icon');
             btn_delete.addEventListener('click', async event => {
                 this.deleteRequest(event, item);
@@ -721,7 +721,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             div.appendChild(btn_delete);
 
             let icon_submit = `<${icon_tag} name="send-diagonal" class="edit-items"></${icon_tag}>`;
-            let btn_submit = this.createScopedElement('dbp-button');
+            let btn_submit = this.createScopedElement('button');
             btn_submit.classList.add('button', 'edit-btn', 'is-icon');
             btn_submit.addEventListener('click', async event => {
                 this.submitRequest(event, item);
@@ -1530,18 +1530,18 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="search-wrapper ">
                                     <div id="extendable-searchbar">
                                         <input type="text" id="searchbar" placeholder="Suchen">
-                                        <dbp-button class="button is-icon" id="search-button" title="Suchen">
+                                        <button class="button is-icon" id="search-button" title="Suchen">
                                             <dbp-icon name="search"></dbp-icon>
-                                        </dbp-button>
+                                        </button>
                                     </div>
                                 </div>
-                                <dbp-button class="button is-icon ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
+                                <button class="button is-icon ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
                                             ?disabled="${this.loading}"
                                             value=""
                                             @click="${(event) => { console.log('open settings'); }}"
                                             title="">
                                     <dbp-icon name="iconoir_settings"></dbp-icon>
-                                </dbp-button>
+                                </button>
                             </div>
                             <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
                                 <dbp-loading-button id="delete-all-btn"
@@ -1647,7 +1647,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="header-btn">
                                     <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                                     ${!this.currentItem.dateSubmitted ? html`
-                                        <dbp-button id="edit-btn"
+                                        <button id="edit-btn"
                                                     class="button is-icon"
                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                     value=""
@@ -1662,7 +1662,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     }}"
                                                     title="${i18n.t('show-requests.edit-sender-button-text')}">
                                             <dbp-icon name="pencil"></dbp-icon>
-                                        </dbp-button>` : ``}
+                                        </button>` : ``}
                                 </div>
                                 <div class="sender-data">
                                     ${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
@@ -1706,7 +1706,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <div>${this.convertToReadableDate(file.dateCreated)}</div>
                                             </div>
                                             <div class="right-side">
-                                                <dbp-button id="show-file-btn"
+                                                <button id="show-file-btn"
                                                             class="button is-icon"
                                                             value=""
                                                             @click="${(event) => {
@@ -1715,9 +1715,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             }}"
                                                             title="${i18n.t('show-requests.show-file-button-text')}">
                                                     <dbp-icon name="keyword-research"></dbp-icon>
-                                                </dbp-button>
+                                                </button>
                                                 ${!this.currentItem.dateSubmitted ? html`
-                                                    <dbp-button id="delete-file-btn"
+                                                    <button id="delete-file-btn"
                                                                 class="button is-icon"
                                                                 ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                                 value=""
@@ -1727,7 +1727,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 }}"
                                                                 title="${i18n.t('show-requests.delete-file-button-text')}">
                                                         <dbp-icon name="trash"></dbp-icon>
-                                                    </dbp-button>` : ``
+                                                    </button>` : ``
                                                 }
                                             </div>
                                         </div>
@@ -1773,7 +1773,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <div>${recipient.addressCountry}</div>
                                         </div>
                                         <div class="right-side">
-                                                <dbp-button id="show-recipient-btn"
+                                                <button id="show-recipient-btn"
                                                             class="button is-icon"
                                                             value=""
                                                             @click="${(event) => {
@@ -1790,9 +1790,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             }}"
                                                             title="${i18n.t('show-requests.show-recipient-button-text')}">
                                                     <dbp-icon name="keyword-research"></dbp-icon>
-                                                </dbp-button>
+                                                </button>
                                                 ${!this.currentItem.dateSubmitted ? html`
-                                                    <dbp-button id="edit-recipient-btn"
+                                                    <button id="edit-recipient-btn"
                                                                 class="button is-icon"
                                                                  ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                                  value=""
@@ -1809,8 +1809,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  }}"
                                                                  title="${i18n.t('show-requests.edit-recipients-button-text')}">
                                                          <dbp-icon name="pencil"></dbp-icon>
-                                                     </dbp-button>
-                                                    <dbp-button id="delete-recipient-btn"
+                                                     </button>
+                                                    <button id="delete-recipient-btn"
                                                                 class="button is-icon"
                                                                 ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                                 value=""
@@ -1820,7 +1820,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 }}"
                                                                 title="${i18n.t('show-requests.delete-recipient-button-text')}">
                                                         <dbp-icon name="trash"></dbp-icon>
-                                                    </dbp-button>` : ``
+                                                    </button>` : ``
                                                 }
                                         </div>
                                     </div>
