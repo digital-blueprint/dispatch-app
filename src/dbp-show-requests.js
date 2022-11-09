@@ -93,6 +93,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     disconnectedCallback() {
         this.dispatchRequestsTable.off("dataLoaded");
         this.dispatchRequestsTable.off("tableBuilt");
+        this.dispatchRequestsTable.off("rowClick");
         super.disconnectedCallback();
     }
 
@@ -278,6 +279,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
             this.dispatchRequestsTable.on("dataLoaded", this.dataLoadedFunction.bind(this));
             this.dispatchRequestsTable.on("tableBuilt", this.tableBuiltFunction.bind(this));
+            this.dispatchRequestsTable.on("rowClick", this.rowClickFunction.bind(this));
         });
     }
 
@@ -298,6 +300,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             element.addEventListener('click', that.toggleCollapse.bind(that))
                     );
                 }
+
+                // if (that._('.tabulator-responsive-collapse-toggle')) {
+                //     that._a('.tabulator-responsive-collapse-toggle').forEach(
+                //         (element) => (
+                //         element.classList.add('dbp-open'))
+                //     );
+                // }
             }, 0);
 
         }
@@ -305,14 +314,24 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     toggleCollapse(e) {
         const table = this.dispatchRequestsTable;
-
-        console.log('toggle sender');
         // give a chance to draw the table
         // this is for getting more height in tabulator table, when toggle is called
+
+        console.log(e);
+
+        const that = this;
+
         setTimeout(function () {
             // table.toggleColumn('sender');
             // table.toggleColumn('files');
             // table.toggleColumn('recipients');
+
+            // if (table && that._('.tabulator-responsive-collapse-toggle')) {
+            //     that._a('.tabulator-responsive-collapse-toggle').forEach((element) => {
+            //         element.classList.toggle('dbp-open');
+            //         console.log(e);
+            //     });
+            // }
 
             table.redraw();
         }, 0);
@@ -321,6 +340,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     tableBuiltFunction() {
         if (this._('#select_all')) {
             this._('#select_all').addEventListener('click', this.boundSelectHandler);
+        }
+    }
+
+    rowClickFunction(e, row) {
+        if (
+            this.dispatchRequestsTable !== null &&
+            this.dispatchRequestsTable.getSelectedRows().length ===
+            this.dispatchRequestsTable.getRows().length) {
+                this._('#select_all').checked = true;
+        } else {
+                this._('#select_all').checked = false;
         }
     }
 

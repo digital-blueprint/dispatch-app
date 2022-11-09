@@ -253,7 +253,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "postalCode": postalCode,
             "addressLocality": addressLocality,
             "streetAddress": streetAddress,
-            "buildingNumber": buildingNumber
+            "buildingNumber": buildingNumber,
+            "birthDate": "1980-01-01" /** TODO */
         };
 
         const options = {
