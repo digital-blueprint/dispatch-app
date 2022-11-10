@@ -1,9 +1,0 @@
-{
-    "require": {
-        "symfony/process": " ^4.4",
-        "symfony/console": " ^4.4",
-        "symfony/yaml": " ^4.4",
-        "deployer/deployer": " ^6.4",
-        "deployer/recipes": " ^6.2"
-    }
-}
