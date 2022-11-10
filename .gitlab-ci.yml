@@ -1,9 +1,13 @@
 image: registry.gitlab.tugraz.at/dbp/dispatch/dispatch/main:v1
 
+variables:
+  PLAYWRIGHT_BROWSERS_PATH: "$CI_PROJECT_DIR/_playwright_cache"
+
 cache:
   key: $CI_PROJECT_PATH
   paths:
     - _yarn_cache
+    - _playwright_cache
 
 before_script:
   - 'git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.tugraz.at/".insteadOf "git@gitlab.tugraz.at:"'
