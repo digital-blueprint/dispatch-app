@@ -1,4 +1,5 @@
 import {css} from 'lit';
+import * as commonStyles from "@dbp-toolkit/common/styles";
 
 export function getShowDispatchRequestsCss() {
     // language=css
@@ -361,4 +362,487 @@ export function getShowDispatchRequestsCss() {
         @media only screen and (orientation: portrait) and (max-width: 768px) {
         }
     `;
+}
+
+export function getDispatchRequestStyles() {
+    // language=css
+    return css`
+            a {
+                color: var(--dbp-override-content);
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            h3 {
+                font-weight: 300;
+                margin-top: 1.3em;
+                margin-bottom: 1.3em;
+            }
+
+            .request-buttons {
+                display: flex;
+                justify-content: flex-end;
+                gap: 3px;
+                margin-top: -1.5em;
+                padding-bottom: 1.5em;
+            }
+
+            .edit-recipient-btn {
+                margin-left: -1.5em;
+                padding-bottom: 1em;
+            }
+
+            .request-item.details .recipients-data,
+            .request-item.details .files-data {
+                display: grid;
+                gap: 1.5em;
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .request-item.details .recipients-data {
+                padding-bottom: 2em;
+            }
+
+            .request-item.details .request-buttons {
+                padding-top: 1.5em;
+                border-top: 1px solid var(--dbp-override-muted);
+            }
+
+            .request-item.details .sender-data-btn {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+            }
+
+            .recipient-entry .border,
+            .file-entry .border {
+                margin-left: -1.5em;
+                margin-bottom: 1em;
+            }
+
+            .edit-recipient-btn {
+                margin-left: -1.5em;
+                padding-bottom: 1em;
+            }
+
+            .recipient-entry .border,
+            .file-entry .border {
+                margin-left: -1.5em;
+                margin-bottom: 1em;
+            }
+
+            .file-entry {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #add-file-2-btn {
+                margin-top: 1em;
+            }
+
+            .delete-file-btn {
+                margin-top: 0.5em;
+            }
+
+            .rec-2-btns {
+                display: flex;
+                flex-direction: row-reverse;
+            }
+
+            .selected-buttons {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .file-entry {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #add-file-2-btn {
+                margin-top: 1em;
+            }
+
+            .delete-file-btn {
+                margin-top: 0.5em;
+            }
+
+            .rec-2-btns {
+                display: flex;
+                flex-direction: row-reverse;
+            }
+
+            .selected-buttons {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            h2:first-child {
+                margin-top: 0;
+            }
+
+            h2 {
+                margin-bottom: 10px;
+            }
+
+            #edit-sender-modal-box,
+            #add-sender-modal-box,
+            #add-recipient-modal-box,
+            #edit-recipient-modal-box {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 15px 20px 20px;
+                max-height: 630px;
+                min-height: 630px;
+                min-width: 320px;
+                max-width: 400px;
+            }
+
+            #add-subject-modal-box {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 15px 20px 20px;
+                height: auto;
+                min-height: 150px;
+                min-width: 320px;
+                max-width: 500px;
+            }
+
+            #show-recipient-modal-box {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 15px 20px 20px;
+                height: auto;
+                min-height: fit-content;
+                min-width: 320px;
+                max-width: 400px;
+            }
+
+            #edit-sender-modal-box header.modal-header,
+            #add-sender-modal-box header.modal-header,
+            #add-recipient-modal-box header.modal-header,
+            #edit-recipient-modal-box header.modal-header,
+            #show-recipient-modal-box header.modal-header,
+            #add-subject-modal-box header.modal-header {
+                padding: 0px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #show-recipient-modal-box header.modal-header {
+                padding: 0 10px 20px 0;
+            }
+
+            #edit-sender-modal-box footer.modal-footer .modal-footer-btn,
+            #add-sender-modal-box footer.modal-footer .modal-footer-btn,
+            #add-recipient-modal-box footer.modal-footer .modal-footer-btn,
+            #edit-recipient-modal-box footer.modal-footer .modal-footer-btn,
+            #show-recipient-modal-box footer.modal-footer .modal-footer-btn,
+            #add-subject-modal-box footer.modal-footer .modal-footer-btn {
+                padding: 0px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #show-recipient-modal-box footer.modal-footer .modal-footer-btn {
+                padding: 0 10px 10px 0;
+            }
+
+            #edit-sender-modal-content,
+            #add-sender-modal-content,
+            #add-recipient-modal-content,
+            #edit-recipient-modal-content,
+            #add-subject-modal-content {
+                display: flex;
+                padding-left: 0px;
+                padding-right: 0px;
+                overflow: unset;
+                gap: 1em;
+                flex-direction: column;
+            }
+
+            #edit-sender-modal-content div .input,
+            #add-sender-modal-content div .input,
+            #add-recipient-modal-content div .input,
+            #edit-recipient-modal-content div .input,
+            #add-subject-modal-content div .input {
+                width: 100%;
+            }
+
+            #edit-sender-modal-content .nf-label,
+            #add-sender-modal-content .nf-label,
+            #add-recipient-modal-content .nf-label,
+            #edit-recipient-modal-content .nf-label,
+            #add-subject-modal-content .nf-label {
+                padding-bottom: 2px;
+            }
+
+            #edit-sender-modal-title,
+            #add-sender-modal-title,
+            #add-recipient-modal-title,
+            #edit-recipient-modal-title,
+            #show-recipient-modal-title,
+            #add-subject-modal-title {
+                margin: 0;
+                padding: 0.25em 0 0 0;
+            }
+
+            .line {
+                border-right: 1px solid var(--dbp-override-muted);
+            }
+
+            .details.header {
+                display: grid;
+                grid-template-columns: 1fr 1px 1fr 1px 1fr;
+                padding-bottom: 1.5em;
+                border-bottom: 1px solid var(--dbp-override-muted);
+                text-align: center;
+            }
+
+            .details.sender, .details.files {
+                padding-top: 1.5em;
+                padding-bottom: 1.5em;
+                border-bottom: 1px solid var(--dbp-override-muted);
+            }
+
+            .details.recipients {
+                padding-top: 1.5em;
+            }
+
+            .section-titles {
+                font-size: 1.3em;
+                color: var(--dbp-override-muted);
+                text-transform: uppercase;
+                padding-bottom: 0.5em;
+            }
+
+            .header-btn {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .card {
+                display: grid;
+                grid-template-columns: 4fr min-content;
+                border: 1px solid var(--dbp-override-muted);
+                min-width: 320px;
+            }
+
+            .left-side {
+                margin: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .left-side div {
+                word-break: break-all;
+            }
+
+            .file.card .left-side {
+                padding-bottom: 1.4em;
+            }
+
+            .file.card .left-side div:first-child {
+                padding-bottom: 0.2em;
+                font-weight: 400;
+            }
+
+            .right-side {
+                padding: 10px;
+                color: #FFFFFF;
+                background-color: #245b78;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .right-side dbp-icon {
+                color: #FFFFFF;
+            }
+
+            .recipients-data, .files-data {
+                margin-top: 0.5em;
+            }
+
+            .status-green {
+                color: var(--dbp-override-success);
+            }
+
+            .status-orange {
+                color: var(--dbp-override-warning-surface);
+            }
+
+            .back-container {
+                padding-top: 1em;
+                /*padding-bottom: 0.5em;*/
+            }
+
+            .section-title-counts {
+                font-style: italic;
+            }
+
+            .element-left {
+                background-color: var(--dbp-primary-surface);
+                color: var(--dbp-on-primary-surface);
+                padding: 0px 20px 12px 40px;
+                text-align: right;
+            }
+
+            .element-left.first, .element-right.first {
+                padding-top: 12px;
+            }
+
+            .element-right {
+                text-align: left;
+                margin-left: 12px;
+                padding: 0px 0px 12px;
+            }
+
+            .detailed-recipient-modal-content-wrapper {
+                display: grid;
+                grid-template-columns: min-content auto;
+                grid-template-rows: auto;
+                max-height: calc(100vh - 149px);
+                overflow-y: auto;
+                width: 100%;
+            }
+
+            @media only screen and (orientation: portrait) and (max-width: 768px) {
+
+                .edit-selection-buttons {
+                    display: flex;
+                    flex-direction: column-reverse;
+                    gap: 1em;
+                }
+
+                .filter-buttons {
+                    width: calc(100% - 45px);
+                }
+
+                #show-recipient-modal-box {
+                    height: 100%;
+                }
+
+                #show-recipient-modal-box header.modal-header {
+                    padding: 0;
+                }
+
+                #show-recipient-modal-box .detailed-recipient-modal-content-wrapper {
+                    grid-template-columns: unset;
+                    max-height: calc(100vh - 70px);
+                }
+
+                .mobile-hidden {
+                    display: none;
+                }
+
+                .element-right {
+                    margin-left: 12px;
+                    padding: 0 0 12px 0;
+                }
+
+                .element-right.first {
+                    padding-top: 0;
+                }
+
+                .element-left {
+                    text-align: left;
+                    padding: 10px 5px 10px 5px;
+                    background-color: inherit;
+                    color: inherit;
+                    font-weight: 400;
+                    border-top: 1px solid #3333;
+                }
+
+                .element-left.first {
+                    margin-top: 10px;
+                    border-top: 0;
+                }
+
+                .btn-row-left {
+                    display: flex;
+                    justify-content: space-between;
+                    flex-direction: row;
+                    gap: 4px;
+                    height: 40px;
+                }
+            }
+
+            @media only screen and (max-width: 859.9px) {
+                .request-item.details .recipients-data,
+                .request-item.details .files-data {
+                    gap: 1.5em;
+                    grid-template-columns: 1fr;
+                }
+
+                .details.header {
+                    grid-template-columns: unset;
+                    gap: 0.5em;
+                    text-align: left;
+                }
+
+                .header-btn {
+                    flex-direction: column;
+                    padding-bottom: 1em;
+                }
+
+                .request-buttons {
+                    flex-direction: column-reverse;
+                    gap: 1em;
+                }
+
+                .request-buttons .submit-button,
+                .request-buttons .edit-buttons {
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .details.sender .header-btn {
+                    flex-direction: row;
+                    padding-bottom: 0;
+                }
+
+                .sender-data {
+                    margin-bottom: 0;
+                }
+            }
+
+            @media only screen and (max-width: 369.9px) {
+                .card {
+                    min-width: 30px;
+                    max-width: 320px;
+                }
+            }
+
+            @media only screen and (min-width: 370px) and (max-width: 859.9px) {
+                .card {
+                    min-width: 320px;
+                    max-width: unset;
+                }
+            }
+
+            @media only screen and (min-width: 860px) and (max-width: 949.9px) {
+                .request-item.details .recipients-data,
+                .request-item.details .files-data {
+                    gap: 0.5em;
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+
+            @media only screen and (min-width: 950px) and (max-width: 1250px) {
+                .request-item.details .recipients-data,
+                .request-item.details .files-data {
+                    gap: 1.5em;
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+        `;
 }

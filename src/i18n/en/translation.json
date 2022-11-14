@@ -13,7 +13,11 @@
         "create-request-button-text": "Create dispatch request",
         "empty-fields-given": "Please fill in all fields!",
         "error-requested-title": "Error!",
-        "error-requested-text": "There was an error."
+        "error-requested-text": "There was an error.",
+        "request-subject": "Subject",
+        "create-dispatch-order": "Create dispatch order",
+        "empty-subject": "Please enter a subject for the dispatch request:",
+        "add-sender-button-text": "Add sender"
     },
     "show-requests": {
         "description-text": "Here you can view the list of all your created dispatch orders and edit, delete or submit. You can also ",
@@ -107,7 +111,10 @@
         "successfully-deleted-file-text": "The file was successfully deleted.",
         "successfully-deleted-recipient-title": "Successfully deleted!",
         "successfully-deleted-recipient-text": "The recipient was successfully deleted.",
-        "show-detailed-dispatch-order": "Show dispatch order"
+        "show-detailed-dispatch-order": "Show dispatch order",
+        "add-subject-dialog-button-cancel": "Cancel",
+        "add-subject-dialog-button-ok": "Confirm",
+        "add-sender-dialog-title": "Add sender"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."
