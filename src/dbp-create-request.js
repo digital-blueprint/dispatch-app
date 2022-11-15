@@ -225,13 +225,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         });
     }
 
-    async _onSubmitRequstClicked(event, item) {
-
-        this.submitRequest(event, item);
-
-        this.showDetailsView = false;
-    }
-
     getCurrentTime() {
         let date = new Date();
         let currentHours = ('0' + (date.getHours() + 1)).slice(-2);
