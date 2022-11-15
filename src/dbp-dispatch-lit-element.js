@@ -111,7 +111,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: "Bearer " + this.auth.token
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests', options);
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests?perPage=10000', options);
     }
 
     /**
@@ -463,6 +463,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let responseBody = await resp.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.currentItem = responseBody;
+
+                // this.currentRecipient = '';
             }
         } else {
             // TODO error handling
@@ -594,6 +596,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         "type": "success",
                         "timeout": 5,
                     });
+                    this.clearAll();
                 } else {
                     // TODO error handling
                 }
@@ -675,7 +678,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             });
 
             this.currentItem = responseBody;
-            this.hasSender = true;
         } else {
             // TODO error handling
         }
@@ -691,4 +693,64 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const minutes = ('0' + timestamp.getMinutes()).slice(-2);
         return date + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
     }
+
+    processSelectedRecipient(event) {
+        const person = JSON.parse(event.target.dataset.object);
+        const personId = person['@id'];
+
+        this.personId = personId;
+        this.person = person;
+
+        this.currentItem.givenName = person.givenName;
+        this.currentItem.familyName = person.familyName;
+
+        // person.birthDate;
+        this._('#tf-add-recipient-gn-dialog').value = person.givenName;
+        this._('#tf-add-recipient-fn-dialog').value = person.familyName;
+        this._('#tf-add-recipient-ac-dialog').value = '';
+        this._('#tf-add-recipient-pc-dialog').value = '';
+        this._('#tf-add-recipient-al-dialog').value = '';
+        this._('#tf-add-recipient-sa-dialog').value = '';
+        this._('#tf-add-recipient-bn-dialog').value = '';
+    }
+
+    processSelectedSender(event) {
+        this.organizationId = event.target.valueObject.identifier;
+        this.organization = event.target.valueObject.name;
+    }
+
+    clearAll() {
+        this.currentItem = {};
+
+        this.currentItem.senderGivenName = "";
+        this.currentItem.senderFamilyName = "";
+        this.currentItem.senderAddressCountry = "";
+        this.currentItem.senderPostalCode = "";
+        this.currentItem.senderAddressLocality = "";
+        this.currentItem.senderStreetAddress = "";
+        this.currentItem.senderBuildingNumber = "";
+
+        this.currentItem.files = [];
+        this.currentItem.recipients = [];
+
+        this.senderGivenName = "";
+        this.senderFamilyName = "";
+        this.senderAddressCountry = "";
+        this.senderPostalCode = "";
+        this.senderAddressLocality = "";
+        this.senderStreetAddress = "";
+        this.senderBuildingNumber = "";
+
+        this.subject = '';
+
+        this.showDetailsView = false;
+
+        this.hasEmptyFields = false;
+        this.hasSender = false;
+        this.hasRecipients = false;
+
+        this.organization = "";
+        this.organizationId = "";
+    }
+
 }

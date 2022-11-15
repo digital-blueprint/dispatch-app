@@ -3,6 +3,8 @@
         "description-text": "Hier können Sie einen neuen Versandauftrag anlegen. Nachdem Sie einen Versandauftrag erstellt haben, können Sie diesen in der Liste Ihrer Versandaufträge einsehen, bearbeiten und anschließend für den Versand freigeben.",
         "successfully-requested-title": "Erfolgreich erstellt!",
         "successfully-requested-text": "Der Versandauftrag wurde erfolgreich angelegt. Sie können diesen jetzt weiter bearbeiten oder für später speichern.",
+        "successfully-saved-title": "Erfolgreich gespeichert!",
+        "successfully-saved-text": "Der Versandauftrag wurde erfolgreich gespeichert. Sie können diesen unter \"Versandaufträge anzeigen\" weiter bearbeiten.",
         "sender-family-name": "Familienname",
         "sender-given-name": "Vorname",
         "sender-address-country":  "Land",
@@ -16,7 +18,7 @@
         "error-requested-text": "Es ist ein Fehler aufgetreten.",
         "request-subject": "Betreff",
         "create-dispatch-order": "Versandauftrag erstellen",
-        "empty-subject": "Bitte geben Sie einen Betreff für den Versandauftrag an:",
+        "empty-subject": "Möchten Sie einen Namen für den Versandauftrag vergeben?",
         "add-sender-button-text": "Absender hinzufügen"
     },
     "show-requests": {
@@ -112,9 +114,20 @@
         "successfully-deleted-recipient-title": "Erfolgreich gelöscht!",
         "successfully-deleted-recipient-text": "Der Empfänger wurde erfolgreich gelöscht.",
         "show-detailed-dispatch-order": "Versandauftrag ansehen",
-        "add-subject-dialog-button-cancel": "Abbrechen",
+        "add-subject-dialog-button-cancel": "Ohne Namen erstellen",
         "add-subject-dialog-button-ok": "Übernehmen",
-        "add-sender-dialog-title": "Absender hinzufügen"
+        "add-sender-dialog-title": "Absender hinzufügen",
+        "add-recipient-person-select-label": "Bitte wählen Sie eine Person aus",
+        "add-recipient-or-text": "Oder geben Sie manuell einen Empfänger ein:",
+        "edit-sender-organization-title": "Bitte wählen Sie Ihre Organisation",
+        "edit-sender-or-title": "Oder geben Sie manuell einen Absender ein:",
+        "edit-sender-org-dialog-label": "Organisation",
+        "edit-sender-orgId-dialog-label": "ID",
+        "empty-subject-text": "Kein Betreff angegeben.",
+        "show-recipient-button-text": "Detailansicht öffnen",
+        "delete-recipient-button-text": "Löschen",
+        "show-file-button-text": "Datei ansehen",
+        "save-button-text": "Versandauftrag speichern"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."

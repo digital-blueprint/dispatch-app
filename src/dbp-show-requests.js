@@ -450,6 +450,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     createTableObject(list) {
         let tableObject = [];
 
+        console.log(list);
+
         list.forEach((item) => {
             let content = {
                 requestId: item.identifier,
@@ -505,7 +507,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
 
             .tabulator-responsive-collapse table tr td:first-child {
-                width: min-content;
+                width: 4em;
             }
             
             #extendable-searchbar {
@@ -1263,7 +1265,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                            }}"
                         >
                             <dbp-icon name="chevron-left"></dbp-icon>
-                            ${i18n.t('show-requests.back-to-list')}.
+                            ${i18n.t('show-requests.back-to-list')}
                         </a>
                     </span>
                 </div>

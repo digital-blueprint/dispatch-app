@@ -5,6 +5,8 @@ import DBPDispatchLitElement from "./dbp-dispatch-lit-element";
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
 import {LoadingButton, Icon, MiniSpinner, InlineNotification} from "@dbp-toolkit/common";
+import {PersonSelect} from "@dbp-toolkit/person-select";
+import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {classMap} from "lit/directives/class-map.js";
 import { send } from '@dbp-toolkit/common/notification';
 import {Activity} from './activity.js';
@@ -36,6 +38,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.files = [];
         this.currentItem.recipients = [];
 
+        this.currentRecipient = '';
+
         this.senderGivenName = "";
         this.senderFamilyName = "";
         this.senderAddressCountry = "";
@@ -52,6 +56,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.hasSender = false;
         this.hasRecipients = false;
 
+        this.organization = "";
+        this.organizationId = "";
+
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
         this.nextcloudWebDavURL = "";
@@ -67,6 +74,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-loading-button': LoadingButton,
             'dbp-inline-notification': InlineNotification,
             'dbp-file-source': FileSource,
+            'dbp-person-select': PersonSelect,
+            'dbp-resource-select': ResourceSelect
         };
     }
 
@@ -77,6 +86,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             entryPointUrl: { type: String, attribute: 'entry-point-url' },
 
             currentItem: { type: Object, attribute: false },
+            currentRecipient: { type: Object, attribute: false },
 
             senderGivenName: {type: String, attribute: false},
             senderFamilyName: {type: String, attribute: false},
@@ -90,6 +100,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             showDetailsView: {type: Boolean, attribute: false},
             hasSender: {type: Boolean, attribute: false},
             hasRecipients: {type: Boolean, attribute: false},
+
+            organization: {type: String, attribute: false},
+            organizationId: {type: String, attribute: false},
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -227,6 +240,18 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         return currentHours + ':' + currentMinutes;
     }
 
+    saveRequest() {
+        this.clearAll();
+
+        const i18n = this._i18n;
+        send({
+            "summary": i18n.t('create-request.successfully-saved-title'),
+            "body": i18n.t('create-request.successfully-saved-text'),
+            "type": "success",
+            "timeout": 5,
+        });
+    }
+
     static get styles() {
         // language=css
         return css`
@@ -300,13 +325,23 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     ></dbp-loading-button>
                 </div>
                 
-                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
                     ${i18n.t('create-request.create-dispatch-order')}:
                 </h3>
 
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
 
                     ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
+                                <div class="left-button">
+                                    <dbp-loading-button id="save-btn" 
+                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
+                                                        value="${i18n.t('show-requests.save-button-text')}" 
+                                                        @click="${(event) => { this.saveRequest(event, this.currentItem); }}" 
+                                                        title="${i18n.t('show-requests.save-button-text')}"
+                                    >
+                                        ${i18n.t('show-requests.save-button-text')}
+                                    </dbp-loading-button>
+                                </div>
                                 <div class="request-buttons">
                                     <div class="edit-buttons">
                                         <dbp-loading-button id="delete-btn" 
@@ -338,6 +373,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div>
                                     <div class="section-titles">${i18n.t('create-request.request-subject')}</div>
                                     <div>${this.subject}</div>
+                                    <div class="no-subject ${classMap({hidden: !this.isLoggedIn() || this.subject.length !== 0})}">${i18n.t('show-requests.empty-subject-text')}</div>
                                 </div>
                             </div>
                             
@@ -363,8 +399,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         </dbp-button>` : ``}
                                 </div>
                                 <div class="sender-data">
-                                    ${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
-                                    ${this.currentItem.senderGivenName ? html` ${this.currentItem.senderGivenName}` : ``}
+                                    ${this.organization ? html`${this.organizationId} ${this.organization}` : html`
+                                        ${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
+                                        ${this.currentItem.senderGivenName ? html` ${this.currentItem.senderGivenName}` : ``}
+                                    `}
                                     ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
                                     ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
                                     ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
@@ -517,11 +555,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 title="${i18n.t('show-requests.delete-recipient-button-text')}">
                                                         <dbp-icon name="trash"></dbp-icon>
                                                     </dbp-button>` : ``
-        }
+                                                }
                                         </div>
                                     </div>
                                 `)}
-                                <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
+                                <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || !this.hasSender || !this.hasSubject || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
                               
                             </div>
                         </div>
@@ -586,6 +624,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     />
                                 </div>
                             </div>
+                            
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
@@ -594,7 +633,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         data-micromodal-close
                                         aria-label="Close this dialog window"
                                         @click="${() => {
-                                            MicroModal.close(this._('#add-subject-modal'));
+                                            this.confirmAddSubject().then(r => {
+                                                MicroModal.close(this._('#add-subject-modal'));
+                                            });
                                         }}">
                                     ${i18n.t('show-requests.add-subject-dialog-button-cancel')}
                                 </button>
@@ -640,6 +681,26 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </button>
                         </header>
                         <main class="modal-content" id="edit-sender-modal-content">
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-sender-organization-title')}
+                                </div>
+                                <div>
+                                    <dbp-resource-select
+                                            subscribe="lang:lang,entry-point-url:entry-point-url,auth:auth"
+                                            resource-path="base/organizations"
+                                            @change=${(event) => {
+                                                this.processSelectedSender(event);
+                                            }}></dbp-resource-select>
+                                </div>
+                            </div>
+
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-sender-or-title')}
+                                </div>
+                            </div>
+                            
                             <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
@@ -806,6 +867,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     aria-label="Close modal"
                                     @click="${() => {
                                         MicroModal.close(this._('#add-sender-modal'));
+                                        this.hasSender = true;
                                     }}">
                                 <dbp-icon
                                         title="${i18n.t('show-requests.modal-close')}"
@@ -814,6 +876,26 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </button>
                         </header>
                         <main class="modal-content" id="add-sender-modal-content">
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-sender-organization-title')}
+                                </div>
+                                <div>
+                                    <dbp-resource-select
+                                        subscribe="lang:lang,entry-point-url:entry-point-url,auth:auth"
+                                        resource-path="base/organizations"
+                                        @change=${(event) => {
+                                            this.processSelectedSender(event);
+                                    }}></dbp-resource-select>
+                                </div>
+                            </div>
+
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-sender-or-title')}
+                                </div>
+                            </div>
+                            
                             <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
@@ -943,6 +1025,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         aria-label="Close this dialog window"
                                         @click="${() => {
                                             MicroModal.close(this._('#add-sender-modal'));
+                                            this.hasSender = true;
                                         }}">
                                     ${i18n.t('show-requests.edit-sender-dialog-button-cancel')}
                                 </button>
@@ -952,6 +1035,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         @click="${() => {
                                             this.confirmAddSender().then(r => {
                                                 MicroModal.close(this._('#add-sender-modal'));
+                                                this.hasSender = true;
                                             });
                                         }}">
                                     ${i18n.t('show-requests.edit-sender-dialog-button-ok')}
@@ -978,8 +1062,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     class="modal-close"
                                     aria-label="Close modal"
                                     @click="${() => {
-            MicroModal.close(this._('#add-recipient-modal'));
-        }}">
+                                        MicroModal.close(this._('#add-recipient-modal'));
+                                    }}">
                                 <dbp-icon
                                         title="${i18n.t('show-requests.modal-close')}"
                                         name="close"
@@ -987,6 +1071,23 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </button>
                         </header>
                         <main class="modal-content" id="add-recipient-modal-content">
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.add-recipient-person-select-label')}
+                                <div>
+                                <div>
+                                    <div class="control">
+                                        <dbp-person-select
+                                                id="recipient-selector"
+                                                subscribe="auth"
+                                                lang="${this.lang}"
+                                                entry-point-url="${this.entryPointUrl}"
+                                                @change="${(event) => {this.processSelectedRecipient(event);}}"
+                                        ></dbp-person-select>
+                                    </div>
+                                </div>
+                            </div>
+                            ${i18n.t('show-requests.add-recipient-or-text')}
                             <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.add-recipient-fn-dialog-label')}
@@ -997,7 +1098,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-fn-dialog"
                                             id="tf-add-recipient-fn-dialog"
-                                            value="Mustermann"
+                                            value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1014,10 +1115,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-gn-dialog"
                                             id="tf-add-recipient-gn-dialog"
-                                            value="Max"
+                                            value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
                                             @input="${() => {
-            // TODO
-        }}"
+                                                // TODO
+                                            }}"
                                     />
                                 </div>
                             </div>
@@ -1031,7 +1132,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-ac-dialog"
                                             id="tf-add-recipient-ac-dialog"
-                                            value="AT"
+                                            value="${this.currentRecipient ? this.currentRecipient.addressCountry : ``}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1048,7 +1149,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-pc-dialog"
                                             id="tf-add-recipient-pc-dialog"
-                                            value="8010"
+                                            value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1065,7 +1166,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-al-dialog"
                                             id="tf-add-recipient-al-dialog"
-                                            value="Graz"
+                                            value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1082,7 +1183,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-sa-dialog"
                                             id="tf-add-recipient-sa-dialog"
-                                            value="Am Grund"
+                                            value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1099,7 +1200,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-recipient-bn-dialog"
                                             id="tf-add-recipient-bn-dialog"
-                                            value="1"
+                                            value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1122,10 +1223,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         class="button select-button is-primary"
                                         id="add-recipient-confirm-btn"
                                         @click="${() => {
-            this.addRecipientToRequest().then(r => {
-                MicroModal.close(this._('#add-recipient-modal'));
-            });
-        }}">
+                                            this.addRecipientToRequest().then(r => {
+                                                MicroModal.close(this._('#add-recipient-modal'));
+                                            });
+                                        }}">
                                     ${i18n.t('show-requests.add-recipient-dialog-button-ok')}
                                 </button>
                             </div>
@@ -1295,10 +1396,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         class="button select-button is-primary"
                                         id="edit-recipient-confirm-btn"
                                         @click="${() => {
-            this.updateRecipient().then(r => {
-                MicroModal.close(this._('#edit-recipient-modal'));
-            });
-        }}">
+                                            this.updateRecipient().then(r => {
+                                                MicroModal.close(this._('#edit-recipient-modal'));
+                                            });
+                                        }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-ok')}
                                 </button>
                             </div>

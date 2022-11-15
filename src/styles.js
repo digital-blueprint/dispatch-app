@@ -490,36 +490,39 @@ export function getDispatchRequestStyles() {
             #edit-sender-modal-box,
             #add-sender-modal-box,
             #add-recipient-modal-box,
-            #edit-recipient-modal-box {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                padding: 15px 20px 20px;
-                max-height: 630px;
-                min-height: 630px;
-                min-width: 320px;
-                max-width: 400px;
-            }
-
-            #add-subject-modal-box {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                padding: 15px 20px 20px;
-                height: auto;
-                min-height: 150px;
-                min-width: 320px;
-                max-width: 500px;
-            }
-
+            #edit-recipient-modal-box,
+            #add-subject-modal-box,
             #show-recipient-modal-box {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
                 padding: 15px 20px 20px;
+                min-width: 320px;
+            }
+            
+            #edit-recipient-modal-box {
+                max-height: 630px;
+                min-height: 630px;
+                max-width: 400px;
+            }
+
+            #add-recipient-modal-box,
+            #edit-sender-modal-box,
+            #add-sender-modal-box {
+                max-height: 715px;
+                min-height: 715px;
+                max-width: 400px;
+            }
+
+            #add-subject-modal-box {
+                height: auto;
+                min-height: 190px;
+                max-width: 500px;
+            }
+
+            #show-recipient-modal-box {
                 height: auto;
                 min-height: fit-content;
-                min-width: 320px;
                 max-width: 400px;
             }
 
