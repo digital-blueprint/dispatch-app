@@ -334,7 +334,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-files/' + id, options);
     }
 
-
+    async sendGetOrganizationDetailsRequest(identifier) {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: "Bearer " + this.auth.token
+            },
+        };
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier + '?includeLocal=street%2Ccity%2CpostalCode%2Ccountry', options);
+    }
     /*
     * Open  file source
     *
@@ -616,13 +625,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let id = this.currentItem.identifier;
         let senderGivenName = this._('#tf-edit-sender-gn-dialog').value;
         let senderFamilyName = this._('#tf-edit-sender-fn-dialog').value;
-        let senderAddressCountry = this._('#tf-edit-sender-ac-dialog').value;
         let senderPostalCode = this._('#tf-edit-sender-pc-dialog').value;
         let senderAddressLocality = this._('#tf-edit-sender-al-dialog').value;
         let senderStreetAddress = this._('#tf-edit-sender-sa-dialog').value;
         let senderBuildingNumber = this._('#tf-edit-sender-bn-dialog').value;
 
-        let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber);
+        var e = this._('#edit-sender-country-select');
+        var value = e.value;
+        var text = e.options[e.selectedIndex].text;
+        let senderAddressCountry = [value, text];
+
+        let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber);
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
@@ -658,15 +671,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async confirmAddSender() {
         const i18n = this._i18n;
         let id = this.currentItem.identifier;
-        let senderGivenName = this._('#tf-edit-sender-gn-dialog').value;
-        let senderFamilyName = this._('#tf-edit-sender-fn-dialog').value;
-        let senderAddressCountry = this._('#tf-edit-sender-ac-dialog').value;
-        let senderPostalCode = this._('#tf-edit-sender-pc-dialog').value;
-        let senderAddressLocality = this._('#tf-edit-sender-al-dialog').value;
-        let senderStreetAddress = this._('#tf-edit-sender-sa-dialog').value;
-        let senderBuildingNumber = this._('#tf-edit-sender-bn-dialog').value;
+        let senderGivenName = this._('#tf-add-sender-gn-dialog').value;
+        let senderFamilyName = this._('#tf-add-sender-fn-dialog').value;
+        let senderPostalCode = this._('#tf-add-sender-pc-dialog').value;
+        let senderAddressLocality = this._('#tf-add-sender-al-dialog').value;
+        let senderStreetAddress = this._('#tf-add-sender-sa-dialog').value;
+        let senderBuildingNumber = this._('#tf-add-sender-bn-dialog').value;
 
-        let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber);
+        var e = this._('#add-sender-country-select');
+        var value = e.value;
+        var text = e.options[e.selectedIndex].text;
+        let senderAddressCountry = [value, text];
+
+        let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber);
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
@@ -714,9 +731,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this._('#tf-add-recipient-bn-dialog').value = '';
     }
 
-    processSelectedSender(event) {
+    async processSelectedSender(event) {
         this.organizationId = event.target.valueObject.identifier;
         this.organization = event.target.valueObject.name;
+
+        let response = await this.sendGetOrganizationDetailsRequest(this.organizationId);
+
+        let responseBody = await response.json();
+        if (responseBody !== undefined && response.status === 200) {
+            if (responseBody['localData']) {
+                //this.currentItem.senderAddressCountry = responseBody.localData['country'];
+                // this.currentItem.senderStreetAddress = responseBody.localData['street'];
+                //TODO
+            }
+        } else {
+            // TODO error handling
+        }
     }
 
     clearAll() {

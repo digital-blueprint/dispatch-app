@@ -127,7 +127,8 @@
         "show-recipient-button-text": "Detailansicht öffnen",
         "delete-recipient-button-text": "Löschen",
         "show-file-button-text": "Datei ansehen",
-        "save-button-text": "Versandauftrag speichern"
+        "save-button-text": "Versandauftrag speichern",
+        "empty-sender-text": "(Noch) kein Empfänger angegeben."
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."

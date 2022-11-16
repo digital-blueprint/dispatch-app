@@ -12,9 +12,11 @@ import { send } from '@dbp-toolkit/common/notification';
 import {Activity} from './activity.js';
 import metadata from './dbp-create-request.metadata.json';
 import * as dispatchStyles from './styles';
+import * as dispatchHelper from './utils';
 import {FileSource} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
+import {getCountryMapping} from "./utils";
 
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
@@ -400,8 +402,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
                                     ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
                                     ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
-                                    ${this.currentItem.senderAddressCountry ? html`<br>${this.currentItem.senderAddressCountry}` : ``}
+                                    
+                                    ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
                                 </div>
+
+                                <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFamilyName || this.organization !== ''})}">${i18n.t('show-requests.empty-sender-text')}</div>
+
                             </div>
                             
                             <div class="details files ${classMap({hidden: !this.hasSender || !this.hasSubject})}">
@@ -665,8 +671,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     class="modal-close"
                                     aria-label="Close modal"
                                     @click="${() => {
-            MicroModal.close(this._('#edit-sender-modal'));
-        }}">
+                                        MicroModal.close(this._('#edit-sender-modal'));
+                                    }}">
                                 <dbp-icon
                                         title="${i18n.t('show-requests.modal-close')}"
                                         name="close"
@@ -733,17 +739,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
                                 <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-ac-dialog"
-                                            id="tf-edit-sender-ac-dialog"
-                                            maxlength="2"
-                                            value="${this.currentItem ? this.currentItem.senderAddressCountry : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
+                                    <select id="edit-sender-country-select" class="country-select">
+                                        ${dispatchHelper.getCountryList()}
+                                    </select>
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -897,12 +895,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <input
                                             type="text"
                                             class="input"
-                                            name="tf-edit-sender-fn-dialog"
-                                            id="tf-edit-sender-fn-dialog"
+                                            name="tf-add-sender-fn-dialog"
+                                            id="tf-add-sender-fn-dialog"
                                             value="${this.currentItem ? this.currentItem.senderFamilyName : ``}"
                                             @input="${() => {
-            // TODO
-        }}"
+                                                // TODO
+                                            }}"
                                     />
                                 </div>
                             </div>
@@ -914,12 +912,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <input
                                             type="text"
                                             class="input"
-                                            name="tf-edit-sender-gn-dialog"
-                                            id="tf-edit-sender-gn-dialog"
+                                            name="tf-add-sender-gn-dialog"
+                                            id="tf-add-sender-gn-dialog"
                                             value="${this.currentItem ? this.currentItem.senderGivenName : ``}"
                                             @input="${() => {
-            // TODO
-        }}"
+                                                // TODO
+                                            }}"
                                     />
                                 </div>
                             </div>
@@ -928,17 +926,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
                                 <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-ac-dialog"
-                                            id="tf-edit-sender-ac-dialog"
-                                            maxlength="2"
-                                            value="${this.currentItem ? this.currentItem.senderAddressCountry : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
+                                    <select id="add-sender-country-select" class="country-select">
+                                        ${dispatchHelper.getCountryList()}
+                                    </select>
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -949,8 +939,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <input
                                             type="text"
                                             class="input"
-                                            name="tf-edit-sender-pc-dialog"
-                                            id="tf-edit-sender-pc-dialog"
+                                            name="tf-add-sender-pc-dialog"
+                                            id="tf-add-sender-pc-dialog"
                                             value="${this.currentItem ? this.currentItem.senderPostalCode : ``}"
                                             @input="${() => {
             // TODO
@@ -966,8 +956,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <input
                                             type="text"
                                             class="input"
-                                            name="tf-edit-sender-al-dialog"
-                                            id="tf-edit-sender-al-dialog"
+                                            name="tf-add-sender-al-dialog"
+                                            id="tf-add-sender-al-dialog"
                                             value="${this.currentItem ? this.currentItem.senderAddressLocality : ``}"
                                             @input="${() => {
             // TODO
@@ -983,8 +973,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <input
                                             type="text"
                                             class="input"
-                                            name="tf-edit-sender-sa-dialog"
-                                            id="tf-edit-sender-sa-dialog"
+                                            name="tf-add-sender-sa-dialog"
+                                            id="tf-add-sender-sa-dialog"
                                             value="${this.currentItem ? this.currentItem.senderStreetAddress : ``}"
                                             @input="${() => {
             // TODO
@@ -1000,8 +990,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <input
                                             type="text"
                                             class="input"
-                                            name="tf-edit-sender-bn-dialog"
-                                            id="tf-edit-sender-bn-dialog"
+                                            name="tf-add-sender-bn-dialog"
+                                            id="tf-add-sender-bn-dialog"
                                             value="${this.currentItem ? this.currentItem.senderBuildingNumber : ``}"
                                             @input="${() => {
             // TODO

@@ -379,6 +379,17 @@ export function getDispatchRequestStyles() {
                 margin-bottom: 1.3em;
             }
 
+            select:not(.select) {
+                background-size: 13px;
+                background-position-x: calc(100% - 0.4rem);
+                padding-right: 1.3rem;
+                height: 33px;
+            }
+
+            .country-select {
+                width: 100%;
+            }
+
             .request-buttons {
                 display: flex;
                 justify-content: flex-end;
