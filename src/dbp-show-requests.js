@@ -1493,7 +1493,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
              <dbp-file-source
                   id="file-source"
                   context="${i18n.t('show-requests.filepicker-context')}"
-                  allowed-mime-types="image/*,application/pdf,.pdf"
+                  allowed-mime-types="application/pdf,.pdf"
                   nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
                   nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
                   nextcloud-name="${this.nextcloudName}"
