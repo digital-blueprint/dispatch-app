@@ -44,7 +44,7 @@
         "recipients": "Empfänger",
         "no-recipients-text": "(Noch) keine Empfänger angegeben.",
         "submit-button-text": "Zum Versand freigeben",
-        "id": "ID/Betreff",
+        "id": "Betreff",
         "edit-sender-button-text": "Bearbeiten",
         "delete-dialog-title": "Versandauftrag löschen",
         "delete-dialog-text": "Möchten Sie diesen Versandauftrag wirklich löschen? Bitte beachten Sie, dass dabei auch alle gespeicherten Anhänge und Empfänger gelöscht werden.",
