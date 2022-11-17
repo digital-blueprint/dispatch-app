@@ -6,7 +6,6 @@ import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
 import {LoadingButton, IconButton, Icon, MiniSpinner, InlineNotification, getIconSVGURL} from "@dbp-toolkit/common";
 import {classMap} from "lit/directives/class-map.js";
-import { send } from '@dbp-toolkit/common/notification';
 import {Activity} from './activity.js';
 import metadata from './dbp-show-requests.metadata.json';
 import MicroModal from './micromodal.es';
@@ -100,15 +99,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     connectedCallback() {
         super.connectedCallback();
-        const i18n = this._i18n;
         this._loginStatus = '';
         this._loginState = [];
         this._loginCalled = false;
 
 
         this.updateComplete.then(() => {
-            const that = this;
-
             let paginationElement = this._('.tabulator-paginator');
 
             // see: http://tabulator.info/docs/5.1
@@ -320,7 +316,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         console.log(e);
 
-        const that = this;
+        // const that = this;
 
         setTimeout(function () {
             // table.toggleColumn('sender');

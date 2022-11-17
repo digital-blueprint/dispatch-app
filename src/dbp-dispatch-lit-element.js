@@ -1,18 +1,7 @@
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import {send} from "@dbp-toolkit/common/notification";
-import {FileSource} from '@dbp-toolkit/file-handling';
 import MicroModal from "./micromodal.es";
 
-/**
- * Dummy function to mark strings as i18next keys for i18next-scanner
- *
- * @param {string} key
- * @param {object} [options]
- * @returns {string} The key param as is
- */
-function i18nKey(key, options) {
-    return key;
-}
 
 export default class DBPDispatchLitElement extends DBPLitElement {
     constructor() {
