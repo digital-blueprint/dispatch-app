@@ -1,5 +1,4 @@
 import {css} from 'lit';
-import * as commonStyles from "@dbp-toolkit/common/styles";
 
 export function getShowDispatchRequestsCss() {
     // language=css
