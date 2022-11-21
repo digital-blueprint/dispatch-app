@@ -762,7 +762,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this.subject = '';
 
+        this.showListView = true;
         this.showDetailsView = false;
+        this.currentRecipient = null;
 
         this.hasEmptyFields = false;
         this.hasSender = false;
