@@ -128,7 +128,8 @@
         "delete-recipient-button-text": "Löschen",
         "show-file-button-text": "Datei ansehen",
         "save-button-text": "Versandauftrag speichern",
-        "empty-sender-text": "(Noch) kein Empfänger angegeben."
+        "empty-sender-text": "(Noch) kein Empfänger angegeben.",
+        "no-table-data": "Es konnten keine Versandaufträge gefunden."
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."

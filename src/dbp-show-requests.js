@@ -91,9 +91,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        this.dispatchRequestsTable.off("dataLoaded");
         this.dispatchRequestsTable.off("tableBuilt");
         this.dispatchRequestsTable.off("rowClick");
+        this.dispatchRequestsTable.off("dataLoaded");
         super.disconnectedCallback();
     }
 
@@ -107,17 +107,22 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.updateComplete.then(() => {
             let paginationElement = this._('.tabulator-paginator');
 
+            const i18n = this._i18n;
+            const that = this;
+
             // see: http://tabulator.info/docs/5.1
             this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
                 layout: 'fitColumns',
-                placeholder: 'no data',
+                placeholder: i18n.t('show-requests.no-table-data'),
+                selectable: true,
+                selectablePersistence: false, // disable persistent selections
                 responsiveLayout: 'collapse',
                 responsiveLayoutCollapseStartOpen: false,
                 pagination: 'local',
                 paginationSize: 10,
                 paginationSizeSelector: true,
                 paginationElement: paginationElement,
-                columnHeaderVertAlign: 'bottom', //align header contents to bottom of cell
+                columnHeaderVertAlign: 'bottom', // align header contents to bottom of cell
                 columnDefaults: {
                     vertAlign: 'middle',
                     hozAlign: 'left',
@@ -137,6 +142,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         headerSort: false,
                         responsive: 0,
                         widthGrow: 1,
+                        headerClick: (e) => {
+                            let allSelected = that.checkAllSelected();
+
+                            if (allSelected) {
+                                // that.dispatchRequestsTable.deselectRow("visible"));
+                                this.dispatchRequestsTable.deselectRow();
+                                this._('#select_all').checked = false;
+                            } else {
+                                that.dispatchRequestsTable.selectRow("visible");
+                                this._('#select_all').checked = true;
+                            }
+                            e.preventDefault();
+                        },
                     },
                     {
                         title: 'Details',
@@ -147,14 +165,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         responsive: 0,
                         widthGrow: 1,
                         formatter: 'responsiveCollapse'
-                        /*(cell, formatterParams, onRendered) => {
-                            const icon_tag = that.getScopedTagName('dbp-icon');
-                            let icon =
-                                `<${icon_tag} name="chevron-right"></${icon_tag}>`;
-                            let div = this.createScopedElement('div');
-                            div.innerHTML = icon;
-                            return div;
-                        },*/
                     },
                     {
                         title: 'Erstelldatum',
@@ -274,10 +284,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     { column: 'status', dir: 'desc' },
                 ],
             });
-            this.dispatchRequestsTable.on("dataLoaded", this.dataLoadedFunction.bind(this));
-            this.dispatchRequestsTable.on("tableBuilt", this.tableBuiltFunction.bind(this));
+
             this.dispatchRequestsTable.on("rowClick", this.rowClickFunction.bind(this));
+            //this.dispatchRequestsTable.on("rowAdded", this.rowAddedFunction.bind(this));
+            this.dispatchRequestsTable.on("dataLoaded", this.dataLoadedFunction.bind(this));
+            this.dispatchRequestsTable.on("pageLoaded", this.pageLoadedFunction.bind(this));
         });
+    }
+
+    pageLoadedFunction(currentPageNumber) {
+        this._('#select_all').checked = false;
     }
 
     dataLoadedFunction(data) {
@@ -297,15 +313,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             element.addEventListener('click', that.toggleCollapse.bind(that))
                     );
                 }
-
-                // if (that._('.tabulator-responsive-collapse-toggle')) {
-                //     that._a('.tabulator-responsive-collapse-toggle').forEach(
-                //         (element) => (
-                //         element.classList.add('dbp-open'))
-                //     );
-                // }
             }, 0);
-
         }
     }
 
@@ -334,17 +342,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }, 0);
     }
 
-    tableBuiltFunction() {
-        if (this._('#select_all')) {
-            this._('#select_all').addEventListener('click', this.boundSelectHandler);
-        }
-    }
-
     rowClickFunction(e, row) {
         if (
             this.dispatchRequestsTable !== null &&
             this.dispatchRequestsTable.getSelectedRows().length ===
-            this.dispatchRequestsTable.getRows().length) {
+            this.dispatchRequestsTable.getRows("visible").length) {
                 this._('#select_all').checked = true;
         } else {
                 this._('#select_all').checked = false;
@@ -361,14 +363,18 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         if (allSelected) {
             this.dispatchRequestsTable.getSelectedRows().forEach((row) => row.deselect());
         } else {
-            this.dispatchRequestsTable.selectRow(this.dispatchRequestsTable.getRows());
+            this.dispatchRequestsTable.getRows().forEach((row) => row.select());
+            // this.dispatchRequestsTable.selectRow();
         }
     }
 
     checkAllSelected() {
         if (this.dispatchRequestsTable) {
-            let maxSelected = this.dispatchRequestsTable.getRows().length;
+            let maxSelected = this.dispatchRequestsTable.getRows("visible").length;
             let selected = this.dispatchRequestsTable.getSelectedRows().length;
+            // console.log('currently visible: ', this.dispatchRequestsTable.getRows("visible").length);
+            // console.log('currently selected: ', this.dispatchRequestsTable.getSelectedRows().length);
+
             if (selected === maxSelected) {
                 return true;
             }
@@ -1239,7 +1245,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                         </div>
                         <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
-                            <table id="dispatch-requests-table" class=""></table>
+                            <div id="dispatch-requests-table" class=""></div>
                             <div class='tabulator' id='custom-pagination'>
                                 <div class='tabulator-footer'>
                                     <div class='tabulator-footer-contents'>

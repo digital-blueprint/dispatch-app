@@ -128,7 +128,8 @@
         "delete-recipient-button-text": "Delete",
         "show-file-button-text": "Show file",
         "save-button-text": "Save dispatch order",
-        "empty-sender-text": "No recipient specified (yet)."
+        "empty-sender-text": "No recipient specified (yet).",
+        "no-table-data": "No dispatch requests could be found."
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."
