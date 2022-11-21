@@ -190,7 +190,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     },
                     {
                         title: 'Betreff',
-                        field: 'requestId',
+                        field: 'subject',
                         responsive: 1,
                         widthGrow: 3,
                         minWidth: 150,
@@ -230,6 +230,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         // visible: false,
                         responsive: 8,
                         minWidth: 800,
+                        formatter: function(cell, formatterParams, onRendered) {
+                            let value = cell.getValue();
+                            return value;
+                        }
+                    },
+                    {
+                        title: 'ID',
+                        field: 'requestId',
+                        responsive: 8,
+                        minWidth: 150,
                         formatter: function(cell, formatterParams, onRendered) {
                             let value = cell.getValue();
                             return value;
@@ -450,6 +460,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     createTableObject(list) {
+        const i18n = this._i18n;
         let tableObject = [];
 
         console.log(list);
@@ -457,6 +468,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         list.forEach((item) => {
             let content = {
                 requestId: item.identifier,
+                subject: item.name ? item.name : i18n.t('show-requests.no-subject-found'),
                 status: item.dateSubmitted ? 'Abgeschlossen' : 'In Bearbeitung',
                 dateCreated: item.dateCreated,
                 details: "Details",

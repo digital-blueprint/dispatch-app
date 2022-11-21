@@ -127,6 +127,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      */
     async sendCreateDispatchRequest() {
         let body = {
+            "name": this.subject,
             "senderGivenName": this.senderGivenName,
             "senderFamilyName": this.senderFamilyName,
             "senderAddressCountry": this.senderAddressCountry,
@@ -331,7 +332,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: "Bearer " + this.auth.token
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier + '?includeLocal=street%2Ccity%2CpostalCode%2Ccountry', options);
+        return await this.httpGetAsync(this.entryPointUrl + '/base/organizations/' + identifier + '?includeLocal=street%2Ccity%2CpostalCode%2Ccountry', options);
     }
     /*
     * Open  file source
@@ -729,9 +730,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
             if (responseBody['localData']) {
-                //this.currentItem.senderAddressCountry = responseBody.localData['country'];
-                // this.currentItem.senderStreetAddress = responseBody.localData['street'];
-                //TODO
+                this.currentItem.senderAddressCountry = responseBody.localData['country'];
+                this.currentItem.senderStreetAddress = responseBody.localData['street'];
+                // this.currentItem.senderBuildingNumber = "";
+                this.currentItem.senderAddressLocality = responseBody.localData['city'];
+                this.currentItem.senderPostalCode = responseBody.localData['postalCode'];
+                //TODO disable givenName + familyName + buildingNumber textfields?
             }
         } else {
             // TODO error handling

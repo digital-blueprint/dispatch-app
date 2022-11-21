@@ -89,6 +89,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             currentItem: { type: Object, attribute: false },
             currentRecipient: { type: Object, attribute: false },
 
+            subject: {type: String, attribute: false},
+
             senderGivenName: {type: String, attribute: false},
             senderFamilyName: {type: String, attribute: false},
             senderAddressCountry: {type: String, attribute: false},
