@@ -14,6 +14,9 @@ import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import * as dispatchStyles from './styles';
 import {name as pkgName} from './../package.json';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
+import * as dispatchHelper from "./utils";
+import {PersonSelect} from "@dbp-toolkit/person-select";
+import {ResourceSelect} from "@dbp-toolkit/resource-select";
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -50,6 +53,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-icon-button': IconButton,
             'dbp-inline-notification': InlineNotification,
             'dbp-file-source': FileSource,
+            'dbp-person-select': PersonSelect,
+            'dbp-resource-select': ResourceSelect
         };
     }
 
@@ -91,9 +96,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        this.dispatchRequestsTable.off("tableBuilt");
         this.dispatchRequestsTable.off("rowClick");
         this.dispatchRequestsTable.off("dataLoaded");
+        this.dispatchRequestsTable.off("pageLoaded");
+
         super.disconnectedCallback();
     }
 
@@ -472,7 +478,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 status: item.dateSubmitted ? 'Abgeschlossen' : 'In Bearbeitung',
                 dateCreated: item.dateCreated,
                 details: "Details",
-                sender: item.senderFamilyName + ", " + item.senderGivenName + "<br>"
+                sender: item.senderFamilyName + " " + item.senderGivenName + "<br>"
                         + item.senderStreetAddress + " " + item.senderBuildingNumber + "<br>"
                         + item.senderPostalCode + " " + item.senderAddressLocality + "<br>"
                         + item.senderAddressCountry,
@@ -500,6 +506,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getTabulatorStyles()}
             /*${commonStyles.getRadioAndCheckboxCss()}*/
             ${dispatchStyles.getShowDispatchRequestsCss()}
+
+            select:not(.select) {
+                background-size: 13px;
+                background-position-x: calc(100% - 0.4rem);
+                padding-right: 1.3rem;
+                height: 33px;
+            }
             
             .tabulator-icon-buttons {
                 display: flex;
@@ -1317,12 +1330,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     }
                     
                     ${ this.currentItem ? html`
-                        <div class="request-item
-                         details">
+                        <div class="request-item details">
                             <div class="details header">
                                 <div>
                                     <div class="section-titles">${i18n.t('show-requests.id')}</div>
-                                    <div>${this.currentItem.identifier}</div>
+                                    <div>${this.currentItem.name ? html`${this.currentItem.name}` : html`${i18n.t('show-requests.no-subject-found')}`}</div>
                                 </div>
                                 <div class="line"></div>
                                 <div>
@@ -1356,14 +1368,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </div>
                                 <div class="sender-data">
                                     ${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
-                                    ${this.currentItem.senderGivenName ? html` ${this.currentItem.senderGivenName}` : ``}
+                                    ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName 
+                                        ? html` ${this.currentItem.senderGivenName}` :
+                                            html`${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
+                                    `}
                                     ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
                                     ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
                                     ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
                                     ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
-                                    ${this.currentItem.senderAddressCountry ? html`<br>${this.currentItem.senderAddressCountry}` : ``}
+                                    ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
                                 </div>
-                                
+
+                                <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFamilyName})}">${i18n.t('show-requests.empty-sender-text')}</div>
+
                             </div>
                             
                             <div class="details files">
@@ -1387,7 +1404,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </div>
                                 <div class="files-data">
                                     ${this.currentItem.files.map(file => html`
-
                                         <div class="file card">
                                             <div class="left-side">
                                                 <div>${file.name}</div>
@@ -1508,619 +1524,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
             </div>
             
-             <dbp-file-source
-                  id="file-source"
-                  context="${i18n.t('show-requests.filepicker-context')}"
-                  allowed-mime-types="application/pdf,.pdf"
-                  nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
-                  nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
-                  nextcloud-name="${this.nextcloudName}"
-                  nextcloud-file-url="${this.nextcloudFileURL}"
-                  nexcloud-auth-info="${this.nextcloudAuthInfo}"
-                  enabled-targets="${this.fileHandlingEnabledTargets}"
-                  decompress-zip
-                  lang="${this.lang}"
-                  text="${i18n.t('show-requests.filepicker-context')}"
-                  button-label="${i18n.t('show-requests.filepicker-button-title')}"
-                  number-of-files="1"
-                  @dbp-file-source-file-selected="${this.onFileSelected}">
-             </dbp-file-source>
+            ${this.addFilePicker()}
             
-            <div class="modal micromodal-slide" id="edit-sender-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                            class="modal-container"
-                            id="edit-sender-modal-box"
-                            role="dialog"
-                            aria-modal="true"
-                            aria-labelledby="edit-sender-modal-title">
-                        <header class="modal-header">
-                            <h3 id="edit-sender-modal-title">
-                                ${i18n.t('show-requests.edit-sender-dialog-title')}
-                            </h3>
-                            <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        MicroModal.close(this._('#edit-sender-modal'));
-                                    }}">
-                                <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="edit-sender-modal-content">
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-fn-dialog"
-                                            id="tf-edit-sender-fn-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderFamilyName : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-gn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-gn-dialog"
-                                            id="tf-edit-sender-gn-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderGivenName : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-ac-dialog"
-                                            id="tf-edit-sender-ac-dialog"
-                                            maxlength="2"
-                                            value="${this.currentItem ? this.currentItem.senderAddressCountry : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-pc-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-pc-dialog"
-                                            id="tf-edit-sender-pc-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderPostalCode : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-al-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-al-dialog"
-                                            id="tf-edit-sender-al-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderAddressLocality : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-sa-dialog"
-                                            id="tf-edit-sender-sa-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderStreetAddress : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-bn-dialog"
-                                            id="tf-edit-sender-bn-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderBuildingNumber : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                                <button
-                                        class="button"
-                                        data-micromodal-close
-                                        aria-label="Close this dialog window"
-                                        @click="${() => {
-                                            MicroModal.close(this._('#edit-sender-modal'));
-                                        }}">
-                                    ${i18n.t('show-requests.edit-sender-dialog-button-cancel')}
-                                </button>
-                                <button
-                                        class="button select-button is-primary"
-                                        id="edit-sender-confirm-btn"
-                                        @click="${() => {
-                                            this.confirmEditSender().then(r => {
-                                                MicroModal.close(this._('#edit-sender-modal'));
-                                            });
-                                        }}">
-                                    ${i18n.t('show-requests.edit-sender-dialog-button-ok')}
-                                </button>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
+            ${this.addEditSenderModal()}
             
-            <div class="modal micromodal-slide" id="add-recipient-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div class="modal-container"
-                         id="add-recipient-modal-box"
-                         role="dialog"
-                         aria-modal="true"
-                         aria-labelledby="add-recipient-modal-title">
-                        <header class="modal-header">
-                            <h3 id="add-recipient-modal-title">
-                                ${i18n.t('show-requests.add-recipient-dialog-title')}
-                            </h3>
-                            <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        MicroModal.close(this._('#add-recipient-modal'));
-                                    }}">
-                                <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="add-recipient-modal-content">
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-fn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-fn-dialog"
-                                            id="tf-add-recipient-fn-dialog"
-                                            value="Mustermann"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-gn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-gn-dialog"
-                                            id="tf-add-recipient-gn-dialog"
-                                            value="Max"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-ac-dialog"
-                                            id="tf-add-recipient-ac-dialog"
-                                            value="AT"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-pc-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-pc-dialog"
-                                            id="tf-add-recipient-pc-dialog"
-                                            value="8010"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-al-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-al-dialog"
-                                            id="tf-add-recipient-al-dialog"
-                                            value="Graz"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-sa-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-sa-dialog"
-                                            id="tf-add-recipient-sa-dialog"
-                                            value="Am Grund"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-bn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-bn-dialog"
-                                            id="tf-add-recipient-bn-dialog"
-                                            value="1"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                                <button
-                                        class="button"
-                                        data-micromodal-close
-                                        aria-label="Close this dialog window"
-                                        @click="${() => {
-                                            MicroModal.close(this._('#add-recipient-modal'));
-                                        }}">
-                                    ${i18n.t('show-requests.add-recipient-dialog-button-cancel')}
-                                </button>
-                                <button
-                                        class="button select-button is-primary"
-                                        id="add-recipient-confirm-btn"
-                                        @click="${() => {
-                                            this.addRecipientToRequest().then(r => {
-                                                MicroModal.close(this._('#add-recipient-modal'));
-                                            });
-                                        }}">
-                                    ${i18n.t('show-requests.add-recipient-dialog-button-ok')}
-                                </button>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="modal micromodal-slide" id="edit-recipient-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div class="modal-container"
-                         id="edit-recipient-modal-box"
-                         role="dialog"
-                         aria-modal="true"
-                         aria-labelledby="edit-recipient-modal-title">
-                        <header class="modal-header">
-                            <h3 id="edit-recipient-modal-title">
-                                ${i18n.t('show-requests.edit-recipient-dialog-title')}
-                            </h3>
-                            <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        MicroModal.close(this._('#edit-recipient-modal'));
-                                    }}">
-                                <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="edit-recipient-modal-content">
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-fn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-fn-dialog"
-                                            id="tf-edit-recipient-fn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-gn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-gn-dialog"
-                                            id="tf-edit-recipient-gn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-ac-dialog"
-                                            id="tf-edit-recipient-ac-dialog"
-                                            maxlength="2"
-                                            value="${this.currentRecipient ? this.currentRecipient.addressCountry : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-pc-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-pc-dialog"
-                                            id="tf-edit-recipient-pc-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-al-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-al-dialog"
-                                            id="tf-edit-recipient-al-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-sa-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-sa-dialog"
-                                            id="tf-edit-recipient-sa-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-bn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-bn-dialog"
-                                            id="tf-edit-recipient-bn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                                <button
-                                        class="button"
-                                        data-micromodal-close
-                                        aria-label="Close this dialog window"
-                                        @click="${() => {
-                                            MicroModal.close(this._('#edit-recipient-modal'));
-                                        }}">
-                                    ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
-                                </button>
-                                <button
-                                        class="button select-button is-primary"
-                                        id="edit-recipient-confirm-btn"
-                                        @click="${() => {
-                                            this.updateRecipient().then(r => {
-                                                MicroModal.close(this._('#edit-recipient-modal'));
-                                            });
-                                        }}">
-                                    ${i18n.t('show-requests.edit-recipient-dialog-button-ok')}
-                                </button>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="modal micromodal-slide" id="show-recipient-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div class="modal-container"
-                         id="show-recipient-modal-box"
-                         role="dialog"
-                         aria-modal="true"
-                         aria-labelledby="show-recipient-modal-title">
-                        <header class="modal-header">
-                            <h3 id="show-recipient-modal-title">
-                                ${i18n.t('show-requests.show-recipient-dialog-title')}
-                            </h3>
-                            <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        MicroModal.close(this._('#show-recipient-modal'));
-                                    }}">
-                                <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="show-recipient-modal-content">
-                            <div class="detailed-recipient-modal-content-wrapper">
-                                <div class="element-left first">
-                                    ${i18n.t('show-requests.edit-recipient-fn-dialog-label')}:
-                                </div>
-                                <div class="element-right first">
-                                    ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
-                                </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-gn-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.givenName ? this.currentRecipient.givenName : ``}
-                                </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.addressCountry ? this.currentRecipient.addressCountry : ``}
-                                </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-pc-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.postalCode ? this.currentRecipient.postalCode : ``}
-                                </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-al-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : ``}
-                                </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-sa-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : ``}
-                                </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-bn-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : ``}
-                                </div>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn"></div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
+            ${this.addAddRecipientModal()}
+
+            ${this.addEditRecipientModal()}
+
+            ${this.addShowRecipientModal()}
         `;
     }
 }
