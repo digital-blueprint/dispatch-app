@@ -440,28 +440,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return list;
     }
 
-    /**
-     * Get a list of all requests
-     *
-     * @returns {Array} list
-     */
-    async getListOfRequests() {
-        this.initialRequestsLoading = !this._initialFetchDone;
-        try {
-            let response = await this.getListOfDispatchRequests();
-            let responseBody = await response.json();
-            if (responseBody !== undefined && responseBody.status !== 403) {
-                this.requestList = this.parseListOfRequests(responseBody);
-                let tableObject = this.createTableObject(this.requestList);
-                this.dispatchRequestsTable.setData(tableObject);
-                this.dispatchRequestsTable.setLocale(this.lang);
-            }
-        } finally {
-            this.initialRequestsLoading = false;
-            this._initialFetchDone = true;
-        }
-    }
-
     async addRecipientToRequest(event, item) {
         const i18n = this._i18n;
         let id = this.currentItem.identifier;
@@ -713,6 +691,124 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentItem = responseBody;
         } else {
             // TODO error handling
+        }
+    }
+
+    createFormattedFilesList(list) {
+        let output = "";
+        list.forEach((file) => {
+            output += file.name + "<br>";
+        });
+        if (output != "") {
+            return output;
+        } else {
+            return '(Noch) keine Dateien angehängt';
+        }
+    }
+
+    createFormattedRecipientsList(list) {
+        let output = "";
+        list.forEach((recipient) => {
+            output += recipient.familyName + ", " + recipient.givenName + "<br>";
+        });
+        if (output != "") {
+            return output;
+        } else {
+            return '(Noch) keine Empfänger';
+        }
+    }
+
+    setControlsHtml(item) {
+        let div = this.createScopedElement('div');
+        div.classList.add('tabulator-icon-buttons');
+
+        if (item.dateSubmitted) {
+            let btn = this.createScopedElement('dbp-icon-button');
+            btn.addEventListener('click', async event => {
+                this.editRequest(event, item);
+                event.stopPropagation();
+            });
+            btn.setAttribute('icon-name', 'keyword-research');
+            div.appendChild(btn);
+        } else {
+            let btn_edit = this.createScopedElement('dbp-icon-button');
+            btn_edit.addEventListener('click', async event => {
+                this.editRequest(event, item);
+                event.stopPropagation();
+            });
+            btn_edit.setAttribute('icon-name', 'pencil');
+            div.appendChild(btn_edit);
+
+            let btn_delete = this.createScopedElement('dbp-icon-button');
+            btn_delete.addEventListener('click', async event => {
+                this.deleteRequest(event, item);
+                event.stopPropagation();
+            });
+            btn_delete.setAttribute('icon-name', 'trash');
+
+            div.appendChild(btn_delete);
+
+            let btn_submit = this.createScopedElement('dbp-icon-button');
+            btn_submit.addEventListener('click', async event => {
+                this.submitRequest(event, item);
+                event.stopPropagation();
+            });
+            btn_submit.setAttribute('icon-name', 'send-diagonal');
+
+            div.appendChild(btn_submit);
+        }
+
+        return div;
+    }
+
+    createTableObject(list) {
+        const i18n = this._i18n;
+        let tableObject = [];
+
+        console.log(list);
+
+        list.forEach((item) => {
+            let content = {
+                requestId: item.identifier,
+                subject: item.name ? item.name : i18n.t('show-requests.no-subject-found'),
+                status: item.dateSubmitted ? 'Abgeschlossen' : 'In Bearbeitung',
+                dateCreated: item.dateCreated,
+                details: "Details",
+                sender: item.senderFamilyName + " " + item.senderGivenName + "<br>"
+                    + item.senderStreetAddress + " " + item.senderBuildingNumber + "<br>"
+                    + item.senderPostalCode + " " + item.senderAddressLocality + "<br>"
+                    + item.senderAddressCountry,
+                files: this.createFormattedFilesList(item.files),
+                recipients: this.createFormattedRecipientsList(item.recipients),
+                controls: this.setControlsHtml(item),
+            };
+            tableObject.push(content);
+        });
+
+        console.log(tableObject);
+        return tableObject;
+    }
+
+    /**
+     * Get a list of all requests
+     *
+     * @returns {Array} list
+     */
+    async getListOfRequests() {
+        this.initialRequestsLoading = !this._initialFetchDone;
+        try {
+            let response = await this.getListOfDispatchRequests();
+            let responseBody = await response.json();
+            if (responseBody !== undefined && responseBody.status !== 403) {
+                this.requestList = this.parseListOfRequests(responseBody);
+                let tableObject = this.createTableObject(this.requestList);
+                this.dispatchRequestsTable.setData(tableObject);
+                this.dispatchRequestsTable.setLocale(this.lang);
+                this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+            }
+        } finally {
+            this.initialRequestsLoading = false;
+            this._initialFetchDone = true;
         }
     }
 

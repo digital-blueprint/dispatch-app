@@ -41,8 +41,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.nextcloudAuthInfo = "";
 
         this.dispatchRequestsTable = null;
+        this.totalNumberOfItems = 0;
 
         this.boundSelectHandler = this.selectAllFiles.bind(this);
+
+        this.initateOpenAdditionalMenu = false;
+        this.initateOpenAdditionalSearchMenu = false;
+        // this.boundCloseAdditionalMenuHandler = this.hideAdditionalMenu.bind(this);
+        this.boundCloseAdditionalSearchMenuHandler = this.hideAdditionalSearchMenu.bind(this);
+        this.boundPressEnterAndSubmitSearchHandler = this.pressEnterAndSubmitSearch.bind(this);
     }
 
     static get scopedElements() {
@@ -70,6 +77,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             showDetailsView: { type: Boolean, attribute: false },
             currentItem: { type: Object, attribute: false },
             currentRecipient: { type: Object, attribute: false },
+            totalNumberOfItems: { type: Number, attribute: false },
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -100,6 +108,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.dispatchRequestsTable.off("dataLoaded");
         this.dispatchRequestsTable.off("pageLoaded");
 
+        document.removeEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
+
         super.disconnectedCallback();
     }
 
@@ -108,7 +118,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this._loginStatus = '';
         this._loginState = [];
         this._loginCalled = false;
-
 
         this.updateComplete.then(() => {
             let paginationElement = this._('.tabulator-paginator');
@@ -305,6 +314,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             //this.dispatchRequestsTable.on("rowAdded", this.rowAddedFunction.bind(this));
             this.dispatchRequestsTable.on("dataLoaded", this.dataLoadedFunction.bind(this));
             this.dispatchRequestsTable.on("pageLoaded", this.pageLoadedFunction.bind(this));
+
+            document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
         });
     }
 
@@ -398,99 +409,189 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         return false;
     }
 
-    createFormattedFilesList(list) {
-        let output = "";
-        list.forEach((file) => {
-            output += file.name + "<br>";
+    /**
+     * Keydown Event function if enter pressed, then start filtering the table
+     *
+     * @param event
+     */
+    pressEnterAndSubmitSearch(event) {
+        if (event.keyCode === 13) {
+            console.log('enter detected');
+            const activeElement = this.shadowRoot.activeElement;
+            if (activeElement && activeElement.id === 'searchbar') {
+                event.preventDefault();
+                this.filterTable();
+                this.hideAdditionalSearchMenu(event);
+            }
+        }
+    }
+
+    /*
+     * Clear Filer
+     */
+    clearFilter() {
+        let filter = this._('#searchbar');
+        let search = this._('#search-select');
+
+        if (!filter || !search || !this.dispatchRequestsTable)
+            return;
+
+        filter.value = '';
+        search.value = 'all';
+        this.dispatchRequestsTable.clearFilter();
+        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+    }
+
+    /**
+     * Function for filtering table
+     *
+     */
+    filterTable() {
+        let filter = this._('#searchbar');
+        let search = this._('#search-select');
+        let operator = this._('#search-operator');
+
+        if (!filter || !operator || !search || !this.dispatchRequestsTable)
+            return;
+
+        if (filter.value === "") {
+            this.dispatchRequestsTable.clearFilter();
+            this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+            return;
+        }
+        filter = filter.value;
+        search = search.value;
+        operator = operator.value;
+
+        if (search !== 'all') {
+            this.dispatchRequestsTable.setFilter(search, operator, filter);
+            return;
+        }
+
+        let filterArray = [];
+        this.dispatchRequestsTable.getColumns().forEach((col) => {
+            let field = col.getDefinition().field;
+            filterArray.push({field: field, type: operator, value: filter});
         });
-        if (output != "") {
-            return output;
+
+        this.dispatchRequestsTable.setFilter([filterArray]);
+        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+    }
+
+    /**
+     * Toggle additional functionalities menu on mobile
+     *
+     */
+    toggleMoreMenu() {
+        const menu = this.shadowRoot.querySelector('ul.extended-menu');
+        const menuStart = this.shadowRoot.querySelector('a.extended-menu-link');
+
+        if (menu === null || menuStart === null) {
+            return;
+        }
+
+        menu.classList.toggle('hidden');
+
+        if (!menu.classList.contains('hidden')) {
+            // add event listener for clicking outside of menu
+            document.addEventListener('click', this.boundCloseAdditionalMenuHandler);
+            this.initateOpenAdditionalMenu = true;
         } else {
-            return '(Noch) keine Dateien angehängt';
+            document.removeEventListener('click', this.boundCloseAdditionalMenuHandler);
         }
     }
 
-    createFormattedRecipientsList(list) {
-        let output = "";
-        list.forEach((recipient) => {
-            output += recipient.familyName + ", " + recipient.givenName + "<br>";
-        });
-        if (output != "") {
-            return output;
-        } else {
-            return '(Noch) keine Empfänger';
+    /**
+     * Hide additional functionalities menu
+     * This function is used as bounded event function,
+     * if clicked outside then we can close the menu
+     *
+     */
+    hideAdditionalMenu() {
+        if (this.initateOpenAdditionalMenu) {
+            this.initateOpenAdditionalMenu = false;
+            return;
+        }
+        const menu = this.shadowRoot.querySelector('ul.extended-menu');
+        if (menu && !menu.classList.contains('hidden')) {
+            this.toggleMoreMenu();
         }
     }
 
-    setControlsHtml(item) {
-        let div = this.createScopedElement('div');
-        div.classList.add('tabulator-icon-buttons');
+    /**
+     * Toggle search menu
+     *
+     */
+    toggleSearchMenu() {
+        const menu = this._('#extendable-searchbar .extended-menu');
 
-        if (item.dateSubmitted) {
-            let btn = this.createScopedElement('dbp-icon-button');
-            btn.addEventListener('click', async event => {
-                this.editRequest(event, item);
-                event.stopPropagation();
-            });
-            btn.setAttribute('icon-name', 'keyword-research');
-            div.appendChild(btn);
-        } else {
-            let btn_edit = this.createScopedElement('dbp-icon-button');
-            btn_edit.addEventListener('click', async event => {
-                this.editRequest(event, item);
-                event.stopPropagation();
-            });
-            btn_edit.setAttribute('icon-name', 'pencil');
-            div.appendChild(btn_edit);
-
-            let btn_delete = this.createScopedElement('dbp-icon-button');
-            btn_delete.addEventListener('click', async event => {
-                this.deleteRequest(event, item);
-                event.stopPropagation();
-            });
-            btn_delete.setAttribute('icon-name', 'trash');
-
-            div.appendChild(btn_delete);
-
-            let btn_submit = this.createScopedElement('dbp-icon-button');
-            btn_submit.addEventListener('click', async event => {
-                this.submitRequest(event, item);
-                event.stopPropagation();
-            });
-            btn_submit.setAttribute('icon-name', 'send-diagonal');
-
-            div.appendChild(btn_submit);
+        if (menu === null) {
+            return;
         }
 
-        return div;
+        menu.classList.remove('hidden');
+        console.log("remove hidden");
+
+        if (!menu.classList.contains('hidden')) {
+            // add event listener for clicking outside of menu
+            document.addEventListener('click', this.boundCloseAdditionalSearchMenuHandler);
+            this.initateOpenAdditionalSearchMenu = true;
+        }
     }
 
-    createTableObject(list) {
+    /**
+     * hide search menu
+     *
+     * @param e
+     */
+    hideAdditionalSearchMenu(e) {
+        if (this.initateOpenAdditionalSearchMenu) {
+            this.initateOpenAdditionalSearchMenu = false;
+            return;
+        }
+
+        if (e.type !== 'keyup' && e.keyCode !== 13
+            && (e.originalTarget && e.originalTarget.parentElement
+                && (e.originalTarget.parentElement.classList.contains('extended-menu') ||
+                    e.originalTarget.parentElement.id === 'search-operator' ||
+                    e.originalTarget.parentElement.id === 'search-operator') ||
+                    e.originalTarget.parentElement.id === 'search-select'
+                || e.originalTarget && e.originalTarget.id === 'searchbar-menu'
+                || e.originalTarget && e.originalTarget.id === 'searchbar')) {
+            return;
+        }
+
+        const menu = this._('#extendable-searchbar .extended-menu');
+        if (menu && !menu.classList.contains('hidden')) {
+            console.log("hide menu");
+            menu.classList.add('hidden');
+            document.removeEventListener('click', this.boundCloseAdditionalSearchMenuHandler);
+        }
+    }
+
+    /**
+     * Creates options for a select box of the t
+     * this.submissionColumns Array (all possible cols of active table)
+     *
+     * @returns {Array<html>} options
+     */
+    getTableHeaderOptions() {
         const i18n = this._i18n;
-        let tableObject = [];
+        if (!this.dispatchRequestsTable)
+            return;
 
-        console.log(list);
+        let options = [];
+        options[0] = html`<option value='all'>${i18n.t('show-requests.all-columns')}</option>`;
 
-        list.forEach((item) => {
-            let content = {
-                requestId: item.identifier,
-                subject: item.name ? item.name : i18n.t('show-requests.no-subject-found'),
-                status: item.dateSubmitted ? 'Abgeschlossen' : 'In Bearbeitung',
-                dateCreated: item.dateCreated,
-                details: "Details",
-                sender: item.senderFamilyName + " " + item.senderGivenName + "<br>"
-                        + item.senderStreetAddress + " " + item.senderBuildingNumber + "<br>"
-                        + item.senderPostalCode + " " + item.senderAddressLocality + "<br>"
-                        + item.senderAddressCountry,
-                files: this.createFormattedFilesList(item.files),
-                recipients: this.createFormattedRecipientsList(item.recipients),
-                controls: this.setControlsHtml(item),
-            };
-            tableObject.push(content);
+        this.dispatchRequestsTable.getColumns().forEach((col, counter) => {
+            let name = col.getDefinition().title;
+            let field = col.getDefinition().field;
+            if (field && !field.includes('no_display') && field !== 'details' && field !== 'requestId' && field !== 'type' && field !== 'controls') {
+                options[counter + 1] = html`<option value='${field}'>${name}</option>`;
+            }
         });
 
-        console.log(tableObject);
-        return tableObject;
+        return options;
     }
 
     static get styles() {
@@ -506,6 +607,50 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getTabulatorStyles()}
             /*${commonStyles.getRadioAndCheckboxCss()}*/
             ${dispatchStyles.getShowDispatchRequestsCss()}
+
+            #search-operator, #search-select, .dropdown-menu {
+                background-color: var(--dbp-secondary-surface);
+                color: var(--dbp-on-secondary-surface);
+                border-color: var(--dbp-secondary-surface-border-color);
+                background-size: auto 45%;
+                padding-bottom: calc(0.375em - 1px);
+                padding-left: 0.75em;
+                padding-right: 1.5rem;
+                padding-top: calc(0.375em - 1px);
+                cursor: pointer;
+                background-position-x: calc(100% - 0.4rem);
+                box-sizing: content-box;
+            }
+
+            #search-select, #search-operator {
+                margin-bottom: 10px;
+                box-sizing: border-box;
+                text-align: left;
+            }
+
+            .extended-menu.hidden {
+                display: none !important;
+            }
+
+            #extendable-searchbar .extended-menu {
+                list-style: none;
+                border: var(--dbp-border);
+                background-color: var(--dbp-background);
+                z-index: 1000;
+                border-radius: var(--dbp-border-radius);
+                width: 100%;
+                position: absolute;
+                right: 0px;
+                background-color: var(--dbp-background);
+                padding: 10px;
+                box-sizing: border-box;
+                top: 33px;
+                margin: 0px;
+                border-top: unset;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
 
             select:not(.select) {
                 background-size: 13px;
@@ -541,6 +686,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 display: flex;
                 flex-grow: 1;
                 position: relative;
+                width: 320px;
             }
             
             #searchbar {
@@ -1239,11 +1385,51 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}"
                                 <div class="search-wrapper ">
                                     <div id="extendable-searchbar">
-                                        <input type="text" id="searchbar" placeholder="Suchen">
-                                        <dbp-icon-button id="search-button" title="Suchen" icon-name="search"></dbp-icon-button>
+                                        <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
+                                            this.toggleSearchMenu();
+                                        }}'>
+                                        <dbp-icon-button id="search-button" title="Suchen" icon-name="search" 
+                                            @click='${() => {
+                                                this.filterTable();
+                                            }}'></dbp-icon-button>
+                                        <ul class='extended-menu hidden' id='searchbar-menu'>
+                                            <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
+                                            <select id='search-select' class='button dropdown-menu'
+                                                    title='${i18n.t('show-requests.search-in-column')}:'>
+                                                ${this.getTableHeaderOptions()}
+                                            </select>
+                                            
+                                            <label for='search-operator'>${i18n.t('show-requests.search-operator')}
+                                                :</label>
+                                            <select id='search-operator' class='button dropdown-menu'>
+                                                <option value='like'>${i18n.t('show-requests.search-operator-like')}
+                                                </option>
+                                                <option value='='>${i18n.t('show-requests.search-operator-equal')}</option>
+                                                <option value='!='>${i18n.t('show-requests.search-operator-notequal')}
+                                                </option>
+                                                <option value='starts'>${i18n.t('show-requests.search-operator-starts')}
+                                                </option>
+                                                <option value='ends'>${i18n.t('show-requests.search-operator-ends')}
+                                                </option>
+                                                <option value='<'>${i18n.t('show-requests.search-operator-less')}</option>
+                                                <option value='<='>
+                                                    ${i18n.t('show-requests.search-operator-lessthanorequal')}
+                                                </option>
+                                                <option value='>'>${i18n.t('show-requests.search-operator-greater')}
+                                                </option>
+                                                <option value='>='>
+                                                    ${i18n.t('show-requests.search-operator-greaterorequal')}
+                                                </option>
+                                                <option value='regex'>${i18n.t('show-requests.search-operator-regex')}
+                                                </option>
+                                                <option value='keywords'>
+                                                    ${i18n.t('show-requests.search-operator-keywords')}
+                                                </option>
+                                            </select>
+                                        </ul>
                                     </div>
                                 </div>
-                                <dbp-icon-button class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
+                                <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
                                             ?disabled="${this.loading}"
                                             @click="${() => { console.log('open settings'); }}"
                                             title="TODO"
