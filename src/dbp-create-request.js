@@ -129,69 +129,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         super.update(changedProperties);
     }
 
-    processSenderGivenNameInput(event) {
-        this.senderGivenName = "";
-        if (this._('#sender-given-name').value !== '') {
-            this.senderGivenName = this._('#sender-given-name').value;
-        } else {
-            this.senderGivenName = '';
-        }
-    }
-
-    processSenderFamilyNameInput(event) {
-        this.senderFamilyName = "";
-        if (this._('#sender-family-name').value !== '') {
-            this.senderFamilyName = this._('#sender-family-name').value;
-        } else {
-            this.senderFamilyName = '';
-        }
-    }
-
-    processSenderAddressCountryInput(event) {
-        this.senderAddressCountry = "";
-        if (this._('#sender-address-country').value !== '') {
-            this.senderAddressCountry = this._('#sender-address-country').value;
-        } else {
-            this.senderAddressCountry = '';
-        }
-    }
-
-    processSenderPostalCodeInput(event) {
-        this.senderPostalCode = "";
-        if (this._('#sender-postal-code').value !== '') {
-            this.senderPostalCode = this._('#sender-postal-code').value;
-        } else {
-            this.senderPostalCode = '';
-        }
-    }
-
-    processSenderAddressLocalityInput(event) {
-        this.senderAddressLocality = "";
-        if (this._('#sender-address-locality').value !== '') {
-            this.senderAddressLocality = this._('#sender-address-locality').value;
-        } else {
-            this.senderAddressLocality = '';
-        }
-    }
-
-    processSenderStreetAddressInput(event) {
-        this.senderStreetAddress = "";
-        if (this._('#sender-street-address').value !== '') {
-            this.senderStreetAddress = this._('#sender-street-address').value;
-        } else {
-            this.senderStreetAddress = '';
-        }
-    }
-
-    processSenderBuildingNumberInput(event) {
-        this.senderBuildingNumber = "";
-        if (this._('#sender-building-number').value !== '') {
-            this.senderBuildingNumber = this._('#sender-building-number').value;
-        } else {
-            this.senderBuildingNumber = '';
-        }
-    }
-
     async processCreateDispatchRequest() {
         const i18n = this._i18n;
         try {
@@ -715,12 +652,36 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
+                                    ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
                                 </div>
                                 <div>
-                                    <select id="add-sender-country-select" class="country-select">
-                                        ${dispatchHelper.getCountryList()}
-                                    </select>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-add-sender-sa-dialog"
+                                            id="tf-add-sender-sa-dialog"
+                                            value="${this.currentItem ? this.currentItem.senderStreetAddress : ``}"
+                                            @input="${() => {
+            // TODO
+        }}"
+                                    />
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
+                                </div>
+                                <div>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-add-sender-bn-dialog"
+                                            id="tf-add-sender-bn-dialog"
+                                            value="${this.currentItem ? this.currentItem.senderBuildingNumber : ``}"
+                                            @input="${() => {
+            // TODO
+        }}"
+                                    />
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -759,36 +720,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
+                                    ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
                                 <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-sender-sa-dialog"
-                                            id="tf-add-sender-sa-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderStreetAddress : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-sender-bn-dialog"
-                                            id="tf-add-sender-bn-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderBuildingNumber : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
+                                    <select id="add-sender-country-select" class="country-select">
+                                        ${dispatchHelper.getCountryList()}
+                                    </select>
                                 </div>
                             </div>
                         </main>

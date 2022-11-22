@@ -925,6 +925,69 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         `;
     }
 
+    processSenderGivenNameInput(event) {
+        this.senderGivenName = "";
+        if (this._('#sender-given-name').value !== '') {
+            this.senderGivenName = this._('#sender-given-name').value;
+        } else {
+            this.senderGivenName = '';
+        }
+    }
+
+    processSenderFamilyNameInput(event) {
+        this.senderFamilyName = "";
+        if (this._('#sender-family-name').value !== '') {
+            this.senderFamilyName = this._('#sender-family-name').value;
+        } else {
+            this.senderFamilyName = '';
+        }
+    }
+
+    processSenderAddressCountryInput(event) {
+        this.senderAddressCountry = "";
+        if (this._('#sender-address-country').value !== '') {
+            this.senderAddressCountry = this._('#sender-address-country').value;
+        } else {
+            this.senderAddressCountry = '';
+        }
+    }
+
+    processSenderPostalCodeInput(event) {
+        this.senderPostalCode = "";
+        if (this._('#sender-postal-code').value !== '') {
+            this.senderPostalCode = this._('#sender-postal-code').value;
+        } else {
+            this.senderPostalCode = '';
+        }
+    }
+
+    processSenderAddressLocalityInput(event) {
+        this.senderAddressLocality = "";
+        if (this._('#sender-address-locality').value !== '') {
+            this.senderAddressLocality = this._('#sender-address-locality').value;
+        } else {
+            this.senderAddressLocality = '';
+        }
+    }
+
+    processSenderStreetAddressInput(event) {
+        this.senderStreetAddress = "";
+        if (this._('#sender-street-address').value !== '') {
+            this.senderStreetAddress = this._('#sender-street-address').value;
+        } else {
+            this.senderStreetAddress = '';
+        }
+    }
+
+    processSenderBuildingNumberInput(event) {
+        this.senderBuildingNumber = "";
+        if (this._('#sender-building-number').value !== '') {
+            this.senderBuildingNumber = this._('#sender-building-number').value;
+        } else {
+            this.senderBuildingNumber = '';
+        }
+    }
+
     addEditSenderModal() {
         const i18n = this._i18n;
 
@@ -1011,12 +1074,36 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
+                                    ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
                                 </div>
                                 <div>
-                                    <select id="edit-sender-country-select" class="country-select">
-                                        ${dispatchHelper.getCountryList()}
-                                    </select>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-edit-sender-sa-dialog"
+                                            id="tf-edit-sender-sa-dialog"
+                                            value="${this.currentItem ? this.currentItem.senderStreetAddress : ``}"
+                                            @input="${() => {
+            // TODO
+        }}"
+                                    />
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
+                                </div>
+                                <div>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-edit-sender-bn-dialog"
+                                            id="tf-edit-sender-bn-dialog"
+                                            value="${this.currentItem ? this.currentItem.senderBuildingNumber : ``}"
+                                            @input="${() => {
+            // TODO
+        }}"
+                                    />
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -1055,36 +1142,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
+                                    ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
                                 <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-sa-dialog"
-                                            id="tf-edit-sender-sa-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderStreetAddress : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-bn-dialog"
-                                            id="tf-edit-sender-bn-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderBuildingNumber : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
+                                    <select id="edit-sender-country-select" class="country-select">
+                                        ${dispatchHelper.getCountryList()}
+                                    </select>
                                 </div>
                             </div>
                         </main>
@@ -1200,15 +1263,32 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
+                                    ${i18n.t('show-requests.add-recipient-sa-dialog-label')}
                                 </div>
                                 <div>
                                     <input
                                             type="text"
                                             class="input"
-                                            name="tf-add-recipient-ac-dialog"
-                                            id="tf-add-recipient-ac-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.addressCountry : ``}"
+                                            name="tf-add-recipient-sa-dialog"
+                                            id="tf-add-recipient-sa-dialog"
+                                            value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
+                                            @input="${() => {
+            // TODO
+        }}"
+                                    />
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.add-recipient-bn-dialog-label')}
+                                </div>
+                                <div>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-add-recipient-bn-dialog"
+                                            id="tf-add-recipient-bn-dialog"
+                                            value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1251,36 +1331,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-sa-dialog-label')}
+                                    ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                 </div>
                                 <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-sa-dialog"
-                                            id="tf-add-recipient-sa-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-bn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-bn-dialog"
-                                            id="tf-add-recipient-bn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
+                                    <select id="edit-sender-country-select" class="country-select">
+                                        ${dispatchHelper.getCountryList()}
+                                    </select>
                                 </div>
                             </div>
                         </main>
@@ -1378,16 +1434,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
+                                    ${i18n.t('show-requests.edit-recipient-sa-dialog-label')}
                                 </div>
                                 <div>
                                     <input
                                             type="text"
                                             class="input"
-                                            name="tf-edit-recipient-ac-dialog"
-                                            id="tf-edit-recipient-ac-dialog"
-                                            maxlength="2"
-                                            value="${this.currentRecipient ? this.currentRecipient.addressCountry : ``}"
+                                            name="tf-edit-recipient-sa-dialog"
+                                            id="tf-edit-recipient-sa-dialog"
+                                            value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1395,6 +1450,23 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                             </div>
                             <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-recipient-bn-dialog-label')}
+                                </div>
+                                <div>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-edit-recipient-bn-dialog"
+                                            id="tf-edit-recipient-bn-dialog"
+                                            value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
+                                            @input="${() => {
+            // TODO
+        }}"
+                                    />
+                                </div>
+                            </div>
+                                      <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-pc-dialog-label')}
                                 </div>
@@ -1430,36 +1502,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-sa-dialog-label')}
+                                    ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
                                 <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-sa-dialog"
-                                            id="tf-edit-recipient-sa-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-bn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-bn-dialog"
-                                            id="tf-edit-recipient-bn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
+                                    <div>
+                                        <select id="edit-sender-country-select" class="country-select">
+                                            ${dispatchHelper.getCountryList()}
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </main>

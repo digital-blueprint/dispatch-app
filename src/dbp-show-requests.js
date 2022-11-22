@@ -530,7 +530,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
 
         menu.classList.remove('hidden');
-        console.log("remove hidden");
 
         if (!menu.classList.contains('hidden')) {
             // add event listener for clicking outside of menu
@@ -563,7 +562,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         const menu = this._('#extendable-searchbar .extended-menu');
         if (menu && !menu.classList.contains('hidden')) {
-            console.log("hide menu");
             menu.classList.add('hidden');
             document.removeEventListener('click', this.boundCloseAdditionalSearchMenuHandler);
         }
