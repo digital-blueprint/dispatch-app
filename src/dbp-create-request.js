@@ -28,6 +28,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.currentItem = {};
 
+        this.currentItem.files = [];
+        this.currentItem.recipients = [];
+
+        this.currentRecipient = {};
+
         this.currentItem.senderGivenName = "";
         this.currentItem.senderFamilyName = "";
         this.currentItem.senderAddressCountry = "";
@@ -35,19 +40,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderAddressLocality = "";
         this.currentItem.senderStreetAddress = "";
         this.currentItem.senderBuildingNumber = "";
-
-        this.currentItem.files = [];
-        this.currentItem.recipients = [];
-
-        this.currentRecipient = '';
-
-        this.senderGivenName = "";
-        this.senderFamilyName = "";
-        this.senderAddressCountry = "";
-        this.senderPostalCode = "";
-        this.senderAddressLocality = "";
-        this.senderStreetAddress = "";
-        this.senderBuildingNumber = "";
 
         this.subject = '';
 
@@ -91,14 +83,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             currentRecipient: { type: Object, attribute: false },
 
             subject: {type: String, attribute: false},
-
-            senderGivenName: {type: String, attribute: false},
-            senderFamilyName: {type: String, attribute: false},
-            senderAddressCountry: {type: String, attribute: false},
-            senderPostalCode: {type: String, attribute: false},
-            senderAddressLocality: {type: String, attribute: false},
-            senderStreetAddress: {type: String, attribute: false},
-            senderBuildingNumber: {type: String, attribute: false},
 
             emptyFieldsGiven: {type: Boolean, attribute: false},
             showDetailsView: {type: Boolean, attribute: false},
@@ -626,7 +610,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-fn-dialog"
                                             id="tf-add-sender-fn-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderFamilyName : ``}"
+                                            value="${this.organizationId ? this.organizationId : this.currentItem.senderFamilyName}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -643,7 +627,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-gn-dialog"
                                             id="tf-add-sender-gn-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderGivenName : ``}"
+                                            value="${this.organization ? this.organization : this.currentItem.senderGivenName}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -660,10 +644,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-sa-dialog"
                                             id="tf-add-sender-sa-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderStreetAddress : ``}"
+                                            value="${this.currentItem.senderStreetAddress}"
                                             @input="${() => {
-            // TODO
-        }}"
+                                                // TODO
+                                            }}"
                                     />
                                 </div>
                             </div>
@@ -677,7 +661,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-bn-dialog"
                                             id="tf-add-sender-bn-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderBuildingNumber : ``}"
+                                            value="${this.currentItem.senderBuildingNumber}"
                                             @input="${() => {
             // TODO
         }}"
@@ -694,7 +678,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-pc-dialog"
                                             id="tf-add-sender-pc-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderPostalCode : ``}"
+                                            value="${this.currentItem.senderPostalCode}"
                                             @input="${() => {
             // TODO
         }}"
@@ -711,7 +695,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-al-dialog"
                                             id="tf-add-sender-al-dialog"
-                                            value="${this.currentItem ? this.currentItem.senderAddressLocality : ``}"
+                                            value="${this.currentItem.senderAddressLocality}"
                                             @input="${() => {
             // TODO
         }}"

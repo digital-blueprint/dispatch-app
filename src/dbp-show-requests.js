@@ -31,7 +31,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.showListView = true;
         this.showDetailsView = false;
         this.currentItem = null;
-        this.currentRecipient = null;
+        this.currentRecipient = {};
 
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
