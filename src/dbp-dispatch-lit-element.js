@@ -771,7 +771,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let content = {
                 requestId: item.identifier,
                 subject: item.name ? item.name : i18n.t('show-requests.no-subject-found'),
-                status: item.dateSubmitted ? 'Abgeschlossen' : 'In Bearbeitung',
+                status: item.dateSubmitted ? 'Abgesendet' : 'In Bearbeitung',
                 dateCreated: item.dateCreated,
                 details: "Details",
                 sender: item.senderFamilyName + " " + item.senderGivenName + "<br>"

@@ -550,13 +550,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
 
         if (e.type !== 'keyup' && e.keyCode !== 13
-            && (e.originalTarget && e.originalTarget.parentElement
-                && (e.originalTarget.parentElement.classList.contains('extended-menu') ||
-                    e.originalTarget.parentElement.id === 'search-operator' ||
-                    e.originalTarget.parentElement.id === 'search-operator') ||
-                    e.originalTarget.parentElement.id === 'search-select'
-                || e.originalTarget && e.originalTarget.id === 'searchbar-menu'
-                || e.originalTarget && e.originalTarget.id === 'searchbar')) {
+            && e.originalTarget && e.originalTarget.parentElement
+            && (e.originalTarget.parentElement.classList.contains('extended-menu')
+            || e.originalTarget.parentElement.id === 'search-operator')
+            || (e.originalTarget && e.originalTarget.parentElement && e.originalTarget.parentElement.id === 'search-select')
+            || e.originalTarget && e.originalTarget.id === 'searchbar-menu'
+            || e.originalTarget && e.originalTarget.id === 'searchbar') {
             return;
         }
 
