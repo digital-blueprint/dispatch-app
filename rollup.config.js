@@ -111,6 +111,13 @@ export default (async () => {
             if (warning.code === 'EVAL' && warning.id.includes('sha256.js')) {
                 return;
             }
+            // more eval
+            if (warning.code === 'EVAL' && warning.id.includes('pdfAnnotate.js')) {
+                return;
+            }
+            if (warning.code === 'EVAL' && warning.id.includes('pdf.js')) {
+                return;
+            }
             warn(warning);
         },
         plugins: [
