@@ -30,8 +30,21 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.requestList = [];
         this.showListView = true;
         this.showDetailsView = false;
-        this.currentItem = null;
+
+        this.currentItem = {};
+
+        this.currentItem.files = [];
+        this.currentItem.recipients = [];
+
         this.currentRecipient = {};
+
+        this.currentItem.senderGivenName = "";
+        this.currentItem.senderFamilyName = "";
+        this.currentItem.senderAddressCountry = "";
+        this.currentItem.senderPostalCode = "";
+        this.currentItem.senderAddressLocality = "";
+        this.currentItem.senderStreetAddress = "";
+        this.currentItem.senderBuildingNumber = "";
 
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
@@ -172,7 +185,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         },
                     },
                     {
-                        title: 'Details',
+                        title: i18n.t('show-requests.table-header-details'),
                         field: 'details',
                         hozAlign: 'center',
                         width: 60,
@@ -182,7 +195,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         formatter: 'responsiveCollapse'
                     },
                     {
-                        title: 'Erstelldatum',
+                        title: i18n.t('show-requests.table-header-date-created'),
                         field: 'dateCreated',
                         responsive: 3,
                         widthGrow: 1,
@@ -204,11 +217,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         },
                     },
                     {
-                        title: 'Betreff',
+                        title: i18n.t('show-requests.table-header-subject'),
                         field: 'subject',
                         responsive: 1,
                         widthGrow: 3,
                         minWidth: 150,
+                        formatter: 'html'
                     },
                     {
                         title: 'Status',
@@ -218,7 +232,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         minWidth: 120,
                     },
                     {
-                        title: 'Absender',
+                        title: i18n.t('show-requests.table-header-sender'),
                         field: 'sender',
                         // visible: false,
                         responsive: 8,
@@ -229,7 +243,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         }
                     },
                     {
-                        title: 'Angehängte Dateien',
+                        title: i18n.t('show-requests.table-header-files'),
                         field: 'files',
                         // visible: false,
                         responsive: 8,
@@ -240,7 +254,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         }
                     },
                     {
-                        title: 'Empfänger',
+                        title: i18n.t('show-requests.table-header-recipients'),
                         field: 'recipients',
                         // visible: false,
                         responsive: 8,
@@ -251,7 +265,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         }
                     },
                     {
-                        title: 'ID',
+                        title: i18n.t('show-requests.table-header-id'),
                         field: 'requestId',
                         responsive: 8,
                         minWidth: 150,
@@ -306,7 +320,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 },
                 initialSort: [
                     { column: 'dateCreated', dir: 'desc' },
-                    { column: 'status', dir: 'desc' },
+                    // { column: 'status', dir: 'desc' },
                 ],
             });
 
@@ -605,6 +619,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             /*${commonStyles.getRadioAndCheckboxCss()}*/
             ${dispatchStyles.getShowDispatchRequestsCss()}
 
+            input[type="date"] {
+                width: 100%;
+            }
+            
+            .muted {
+                color: var(--dbp-muted);
+            }
+
             #search-operator, #search-select, .dropdown-menu {
                 background-color: var(--dbp-secondary-surface);
                 color: var(--dbp-on-secondary-surface);
@@ -654,6 +676,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 background-position-x: calc(100% - 0.4rem);
                 padding-right: 1.3rem;
                 height: 33px;
+                width: 100%;
             }
             
             .tabulator-icon-buttons {
@@ -840,8 +863,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 flex-direction: column;
                 justify-content: space-between;
                 padding: 15px 20px 20px;
-                max-height: 630px;
-                min-height: 630px;
+                max-height: 715px;
+                min-height: 715px;
                 min-width: 320px;
                 max-width: 400px;
             }
@@ -1471,7 +1494,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                            @click="${(e) => {
                                this.showListView = true;
                                this.showDetailsView = false;
-                               this.currentItem = null;
+                               this.currentItem = {};
+                               this.currentItem.files = [];
+                               this.currentItem.recipients = [];
+                               this.currentRecipient = {};
+                               this.currentItem.senderGivenName = "";
+                               this.currentItem.senderFamilyName = "";
+                               this.currentItem.senderAddressCountry = "";
+                               this.currentItem.senderPostalCode = "";
+                               this.currentItem.senderAddressLocality = "";
+                               this.currentItem.senderStreetAddress = "";
+                               this.currentItem.senderBuildingNumber = "";
                            }}"
                         >
                             <dbp-icon name="chevron-left"></dbp-icon>
@@ -1576,9 +1609,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                         value="${i18n.t('show-requests.add-files-button-text')}" 
                                                         @click="${(event) => {
-                            console.log("on add files clicked");
-                            this.openFileSource();
-                        }}" 
+                                                            this.openFileSource();
+                                                        }}"
                                                         title="${i18n.t('show-requests.add-files-button-text')}"
                                         >
                                             ${i18n.t('show-requests.add-files-button-text')}
@@ -1631,6 +1663,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         value="${i18n.t('show-requests.add-recipient-button-text')}" 
                                                         @click="${(event) => {
                                                             console.log("on add recipient clicked");
+                                                            this.currentRecipient = {};
                                                             MicroModal.show(this._('#add-recipient-modal'), {
                                                                 disableScroll: true,
                                                                 onClose: (modal) => {
@@ -1651,22 +1684,26 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <div class="recipient card">
                                         <div class="left-side">
                                             <div>${recipient.familyName} ${recipient.givenName}</div>
+                                            <!-- <div>${this.convertToBirthDate(recipient.birthDate)}</div> -->
                                             <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
                                             <div>${recipient.postalCode} ${recipient.addressLocality}</div>
-                                            <div>${recipient.addressCountry}</div>
+                                            <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
+                                            <div>Status: ${this.currentRecipient.statusType} ${this.currentRecipient.statusDescription}</div>
                                         </div>
                                         <div class="right-side">
                                                 <dbp-icon-button id="show-recipient-btn"
                                                             @click="${(event) => {
-                                                                console.log("on show recipient clicked");
                                                                 this.currentRecipient = recipient;
-                                                                
-                                                                MicroModal.show(this._('#show-recipient-modal'), {
-                                                                    disableScroll: true,
-                                                                    onClose: (modal) => {
-                                                                        this.loading = false;
-                                                                        this.currentRecipient = null;
-                                                                    },
+                                                                console.log('rec: ', recipient);
+
+                                                                this.fetchDetailedRecipientInformation().then(r => {
+                                                                    MicroModal.show(this._('#show-recipient-modal'), {
+                                                                        disableScroll: true,
+                                                                        onClose: (modal) => {
+                                                                            this.loading = false;
+                                                                            this.currentRecipient = null;
+                                                                        },
+                                                                    });
                                                                 });
                                                             }}"
                                                             title="${i18n.t('show-requests.show-recipient-button-text')}"
@@ -1675,14 +1712,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     <dbp-icon-button id="edit-recipient-btn"
                                                                  ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                                  @click="${(event) => {
-                                                                     console.log("on edit recipients clicked");
+                                                                     console.log('rec: ', recipient);
                                                                      this.currentRecipient = recipient;
-                                                                     MicroModal.show(this._('#edit-recipient-modal'), {
-                                                                        disableScroll: true,
-                                                                        onClose: (modal) => {
-                                                                            this.loading = false;
-                                                                            this.currentRecipient = null;
-                                                                        },
+                                                                     this.fetchDetailedRecipientInformation().then(r => {
+                                                                         MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                             disableScroll: true,
+                                                                             onClose: (modal) => {
+                                                                                 this.loading = false;
+                                                                                 this.currentRecipient = null;
+                                                                             },
+                                                                         });
                                                                      });
                                                                  }}"
                                                                  title="${i18n.t('show-requests.edit-recipients-button-text')}"
@@ -1709,7 +1748,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             
             ${this.addFilePicker()}
             
-            ${this.addEditSenderModal()}
+            ${this.addEditSenderModal(this.currentItem)}
             
             ${this.addAddRecipientModal()}
 

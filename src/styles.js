@@ -384,6 +384,8 @@ export function getDispatchRequestStyles() {
                 padding-right: 1.3rem;
                 height: 33px;
             }
+            
+            
 
             .country-select {
                 width: 100%;
@@ -725,6 +727,10 @@ export function getDispatchRequestStyles() {
                 grid-template-rows: auto;
                 max-height: calc(100vh - 149px);
                 overflow-y: auto;
+                width: 100%;
+            }
+            
+            input[type="date"] {
                 width: 100%;
             }
 

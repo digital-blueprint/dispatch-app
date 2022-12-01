@@ -49,9 +49,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.hasSender = false;
         this.hasRecipients = false;
 
-        this.organization = "";
-        this.organizationId = "";
-
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
         this.nextcloudWebDavURL = "";
@@ -314,12 +311,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                      icon-name="pencil"></dbp-icon-button>` : ``}
                                 </div>
                                 <div class="sender-data">
-                                    ${this.organization ? html`${this.organizationId} ${this.organization}` : html`
-                                        ${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
-                                        ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName
-                                                ? html` ${this.currentItem.senderGivenName}` :
-                                                html`${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
-                                        `}
+                                    ${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
+                                    ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName
+                                            ? html` ${this.currentItem.senderGivenName}` :
+                                            html`${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
                                     `}
                                     ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
                                     ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
@@ -328,7 +323,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
                                 </div>
 
-                                <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFamilyName || this.organization !== ''})}">${i18n.t('show-requests.empty-sender-text')}</div>
+                                <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFamilyName})}">${i18n.t('show-requests.empty-sender-text')}</div>
 
                             </div>
                             
@@ -418,7 +413,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <div>${recipient.familyName} ${recipient.givenName}</div>
                                             <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
                                             <div>${recipient.postalCode} ${recipient.addressLocality}</div>
-                                            <div>${recipient.addressCountry}</div>
+                                            <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
                                         </div>
                                         <div class="right-side">
                                             <dbp-icon-button id="show-recipient-btn"
@@ -474,7 +469,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             
             ${this.addFilePicker()}
 
-            ${this.addEditSenderModal()}
+            ${this.addEditSenderModal(this.currentItem)}
 
             ${this.addAddRecipientModal()}
 
@@ -590,7 +585,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         resource-path="base/organizations"
                                         @change=${(event) => {
                                             this.processSelectedSender(event);
-                                    }}></dbp-resource-select>
+                                        }}
+                                    ></dbp-resource-select>
                                 </div>
                             </div>
 
@@ -610,7 +606,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-fn-dialog"
                                             id="tf-add-sender-fn-dialog"
-                                            value="${this.organizationId ? this.organizationId : this.currentItem.senderFamilyName}"
+                                            value="${this.currentItem.senderFamilyName}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -627,7 +623,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-gn-dialog"
                                             id="tf-add-sender-gn-dialog"
-                                            value="${this.organization ? this.organization : this.currentItem.senderGivenName}"
+                                            value="${this.currentItem.senderGivenName}"
                                             @input="${() => {
                                                 // TODO
                                             }}"

@@ -147,7 +147,16 @@
         "search-operator-regex": "Regular Expression",
         "search-operator-starts": "fängt an mit",
         "searchbar-placeholder": "Suchen",
-        "all-columns": "Alle Spalten"
+        "all-columns": "Alle Spalten",
+        "table-header-details": "Details",
+        "table-header-date-created": "Erstelldatum",
+        "table-header-subject": "Betreff",
+        "table-header-status": "Status",
+        "table-header-sender": "Absender",
+        "table-header-files": "Angehängte Dateien",
+        "table-header-recipients": "Empfänger",
+        "table-header-id": "Auftrags-ID",
+        "add-recipient-birthdate-dialog-label": "Geburtsdatum"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."

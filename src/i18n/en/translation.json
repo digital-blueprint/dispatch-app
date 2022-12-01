@@ -147,7 +147,16 @@
         "search-operator-regex": "regular expression",
         "search-operator-starts": "starts with",
         "searchbar-placeholder": "Search",
-        "all-columns": "All columns"
+        "all-columns": "All columns",
+        "table-header-details": "Details",
+        "table-header-date-created": "Date created",
+        "table-header-subject": "Subject",
+        "table-header-status": "Status",
+        "table-header-sender": "Sender",
+        "table-header-files": "Attached Files",
+        "table-header-recipients": "Recipients",
+        "table-header-id": "Request-ID",
+        "add-recipient-birthdate-dialog-label": "Birth date"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."
