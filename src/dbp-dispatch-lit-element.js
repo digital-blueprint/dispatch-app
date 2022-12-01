@@ -395,17 +395,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // return await this.httpGetAsync(this.entryPointUrl + identifier + '?includeLocal=street%2Ccity%2CpostalCode%2Ccountry', options);
     }
 
-    async sendGetRecipientStatusRequest(identifier) {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/ld+json',
-                Authorization: "Bearer " + this.auth.token
-            },
-        };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-status-changes/' + identifier, options);
-    }
-
     /*
     * Open  file source
     *
@@ -634,7 +623,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
         console.log(recipient);
 
-        let response = await this.sendGetRecipientStatusRequest(recipient.identifier);
+        let response = await this.getDispatchRecipient(recipient.identifier);
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
             send({
@@ -662,6 +651,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.showListView = false;
         this.showDetailsView = true;
         this.currentItem = item;
+
+        // const items = this.currentItem.length;
+        // this.currentItem.recipients.forEach((item) => {
+        //     console.log(item.identifier);
+        //     this.fetchDetailedRecipientInformation(item.identifier).then(result => {
+        //         //TODO back to item
+        //         item = this.currentRecipient;
+        //
+        //     });
+        // }); //TODO
         //await this.getDispatchRequest(item.identifier);
     }
 
@@ -860,6 +859,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             this.currentRecipient = responseBody;
             this.currentRecipient.birthDate = this.convertToBirthDate(responseBody['birthDate']);
+            this.currentRecipient.statusChanges = responseBody['statusChanges'];
+            this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
+            this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'];
+            console.log('rec: ', this.currentRecipient);
+
         } else {
             // TODO error handling
 

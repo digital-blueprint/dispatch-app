@@ -1684,19 +1684,18 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <div class="recipient card">
                                         <div class="left-side">
                                             <div>${recipient.familyName} ${recipient.givenName}</div>
-                                            <!-- <div>${this.convertToBirthDate(recipient.birthDate)}</div> -->
                                             <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
                                             <div>${recipient.postalCode} ${recipient.addressLocality}</div>
                                             <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
-                                            <div>Status: ${this.currentRecipient.statusType} ${this.currentRecipient.statusDescription}</div>
+                                            <div>Status: ${this.currentRecipient.statusDescription}</div>
+                                            <!-- <div>Status: ${recipient.statusDescription}</div> -->
                                         </div>
                                         <div class="right-side">
                                                 <dbp-icon-button id="show-recipient-btn"
                                                             @click="${(event) => {
                                                                 this.currentRecipient = recipient;
-                                                                console.log('rec: ', recipient);
-
                                                                 this.fetchDetailedRecipientInformation().then(r => {
+                                                                    
                                                                     MicroModal.show(this._('#show-recipient-modal'), {
                                                                         disableScroll: true,
                                                                         onClose: (modal) => {
@@ -1712,7 +1711,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     <dbp-icon-button id="edit-recipient-btn"
                                                                  ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                                  @click="${(event) => {
-                                                                     console.log('rec: ', recipient);
                                                                      this.currentRecipient = recipient;
                                                                      this.fetchDetailedRecipientInformation().then(r => {
                                                                          MicroModal.show(this._('#edit-recipient-modal'), {
