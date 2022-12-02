@@ -652,16 +652,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.showDetailsView = true;
         this.currentItem = item;
 
-        // const items = this.currentItem.length;
-        // this.currentItem.recipients.forEach((item) => {
-        //     console.log(item.identifier);
-        //     this.fetchDetailedRecipientInformation(item.identifier).then(result => {
-        //         //TODO back to item
-        //         item = this.currentRecipient;
-        //
-        //     });
-        // }); //TODO
-        //await this.getDispatchRequest(item.identifier);
+        this.currentItem.recipients.forEach((element) => {
+            console.log(element.identifier);
+            this.fetchDetailedRecipientInformation(element.identifier).then(result => {
+                //TODO
+            });
+        });
     }
 
     async deleteRequest(event, item) {
@@ -859,10 +855,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    async fetchDetailedRecipientInformation() {
-        let id = this.currentRecipient.identifier;
+    async fetchDetailedRecipientInformation(identifier) {
+        // let id = this.currentRecipient.identifier;
 
-        let response = await this.getDispatchRecipient(id);
+        let response = await this.getDispatchRecipient(identifier);
+        // console.log('fetchdetailedrecipientinformation', response);
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
@@ -872,8 +869,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.statusChanges = responseBody['statusChanges'];
             this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
             this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'];
-            console.log('rec: ', this.currentRecipient);
-
+            // console.log('rec: ', this.currentRecipient);
         } else {
             // TODO error handling
 

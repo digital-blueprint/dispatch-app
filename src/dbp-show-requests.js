@@ -1694,7 +1694,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <dbp-icon-button id="show-recipient-btn"
                                                             @click="${(event) => {
                                                                 this.currentRecipient = recipient;
-                                                                this.fetchDetailedRecipientInformation().then(r => {
+                                                                this.fetchDetailedRecipientInformation(recipient.identifier).then(r => {
                                                                     
                                                                     MicroModal.show(this._('#show-recipient-modal'), {
                                                                         disableScroll: true,
@@ -1712,7 +1712,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                                  @click="${(event) => {
                                                                      this.currentRecipient = recipient;
-                                                                     this.fetchDetailedRecipientInformation().then(r => {
+                                                                     this.fetchDetailedRecipientInformation(recipient.identifier).then(r => {
                                                                          MicroModal.show(this._('#edit-recipient-modal'), {
                                                                              disableScroll: true,
                                                                              onClose: (modal) => {
