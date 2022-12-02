@@ -128,7 +128,7 @@
         "delete-recipient-button-text": "Delete",
         "show-file-button-text": "Show file",
         "save-button-text": "Save dispatch order",
-        "empty-sender-text": "No recipient specified (yet).",
+        "empty-sender-text": "No sender specified (yet).",
         "no-table-data": "No dispatch requests could be found.",
         "no-subject-found": "No subject found",
         "search-button": "Search",
