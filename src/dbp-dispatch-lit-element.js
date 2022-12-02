@@ -867,8 +867,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient = responseBody;
             this.currentRecipient.birthDate = this.convertToBirthDate(responseBody['birthDate']);
             this.currentRecipient.statusChanges = responseBody['statusChanges'];
-            this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
-            this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'];
+            if (this.currentRecipient.statusChanges.length > 0) {
+                this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
+                this.currentRecipient.statusType = this.currentRecipient.statusChanges[0].statusType;
+            } else {
+                this.currentRecipient.statusDescription = null;
+                this.currentRecipient.statusType = null;
+            }
+            this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
             // console.log('rec: ', this.currentRecipient);
         } else {
             // TODO error handling
@@ -1218,9 +1224,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    addEditSenderModal(currentItem) {
-        this.currentItem = currentItem;
-        console.log('currentItem', currentItem);
+    addEditSenderModal() {
+        console.log('currentItem', this.currentItem);
         const i18n = this._i18n;
 
         return html`
@@ -1919,6 +1924,26 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div class="element-right">
                                     ${this.currentRecipient && this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : ``}
+                                </div>
+                                ${this.currentRecipient.statusChanges ? this.currentRecipient.statusChanges.map(statusChange => html`
+                                    <div class="element-left">
+                                        StatusType:
+                                    </div>
+                                    <div class="element-right">
+                                        ${statusChange.statusType}
+                                    </div>
+                                    <div class="element-left">
+                                        StatusDescription:
+                                    </div>
+                                    <div class="element-right">
+                                        ${statusChange.description}
+                                    </div>
+                                `) : `` }
+                                <div class="element-left">
+                                    DeliveryEndDate:
+                                </div>
+                                <div class="element-right">
+                                    ${this.currentRecipient && this.currentRecipient.deliveryEndDate ? this.currentRecipient.deliveryEndDate : ``}
                                 </div>
                             </div>
                         </main>
