@@ -825,6 +825,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         var text = e.options[e.selectedIndex].text;
         let senderAddressCountry = [value, text];
 
+        if (senderGivenName === '' || senderFamilyName === '' || senderPostalCode === '' || senderAddressLocality === '' || senderStreetAddress === '') {
+            send({
+                "summary": 'Error!',
+                "body": 'Sender cannot be empty!',
+                "type": "danger",
+                "timeout": 5,
+            });
+            return;
+        }
+
         let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber);
 
         let responseBody = await response.json();
@@ -1082,7 +1092,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentItem.senderPostalCode = responseBody.localData['postalCode'];
                 //TODO disable/hide givenName + familyName textfields?
 
-                console.log('request update');
             }
         } else {
             // TODO error handling

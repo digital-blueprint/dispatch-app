@@ -1514,7 +1514,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
                 
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView})}">
-                    ${this.currentItem && this.currentItem.dateSubmitted ? i18n.t('show-requests.show-detailed-dispatch-order') : i18n.t('show-requests.detailed-dispatch-order')}:
+                    ${this.currentItem && this.currentItem.dateSubmitted ? i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier }) : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })}:
                 </h3>
 
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView })}">
