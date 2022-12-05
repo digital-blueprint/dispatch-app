@@ -126,7 +126,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: "Bearer " + this.auth.token
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests?perPage=10000', options);
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests?perPage=999', options);
     }
 
     /**
@@ -391,7 +391,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: "Bearer " + this.auth.token
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/base/people/' + identifier, options);
+        return await this.httpGetAsync(this.entryPointUrl + identifier, options); ///'base/people/'
         // return await this.httpGetAsync(this.entryPointUrl + identifier + '?includeLocal=street%2Ccity%2CpostalCode%2Ccountry', options);
     }
 
@@ -706,8 +706,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         if (item.dateSubmitted) {
             send({
-                "summary": i18n.t('show-requests.delete-not-allowed-title'),
-                "body": i18n.t('show-requests.delete-not-allowed-text'),
+                "summary": i18n.t('show-requests.submit-not-allowed-title'),
+                "body": i18n.t('show-requests.submit-not-allowed-text'),
                 "type": "danger",
                 "timeout": 5,
             });
@@ -882,6 +882,123 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    async submitSelected() {
+        const i18n = this._i18n;
+
+        let selectedItems = this.dispatchRequestsTable.getSelectedRows();
+        console.log('selectedItems: ', selectedItems);
+
+        let somethingWentWrong = false;
+
+        var precheck = new Promise((resolve, reject) => {
+            selectedItems.forEach(item => {
+                if (somethingWentWrong) {
+                    resolve();
+                    return; //break;
+                }
+                let id = item.getData()['requestId'];
+                this.getDispatchRequest(id).then(response => {
+                    response.json().then(result => {
+                        if (result.dateSubmitted) {
+                            send({
+                                "summary": i18n.t('show-requests.delete-not-allowed-title'),
+                                "body": i18n.t('show-requests.delete-not-allowed-text'), //TODO add more specific text here
+                                "type": "danger",
+                                "timeout": 5,
+                            });
+                            somethingWentWrong = true;
+                            resolve();
+                        }
+                        if (!(result.files && result.files.length > 0 && result.recipients && result.recipients.length > 0)) {
+                            send({
+                                "summary": i18n.t('show-requests.empty-fields-submitted-title'),
+                                "body": i18n.t('show-requests.empty-fields-submitted-text'),
+                                "type": "danger",
+                                "timeout": 5,
+                            });
+                            somethingWentWrong = true;
+                            resolve();
+                        }
+                        resolve();
+                    });
+                });
+            });
+        });
+        precheck.then(() => {
+            console.log('all done!');
+            //TODO we have a timing problem here -> change function to awaits!
+
+            if (somethingWentWrong) {
+                //TODO send specific error message here
+                return;
+            }
+
+            let dialogText;
+            if (this.dispatchRequestsTable.getSelectedRows().length > 1) {
+                dialogText = i18n.t('show-requests.submit-more-dialog-text', { count: this.dispatchRequestsTable.getSelectedRows().length });
+            } else {
+                dialogText = i18n.t('show-requests.submit-dialog-text');
+            }
+
+            if(confirm(dialogText)) {
+                selectedItems.forEach(item => {
+                    let id = item.getData()['requestId'];
+                    this.getDispatchRequest(id).then(response => {
+                        response.json().then(result => {
+                            console.log('send submit request for: ', result);
+                            let response = this.sendSubmitDispatchRequest(item.identifier).then(() => {
+                                if (response.status !== 201) {
+                                    somethingWentWrong = true;
+                                }
+                            });
+                            // this.submitRequest(null, result).then(() => {
+                            //     console.log('success???');
+                            // });
+                        });
+                    });
+                });
+                if (!somethingWentWrong) {
+                    this.getListOfRequests();
+                    send({
+                        "summary": i18n.t('show-requests.successfully-submitted-title'),
+                        "body": i18n.t('show-requests.successfully-submitted-text'),
+                        "type": "success",
+                        "timeout": 5,
+                    });
+                    this.clearAll();
+                } else {
+                    // TODO error handling
+                    send({
+                        "summary": 'Error!',
+                        "body": 'Could not submit request.',
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
+            }
+        });
+
+
+    }
+
+    deleteSelected() {
+        let selectedItems = this.dispatchRequestsTable.getSelectedRows();
+        console.log('selectedItems: ', selectedItems);
+
+        selectedItems.forEach(item => {
+            let id = item.getData()['requestId'];
+            this.getDispatchRequest(id).then(response => {
+                response.json().then(result => {
+                    console.log('send delete request for: ', result);
+                    this.deleteRequest(null, result).then(() => {
+                        console.log('success???');
+                    });
+                });
+            });
+        });
+
+    }
+
     createFormattedFilesList(list) {
         let output = "";
         list.forEach((file) => {
@@ -1047,7 +1164,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.familyName = responseBody.familyName;
             this.currentRecipient.givenName = responseBody.givenName;
 
-
             // TODO wait for localData
             // if (responseBody['localData'] && this.currentRecipient) {
             //     console.log(responseBody['localData']);
@@ -1088,12 +1204,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 console.log(responseBody.localData['street']);
                 this.currentItem.senderAddressCountry = responseBody.localData['country'];
                 this.currentItem.senderStreetAddress = responseBody.localData['street'];
-                // this.currentItem.senderBuildingNumber = "";
-                // TODO parse building number
+                // this.currentItem.senderBuildingNumber = ""; // TODO building number
                 this.currentItem.senderAddressLocality = responseBody.localData['city'];
                 this.currentItem.senderPostalCode = responseBody.localData['postalCode'];
-                //TODO disable/hide givenName + familyName textfields?
-
             }
         } else {
             // TODO error handling
@@ -1155,7 +1268,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                   lang="${this.lang}"
                   text="${i18n.t('show-requests.filepicker-context')}"
                   button-label="${i18n.t('show-requests.filepicker-button-title')}"
-                  number-of-files="1"
                   @dbp-file-source-file-selected="${this.onFileSelected}">
              </dbp-file-source>
         `;
@@ -1632,6 +1744,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     this.addRecipientToRequest().then(r => {
                                                     
                                                     MicroModal.close(this._('#add-recipient-modal'));
+
+                                                    // TODO clear selector value
+                                                    this._('#recipient-selector').value = "";
+                                                    console.log(this._('#recipient-selector'));
+                                                    console.log('value: ', this._('#recipient-selector').value);
                                                 });
                                             }
                                         }}">
