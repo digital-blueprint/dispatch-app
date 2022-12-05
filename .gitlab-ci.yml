@@ -37,7 +37,7 @@ publish:
   stage: deploy
   only:
     refs:
-      - master
+      - main
   script:
     # https://www.npmjs.com/settings/dbp-deploy/tokens
     # NPM_TOKEN needs to be a "Publish" token with 2FA disabled!
@@ -52,7 +52,7 @@ deploy:
     - schedules
   only:
     refs:
-      - master
+      - main
       - demo
       - production
   inherit:

@@ -5,7 +5,7 @@ If you want to use the whole app look at [dispatch documentation](https://gitlab
 
 ## Usage of an activity
 
-You can use every activity alone. Take a look at our examples [here](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/examples).
+You can use every activity alone. Take a look at our examples [here](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/main/examples).
 
 ## Activities
 

@@ -54,7 +54,7 @@ Also make sure to add all of your resources you are using (like your API and Key
 `Content-Security-Policy` in your `dispatch-app/public/.htaccess`, so the browser allows access to those sites.
 
 You can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/)
-for example like this: [dbp-dispatch/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/examples/dbp-dispatch/index.html)
+for example like this: [dbp-dispatch/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/main/examples/dbp-dispatch/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
@@ -70,7 +70,7 @@ npx @digital-blueprint/cli@latest update-app dispatch
 
 You can also use a single activity directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/)
 for example the `dbp-qualified-dispatch-pdf-upload` activity to qualifiedly sign PDF documents like this:
-[dbp-qualified-dispatch-pdf-upload/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/examples/dbp-qualified-dispatch-pdf-upload/index.html)
+[dbp-qualified-dispatch-pdf-upload/index.html](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/main/examples/dbp-qualified-dispatch-pdf-upload/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
@@ -81,7 +81,7 @@ This app has the following activities:
 - `dbp-qualified-signature-pdf-upload`
 - `dbp-official-signature-pdf-upload`
 
-You can find the documentation of these activities in the [qualified dispatch activities documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/src).
+You can find the documentation of these activities in the [qualified dispatch activities documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/main/src).
 
 ## Adapt app
 
@@ -91,15 +91,15 @@ You can add multiple attributes to the `<dbp-greenlight>` tag.
 
 | attribute name | value | Link to description |
 |----------------|-------| ------------|
-| `provider-root` | Boolean | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
-| `lang`         | String | [language-select](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/language-select#attributes) | 
-| `entry-point-url` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
-| `keycloak-config` | Object | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
-| `base-path` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
-| `src` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell#attributes) |
-| `html-overrides` | String | [common](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/common#overriding-slots-in-nested-web-components) |
-| `themes` | Array | [theme-switcher](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/theme-switcher#themes-attribute) |
-| `darkModeThemeOverride` | String | [theme-switcher](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/theme-switcher#themes-attribute) |
+| `provider-root` | Boolean | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes) |
+| `lang`         | String | [language-select](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/language-select#attributes) | 
+| `entry-point-url` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes) |
+| `keycloak-config` | Object | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes) |
+| `base-path` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes) |
+| `src` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes) |
+| `html-overrides` | String | [common](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/common#overriding-slots-in-nested-web-components) |
+| `themes` | Array | [theme-switcher](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/theme-switcher#themes-attribute) |
+| `darkModeThemeOverride` | String | [theme-switcher](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/theme-switcher#themes-attribute) |
 
 #### Mandatory attributes
 
@@ -123,5 +123,5 @@ For frontend design customizations, such as logo, colors, font, favicon, and mor
 
 ## "dbp-dispatch" slots
 
-These are common slots for the app-shell. You can find the documentation of these slots in the [app-shell documentation](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/master/packages/app-shell).
-For the app specific slots take a look at the [greenlight activities](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/master/src).
+These are common slots for the app-shell. You can find the documentation of these slots in the [app-shell documentation](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell).
+For the app specific slots take a look at the [greenlight activities](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/main/src).

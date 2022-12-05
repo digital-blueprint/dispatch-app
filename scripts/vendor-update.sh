@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###############################################################
-# Updates all vendor repositories to the latest master branch
+# Updates all vendor repositories to the latest main branch
 ###############################################################
 
-git submodule foreach "git checkout master; git pull"
+git submodule foreach "git checkout main; git pull"
