@@ -118,6 +118,7 @@
         "show-detailed-dispatch-order": "Show dispatch order {{id}}",
         "add-subject-dialog-button-cancel": "Cancel",
         "add-subject-dialog-button-ok": "Confirm",
+        "add-subject-description": "This name is only visible internally and will not be sent with the dispatch request.",
         "add-sender-dialog-title": "Add sender",
         "add-recipient-person-select-label": "Please select a person",
         "add-recipient-or-text": "Or enter a recipient manually:",

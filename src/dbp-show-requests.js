@@ -1572,6 +1572,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                     @click="${(event) => {
                                                         console.log("on edit sender clicked");
+                                                        if (this.currentItem.senderAddressCountry !== '') {
+                                                            this._('#edit-sender-country-select').value = this.currentItem.senderAddressCountry;
+                                                        }
                                                         MicroModal.show(this._('#edit-sender-modal'), {
                                                             disableScroll: true,
                                                             onClose: (modal) => {
@@ -1712,6 +1715,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                                  @click="${(event) => {
                                                                      this.currentRecipient = recipient;
+                                                                     this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
                                                                      this.fetchDetailedRecipientInformation(recipient.identifier).then(r => {
                                                                          MicroModal.show(this._('#edit-recipient-modal'), {
                                                                              disableScroll: true,

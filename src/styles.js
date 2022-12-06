@@ -528,7 +528,7 @@ export function getDispatchRequestStyles() {
 
             #add-subject-modal-box {
                 height: auto;
-                min-height: 190px;
+                min-height: 240px;
                 max-width: 500px;
             }
 

@@ -118,6 +118,7 @@
         "show-detailed-dispatch-order": "Versandauftrag {{id}} ansehen",
         "add-subject-dialog-button-cancel": "Ohne Namen erstellen",
         "add-subject-dialog-button-ok": "Übernehmen",
+        "add-subject-description": "Dieser Name ist nur intern sichtbar und wird beim Versand nicht mitgeschickt.",
         "add-sender-dialog-title": "Absender hinzufügen",
         "add-recipient-person-select-label": "Bitte wählen Sie eine Person aus",
         "add-recipient-or-text": "Oder geben Sie manuell einen Empfänger ein:",

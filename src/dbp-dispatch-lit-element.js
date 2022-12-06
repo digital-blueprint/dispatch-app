@@ -683,11 +683,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     "type": "success",
                     "timeout": 5,
                 });
-                if (this.currentItem) {
-                    this.showListView = true;
-                    this.showDetailsView = false;
-                    this.currentItem = null;
-                }
+                this.clearAll();
             } else {
                 // TODO error handling
 
@@ -777,6 +773,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             });
 
             this.currentItem = responseBody;
+            this.getListOfRequests();
         } else {
             // TODO error handling
 
@@ -821,7 +818,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         var text = e.options[e.selectedIndex].text;
         let senderAddressCountry = [value, text];
 
-        if (senderGivenName === '' || senderFamilyName === '' || senderPostalCode === '' || senderAddressLocality === '' || senderStreetAddress === '') {
+        if (senderGivenName === '' || senderFamilyName === '' || senderPostalCode === '' || senderAddressLocality === '' || senderStreetAddress === '' || senderAddressCountry === '') {
             send({
                 "summary": 'Error!',
                 "body": 'Sender cannot be empty!',
@@ -1406,6 +1403,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <dbp-resource-select
+                                            id="edit-sender-organization-select"
                                             subscribe="lang:lang,entry-point-url:entry-point-url,auth:auth"
                                             resource-path="base/organizations"
                                             @input="${(event) => {this._atChangeInput(event);}}"
@@ -1431,7 +1429,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             class="input"
                                             name="tf-edit-sender-fn-dialog"
                                             id="tf-edit-sender-fn-dialog"
-                                            value="${this.currentItem.senderFamilyName}"
+                                            value="${this.currentItem && this.currentItem.senderFamilyName}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -1448,7 +1446,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             class="input"
                                             name="tf-edit-sender-gn-dialog"
                                             id="tf-edit-sender-gn-dialog"
-                                            value="${this.currentItem.senderGivenName}"
+                                            value="${this.currentItem && this.currentItem.senderGivenName}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1465,14 +1463,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             class="input"
                                             name="tf-edit-sender-sa-dialog"
                                             id="tf-edit-sender-sa-dialog"
-                                            value="${this.currentItem.senderStreetAddress}"
+                                            value="${this.currentItem && this.currentItem.senderStreetAddress}"
                                             @input="${() => {
             // TODO
         }}"
                                     />
                                 </div>
                             </div>
-                            ${this.currentItem.senderBuildingNumber ? html`
+                            ${this.currentItem && this.currentItem.senderBuildingNumber ? html`
                                 <div class="modal-content-item">
                                     <div class="nf-label">
                                         ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
@@ -1483,7 +1481,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 class="input"
                                                 name="tf-edit-sender-bn-dialog"
                                                 id="tf-edit-sender-bn-dialog"
-                                                value="${this.currentItem.senderBuildingNumber}"
+                                                value="${this.currentItem && this.currentItem.senderBuildingNumber}"
                                                 @input="${() => {
                 // TODO
             }}"
@@ -1501,7 +1499,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             class="input"
                                             name="tf-edit-sender-pc-dialog"
                                             id="tf-edit-sender-pc-dialog"
-                                            value="${this.currentItem.senderPostalCode}"
+                                            value="${this.currentItem && this.currentItem.senderPostalCode}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1518,7 +1516,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             class="input"
                                             name="tf-edit-sender-al-dialog"
                                             id="tf-edit-sender-al-dialog"
-                                            value="${this.currentItem.senderAddressLocality}"
+                                            value="${this.currentItem && this.currentItem.senderAddressLocality}"
                                             @input="${() => {
             // TODO
         }}"
@@ -1543,18 +1541,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         data-micromodal-close
                                         aria-label="Close this dialog window"
                                         @click="${() => {
-            MicroModal.close(this._('#edit-sender-modal'));
-        }}">
+                                            MicroModal.close(this._('#edit-sender-modal'));
+                                        }}">
                                     ${i18n.t('show-requests.edit-sender-dialog-button-cancel')}
                                 </button>
                                 <button
                                         class="button select-button is-primary"
                                         id="edit-sender-confirm-btn"
                                         @click="${() => {
-            this.confirmEditSender().then(r => {
-                MicroModal.close(this._('#edit-sender-modal'));
-            });
-        }}">
+                                            this.confirmEditSender().then(r => {
+                                                MicroModal.close(this._('#edit-sender-modal'));
+                                            });
+                                        }}">
                                     ${i18n.t('show-requests.edit-sender-dialog-button-ok')}
                                 </button>
                             </div>

@@ -300,6 +300,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                      ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                      @click="${(event) => {
                                                          console.log("on edit sender clicked");
+                                                         if (this.currentItem.senderAddressCountry !== '') {
+                                                             this._('#edit-sender-country-select').value = this.currentItem.senderAddressCountry;
+                                                         }
                                                          MicroModal.show(this._('#edit-sender-modal'), {
                                                              disableScroll: true,
                                                              onClose: (modal) => {
@@ -438,6 +441,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  @click="${(event) => {
                                                                      console.log("on edit recipients clicked");
                                                                      this.currentRecipient = recipient;
+                                                                     this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
                                                                      MicroModal.show(this._('#edit-recipient-modal'), {
                                                                          disableScroll: true,
                                                                          onClose: (modal) => {
@@ -518,7 +522,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     />
                                 </div>
                             </div>
-                            
+                            <div class="modal-content-item">
+                                <div>
+                                    ${i18n.t('show-requests.add-subject-description')}
+                                </div>
+                            </div>
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
@@ -607,7 +615,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-fn-dialog"
                                             id="tf-add-sender-fn-dialog"
-                                            value="${this.currentItem.senderFamilyName}"
+                                            value="${this.currentItem && this.currentItem.senderFamilyName}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -624,7 +632,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-gn-dialog"
                                             id="tf-add-sender-gn-dialog"
-                                            value="${this.currentItem.senderGivenName}"
+                                            value="${this.currentItem && this.currentItem.senderGivenName}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -641,7 +649,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-sa-dialog"
                                             id="tf-add-sender-sa-dialog"
-                                            value="${this.currentItem.senderStreetAddress}"
+                                            value="${this.currentItem && this.currentItem.senderStreetAddress}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -658,7 +666,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-bn-dialog"
                                             id="tf-add-sender-bn-dialog"
-                                            value="${this.currentItem.senderBuildingNumber}"
+                                            value="${this.currentItem && this.currentItem.senderBuildingNumber}"
                                             @input="${() => {
             // TODO
         }}"
@@ -675,7 +683,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-pc-dialog"
                                             id="tf-add-sender-pc-dialog"
-                                            value="${this.currentItem.senderPostalCode}"
+                                            value="${this.currentItem && this.currentItem.senderPostalCode}"
                                             @input="${() => {
             // TODO
         }}"
@@ -692,7 +700,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="input"
                                             name="tf-add-sender-al-dialog"
                                             id="tf-add-sender-al-dialog"
-                                            value="${this.currentItem.senderAddressLocality}"
+                                            value="${this.currentItem && this.currentItem.senderAddressLocality}"
                                             @input="${() => {
             // TODO
         }}"
