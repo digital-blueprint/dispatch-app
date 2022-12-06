@@ -283,7 +283,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     }
                     
                     ${ this.currentItem ? html`
-                        <div class="request-item details">
+                        <div class="request-item details ${classMap({hidden: !this.showDetailsView})}">
                             <div class="details header">
                                 <div>
                                     <div class="section-titles">${i18n.t('create-request.request-subject')}</div>
@@ -361,6 +361,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         console.log("on show file clicked");
                                                         //TODO show file viewer with pdf
                                                     }}"
+                                                    class="hidden" <!--TODO -->
                                                     title="${i18n.t('show-requests.show-file-button-text')}"
                                                     icon-name="keyword-research"></dbp-icon-button>
                                                 ${!this.currentItem.dateSubmitted ? html`

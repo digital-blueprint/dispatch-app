@@ -890,113 +890,146 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let somethingWentWrong = false;
 
-        var precheck = new Promise((resolve, reject) => {
-            selectedItems.forEach(item => {
-                if (somethingWentWrong) {
-                    resolve();
-                    return; //break;
-                }
-                let id = item.getData()['requestId'];
-                this.getDispatchRequest(id).then(response => {
-                    response.json().then(result => {
-                        if (result.dateSubmitted) {
-                            send({
-                                "summary": i18n.t('show-requests.delete-not-allowed-title'),
-                                "body": i18n.t('show-requests.delete-not-allowed-text'), //TODO add more specific text here
-                                "type": "danger",
-                                "timeout": 5,
-                            });
-                            somethingWentWrong = true;
-                            resolve();
-                        }
-                        if (!(result.files && result.files.length > 0 && result.recipients && result.recipients.length > 0)) {
-                            send({
-                                "summary": i18n.t('show-requests.empty-fields-submitted-title'),
-                                "body": i18n.t('show-requests.empty-fields-submitted-text'),
-                                "type": "danger",
-                                "timeout": 5,
-                            });
-                            somethingWentWrong = true;
-                            resolve();
-                        }
-                        resolve();
-                    });
+        for (let i = 0; i < selectedItems.length; i++) {
+            let id = selectedItems[i].getData()['requestId'];
+            let response = await this.getDispatchRequest(id);
+            let result =  await response.json();
+            if (result.dateSubmitted) {
+                send({
+                    "summary": i18n.t('show-requests.delete-not-allowed-title'),
+                    "body": i18n.t('show-requests.delete-not-allowed-text'), //TODO add more specific text here
+                    "type": "danger",
+                    "timeout": 5,
                 });
-            });
-        });
-        precheck.then(() => {
-            console.log('all done!');
-            //TODO we have a timing problem here -> change function to awaits!
+                somethingWentWrong = true;
+                break;
+            }
+            if (!(result.files && result.files.length > 0 && result.recipients && result.recipients.length > 0)) {
+                send({
+                    "summary": i18n.t('show-requests.empty-fields-submitted-title'),
+                    "body": i18n.t('show-requests.empty-fields-submitted-text'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
+                somethingWentWrong = true;
+                break;
+            }
+        }
 
-            if (somethingWentWrong) {
-                //TODO send specific error message here
-                return;
+        if (somethingWentWrong) {
+            return;
+        }
+
+        let dialogText;
+        if (this.dispatchRequestsTable.getSelectedRows().length > 1) {
+            dialogText = i18n.t('show-requests.submit-more-dialog-text', { count: this.dispatchRequestsTable.getSelectedRows().length });
+        } else {
+            dialogText = i18n.t('show-requests.submit-dialog-text');
+        }
+
+        if(confirm(dialogText)) {
+            for (let i = 0; i < selectedItems.length; i++) {
+                let id = selectedItems[i].getData()['requestId'];
+                let response = await this.getDispatchRequest(id);
+                let result = await response.json();
+
+                let submitResponse = await this.sendSubmitDispatchRequest(result.identifier);
+
+                if (submitResponse.status !== 201) {
+                    somethingWentWrong = true;
+                    break;
+                }
             }
 
-            let dialogText;
-            if (this.dispatchRequestsTable.getSelectedRows().length > 1) {
-                dialogText = i18n.t('show-requests.submit-more-dialog-text', { count: this.dispatchRequestsTable.getSelectedRows().length });
+            if (!somethingWentWrong) {
+                this.getListOfRequests();
+                send({
+                    "summary": i18n.t('show-requests.successfully-submitted-title'),
+                    "body": i18n.t('show-requests.successfully-submitted-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
+                this.clearAll();
             } else {
-                dialogText = i18n.t('show-requests.submit-dialog-text');
-            }
-
-            if(confirm(dialogText)) {
-                selectedItems.forEach(item => {
-                    let id = item.getData()['requestId'];
-                    this.getDispatchRequest(id).then(response => {
-                        response.json().then(result => {
-                            console.log('send submit request for: ', result);
-                            let response = this.sendSubmitDispatchRequest(item.identifier).then(() => {
-                                if (response.status !== 201) {
-                                    somethingWentWrong = true;
-                                }
-                            });
-                            // this.submitRequest(null, result).then(() => {
-                            //     console.log('success???');
-                            // });
-                        });
-                    });
+                // TODO error handling
+                send({
+                    "summary": 'Error!',
+                    "body": 'Could not submit request.',
+                    "type": "danger",
+                    "timeout": 5,
                 });
-                if (!somethingWentWrong) {
-                    this.getListOfRequests();
-                    send({
-                        "summary": i18n.t('show-requests.successfully-submitted-title'),
-                        "body": i18n.t('show-requests.successfully-submitted-text'),
-                        "type": "success",
-                        "timeout": 5,
-                    });
-                    this.clearAll();
-                } else {
-                    // TODO error handling
-                    send({
-                        "summary": 'Error!',
-                        "body": 'Could not submit request.',
-                        "type": "danger",
-                        "timeout": 5,
-                    });
-                }
             }
-        });
-
-
+        }
     }
 
-    deleteSelected() {
+    async deleteSelected() {
+        const i18n = this._i18n;
+
         let selectedItems = this.dispatchRequestsTable.getSelectedRows();
         console.log('selectedItems: ', selectedItems);
 
-        selectedItems.forEach(item => {
-            let id = item.getData()['requestId'];
-            this.getDispatchRequest(id).then(response => {
-                response.json().then(result => {
-                    console.log('send delete request for: ', result);
-                    this.deleteRequest(null, result).then(() => {
-                        console.log('success???');
-                    });
-                });
-            });
-        });
+        let somethingWentWrong = false;
 
+        for (let i = 0; i < selectedItems.length; i++) {
+            let id = selectedItems[i].getData()['requestId'];
+            let response = await this.getDispatchRequest(id);
+            let result =  await response.json();
+            if (result.dateSubmitted) {
+                send({
+                    "summary": i18n.t('show-requests.delete-not-allowed-title'),
+                    "body": i18n.t('show-requests.delete-not-allowed-text'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
+                somethingWentWrong = true;
+                break;
+            }
+        }
+
+        if (somethingWentWrong) {
+            return;
+        }
+
+        let dialogText;
+        if (this.dispatchRequestsTable.getSelectedRows().length > 1) {
+            dialogText = i18n.t('show-requests.delete-more-dialog-text', { count: this.dispatchRequestsTable.getSelectedRows().length });
+        } else {
+            dialogText = i18n.t('show-requests.delete-dialog-text');
+        }
+
+        if(confirm(dialogText)) {
+            for (let i = 0; i < selectedItems.length; i++) {
+                let id = selectedItems[i].getData()['requestId'];
+                let response = await this.getDispatchRequest(id);
+                let result = await response.json();
+
+                let deleteResponse = await this.sendDeleteDispatchRequest(result.identifier);
+
+                if (deleteResponse.status !== 204) {
+                    somethingWentWrong = true;
+                    break;
+                }
+            }
+
+            if (!somethingWentWrong) {
+                this.getListOfRequests();
+                send({
+                    "summary": i18n.t('show-requests.successfully-deleted-title'),
+                    "body": i18n.t('show-requests.successfully-deleted-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
+                this.clearAll();
+            } else {
+                // TODO error handling
+                send({
+                    "summary": 'Error!',
+                    "body": 'Could not delete request.',
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            }
+        }
     }
 
     createFormattedFilesList(list) {
@@ -2042,7 +2075,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="element-right">
                                     ${this.currentRecipient && this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : ``}
                                 </div>
-                                ${this.currentRecipient.statusChanges ? this.currentRecipient.statusChanges.map(statusChange => html`
+                                ${this.currentRecipient && this.currentRecipient.statusChanges ? this.currentRecipient.statusChanges.map(statusChange => html`
                                     <div class="element-left">
                                         StatusType:
                                     </div>

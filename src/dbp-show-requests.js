@@ -1632,6 +1632,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 console.log("on show file clicked");
                                                                 //TODO show file viewer with pdf
                                                             }}"
+                                                            class="hidden" <!-- TODO -->
                                                             title="${i18n.t('show-requests.show-file-button-text')}"
                                                             icon-name="keyword-research"></dbp-icon-button>
                                                 ${!this.currentItem.dateSubmitted ? html`
