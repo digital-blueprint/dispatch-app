@@ -519,7 +519,6 @@ export function getDispatchRequestStyles() {
             }
 
             #add-recipient-modal-box,
-            #edit-sender-modal-box,
             #add-sender-modal-box {
                 max-height: 715px;
                 min-height: 715px;
@@ -528,8 +527,18 @@ export function getDispatchRequestStyles() {
 
             #add-subject-modal-box {
                 height: auto;
-                min-height: 240px;
+                min-height: 185px;
                 max-width: 500px;
+            }
+
+            #add-subject-modal-box footer {
+                justify-content: end;
+            }
+            
+            #edit-sender-modal-box {
+                max-height: 550px;
+                min-height: 550px;
+                max-width: 400px;
             }
 
             #show-recipient-modal-box {

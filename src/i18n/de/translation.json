@@ -18,7 +18,7 @@
         "error-requested-text": "Es ist ein Fehler aufgetreten.",
         "request-subject": "Betreff",
         "create-dispatch-order": "Versandauftrag erstellen",
-        "empty-subject": "Möchten Sie einen Namen für den Versandauftrag vergeben?",
+        "empty-subject": "Bitte geben Sie einen Betreff für den Versandauftrag ein:",
         "add-sender-button-text": "Absender hinzufügen"
     },
     "show-requests": {
@@ -66,8 +66,8 @@
         "add-files-button-text": "Datei hinzufügen",
         "edit-sender-dialog-title": "Absender editieren",
         "modal-close": "Modal schließen",
-        "edit-sender-fn-dialog-label": "Familienname",
-        "edit-sender-gn-dialog-label": "Vorname",
+        "edit-sender-fn-dialog-label": "Organisationsnummer",
+        "edit-sender-gn-dialog-label": "Organisationsname",
         "edit-sender-ac-dialog-label": "Land",
         "edit-sender-pc-dialog-label": "PLZ",
         "edit-sender-al-dialog-label": "Ort",
@@ -116,9 +116,9 @@
         "successfully-deleted-recipient-title": "Erfolgreich gelöscht!",
         "successfully-deleted-recipient-text": "Der Empfänger wurde erfolgreich gelöscht.",
         "show-detailed-dispatch-order": "Versandauftrag {{id}} ansehen",
-        "add-subject-dialog-button-cancel": "Ohne Namen erstellen",
+        "add-subject-dialog-button-cancel": "Ohne Betreff erstellen",
         "add-subject-dialog-button-ok": "Übernehmen",
-        "add-subject-description": "Dieser Name ist nur intern sichtbar und wird beim Versand nicht mitgeschickt.",
+        "add-subject-description": "",
         "add-sender-dialog-title": "Absender hinzufügen",
         "add-recipient-person-select-label": "Bitte wählen Sie eine Person aus",
         "add-recipient-or-text": "Oder geben Sie manuell einen Empfänger ein:",
@@ -159,7 +159,8 @@
         "table-header-files": "Angehängte Dateien",
         "table-header-recipients": "Empfänger",
         "table-header-id": "Auftrags-ID",
-        "add-recipient-birthdate-dialog-label": "Geburtsdatum"
+        "add-recipient-birthdate-dialog-label": "Geburtsdatum",
+        "organization-select-description": "Bitte wählen Sie Ihre Organisation:"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."

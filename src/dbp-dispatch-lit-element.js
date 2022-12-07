@@ -790,67 +790,76 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         //TODO
         this.subject = this._('#tf-add-subject-fn-dialog').value ? this._('#tf-add-subject-fn-dialog').value : '';
 
+        // this.confirmAddSender(); //TODO add sender details here
+        // if (this.currentItem.senderFamilyName === '') {
+            let valueObject = this._('#create-resource-select').value;
+            console.log('valueObject: ', valueObject);
+        // }
+
         await this.processCreateDispatchRequest();
 
         this.showDetailsView = true;
         this.hasSubject = true;
 
-        MicroModal.show(this._('#add-sender-modal'), {
-            disableScroll: true,
-            onClose: (modal) => {
-                this.loading = false;
-            },
-        });
+        this.hasSender = true;
+
+        // MicroModal.show(this._('#add-sender-modal'), {
+        //     disableScroll: true,
+        //     onClose: (modal) => {
+        //         this.loading = false;
+        //     },
+        // });
     }
 
-    async confirmAddSender() {
-        const i18n = this._i18n;
-        let id = this.currentItem.identifier;
-        let senderGivenName = this._('#tf-add-sender-gn-dialog').value;
-        let senderFamilyName = this._('#tf-add-sender-fn-dialog').value;
-        let senderPostalCode = this._('#tf-add-sender-pc-dialog').value;
-        let senderAddressLocality = this._('#tf-add-sender-al-dialog').value;
-        let senderStreetAddress = this._('#tf-add-sender-sa-dialog').value;
-        let senderBuildingNumber = this._('#tf-add-sender-bn-dialog').value;
-
-        var e = this._('#add-sender-country-select');
-        var value = e.value;
-        var text = e.options[e.selectedIndex].text;
-        let senderAddressCountry = [value, text];
-
-        if (senderGivenName === '' || senderFamilyName === '' || senderPostalCode === '' || senderAddressLocality === '' || senderStreetAddress === '' || senderAddressCountry === '') {
-            send({
-                "summary": 'Error!',
-                "body": 'Sender cannot be empty!',
-                "type": "danger",
-                "timeout": 5,
-            });
-            return;
-        }
-
-        let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber);
-
-        let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 200) {
-            send({
-                "summary": i18n.t('create-request.successfully-requested-title'),
-                "body": i18n.t('create-request.successfully-requested-text'),
-                "type": "success",
-                "timeout": 5,
-            });
-
-            this.currentItem = responseBody;
-        } else {
-            // TODO error handling
-
-            send({
-                "summary": 'Error!',
-                "body": 'Could not add sender. Response code: ' + response.status,
-                "type": "danger",
-                "timeout": 5,
-            });
-        }
-    }
+    // async confirmAddSender() {
+    //     const i18n = this._i18n;
+    //     let id = this.currentItem.identifier;
+    //
+    //     let senderGivenName = this._('#tf-add-sender-gn-dialog').value;
+    //     let senderFamilyName = this._('#tf-add-sender-fn-dialog').value;
+    //     let senderPostalCode = this._('#tf-add-sender-pc-dialog').value;
+    //     let senderAddressLocality = this._('#tf-add-sender-al-dialog').value;
+    //     let senderStreetAddress = this._('#tf-add-sender-sa-dialog').value;
+    //     let senderBuildingNumber = this._('#tf-add-sender-bn-dialog').value;
+    //
+    //     var e = this._('#add-sender-country-select');
+    //     var value = e.value;
+    //     var text = e.options[e.selectedIndex].text;
+    //     let senderAddressCountry = [value, text];
+    //
+    //     if (senderGivenName === '' || senderFamilyName === '' || senderPostalCode === '' || senderAddressLocality === '' || senderStreetAddress === '' || senderAddressCountry === '') {
+    //         send({
+    //             "summary": 'Error!',
+    //             "body": 'Sender cannot be empty!',
+    //             "type": "danger",
+    //             "timeout": 5,
+    //         });
+    //         return;
+    //     }
+    //
+    //     let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber);
+    //
+    //     let responseBody = await response.json();
+    //     if (responseBody !== undefined && response.status === 200) {
+    //         send({
+    //             "summary": i18n.t('create-request.successfully-requested-title'),
+    //             "body": i18n.t('create-request.successfully-requested-text'),
+    //             "type": "success",
+    //             "timeout": 5,
+    //         });
+    //
+    //         this.currentItem = responseBody;
+    //     } else {
+    //         // TODO error handling
+    //
+    //         send({
+    //             "summary": 'Error!',
+    //             "body": 'Could not add sender. Response code: ' + response.status,
+    //             "type": "danger",
+    //             "timeout": 5,
+    //         });
+    //     }
+    // }
 
     async fetchDetailedRecipientInformation(identifier) {
         // let id = this.currentRecipient.identifier;
@@ -1222,35 +1231,46 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async processSelectedSender(event) {
-        let organizationId = event.target.valueObject.identifier;
+        // let organizationId = event.target.valueObject.identifier;
         this.currentItem.senderFamilyName = event.target.valueObject.identifier;
         this.currentItem.senderGivenName = event.target.valueObject.name;
 
-        let response = await this.sendGetOrganizationDetailsRequest(organizationId);
+        console.log(event.target.valueObject);
+        this.currentItem.senderAddressCountry = event.target.valueObject.country;
+        this.currentItem.senderStreetAddress = event.target.valueObject.street;
+        this.currentItem.senderAddressLocality = event.target.valueObject.locality;
+        this.currentItem.senderPostalCode = event.target.valueObject.postalCode;
 
-        let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 200) {
-            if (responseBody['localData'] && this.currentItem) {
-                console.log(responseBody.localData['street']);
-                this.currentItem.senderAddressCountry = responseBody.localData['country'];
-                this.currentItem.senderStreetAddress = responseBody.localData['street'];
-                // this.currentItem.senderBuildingNumber = ""; // TODO building number
-                this.currentItem.senderAddressLocality = responseBody.localData['city'];
-                this.currentItem.senderPostalCode = responseBody.localData['postalCode'];
-            }
-        } else {
-            // TODO error handling
-
-            // send({
-            //     "summary": 'Error!',
-            //     "body": 'Could not fetch sender with ID ' + organizationId + '. Response code: ' + response.status,
-            //     "type": "danger",
-            //     "timeout": 5,
-            // });
-        }
+        // let response = await this.sendGetOrganizationDetailsRequest(organizationId);
+        //
+        // let responseBody = await response.json();
+        // if (responseBody !== undefined && response.status === 200) {
+        //     // if (responseBody['localData'] && this.currentItem) {
+        //     //     console.log(responseBody.localData['street']);
+        //     //     this.currentItem.senderAddressCountry = responseBody.localData['country'];
+        //     //     this.currentItem.senderStreetAddress = responseBody.localData['street'];
+        //     //     // this.currentItem.senderBuildingNumber = ""; // TODO building number
+        //     //     this.currentItem.senderAddressLocality = responseBody.localData['city'];
+        //     //     this.currentItem.senderPostalCode = responseBody.localData['postalCode'];
+        //     // }
+        // } else {
+        //     // TODO error handling
+        //
+        //     //TODO delete this after fixing addresses:
+        //     this.currentItem.senderAddressCountry = 'AT';
+        //     this.currentItem.senderStreetAddress = 'Rechbauerstraße XY';
+        //     this.currentItem.senderAddressLocality = 'Graz';
+        //     this.currentItem.senderPostalCode = '8010';
+        //
+        //     // send({
+        //     //     "summary": 'Error!',
+        //     //     "body": 'Could not fetch sender with ID ' + organizationId + '. Response code: ' + response.status,
+        //     //     "type": "danger",
+        //     //     "timeout": 5,
+        //     // });
+        // }
 
         this.requestUpdate();
-
     }
 
     clearAll() {
@@ -1397,7 +1417,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </button>
                         </header>
                         <main class="modal-content" id="edit-sender-modal-content">
-                            <div class="modal-content-item">
+                            <!-- <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-organization-title')}
                                 </div>
@@ -1417,7 +1437,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-or-title')}
                                 </div>
-                            </div>
+                            </div> -->
                             
                             <div class="modal-content-item">
                                 <div class="nf-label">
@@ -1612,23 +1632,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.add-recipient-fn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-fn-dialog"
-                                            id="tf-add-recipient-fn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
                                     ${i18n.t('show-requests.add-recipient-gn-dialog-label')}
                                 </div>
                                 <div>
@@ -1638,6 +1641,23 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             name="tf-add-recipient-gn-dialog"
                                             id="tf-add-recipient-gn-dialog"
                                             value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
+                                            @input="${() => {
+                                                // TODO
+                                            }}"
+                                    />
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.add-recipient-fn-dialog-label')}
+                                </div>
+                                <div>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-add-recipient-fn-dialog"
+                                            id="tf-add-recipient-fn-dialog"
+                                            value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -1824,23 +1844,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         <main class="modal-content" id="edit-recipient-modal-content">
                             <div class="modal-content-item">
                                 <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-recipient-fn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-fn-dialog"
-                                            id="tf-edit-recipient-fn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-gn-dialog-label')}
                                 </div>
                                 <div>
@@ -1850,6 +1853,23 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             name="tf-edit-recipient-gn-dialog"
                                             id="tf-edit-recipient-gn-dialog"
                                             value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
+                                            @input="${() => {
+                                                // TODO
+                                            }}"
+                                    />
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div class="nf-label">
+                                    ${i18n.t('show-requests.edit-recipient-fn-dialog-label')}
+                                </div>
+                                <div>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-edit-recipient-fn-dialog"
+                                            id="tf-edit-recipient-fn-dialog"
+                                            value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -2032,16 +2052,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         <main class="modal-content" id="show-recipient-modal-content">
                             <div class="detailed-recipient-modal-content-wrapper">
                                 <div class="element-left first">
-                                    ${i18n.t('show-requests.edit-recipient-fn-dialog-label')}:
-                                </div>
-                                <div class="element-right first">
-                                    ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
-                                </div>
-                                <div class="element-left">
                                     ${i18n.t('show-requests.edit-recipient-gn-dialog-label')}:
                                 </div>
-                                <div class="element-right">
+                                <div class="element-right first">
                                     ${this.currentRecipient && this.currentRecipient.givenName ? this.currentRecipient.givenName : ``}
+                                </div>
+                                <div class="element-left">
+                                    ${i18n.t('show-requests.edit-recipient-fn-dialog-label')}:
+                                </div>
+                                <div class="element-right">
+                                    ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
                                 </div>
                                 <div class="element-left">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}:

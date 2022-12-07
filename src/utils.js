@@ -2,6 +2,7 @@ import {html} from 'lit';
 
 export function getCountryList() {
     return html`
+        <option value></option>
         <option value="AF">Afghanistan</option>
         <option value="AX">Åland Islands</option>
         <option value="AL">Albania</option>

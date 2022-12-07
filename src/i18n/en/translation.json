@@ -66,8 +66,8 @@
         "add-files-button-text": "Add file(s)",
         "edit-sender-dialog-title": "Edit sender",
         "modal-close": "Close modal",
-        "edit-sender-fn-dialog-label": "Family name",
-        "edit-sender-gn-dialog-label": "Given name",
+        "edit-sender-fn-dialog-label": "Organization number",
+        "edit-sender-gn-dialog-label": "Organization name",
         "edit-sender-ac-dialog-label": "Country",
         "edit-sender-pc-dialog-label": "Postal code",
         "edit-sender-al-dialog-label": "Locality",
@@ -118,7 +118,7 @@
         "show-detailed-dispatch-order": "Show dispatch order {{id}}",
         "add-subject-dialog-button-cancel": "Cancel",
         "add-subject-dialog-button-ok": "Confirm",
-        "add-subject-description": "This name is only visible internally and will not be sent with the dispatch request.",
+        "add-subject-description": "",
         "add-sender-dialog-title": "Add sender",
         "add-recipient-person-select-label": "Please select a person",
         "add-recipient-or-text": "Or enter a recipient manually:",
@@ -159,7 +159,8 @@
         "table-header-files": "Attached Files",
         "table-header-recipients": "Recipients",
         "table-header-id": "Request-ID",
-        "add-recipient-birthdate-dialog-label": "Birth date"
+        "add-recipient-birthdate-dialog-label": "Birth date",
+        "organization-select-description": "Please choose your organization:"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."
