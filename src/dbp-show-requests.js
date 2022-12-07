@@ -1007,6 +1007,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 flex-direction: column;
                 justify-content: space-between;
                 gap: 10px;
+                min-width: 40px;
             }
             
             .right-side dbp-icon {
