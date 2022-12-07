@@ -16,6 +16,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this.currentItem = {};
         this.currentRecipient = {};
+        this.subject = '';
     }
 
     static get scopedElements() {
@@ -33,6 +34,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             currentItem: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
+            subject: {type: String, attribute: false},
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -786,6 +788,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    async confirmEditSubject() {
+        this.subject = this._('#tf-edit-subject-fn-dialog').value;
+    }
+
     async confirmAddSubject() {
         //TODO
         this.subject = this._('#tf-add-subject-fn-dialog').value ? this._('#tf-add-subject-fn-dialog').value : '';
@@ -798,9 +804,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
 
 
-
-
         await this.processCreateDispatchRequest();
+
+        this._('#tf-add-subject-fn-dialog').value = '';
 
         this.showDetailsView = true;
         this.hasSubject = true;
@@ -1130,6 +1136,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     + item.senderAddressCountry,
                 files: this.createFormattedFilesList(item.files),
                 recipients: this.createFormattedRecipientsList(item.recipients),
+                dateSubmitted: item.dateSubmitted ? this.convertToReadableDate(item.dateSubmitted) : '',
                 controls: this.setControlsHtml(item),
             };
             tableObject.push(content);
@@ -2101,27 +2108,28 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 ` : ``}
                                 ${this.currentRecipient && this.currentRecipient.deliveryEndDate ? html`
                                 <div class="element-left">
-                                    DeliveryEndDate:
+                                    ${i18n.t('show-requests.delivery-end-date')}:
                                 </div>
                                 <div class="element-right">
-                                    ${this.currentRecipient.deliveryEndDate}
+                                    ${this.convertToReadableDate(this.currentRecipient.deliveryEndDate)}
                                 </div>` : ``}
                                 <div class="element-left">
-                                    Empfängerauftrags-ID:
+                                    ${i18n.t('show-requests.recipient-id')}:
                                 </div>
                                 <div class="element-right">
                                     ${this.currentRecipient && this.currentRecipient.identifier ? this.currentRecipient.identifier : ``}
                                 </div>
                             </div>
-                            <h3>Sendungsverlauf:</h3>
+                            ${this.currentRecipient && this.currentRecipient.statusChanges ? html`
+                            <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
                             <div class="">
-                                ${this.currentRecipient && this.currentRecipient.statusChanges ? this.currentRecipient.statusChanges.map(statusChange => html`
+                                ${this.currentRecipient.statusChanges.map(statusChange => html`
                                     <div class="recipient-status">
                                         <div>${this.convertToReadableDate(statusChange.dateCreated)} </div>
                                         <div class="status-detail">${statusChange.description} (StatusType ${statusChange.statusType})</div>
                                     </div>
-                                `) : `` }
-                            </div>
+                                `)}
+                            </div>` : ``}
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn"></div>

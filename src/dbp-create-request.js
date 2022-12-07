@@ -117,12 +117,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let responseBody = await response.json();
 
             if (responseBody !== undefined && response.status === 201) {
-                // send({
-                //     "summary": i18n.t('create-request.successfully-requested-title'),
-                //     "body": i18n.t('create-request.successfully-requested-text'),
-                //     "type": "success",
-                //     "timeout": 5,
-                // });
+                send({
+                    "summary": i18n.t('create-request.successfully-requested-title'),
+                    "body": i18n.t('create-request.successfully-requested-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
                 this.currentItem = responseBody;
             } else {
                 // TODO show error code specific notification
@@ -159,12 +159,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.clearAll();
 
         const i18n = this._i18n;
-        send({
-            "summary": i18n.t('create-request.successfully-saved-title'),
-            "body": i18n.t('create-request.successfully-saved-text'),
-            "type": "success",
-            "timeout": 5,
-        });
+        // send({
+        //     "summary": i18n.t('create-request.successfully-saved-title'),
+        //     "body": i18n.t('create-request.successfully-saved-text'),
+        //     "type": "success",
+        //     "timeout": 5,
+        // });
     }
 
     static get styles() {
@@ -240,7 +240,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                          type="warning"
                                          body="${i18n.t('create-request.empty-fields-given')}">
                 </dbp-inline-notification>
-
+                
                 <div >
                     ${i18n.t('show-requests.organization-select-description')}
                     <div class="choose-and-create-btns">
@@ -261,6 +261,19 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         ></dbp-loading-button>
                     </div>
                 </div>
+
+                <div class="back-container">
+                    <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
+                        <a href="#" title="${i18n.t('create-request.back-to-create')}"
+                           @click="${(e) => {
+                               this.saveRequest(e, this.currentItem);
+                           }}"
+                        >
+                            <dbp-icon name="chevron-left"></dbp-icon>
+                            ${i18n.t('create-request.back-to-create')}
+                        </a>
+                    </span>
+                </div>
                 
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
                     ${i18n.t('create-request.create-dispatch-order')}:
@@ -269,16 +282,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
 
                     ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
-                                <div class="left-button">
-                                    <dbp-loading-button id="save-btn" 
-                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
-                                                        value="${i18n.t('show-requests.save-button-text')}" 
-                                                        @click="${(event) => { this.saveRequest(event, this.currentItem); }}" 
-                                                        title="${i18n.t('show-requests.save-button-text')}"
-                                    >
-                                        ${i18n.t('show-requests.save-button-text')}
-                                    </dbp-loading-button>
-                                </div>
                                 <div class="request-buttons">
                                     <div class="edit-buttons">
                                         <dbp-loading-button id="delete-btn" 
@@ -308,7 +311,24 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <div class="request-item details ${classMap({hidden: !this.showDetailsView})}">
                             <div class="details header">
                                 <div>
-                                    <div class="section-titles">${i18n.t('create-request.request-subject')}</div>
+                                    <div class="header-btn">
+                                        <div class="section-titles">
+                                            ${i18n.t('create-request.request-subject')}
+                                        ${!this.currentItem.dateSubmitted && this.hasSender ? html`
+                                            <dbp-icon-button id="edit-btn"
+                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                         @click="${(event) => {
+                                                                MicroModal.show(this._('#edit-subject-modal'), {
+                                                                    disableScroll: true,
+                                                                    onClose: (modal) => {
+                                                                        this.loading = false;
+                                                                    },
+                                                                });
+                                                            }}"
+                                                         title="${i18n.t('show-requests.edit-subject-button-text')}"
+                                                         icon-name="pencil"></dbp-icon-button>` : ``}
+                                        </div>
+                                    </div>
                                     <div>${this.subject}</div>
                                     <div class="no-subject ${classMap({hidden: !this.isLoggedIn() || this.subject.length !== 0})}">${i18n.t('show-requests.empty-subject-text')}</div>
                                 </div>
@@ -336,10 +356,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                      icon-name="pencil"></dbp-icon-button>` : ``}
                                 </div>
                                 <div class="sender-data">
-                                    ${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
+                                    ${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
                                     ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName
-                                            ? html` ${this.currentItem.senderGivenName}` :
-                                            html`${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
+                                            ? html` ${this.currentItem.senderFamilyName}` :
+                                            html`${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
                                     `}
                                     ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
                                     ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
@@ -553,17 +573,15 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
-                                <!-- <button
+                                <button
                                         class="button"
                                         data-micromodal-close
                                         aria-label="Close this dialog window"
                                         @click="${() => {
-                                            this.confirmAddSubject().then(r => {
-                                                MicroModal.close(this._('#add-subject-modal'));
-                                            });
+                                            MicroModal.close(this._('#add-subject-modal'));
                                         }}">
-                                    ${i18n.t('show-requests.add-subject-dialog-button-cancel')}
-                                </button> -->
+                                    ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
+                                </button>
                                 <button
                                         class="button select-button is-primary"
                                         id="add-subject-confirm-btn"
@@ -580,25 +598,24 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
             </div>
             
-            <!-- <div class="modal micromodal-slide" id="add-sender-modal" aria-hidden="true">
+            <div class="modal micromodal-slide" id="edit-subject-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
                     <div
                             class="modal-container"
-                            id="add-sender-modal-box"
+                            id="edit-subject-modal-box"
                             role="dialog"
                             aria-modal="true"
-                            aria-labelledby="add-sender-modal-title">
+                            aria-labelledby="edit-subject-modal-title">
                         <header class="modal-header">
-                            <h3 id="add-sender-modal-title">
-                                ${i18n.t('show-requests.edit-sender-organization-title')}
+                            <h3 id="edit-subject-modal-title">
+                                ${i18n.t('show-requests.edit-subject-modal-title')}
                             </h3>
                             <button
                                     title="${i18n.t('show-requests.modal-close')}"
                                     class="modal-close"
                                     aria-label="Close modal"
                                     @click="${() => {
-                                        MicroModal.close(this._('#add-sender-modal'));
-                                        this.hasSender = true;
+                                        MicroModal.close(this._('#edit-subject-modal'));
                                     }}">
                                 <dbp-icon
                                         title="${i18n.t('show-requests.modal-close')}"
@@ -606,34 +623,15 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         class="close-icon"></dbp-icon>
                             </button>
                         </header>
-                        <main class="modal-content" id="add-sender-modal-content">
+                        <main class="modal-content" id="edit-subject-modal-content">
                             <div class="modal-content-item">
-                                <div>
-                                    <dbp-resource-select
-                                        subscribe="lang:lang,entry-point-url:entry-point-url,auth:auth"
-                                        resource-path="base/organizations"
-                                        @change=${(event) => {
-                                            this.processSelectedSender(event);
-                                        }}
-                                    ></dbp-resource-select>
-                                </div>
-                            </div> -->
-                            <!-- <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-or-title')}
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
-                                </div>
                                 <div>
                                     <input
                                             type="text"
                                             class="input"
-                                            name="tf-add-sender-fn-dialog"
-                                            id="tf-add-sender-fn-dialog"
-                                            value="${this.currentItem && this.currentItem.senderFamilyName}"
+                                            name="tf-edit-subject-fn-dialog"
+                                            id="tf-edit-subject-fn-dialog"
+                                            value="${this.subject ? this.subject : ``}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -641,101 +639,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </div>
                             </div>
                             <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-gn-dialog-label')}
-                                </div>
                                 <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-sender-gn-dialog"
-                                            id="tf-add-sender-gn-dialog"
-                                            value="${this.currentItem && this.currentItem.senderGivenName}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div> -->
-                            <!-- <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-sender-sa-dialog"
-                                            id="tf-add-sender-sa-dialog"
-                                            value="${this.currentItem && this.currentItem.senderStreetAddress}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
+                                    ${i18n.t('show-requests.edit-subject-description')}
                                 </div>
                             </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-sender-bn-dialog"
-                                            id="tf-add-sender-bn-dialog"
-                                            value="${this.currentItem && this.currentItem.senderBuildingNumber}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-pc-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-sender-pc-dialog"
-                                            id="tf-add-sender-pc-dialog"
-                                            value="${this.currentItem && this.currentItem.senderPostalCode}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-al-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-sender-al-dialog"
-                                            id="tf-add-sender-al-dialog"
-                                            value="${this.currentItem && this.currentItem.senderAddressLocality}"
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
-                                </div>
-                                <div>
-                                    <select id="add-sender-country-select" class="country-select">
-                                        ${dispatchHelper.getCountryList()}
-                                    </select>
-                                </div>
-                            </div> -->
-                        <!-- </main>
+                        </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
                                 <button
@@ -743,27 +651,25 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         data-micromodal-close
                                         aria-label="Close this dialog window"
                                         @click="${() => {
-                                            MicroModal.close(this._('#add-sender-modal'));
-                                            this.hasSender = true;
+                                            MicroModal.close(this._('#edit-subject-modal'));
                                         }}">
-                                    ${i18n.t('show-requests.edit-sender-dialog-button-cancel')}
+                                    ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
                                 </button>
                                 <button
                                         class="button select-button is-primary"
-                                        id="add-sender-confirm-btn"
+                                        id="add-subject-confirm-btn"
                                         @click="${() => {
-                                            this.confirmAddSender().then(r => {
-                                                MicroModal.close(this._('#add-sender-modal'));
-                                                this.hasSender = true;
+                                            this.confirmEditSubject().then(r => {
+                                                MicroModal.close(this._('#edit-subject-modal'));
                                             });
                                         }}">
-                                    ${i18n.t('show-requests.edit-sender-dialog-button-ok')}
+                                    ${i18n.t('show-requests.edit-subject-dialog-button-ok')}
                                 </button>
                             </div>
                         </footer>
                     </div>
                 </div>
-            </div> -->
+            </div>
         `;
     }
 }

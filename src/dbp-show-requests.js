@@ -265,6 +265,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         }
                     },
                     {
+                        title: i18n.t('show-requests.date-submitted'),
+                        field: 'dateSubmitted',
+                        responsive: 8,
+                        minwidth: 150,
+                        formatter: function(cell, formatterParams, onRendered) {
+                            let value = cell.getValue();
+                            return value;
+                        }
+                    },
+                    {
                         title: i18n.t('show-requests.table-header-id'),
                         field: 'requestId',
                         responsive: 8,
@@ -1596,10 +1606,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     icon-name="pencil"></dbp-icon-button>` : ``}
                                 </div>
                                 <div class="sender-data">
-                                    ${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
-                                    ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName 
-                                        ? html` ${this.currentItem.senderGivenName}` :
-                                            html`${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
+                                    ${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
+                                    ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName
+                                            ? html` ${this.currentItem.senderFamilyName}` :
+                                            html`${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
                                     `}
                                     ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
                                     ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}

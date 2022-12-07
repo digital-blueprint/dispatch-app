@@ -2,7 +2,7 @@
     "create-request": {
         "description-text": "Hier können Sie einen neuen Versandauftrag anlegen. Nachdem Sie einen Versandauftrag erstellt haben, können Sie diesen in der Liste Ihrer Versandaufträge einsehen, bearbeiten und anschließend für den Versand freigeben.",
         "successfully-requested-title": "Erfolgreich erstellt!",
-        "successfully-requested-text": "Der Versandauftrag wurde erfolgreich angelegt. Sie können diesen jetzt weiter bearbeiten oder für später speichern.",
+        "successfully-requested-text": "Der Versandauftrag wurde erfolgreich angelegt. Sie können diesen jetzt weiter bearbeiten, sowie löschen oder freigeben, oder einen weiteren Versandauftrag anlegen.",
         "successfully-saved-title": "Erfolgreich gespeichert!",
         "successfully-saved-text": "Der Versandauftrag wurde erfolgreich gespeichert. Sie können diesen unter \"Versandaufträge anzeigen\" weiter bearbeiten.",
         "sender-family-name": "Familienname",
@@ -19,7 +19,8 @@
         "request-subject": "Betreff",
         "create-dispatch-order": "Versandauftrag erstellen",
         "empty-subject": "Bitte geben Sie einen Betreff für den Versandauftrag ein:",
-        "add-sender-button-text": "Absender hinzufügen"
+        "add-sender-button-text": "Absender hinzufügen",
+        "back-to-create": "Zurück einen neuen Auftrag erstellen"
     },
     "show-requests": {
         "description-text": "Hier können Sie die Liste aller Ihrer bisher angelegten Versandaufträge einsehen und diese bearbeiten, löschen oder abschließen. Alternativ können Sie auch einen ",
@@ -160,7 +161,15 @@
         "table-header-recipients": "Empfänger",
         "table-header-id": "Auftrags-ID",
         "add-recipient-birthdate-dialog-label": "Geburtsdatum",
-        "organization-select-description": "Bitte wählen Sie Ihre Organisation:"
+        "organization-select-description": "Bitte wählen Sie Ihre Organisation:",
+        "date-submitted": "Freigegeben am",
+        "delivery-end-date": "Zugestellt am",
+        "recipient-id": "Empfängerauftrags-ID",
+        "delivery-status-changes": "Sendungsverlauf",
+        "edit-subject-button-text": "Betreff bearbeiten",
+        "edit-subject-description": "",
+        "edit-subject-dialog-button-ok": "Übernehmen",
+        "edit-subject-modal-title": "Betreff bearbeiten"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt..."

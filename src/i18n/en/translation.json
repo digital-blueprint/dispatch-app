@@ -19,7 +19,8 @@
         "request-subject": "Subject",
         "create-dispatch-order": "Create dispatch order",
         "empty-subject": "Please enter a subject for the dispatch order:",
-        "add-sender-button-text": "Add sender"
+        "add-sender-button-text": "Add sender",
+        "back-to-create": "Back to create a request"
     },
     "show-requests": {
         "description-text": "Here you can view the list of all your created dispatch orders and edit, delete or submit. You can also ",
@@ -160,7 +161,15 @@
         "table-header-recipients": "Recipients",
         "table-header-id": "Request-ID",
         "add-recipient-birthdate-dialog-label": "Birth date",
-        "organization-select-description": "Please choose your organization:"
+        "organization-select-description": "Please choose your organization:",
+        "dateSubmitted": "Date submitted",
+        "delivery-end-date": "Delivery end date",
+        "recipient-id": "Recipient request ID",
+        "delivery-status-changes": "Delivery status changes",
+        "edit-subject-button-text": "Edit subject",
+        "edit-subject-description": "",
+        "edit-subject-dialog-button-ok": "OK",
+        "edit-subject-modal-title": "Edit subject"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading..."
