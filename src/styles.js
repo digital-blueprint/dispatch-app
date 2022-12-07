@@ -715,6 +715,8 @@ export function getDispatchRequestStyles() {
 
             .element-left {
                 background-color: var(--dbp-primary-surface);
+                border: var(--dbp-border);
+                border-color: var(--dbp-primary-surface-border-color);
                 color: var(--dbp-on-primary-surface);
                 padding: 0px 20px 12px 40px;
                 text-align: right;

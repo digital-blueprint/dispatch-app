@@ -1038,6 +1038,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             .element-left {
                 background-color: var(--dbp-primary-surface);
                 color: var(--dbp-on-primary-surface);
+                border: 1px solid var(--dbp-primary-surface-border-color);
                 padding: 0px 20px 12px 40px;
                 text-align: right;
             }
