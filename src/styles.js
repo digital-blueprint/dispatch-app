@@ -385,7 +385,6 @@ export function getDispatchRequestStyles() {
                 height: 33px;
             }
             
-            
 
             .country-select {
                 width: 100%;
@@ -746,6 +745,7 @@ export function getDispatchRequestStyles() {
                 width: 100%;
             }
 
+            
             @media only screen and (orientation: portrait) and (max-width: 768px) {
 
                 .edit-selection-buttons {

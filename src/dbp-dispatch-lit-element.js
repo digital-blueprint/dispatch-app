@@ -2116,8 +2116,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <h3>Sendungsverlauf:</h3>
                             <div class="">
                                 ${this.currentRecipient && this.currentRecipient.statusChanges ? this.currentRecipient.statusChanges.map(statusChange => html`
-                                    <div>
-                                        ${this.convertToReadableDate(statusChange.dateCreated)} ${statusChange.description} (StatusType ${statusChange.statusType})
+                                    <div class="recipient-status">
+                                        <div>${this.convertToReadableDate(statusChange.dateCreated)} </div>
+                                        <div class="status-detail">${statusChange.description} (StatusType ${statusChange.statusType})</div>
                                     </div>
                                 `) : `` }
                             </div>

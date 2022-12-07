@@ -1104,6 +1104,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             .header-btn .button.is-icon dbp-icon {
                 font-size: 1.3em;
             }
+
+            .recipient-status{
+                margin-bottom: 1em;
+            }
+
+            .recipient-status .status-detail {
+                font-weight: bolder;
+            }
             
             @media only screen and (orientation: portrait) and (max-width: 768px) {
                 
