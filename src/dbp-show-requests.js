@@ -877,7 +877,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 height: auto;
                 min-height: fit-content;
                 min-width: 320px;
-                max-width: 400px;
+                /*max-width: 400px;*/
             }
 
             #edit-sender-modal-box header.modal-header,

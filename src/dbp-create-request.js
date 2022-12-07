@@ -418,8 +418,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         value="${i18n.t('show-requests.add-recipient-button-text')}" 
                                                         @click="${(event) => {
                                                             console.log("on add recipient clicked");
-                                                            MicroModal.show(this._('#add-recipient-modal'), {
+                                                            MicroModal.show(this._('#add-recipient-modal'), { //TODO set focus to:  this._('#recipient-selector')
                                                                 disableScroll: true,
+                                                                disableFocus: false,    
                                                                 onClose: (modal) => {
                                                                     this.loading = false;
                                                                 },

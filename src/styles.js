@@ -531,7 +531,9 @@ export function getDispatchRequestStyles() {
                 max-width: 500px;
             }
 
-            #add-subject-modal-box footer {
+            #add-subject-modal-box footer.modal-footer .modal-footer-btn {
+                padding: 0px;
+                display: flex;
                 justify-content: end;
             }
             
@@ -566,8 +568,7 @@ export function getDispatchRequestStyles() {
             #add-sender-modal-box footer.modal-footer .modal-footer-btn,
             #add-recipient-modal-box footer.modal-footer .modal-footer-btn,
             #edit-recipient-modal-box footer.modal-footer .modal-footer-btn,
-            #show-recipient-modal-box footer.modal-footer .modal-footer-btn,
-            #add-subject-modal-box footer.modal-footer .modal-footer-btn {
+            #show-recipient-modal-box footer.modal-footer .modal-footer-btn {
                 padding: 0px;
                 display: flex;
                 justify-content: space-between;

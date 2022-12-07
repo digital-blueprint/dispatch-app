@@ -796,6 +796,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             console.log('valueObject: ', valueObject);
         // }
 
+
+
+
+
         await this.processCreateDispatchRequest();
 
         this.showDetailsView = true;
@@ -2087,32 +2091,35 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="element-right">
                                     ${this.currentRecipient && this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : ``}
                                 </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-bn-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : ``}
-                                </div>
-                                ${this.currentRecipient && this.currentRecipient.statusChanges ? this.currentRecipient.statusChanges.map(statusChange => html`
+                                ${this.currentRecipient && this.currentRecipient.buildingNumber ? html`
                                     <div class="element-left">
-                                        StatusType:
+                                        ${i18n.t('show-requests.edit-recipient-bn-dialog-label')}:
                                     </div>
                                     <div class="element-right">
-                                        ${statusChange.statusType}
+                                        ${this.currentRecipient.buildingNumber}
                                     </div>
-                                    <div class="element-left">
-                                        StatusDescription:
-                                    </div>
-                                    <div class="element-right">
-                                        ${statusChange.description}
-                                    </div>
-                                `) : `` }
+                                ` : ``}
+                                ${this.currentRecipient && this.currentRecipient.deliveryEndDate ? html`
                                 <div class="element-left">
                                     DeliveryEndDate:
                                 </div>
                                 <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.deliveryEndDate ? this.currentRecipient.deliveryEndDate : ``}
+                                    ${this.currentRecipient.deliveryEndDate}
+                                </div>` : ``}
+                                <div class="element-left">
+                                    Empfängerauftrags-ID:
                                 </div>
+                                <div class="element-right">
+                                    ${this.currentRecipient && this.currentRecipient.identifier ? this.currentRecipient.identifier : ``}
+                                </div>
+                            </div>
+                            <h3>Sendungsverlauf:</h3>
+                            <div class="">
+                                ${this.currentRecipient && this.currentRecipient.statusChanges ? this.currentRecipient.statusChanges.map(statusChange => html`
+                                    <div>
+                                        ${this.convertToReadableDate(statusChange.dateCreated)} ${statusChange.description} (StatusType ${statusChange.statusType})
+                                    </div>
+                                `) : `` }
                             </div>
                         </main>
                         <footer class="modal-footer">
