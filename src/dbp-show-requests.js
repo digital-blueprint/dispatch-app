@@ -17,6 +17,7 @@ import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import * as dispatchHelper from "./utils";
 import {PersonSelect} from "@dbp-toolkit/person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
+import {InfoTooltip} from "@dbp-toolkit/tooltip";
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -75,7 +76,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-inline-notification': InlineNotification,
             'dbp-file-source': FileSource,
             'dbp-person-select': PersonSelect,
-            'dbp-resource-select': ResourceSelect
+            'dbp-resource-select': ResourceSelect,
+            'dbp-info-tooltip': InfoTooltip
         };
     }
 
@@ -1595,7 +1597,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
                 
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView})}">
-                    ${this.currentItem && this.currentItem.dateSubmitted ? i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier }) : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })}:
+                    ${this.currentItem && this.currentItem.dateSubmitted ? 
+                           i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier }) 
+                           : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })
+                    }:
+                    <dbp-info-tooltip
+                            class="info-tooltip"
+                            text-content="${i18n.t('show-requests.table-header-id')}: ${this.currentItem.identifier}"
+                            interactive></dbp-info-tooltip>
                 </h3>
 
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView })}">

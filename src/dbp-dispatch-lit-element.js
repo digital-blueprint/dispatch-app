@@ -1447,7 +1447,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     addEditSenderModal() {
-        console.log('currentItem', this.currentItem);
         const i18n = this._i18n;
 
         return html`

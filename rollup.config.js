@@ -4,6 +4,7 @@ import glob from 'glob';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import copy from 'rollup-plugin-copy';
+import replace from 'rollup-plugin-replace';
 import terser from '@rollup/plugin-terser';
 import json from '@rollup/plugin-json';
 import serve from 'rollup-plugin-serve';
@@ -153,6 +154,11 @@ export default (async () => {
                     buildInfo: getBuildInfo(appEnv),
                 },
             }),
+            replace({
+                // If you would like DEV messages, specify 'development'
+                // Otherwise use 'production'
+                'process.env.NODE_ENV': JSON.stringify('production'),
+            }),
             resolve({
                 browser: true,
                 preferBuiltins: true,
@@ -182,7 +188,10 @@ Dependencies:
             json(),
             urlPlugin({
                 limit: 0,
-                include: [await getPackagePath('select2', '**/*.css')],
+                include: [
+                    await getPackagePath('select2', '**/*.css'),
+                    await getPackagePath('tippy.js', '**/*.css'),
+                ],
                 emitFiles: true,
                 fileName: 'shared/[name].[hash][extname]',
             }),
@@ -246,6 +255,7 @@ Dependencies:
                     },
                 ],
             }),
+
             useBabel &&
                 getBabelOutputPlugin({
                     compact: false,

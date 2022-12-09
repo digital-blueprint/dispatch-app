@@ -6022,11 +6022,6 @@ tabulator-tables@^5.1.7:
   resolved "https://registry.yarnpkg.com/tabulator-tables/-/tabulator-tables-5.4.2.tgz#4d3adec28bfe9fe37b95df43a836ab7c7385a60d"
   integrity sha512-HDrm9kk5KjkGkUrLSenIbWuhJggfMrQqo9h6ZfaPq8jgPh/DITiboCG3v2xk7xEXd/GecGGeTzqMP5LfzgqcRA==
 
-tabulator-tables@^5.4.3:
-  version "5.4.3"
-  resolved "https://registry.yarnpkg.com/tabulator-tables/-/tabulator-tables-5.4.3.tgz#78127f263b5bf26d8dc15e1cd2fc6755fe51b8ca"
-  integrity sha512-XnQcfwd2LzHWKAo8ZzUVglKaQnzn3wZwH48ouYr1dDbfUcQiU1ESJjVhmVxPMr9tf0oDcV6qPViEHinAi/tqbw==
-
 tar@^6.1.11:
   version "6.1.12"
   resolved "https://registry.yarnpkg.com/tar/-/tar-6.1.12.tgz#3b742fb05669b55671fb769ab67a7791ea1a62e6"
