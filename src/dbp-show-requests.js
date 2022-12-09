@@ -304,6 +304,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 ],
                 langs: {
                     'en': {
+                        'columns': {
+                            'dateCreated': 'Date created',
+                            'subject': 'Subject',
+                            'sender': 'Sender',
+                            'files': 'Files',
+                            'recipients': 'Recipients',
+                            'dateSubmitted': 'Date submitted',
+                            'requestId': 'Request-ID'
+                        },
                         'pagination': {
                             'page_size': 'Page size',
                             'page_size_title': 'Page size',
@@ -318,6 +327,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         }
                     },
                     'de': {
+                        'columns': {
+                            'dateCreated': 'Erstelldatum',
+                            'subject': 'Betreff',
+                            'sender': 'Absender',
+                            'files': 'Angehängte Dateien',
+                            'recipients': 'Empfänger',
+                            'dateSubmitted': 'Freigabedatum',
+                            'requestId': 'Auftrags-ID'
+                        },
                         'pagination': {
                             'page_size': 'Einträge pro Seite',
                             'page_size_title': 'Einträge pro Seite',
