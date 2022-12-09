@@ -1512,6 +1512,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView })}">
                         <a href="#" title="${i18n.t('show-requests.back-to-list')}"
                            @click="${(e) => {
+                               this.getListOfRequests();
                                this.showListView = true;
                                this.showDetailsView = false;
                                this.currentItem = {};
@@ -1569,7 +1570,22 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <div class="request-item details">
                             <div class="details header">
                                 <div>
-                                    <div class="section-titles">${i18n.t('show-requests.id')}</div>
+                                    <div class="section-titles">
+                                        ${i18n.t('show-requests.id')}
+                                        ${!this.currentItem.dateSubmitted ? html`
+                                            <dbp-icon-button id="edit-btn"
+                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                         @click="${(event) => {
+                                                            MicroModal.show(this._('#edit-subject-modal'), {
+                                                                disableScroll: true,
+                                                                onClose: (modal) => {
+                                                                    this.loading = false;
+                                                                },
+                                                            });
+                                                        }}"
+                                                         title="${i18n.t('show-requests.edit-subject-button-text')}"
+                                                         icon-name="pencil"></dbp-icon-button>` : ``}
+                                    </div>
                                     <div>${this.currentItem.name ? html`${this.currentItem.name}` : html`${i18n.t('show-requests.no-subject-found')}`}</div>
                                 </div>
                                 <div class="line"></div>
@@ -1777,6 +1793,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${this.addEditRecipientModal()}
 
             ${this.addShowRecipientModal()}
+
+            ${this.addEditSubjectModal()}
         `;
     }
 }

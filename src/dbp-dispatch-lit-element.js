@@ -1130,13 +1130,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 status: item.dateSubmitted ? i18n.t('show-requests.status-completed') : i18n.t('show-requests.empty-date-submitted'),
                 dateCreated: item.dateCreated,
                 details: "Details",
-                sender: item.senderFamilyName + " " + item.senderGivenName + "<br>"
+                sender: item.senderFamilyName ? item.senderFamilyName + " " + item.senderGivenName + "<br>"
                     + item.senderStreetAddress + " " + item.senderBuildingNumber + "<br>"
                     + item.senderPostalCode + " " + item.senderAddressLocality + "<br>"
-                    + item.senderAddressCountry,
+                    + item.senderAddressCountry : i18n.t('show-requests.empty-sender-text'),
                 files: this.createFormattedFilesList(item.files),
                 recipients: this.createFormattedRecipientsList(item.recipients),
-                dateSubmitted: item.dateSubmitted ? this.convertToReadableDate(item.dateSubmitted) : '',
+                dateSubmitted: item.dateSubmitted ? this.convertToReadableDate(item.dateSubmitted) : i18n.t('show-requests.date-submitted-not-submitted'),
                 controls: this.setControlsHtml(item),
             };
             tableObject.push(content);
@@ -2133,6 +2133,85 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn"></div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    addEditSubjectModal() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="modal micromodal-slide" id="edit-subject-modal" aria-hidden="true">
+                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
+                    <div
+                            class="modal-container"
+                            id="edit-subject-modal-box"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="edit-subject-modal-title">
+                        <header class="modal-header">
+                            <h3 id="edit-subject-modal-title">
+                                ${i18n.t('show-requests.edit-subject-modal-title')}
+                            </h3>
+                            <button
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    class="modal-close"
+                                    aria-label="Close modal"
+                                    @click="${() => {
+                                        MicroModal.close(this._('#edit-subject-modal'));
+                                    }}">
+                                <dbp-icon
+                                        title="${i18n.t('show-requests.modal-close')}"
+                                        name="close"
+                                        class="close-icon"></dbp-icon>
+                            </button>
+                        </header>
+                        <main class="modal-content" id="edit-subject-modal-content">
+                            <div class="modal-content-item">
+                                <div>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-edit-subject-fn-dialog"
+                                            id="tf-edit-subject-fn-dialog"
+                                            value="${this.subject ? this.subject : ``}"
+                                            @input="${() => {
+                                                // TODO
+                                            }}"
+                                    />
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div>
+                                    ${i18n.t('show-requests.edit-subject-description')}
+                                </div>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <div class="modal-footer-btn">
+                                <button
+                                        class="button"
+                                        data-micromodal-close
+                                        aria-label="Close this dialog window"
+                                        @click="${() => {
+            MicroModal.close(this._('#edit-subject-modal'));
+        }}">
+                                    ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
+                                </button>
+                                <button
+                                        class="button select-button is-primary"
+                                        id="add-subject-confirm-btn"
+                                        @click="${() => {
+                                            this.confirmEditSubject().then(r => {
+                                                MicroModal.close(this._('#edit-subject-modal'));
+                                            });
+                                        }}">
+                                    ${i18n.t('show-requests.edit-subject-dialog-button-ok')}
+                                </button>
+                            </div>
                         </footer>
                     </div>
                 </div>
