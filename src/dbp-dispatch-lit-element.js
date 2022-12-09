@@ -669,9 +669,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async editRequest(event, item) {
-        this.showListView = false;
-        this.showDetailsView = true;
-        this.currentItem = item;
+        let resp = await this.getDispatchRequest(item.identifier);
+        let responseBody = await resp.json();
+        if (responseBody !== undefined && responseBody.status !== 403) {
+            this.currentItem = responseBody;
+        }
 
         this.currentItem.recipients.forEach((element) => {
             console.log(element.identifier);
@@ -679,6 +681,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 //TODO
             });
         });
+
+        this.showListView = false;
+        this.showDetailsView = true;
     }
 
     async deleteRequest(event, item) {
