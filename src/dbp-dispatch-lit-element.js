@@ -397,6 +397,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // return await this.httpGetAsync(this.entryPointUrl + identifier + '?includeLocal=street%2Ccity%2CpostalCode%2Ccountry', options);
     }
 
+    async sendChangeSubjectRequest(identifier, subject) {
+        let body = {
+            "name": subject,
+        };
+
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+            body: JSON.stringify(body),
+        };
+
+        console.log('send update subject request');
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+    }
+
     /*
     * Open  file source
     *
@@ -746,6 +765,29 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    async changeSubjectRequest(id, subject) {
+        const i18n = this._i18n;
+        try {
+            let response = await this.sendChangeSubjectRequest(id, subject);
+            let responseBody = await response.json();
+
+            if (responseBody !== undefined && response.status === 200) {
+                this.currentItem = responseBody;
+                this.subject = subject;
+            } else {
+                // TODO show error code specific notification
+                send({
+                    "summary": i18n.t('create-request.error-changed-subject-title'),
+                    "body": i18n.t('create-request.error-changed-subject-text'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            }
+        } finally {
+            // TODO
+        }
+    }
+
     async confirmEditSender() {
         const i18n = this._i18n;
         let id = this.currentItem.identifier;
@@ -789,7 +831,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmEditSubject() {
-        this.subject = this._('#tf-edit-subject-fn-dialog').value;
+        let subject = this._('#tf-edit-subject-fn-dialog').value;
+        let id = this.currentItem.identifier;
+        await this.changeSubjectRequest(id, subject);
     }
 
     async confirmAddSubject() {
@@ -2197,8 +2241,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         data-micromodal-close
                                         aria-label="Close this dialog window"
                                         @click="${() => {
-            MicroModal.close(this._('#edit-subject-modal'));
-        }}">
+                                            MicroModal.close(this._('#edit-subject-modal'));
+                                        }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
                                 </button>
                                 <button

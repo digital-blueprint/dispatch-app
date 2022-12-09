@@ -37,6 +37,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.recipients = [];
 
         this.currentRecipient = {};
+        this.subject = '';
 
         this.currentItem.senderGivenName = "";
         this.currentItem.senderFamilyName = "";
@@ -91,6 +92,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             currentItem: { type: Object, attribute: false },
             currentRecipient: { type: Object, attribute: false },
             totalNumberOfItems: { type: Number, attribute: false },
+            subject: { type: String, attribute: false },
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -899,6 +901,51 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 justify-content: space-between;
             }
 
+            #edit-subject-modal-box {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 15px 20px 20px;
+                min-width: 320px;
+            }
+
+            #add-subject-modal-box, #edit-subject-modal-box {
+                height: auto;
+                min-height: 185px;
+                max-width: 500px;
+            }
+
+            #edit-subject-modal-box header.modal-header {
+                padding: 0px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #edit-subject-modal-box header.modal-header {
+                padding: 0px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #edit-subject-modal-box footer.modal-footer .modal-footer-btn {
+                padding: 0px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #edit-subject-modal-content {
+                display: flex;
+                padding-left: 0px;
+                padding-right: 0px;
+                overflow: unset;
+                gap: 1em;
+                flex-direction: column;
+            }
+
+            #edit-subject-modal-content {
+                gap: 0;
+            }
+
             #show-recipient-modal-box header.modal-header {
                 padding: 0 10px 20px 0;
             }
@@ -937,6 +984,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             #add-recipient-modal-content .nf-label,
             #edit-recipient-modal-content .nf-label{
                 padding-bottom: 2px;
+            }
+
+            #edit-subject-modal-content div .input {
+                width: 100%;
+            }
+
+            #edit-subject-modal-content .nf-label {
+                padding-bottom: 2px;
+            }
+
+            #edit-subject-modal-title {
+                margin: 0;
+                padding: 0.25em 0 0 0;
             }
             
             #edit-sender-modal-title,
@@ -1576,6 +1636,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <dbp-icon-button id="edit-btn"
                                                          ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                          @click="${(event) => {
+                                                             this.subject = this.currentItem.name ? this.currentItem.name : '';
                                                             MicroModal.show(this._('#edit-subject-modal'), {
                                                                 disableScroll: true,
                                                                 onClose: (modal) => {
