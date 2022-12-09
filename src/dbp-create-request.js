@@ -329,7 +329,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                          icon-name="pencil"></dbp-icon-button>` : ``}
                                         </div>
                                     </div>
-                                    <div>${this.subject}</div>
+                                    <div>${this.currentItem.name}</div>
                                     <div class="no-subject ${classMap({hidden: !this.isLoggedIn() || this.subject.length !== 0})}">${i18n.t('show-requests.empty-subject-text')}</div>
                                 </div>
                             </div>
