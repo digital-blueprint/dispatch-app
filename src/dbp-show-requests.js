@@ -386,6 +386,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             element.addEventListener('click', that.toggleCollapse.bind(that))
                     );
                 }
+
             }, 0);
         }
     }
@@ -653,6 +654,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             input[type="date"] {
                 width: 100%;
+            }
+            
+            .control.table {
+                padding-top: 1.5rem;
+                font-size: 1.5rem;
+                text-align: center;
             }
             
             .muted {
@@ -1584,7 +1591,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </dbp-loading-button>
                             </div>
                         </div>
-                        <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
+                    
+                    
+                        <div class="control table ${classMap({hidden: !this.initialRequestsLoading})}">
+                            <span class="loading">
+                                <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
+                            </span>
+                        </div>
+                        
+                    
+                        <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.initialRequestsLoading })}">
                             <div id="dispatch-requests-table" class=""></div>
                             <div class='tabulator' id='custom-pagination'>
                                 <div class='tabulator-footer'>
