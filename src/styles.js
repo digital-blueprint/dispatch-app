@@ -513,8 +513,8 @@ export function getDispatchRequestStyles() {
             }
             
             #edit-recipient-modal-box {
-                max-height: 630px;
-                min-height: 630px;
+                max-height: 680px;
+                min-height: 680px;
                 max-width: 400px;
             }
 
@@ -541,7 +541,6 @@ export function getDispatchRequestStyles() {
             #show-recipient-modal-box {
                 height: auto;
                 min-height: fit-content;
-                max-width: 400px;
             }
 
             #edit-sender-modal-box header.modal-header,
@@ -727,6 +726,7 @@ export function getDispatchRequestStyles() {
                 color: var(--dbp-on-primary-surface);
                 padding: 0px 20px 12px 40px;
                 text-align: right;
+                white-space: nowrap;
             }
 
             .element-left.first, .element-right.first {

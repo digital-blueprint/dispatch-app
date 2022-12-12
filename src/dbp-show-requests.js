@@ -889,14 +889,24 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
 
             #edit-sender-modal-box, 
-            #add-recipient-modal-box,
-            #edit-recipient-modal-box {
+            #add-recipient-modal-box {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
                 padding: 15px 20px 20px;
                 max-height: 715px;
                 min-height: 715px;
+                min-width: 320px;
+                max-width: 400px;
+            }
+
+            #edit-recipient-modal-box {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 15px 20px 20px;
+                max-height: 680px;
+                min-height: 680px;
                 min-width: 320px;
                 max-width: 400px;
             }
@@ -909,7 +919,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 height: auto;
                 min-height: fit-content;
                 min-width: 320px;
-                /*max-width: 400px;*/
             }
 
             #edit-sender-modal-box header.modal-header,
@@ -1664,12 +1673,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                          ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                          @click="${(event) => {
                                                              this.subject = this.currentItem.name ? this.currentItem.name : '';
-                                                            MicroModal.show(this._('#edit-subject-modal'), {
-                                                                disableScroll: true,
-                                                                onClose: (modal) => {
-                                                                    this.loading = false;
-                                                                },
-                                                            });
+                                                             MicroModal.show(this._('#edit-subject-modal'), {
+                                                                 disableScroll: true,
+                                                                 onClose: (modal) => {
+                                                                     this.loading = false;
+                                                                 },
+                                                             });
                                                         }}"
                                                          title="${i18n.t('show-requests.edit-subject-button-text')}"
                                                          icon-name="pencil"></dbp-icon-button>` : ``}
@@ -1679,7 +1688,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="line"></div>
                                 <div>
                                     <div class="section-titles">${i18n.t('show-requests.submit-status')}</div>
-                                    <div>${this.currentItem.dateSubmitted ? html`<span class="status-green">●</span> ${i18n.t('show-requests.status-completed')}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
+                                    <div>${this.currentItem.dateSubmitted ? html`<span class="status-green">●</span> ${i18n.t('show-requests.status-completed-date', {date: this.convertToReadableDate(this.currentItem.dateSubmitted)})}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
                                 </div>
                                 <div class="line"></div>
                                 <div>

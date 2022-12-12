@@ -437,13 +437,14 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                         value="${i18n.t('show-requests.add-recipient-button-text')}" 
                                                         @click="${(event) => {
-                                                            console.log("on add recipient clicked");
-                                                            MicroModal.show(this._('#add-recipient-modal'), { //TODO set focus to:  this._('#recipient-selector')
-                                                                disableScroll: true,
-                                                                disableFocus: false,    
-                                                                onClose: (modal) => {
-                                                                    this.loading = false;
-                                                                },
+                                                            this.preloadSelectedRecipient().then(() => {
+                                                                MicroModal.show(this._('#add-recipient-modal'), { //TODO set focus to:  this._('#recipient-selector')
+                                                                    disableScroll: true,
+                                                                    disableFocus: false,
+                                                                    onClose: (modal) => {
+                                                                        this.loading = false;
+                                                                    },
+                                                                }); 
                                                             });
                                                         }}" 
                                                         title="${i18n.t('show-requests.add-recipient-button-text')}">
@@ -482,15 +483,16 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     <dbp-icon-button id="edit-recipient-btn"
                                                                  ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                                  @click="${(event) => {
-                                                                     console.log("on edit recipients clicked");
-                                                                     this.currentRecipient = recipient;
-                                                                     this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                     MicroModal.show(this._('#edit-recipient-modal'), {
-                                                                         disableScroll: true,
-                                                                         onClose: (modal) => {
-                                                                             this.loading = false;
-                                                                             this.currentRecipient = null;
-                                                                         },
+                                                                     this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                         this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                                                                         this._('#tf-edit-recipient-birthdate').value = this.currentRecipient.birthDate;
+                                                                         MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                             disableScroll: true,
+                                                                             onClose: (modal) => {
+                                                                                 this.loading = false;
+                                                                                 this.currentRecipient = null;
+                                                                             },
+                                                                         });
                                                                      });
                                                                  }}"
                                                                  title="${i18n.t('show-requests.edit-recipients-button-text')}"

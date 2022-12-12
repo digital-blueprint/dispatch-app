@@ -32,6 +32,7 @@
         "submit-status": "Status",
         "empty-date-submitted": "In Bearbeitung",
         "status-completed": "Abgesendet",
+        "status-completed-date": "Abgesendet am {{date}}",
         "sender-family-name": "Familienname",
         "sender-given-name": "Vorname",
         "sender-address-country":  "Land",
