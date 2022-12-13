@@ -1485,6 +1485,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-sender-fn-dialog"
@@ -1502,6 +1503,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-sender-gn-dialog"
@@ -1519,6 +1521,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-sender-sa-dialog"
@@ -1537,6 +1540,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     </div>
                                     <div>
                                         <input
+                                                required
                                                 type="text"
                                                 class="input"
                                                 name="tf-edit-sender-bn-dialog"
@@ -1555,6 +1559,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="number"
                                             class="input"
                                             name="tf-edit-sender-pc-dialog"
@@ -1572,6 +1577,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-sender-al-dialog"
@@ -1588,7 +1594,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
                                 <div>
-                                    <select id="edit-sender-country-select" class="country-select">
+                                    <select required id="edit-sender-country-select" class="country-select">
                                         ${dispatchHelper.getCountryList()}
                                     </select>
                                 </div>
@@ -1609,9 +1615,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="button select-button is-primary"
                                         id="edit-sender-confirm-btn"
                                         @click="${() => {
-                                            this.confirmEditSender().then(r => {
-                                                MicroModal.close(this._('#edit-sender-modal'));
-                                            });
+                                            let validpc = this.checkValidity(this._('#edit-sender-country-select'));
+                                            let validbn = this.checkValidity(this._('#tf-edit-sender-al-dialog'));
+                                            let validsa = this.checkValidity(this._('#tf-edit-sender-pc-dialog'));
+                                            let validbirthday = this.checkValidity(this._('#tf-edit-sender-sa-dialog'));
+                                            let validfn = this.checkValidity(this._('#tf-edit-sender-gn-dialog'));
+                                            let validgn = this.checkValidity(this._('#tf-edit-sender-fn-dialog'));
+                                
+                                            if (validgn && validfn && validpc && validsa && validbn && validbirthday) {
+                                                this.confirmEditSender().then(r => {
+                                                    MicroModal.close(this._('#edit-sender-modal'));
+                                                });
+                                            }
                                         }}">
                                     ${i18n.t('show-requests.edit-sender-dialog-button-ok')}
                                 </button>
@@ -1621,6 +1636,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 </div>
             </div>
         `;
+    }
+
+    checkValidity(input) {
+        const isValid = input.reportValidity();
+        input.setAttribute('aria-invalid', !isValid);
+        return isValid;
     }
 
     addAddRecipientModal() {
@@ -1677,6 +1698,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-gn-dialog"
@@ -1694,6 +1716,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-fn-dialog"
@@ -1710,7 +1733,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}
                                 </div>
                                 <div>
-                                    <input 
+                                    <input
+                                            required
                                             type="date" 
                                             id="tf-add-recipient-birthdate"
                                             value="${this.currentRecipient ? this.currentRecipient.birthDate : ``}"
@@ -1723,6 +1747,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-sa-dialog"
@@ -1740,6 +1765,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-bn-dialog"
@@ -1757,6 +1783,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="number"
                                             class="input"
                                             name="tf-add-recipient-pc-dialog"
@@ -1774,6 +1801,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-al-dialog"
@@ -1790,7 +1818,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                 </div>
                                 <div>
-                                    <select id="add-recipient-country-select" class="country-select">
+                                    <select required id="add-recipient-country-select" class="country-select">
                                         ${dispatchHelper.getCountryList()}
                                     </select>
                                 </div>
@@ -1811,30 +1839,27 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="button select-button is-primary"
                                         id="add-recipient-confirm-btn"
                                         @click="${() => {
-                                            this.currentRecipient.givenName = this._('#tf-add-recipient-gn-dialog').value;
-                                            this.currentRecipient.familyName = this._('#tf-add-recipient-fn-dialog').value;
-                                            this.currentRecipient.addressCountry = this._('#add-recipient-country-select').value;
-                                            this.currentRecipient.postalCode = this._('#tf-add-recipient-pc-dialog').value;
-                                            this.currentRecipient.addressLocality = this._('#tf-add-recipient-al-dialog').value;
-                                            this.currentRecipient.streetAddress = this._('#tf-add-recipient-sa-dialog').value;
-                                            this.currentRecipient.buildingNumber = this._('#tf-add-recipient-bn-dialog').value;
-                                            this.currentRecipient.birthDate = this._('#tf-add-recipient-birthdate').value;
+                                            let validcountry = this.checkValidity(this._('#add-recipient-country-select'));
+                                            let validal = this.checkValidity(this._('#tf-add-recipient-al-dialog'));
+                                            let validpc = this.checkValidity(this._('#tf-add-recipient-pc-dialog'));
+                                            let validbn = this.checkValidity(this._('#tf-add-recipient-bn-dialog'));
+                                            let validsa = this.checkValidity(this._('#tf-add-recipient-sa-dialog'));
+                                            let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate'));
+                                            let validfn = this.checkValidity(this._('#tf-add-recipient-fn-dialog'));
+                                            let validgn = this.checkValidity(this._('#tf-add-recipient-gn-dialog'));
 
-                                            if (this.currentRecipient.birthDate === '' ||
-                                                this.currentRecipient.givenName === '' ||
-                                                this.currentRecipient.familyName === '' ||
-                                                this.currentRecipient.postalCode === '' ||
-                                                this.currentRecipient.addressLocality === '' ||
-                                                this.currentRecipient.streetAddress === '') {
-                                                send({
-                                                    "summary": 'Error',
-                                                    "body": 'Please fill out all necessary fields.',
-                                                    "type": "danger",
-                                                    "timeout": 5,
-                                                });
-                                            } else {
-                                                    this.addRecipientToRequest().then(r => {
-                                                    
+                                            if (validgn && validfn && validcountry && validpc && validal && validsa && validbn && validbirthday) {
+                                                this.currentRecipient.givenName = this._('#tf-add-recipient-gn-dialog').value;
+                                                this.currentRecipient.familyName = this._('#tf-add-recipient-fn-dialog').value;
+                                                this.currentRecipient.addressCountry = this._('#add-recipient-country-select').value;
+                                                this.currentRecipient.postalCode = this._('#tf-add-recipient-pc-dialog').value;
+                                                this.currentRecipient.addressLocality = this._('#tf-add-recipient-al-dialog').value;
+                                                this.currentRecipient.streetAddress = this._('#tf-add-recipient-sa-dialog').value;
+                                                this.currentRecipient.buildingNumber = this._('#tf-add-recipient-bn-dialog').value;
+                                                this.currentRecipient.birthDate = this._('#tf-add-recipient-birthdate').value;
+                                                
+                                                this.addRecipientToRequest().then(r => {
+
                                                     MicroModal.close(this._('#add-recipient-modal'));
 
                                                     // TODO clear selector value
@@ -1889,6 +1914,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-gn-dialog"
@@ -1906,6 +1932,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-fn-dialog"
@@ -1922,7 +1949,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}
                                 </div>
                                 <div>
-                                    <input 
+                                    <input
+                                            required
                                             type="date" 
                                             id="tf-edit-recipient-birthdate"
                                             value="${this.currentRecipient ? this.currentRecipient.birthDate : ``}"
@@ -1935,6 +1963,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-sa-dialog"
@@ -1952,6 +1981,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-bn-dialog"
@@ -1969,6 +1999,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="number"
                                             class="input"
                                             name="tf-edit-recipient-pc-dialog"
@@ -1986,6 +2017,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
+                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-al-dialog"
@@ -2003,7 +2035,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <div>
-                                        <select id="edit-recipient-country-select" class="country-select">
+                                        <select required id="edit-recipient-country-select" class="country-select">
                                             ${dispatchHelper.getCountryList()}
                                         </select>
                                     </div>
@@ -2025,28 +2057,24 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="button select-button is-primary"
                                         id="edit-recipient-confirm-btn"
                                         @click="${() => {
-                                            this.currentRecipient.givenName = this._('#tf-edit-recipient-gn-dialog').value;
-                                            this.currentRecipient.familyName = this._('#tf-edit-recipient-fn-dialog').value;
-                                            this.currentRecipient.addressCountry = this._('#edit-recipient-country-select').value;
-                                            this.currentRecipient.postalCode = this._('#tf-edit-recipient-pc-dialog').value;
-                                            this.currentRecipient.addressLocality = this._('#tf-edit-recipient-al-dialog').value;
-                                            this.currentRecipient.streetAddress = this._('#tf-edit-recipient-sa-dialog').value;
-                                            this.currentRecipient.buildingNumber = this._('#tf-edit-recipient-bn-dialog').value;
-                                            this.currentRecipient.birthDate = this._('#tf-edit-recipient-birthdate').value;
-                                
-                                            if (this.currentRecipient.birthDate === '' ||
-                                                this.currentRecipient.givenName === '' ||
-                                                this.currentRecipient.familyName === '' ||
-                                                this.currentRecipient.postalCode === '' ||
-                                                this.currentRecipient.addressLocality === '' ||
-                                                this.currentRecipient.streetAddress === '') {
-                                                send({
-                                                    "summary": 'Error',
-                                                    "body": 'Please fill out all necessary fields.',
-                                                    "type": "danger",
-                                                    "timeout": 5,
-                                                });
-                                            } else {
+                                            let validcountry = this.checkValidity(this._('#edit-recipient-country-select'));
+                                            let validal = this.checkValidity(this._('#tf-edit-recipient-al-dialog'));
+                                            let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'));
+                                            let validbn = this.checkValidity(this._('#tf-edit-recipient-bn-dialog'));
+                                            let validsa = this.checkValidity(this._('#tf-edit-recipient-sa-dialog'));
+                                            let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate'));
+                                            let validfn = this.checkValidity(this._('#tf-edit-recipient-fn-dialog'));
+                                            let validgn = this.checkValidity(this._('#tf-edit-recipient-gn-dialog'));
+                                            
+                                            if (validgn && validfn && validcountry && validpc && validal && validsa && validbn && validbirthday) {
+                                                this.currentRecipient.givenName = this._('#tf-edit-recipient-gn-dialog').value;
+                                                this.currentRecipient.familyName = this._('#tf-edit-recipient-fn-dialog').value;
+                                                this.currentRecipient.addressCountry = this._('#edit-recipient-country-select').value;
+                                                this.currentRecipient.postalCode = this._('#tf-edit-recipient-pc-dialog').value;
+                                                this.currentRecipient.addressLocality = this._('#tf-edit-recipient-al-dialog').value;
+                                                this.currentRecipient.streetAddress = this._('#tf-edit-recipient-sa-dialog').value;
+                                                this.currentRecipient.buildingNumber = this._('#tf-edit-recipient-bn-dialog').value;
+                                                this.currentRecipient.birthDate = this._('#tf-edit-recipient-birthdate').value;
                                                 this.updateRecipient().then(r => {
                                                     MicroModal.close(this._('#edit-recipient-modal'));
                                                 });
