@@ -116,7 +116,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     /**
-     * Gets the list of all dispatch requests of the current logged in user
+     * Gets the list of all dispatch requests of the current logged-in user
      *
      * @returns {object} response
      */
@@ -132,7 +132,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     /**
-     * Gets the dispatch request of the current logged in user with the given identifier
+     * Gets the dispatch request of the current logged-in user with the given identifier
      *
      * @param identifier
      * @returns {object} response
