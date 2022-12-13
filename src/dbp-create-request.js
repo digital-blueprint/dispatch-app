@@ -42,6 +42,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderBuildingNumber = "";
 
         this.subject = '';
+        this.groupId = '';
 
         this.showDetailsView = false;
 
@@ -80,6 +81,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             currentRecipient: { type: Object, attribute: false },
 
             subject: {type: String, attribute: false},
+            groupId: {type: String, attribute: false},
 
             emptyFieldsGiven: {type: Boolean, attribute: false},
             showDetailsView: {type: Boolean, attribute: false},
@@ -124,6 +126,13 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     "timeout": 5,
                 });
                 this.currentItem = responseBody;
+            } else if (response.status === 403) {
+                send({
+                    "summary": i18n.t('create-request.error-requested-title'),
+                    "body": i18n.t('error-not-permitted'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
             } else {
                 // TODO show error code specific notification
                 send({
@@ -458,7 +467,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 ${this.currentItem.recipients.map(recipient => html`
                                     <div class="recipient card">
                                         <div class="left-side">
-                                            <div>${recipient.familyName} ${recipient.givenName}</div>
+                                            <div>${recipient.givenName} ${recipient.familyName}</div>
                                             <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
                                             <div>${recipient.postalCode} ${recipient.addressLocality}</div>
                                             <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>

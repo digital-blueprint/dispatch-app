@@ -39,6 +39,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.currentRecipient = {};
         this.subject = '';
+        this.mayWrite = false;
+        this.mayRead = false;
+        this.organizationSet = false;
 
         this.currentItem.senderGivenName = "";
         this.currentItem.senderFamilyName = "";
@@ -95,6 +98,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             currentRecipient: { type: Object, attribute: false },
             totalNumberOfItems: { type: Number, attribute: false },
             subject: { type: String, attribute: false },
+            organizationSet: { type: Boolean, attribute: false },
+            mayWrite: { type: Boolean, attribute: false },
+            mayRead: { type: Boolean, attribute: false },
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -638,6 +644,21 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         return options;
     }
 
+    processSelectedOrganization(event) {
+        this.groupId = event.target.valueObject.identifier;
+        this.organizationSet = true;
+        this.getListOfRequests(this.groupId);
+    }
+
+    preloadSelectedOrganization() {
+        if (this._('#show-resource-select') && this._('#show-resource-select').getAttribute('data-object') !== null) {
+            const organization = JSON.parse(this._('#show-resource-select').getAttribute('data-object'));
+
+            this.groupId = organization.identifier;
+            this.organizationSet = true;
+        }
+    }
+
     static get styles() {
         // language=css
         return css`
@@ -652,6 +673,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             /*${commonStyles.getRadioAndCheckboxCss()}*/
             ${dispatchStyles.getShowDispatchRequestsCss()}
             ${dispatchStyles.getDispatchRequestStyles()}
+            
+            .tabulator .tabulator-placeholder-contents {
+                margin-bottom: auto;
+            }
             
             .control.table {
                 padding-top: 1.5rem;
@@ -966,8 +991,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'tabulator-tables/css/tabulator.min.css'
         );
 
-        if (this.isLoggedIn() && !this.isLoading() && !this._initialFetchDone && !this.initialRequestsLoading) {
-            this.getListOfRequests();
+        if (this.isLoggedIn() && !this.isLoading() && !this._initialFetchDone && !this.initialRequestsLoading && this.organizationSet) {
+            this.getListOfRequests(this.groupId);
         }
 
         return html`
@@ -1010,390 +1035,406 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         </a>
                     </p>
                 </slot>
+                
+                 <div >
+                    ${i18n.t('show-requests.organization-select-description')}
+                    <div class="choose-and-create-btns">
+                        <dbp-resource-select
+                                    id="show-resource-select"
+                                    subscribe="lang,entry-point-url,auth"
+                                    resource-path="dispatch/groups"
+                                    @change=${(event) => {
+                                        this.processSelectedOrganization(event);
+                                    }}
+                        ></dbp-resource-select>
+                    </div>
+                </div>
 
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
-                    ${i18n.t('show-requests.dispatch-orders')}
-                </h3>
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
-                    <div class="table-wrapper">
-                        <div class="selected-buttons">
-                            <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}"
-                                <div class="search-wrapper ">
-                                    <div id="extendable-searchbar">
-                                        <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
-                                            this.toggleSearchMenu();
-                                        }}'>
-                                        <dbp-icon-button id="search-button" title="Suchen" icon-name="search" 
-                                            @click='${() => {
-                                                this.filterTable();
-                                            }}'></dbp-icon-button>
-                                        <ul class='extended-menu hidden' id='searchbar-menu'>
-                                            <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
-                                            <select id='search-select' class='button dropdown-menu'
-                                                    title='${i18n.t('show-requests.search-in-column')}:'>
-                                                ${this.getTableHeaderOptions()}
-                                            </select>
-                                            
-                                            <label for='search-operator'>${i18n.t('show-requests.search-operator')}
-                                                :</label>
-                                            <select id='search-operator' class='button dropdown-menu'>
-                                                <option value='like'>${i18n.t('show-requests.search-operator-like')}
-                                                </option>
-                                                <option value='='>${i18n.t('show-requests.search-operator-equal')}</option>
-                                                <option value='!='>${i18n.t('show-requests.search-operator-notequal')}
-                                                </option>
-                                                <option value='starts'>${i18n.t('show-requests.search-operator-starts')}
-                                                </option>
-                                                <option value='ends'>${i18n.t('show-requests.search-operator-ends')}
-                                                </option>
-                                                <option value='<'>${i18n.t('show-requests.search-operator-less')}</option>
-                                                <option value='<='>
-                                                    ${i18n.t('show-requests.search-operator-lessthanorequal')}
-                                                </option>
-                                                <option value='>'>${i18n.t('show-requests.search-operator-greater')}
-                                                </option>
-                                                <option value='>='>
-                                                    ${i18n.t('show-requests.search-operator-greaterorequal')}
-                                                </option>
-                                                <option value='regex'>${i18n.t('show-requests.search-operator-regex')}
-                                                </option>
-                                                <option value='keywords'>
-                                                    ${i18n.t('show-requests.search-operator-keywords')}
-                                                </option>
-                                            </select>
-                                        </ul>
+               
+                    <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
+                        ${i18n.t('show-requests.dispatch-orders')}
+                    </h3>
+                    <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
+                        <div class="table-wrapper">
+                            <div class="selected-buttons">
+                                <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}"
+                                    <div class="search-wrapper ">
+                                        <div id="extendable-searchbar">
+                                            <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
+                                                this.toggleSearchMenu();
+                                            }}'>
+                                            <dbp-icon-button id="search-button" title="Suchen" icon-name="search" 
+                                                @click='${() => {
+                                                    this.filterTable();
+                                                }}'></dbp-icon-button>
+                                            <ul class='extended-menu hidden' id='searchbar-menu'>
+                                                <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
+                                                <select id='search-select' class='button dropdown-menu'
+                                                        title='${i18n.t('show-requests.search-in-column')}:'>
+                                                    ${this.getTableHeaderOptions()}
+                                                </select>
+                                                
+                                                <label for='search-operator'>${i18n.t('show-requests.search-operator')}
+                                                    :</label>
+                                                <select id='search-operator' class='button dropdown-menu'>
+                                                    <option value='like'>${i18n.t('show-requests.search-operator-like')}
+                                                    </option>
+                                                    <option value='='>${i18n.t('show-requests.search-operator-equal')}</option>
+                                                    <option value='!='>${i18n.t('show-requests.search-operator-notequal')}
+                                                    </option>
+                                                    <option value='starts'>${i18n.t('show-requests.search-operator-starts')}
+                                                    </option>
+                                                    <option value='ends'>${i18n.t('show-requests.search-operator-ends')}
+                                                    </option>
+                                                    <option value='<'>${i18n.t('show-requests.search-operator-less')}</option>
+                                                    <option value='<='>
+                                                        ${i18n.t('show-requests.search-operator-lessthanorequal')}
+                                                    </option>
+                                                    <option value='>'>${i18n.t('show-requests.search-operator-greater')}
+                                                    </option>
+                                                    <option value='>='>
+                                                        ${i18n.t('show-requests.search-operator-greaterorequal')}
+                                                    </option>
+                                                    <option value='regex'>${i18n.t('show-requests.search-operator-regex')}
+                                                    </option>
+                                                    <option value='keywords'>
+                                                        ${i18n.t('show-requests.search-operator-keywords')}
+                                                    </option>
+                                                </select>
+                                            </ul>
+                                        </div>
                                     </div>
+                                    <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
+                                                ?disabled="${this.loading}"
+                                                @click="${() => { console.log('open settings'); }}"
+                                                title="TODO"
+                                                icon-name="iconoir_settings"></dbp-icon-button>
                                 </div>
-                                <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
-                                            ?disabled="${this.loading}"
-                                            @click="${() => { console.log('open settings'); }}"
-                                            title="TODO"
-                                            icon-name="iconoir_settings"></dbp-icon-button>
+                                <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
+                                    <dbp-loading-button id="delete-all-btn"
+                                                        ?disabled="${this.loading}"
+                                                        value="${i18n.t('show-requests.delete-button-text')}"
+                                                        @click="${(event) => { this.deleteSelected(event); }}"
+                                                        title="${i18n.t('show-requests.delete-button-text')}"
+                                    >
+                                        ${i18n.t('show-requests.delete-button-text')}
+                                    </dbp-loading-button>
+                                    <dbp-loading-button id="submit-all-btn"
+                                                        type="is-primary"
+                                                        ?disabled="${this.loading}"
+                                                        value="${i18n.t('show-requests.submit-button-text')}"
+                                                        @click="${(event) => { this.submitSelected(event); }}"
+                                                        title="${i18n.t('show-requests.submit-button-text')}"
+                                    >
+                                        ${i18n.t('show-requests.submit-button-text')}
+                                    </dbp-loading-button>
+                                </div>
                             </div>
-                            <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
-                                <dbp-loading-button id="delete-all-btn"
-                                                    ?disabled="${this.loading}"
-                                                    value="${i18n.t('show-requests.delete-button-text')}"
-                                                    @click="${(event) => { this.deleteSelected(event); }}"
-                                                    title="${i18n.t('show-requests.delete-button-text')}"
-                                >
-                                    ${i18n.t('show-requests.delete-button-text')}
-                                </dbp-loading-button>
-                                <dbp-loading-button id="submit-all-btn"
-                                                    type="is-primary"
-                                                    ?disabled="${this.loading}"
-                                                    value="${i18n.t('show-requests.submit-button-text')}"
-                                                    @click="${(event) => { this.submitSelected(event); }}"
-                                                    title="${i18n.t('show-requests.submit-button-text')}"
-                                >
-                                    ${i18n.t('show-requests.submit-button-text')}
-                                </dbp-loading-button>
-                            </div>
-                        </div>
-                    
-                    
-                        <div class="control table ${classMap({hidden: !this.initialRequestsLoading})}">
-                            <span class="loading">
-                                <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
-                            </span>
-                        </div>
                         
-                    
-                        <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.initialRequestsLoading })}">
-                            <div id="dispatch-requests-table" class=""></div>
-                            <div class='tabulator' id='custom-pagination'>
-                                <div class='tabulator-footer'>
-                                    <div class='tabulator-footer-contents'>
-                                        <span class='tabulator-paginator'></span>
+                        
+                            <div class="control table ${classMap({hidden: !this.initialRequestsLoading})}">
+                                <span class="loading">
+                                    <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
+                                </span>
+                            </div>
+                            
+                        
+                            <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.initialRequestsLoading })}">
+                                <div id="dispatch-requests-table" class=""></div>
+                                <div class='tabulator' id='custom-pagination'>
+                                    <div class='tabulator-footer'>
+                                        <div class='tabulator-footer-contents'>
+                                            <span class='tabulator-paginator'></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="back-container">
-                    <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView })}">
-                        <a href="#" title="${i18n.t('show-requests.back-to-list')}"
-                           @click="${(e) => {
-                               this.getListOfRequests();
-                               this.showListView = true;
-                               this.showDetailsView = false;
-                               this.currentItem = {};
-                               this.currentItem.files = [];
-                               this.currentItem.recipients = [];
-                               this.currentRecipient = {};
-                               this.currentItem.senderGivenName = "";
-                               this.currentItem.senderFamilyName = "";
-                               this.currentItem.senderAddressCountry = "";
-                               this.currentItem.senderPostalCode = "";
-                               this.currentItem.senderAddressLocality = "";
-                               this.currentItem.senderStreetAddress = "";
-                               this.currentItem.senderBuildingNumber = "";
-                           }}"
-                        >
-                            <dbp-icon name="chevron-left"></dbp-icon>
-                            ${i18n.t('show-requests.back-to-list')}
-                        </a>
-                    </span>
-                </div>
-                
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView})}">
-                    ${this.currentItem && this.currentItem.dateSubmitted ? 
-                           i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier }) 
-                           : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })
-                    }:
-                    <dbp-info-tooltip
-                            class="info-tooltip"
-                            text-content="${i18n.t('show-requests.table-header-id')}: ${this.currentItem.identifier}"
-                            interactive></dbp-info-tooltip>
-                </h3>
-
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView })}">
-
-                    ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
-                                <div class="request-buttons">
-                                    <div class="edit-buttons">
-                                        <dbp-loading-button id="delete-btn" 
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
-                                                            value="${i18n.t('show-requests.delete-button-text')}" 
-                                                            @click="${(event) => { this.deleteRequest(event, this.currentItem); }}" 
-                                                            title="${i18n.t('show-requests.delete-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.delete-button-text')}
-                                        </dbp-loading-button>
-                                    </div>
-                                    <div class="submit-button">
-                                        <dbp-loading-button type="is-primary"
-                                                            id="submit-btn" 
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
-                                                            value="${i18n.t('show-requests.submit-button-text')}" 
-                                                            @click="${(event) => { this.submitRequest(event, this.currentItem); }}" 
-                                                            title="${i18n.t('show-requests.submit-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.submit-button-text')}
-                                        </dbp-loading-button>
-                                    </div>
-                                </div>` : ``
-                    }
                     
-                    ${ this.currentItem ? html`
-                        <div class="request-item details">
-                            <div class="details header">
-                                <div>
-                                    <div class="section-titles">
-                                        ${i18n.t('show-requests.id')}
+                    <div class="back-container">
+                        <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
+                            <a href="#" title="${i18n.t('show-requests.back-to-list')}"
+                               @click="${(e) => {
+                                   this.getListOfRequests();
+                                   this.showListView = true;
+                                   this.showDetailsView = false;
+                                   this.currentItem = {};
+                                   this.currentItem.files = [];
+                                   this.currentItem.recipients = [];
+                                   this.currentRecipient = {};
+                                   this.currentItem.senderGivenName = "";
+                                   this.currentItem.senderFamilyName = "";
+                                   this.currentItem.senderAddressCountry = "";
+                                   this.currentItem.senderPostalCode = "";
+                                   this.currentItem.senderAddressLocality = "";
+                                   this.currentItem.senderStreetAddress = "";
+                                   this.currentItem.senderBuildingNumber = "";
+                               }}"
+                            >
+                                <dbp-icon name="chevron-left"></dbp-icon>
+                                ${i18n.t('show-requests.back-to-list')}
+                            </a>
+                        </span>
+                    </div>
+                    
+                    <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
+                        ${this.currentItem && this.currentItem.dateSubmitted ? 
+                               i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier }) 
+                               : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })
+                        }:
+                        <dbp-info-tooltip
+                                class="info-tooltip"
+                                text-content="${i18n.t('show-requests.table-header-id')}: ${this.currentItem.identifier}"
+                                interactive></dbp-info-tooltip>
+                    </h3>
+    
+                    <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
+    
+                        ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
+                                    <div class="request-buttons">
+                                        <div class="edit-buttons">
+                                            <dbp-loading-button id="delete-btn" 
+                                                                ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
+                                                                value="${i18n.t('show-requests.delete-button-text')}" 
+                                                                @click="${(event) => { this.deleteRequest(event, this.currentItem); }}" 
+                                                                title="${i18n.t('show-requests.delete-button-text')}"
+                                            >
+                                                ${i18n.t('show-requests.delete-button-text')}
+                                            </dbp-loading-button>
+                                        </div>
+                                        <div class="submit-button">
+                                            <dbp-loading-button type="is-primary"
+                                                                id="submit-btn" 
+                                                                ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
+                                                                value="${i18n.t('show-requests.submit-button-text')}" 
+                                                                @click="${(event) => { this.submitRequest(event, this.currentItem); }}" 
+                                                                title="${i18n.t('show-requests.submit-button-text')}"
+                                            >
+                                                ${i18n.t('show-requests.submit-button-text')}
+                                            </dbp-loading-button>
+                                        </div>
+                                    </div>` : ``
+                        }
+                        
+                        ${ this.currentItem ? html`
+                            <div class="request-item details">
+                                <div class="details header">
+                                    <div>
+                                        <div class="section-titles">
+                                            ${i18n.t('show-requests.id')}
+                                            ${!this.currentItem.dateSubmitted ? html`
+                                                <dbp-icon-button id="edit-btn"
+                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                             @click="${(event) => {
+                                                                 this.subject = this.currentItem.name ? this.currentItem.name : '';
+                                                                 MicroModal.show(this._('#edit-subject-modal'), {
+                                                                     disableScroll: true,
+                                                                     onClose: (modal) => {
+                                                                         this.loading = false;
+                                                                     },
+                                                                 });
+                                                            }}"
+                                                             title="${i18n.t('show-requests.edit-subject-button-text')}"
+                                                             icon-name="pencil"></dbp-icon-button>` : ``}
+                                        </div>
+                                        <div>${this.currentItem.name ? html`${this.currentItem.name}` : html`${i18n.t('show-requests.no-subject-found')}`}</div>
+                                    </div>
+                                    <div class="line"></div>
+                                    <div>
+                                        <div class="section-titles">${i18n.t('show-requests.submit-status')}</div>
+                                        <div>${this.currentItem.dateSubmitted ? html`<span class="status-green">●</span> ${i18n.t('show-requests.status-completed-date', {date: this.convertToReadableDate(this.currentItem.dateSubmitted)})}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
+                                    </div>
+                                    <div class="line"></div>
+                                    <div>
+                                        <div class="section-titles">${i18n.t('show-requests.date-created')}</div>
+                                        <div>${this.convertToReadableDate(this.currentItem.dateCreated)}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="details sender">
+                                    <div class="header-btn">
+                                        <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                                         ${!this.currentItem.dateSubmitted ? html`
                                             <dbp-icon-button id="edit-btn"
-                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                         @click="${(event) => {
-                                                             this.subject = this.currentItem.name ? this.currentItem.name : '';
-                                                             MicroModal.show(this._('#edit-subject-modal'), {
-                                                                 disableScroll: true,
-                                                                 onClose: (modal) => {
-                                                                     this.loading = false;
-                                                                 },
-                                                             });
-                                                        }}"
-                                                         title="${i18n.t('show-requests.edit-subject-button-text')}"
-                                                         icon-name="pencil"></dbp-icon-button>` : ``}
-                                    </div>
-                                    <div>${this.currentItem.name ? html`${this.currentItem.name}` : html`${i18n.t('show-requests.no-subject-found')}`}</div>
-                                </div>
-                                <div class="line"></div>
-                                <div>
-                                    <div class="section-titles">${i18n.t('show-requests.submit-status')}</div>
-                                    <div>${this.currentItem.dateSubmitted ? html`<span class="status-green">●</span> ${i18n.t('show-requests.status-completed-date', {date: this.convertToReadableDate(this.currentItem.dateSubmitted)})}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
-                                </div>
-                                <div class="line"></div>
-                                <div>
-                                    <div class="section-titles">${i18n.t('show-requests.date-created')}</div>
-                                    <div>${this.convertToReadableDate(this.currentItem.dateCreated)}</div>
-                                </div>
-                            </div>
-                            
-                            <div class="details sender">
-                                <div class="header-btn">
-                                    <div class="section-titles">${i18n.t('show-requests.sender')}</div>
-                                    ${!this.currentItem.dateSubmitted ? html`
-                                        <dbp-icon-button id="edit-btn"
-                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                    @click="${(event) => {
-                                                        console.log("on edit sender clicked");
-                                                        if (this.currentItem.senderAddressCountry !== '') {
-                                                            this._('#edit-sender-country-select').value = this.currentItem.senderAddressCountry;
-                                                        }
-                                                        MicroModal.show(this._('#edit-sender-modal'), {
-                                                            disableScroll: true,
-                                                            onClose: (modal) => {
-                                                                this.loading = false;
-                                                            },
-                                                        });
-                                                    }}"
-                                                    title="${i18n.t('show-requests.edit-sender-button-text')}" 
-                                                    icon-name="pencil"></dbp-icon-button>` : ``}
-                                </div>
-                                <div class="sender-data">
-                                    ${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
-                                    ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName
-                                            ? html` ${this.currentItem.senderFamilyName}` :
-                                            html`${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
-                                    `}
-                                    ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
-                                    ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
-                                    ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
-                                    ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
-                                    ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
-                                </div>
-
-                                <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFamilyName})}">${i18n.t('show-requests.empty-sender-text')}</div>
-
-                            </div>
-                            
-                            <div class="details files">
-                                <div class="header-btn">
-                                    <div class="section-titles">${i18n.t('show-requests.files')} <span class="section-title-counts">
-                                            ${this.currentItem.files.length !== 0 ? `(` + this.currentItem.files.length + `)` : ``}</span>
-                                    </div>
-                                    ${!this.currentItem.dateSubmitted ? html`
-                                         <dbp-loading-button id="add-files-btn"
                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                        value="${i18n.t('show-requests.add-files-button-text')}" 
                                                         @click="${(event) => {
-                                                            this.openFileSource();
-                                                        }}"
-                                                        title="${i18n.t('show-requests.add-files-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.add-files-button-text')}
-                                        </dbp-loading-button>` : ``
-                                    }
-                                </div>
-                                <div class="files-data">
-                                    ${this.currentItem.files.map(file => html`
-                                        <div class="file card">
-                                            <div class="left-side">
-                                                <div>${file.name}</div>
-                                                <div>${humanFileSize(file.contentSize)}</div>
-                                                <div>${file.fileFormat}</div>
-                                                <div>${this.convertToReadableDate(file.dateCreated)}</div>
-                                            </div>
-                                            <div class="right-side">
-                                                <dbp-icon-button id="show-file-btn"
-                                                            @click="${(event) => {
-                                                                console.log("on show file clicked");
-                                                                //TODO show file viewer with pdf
-                                                            }}"
-                                                            class="hidden" <!-- TODO -->
-                                                            title="${i18n.t('show-requests.show-file-button-text')}"
-                                                            icon-name="keyword-research"></dbp-icon-button>
-                                                ${!this.currentItem.dateSubmitted ? html`
-                                                    <dbp-icon-button id="delete-file-btn"
-                                                                ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                                @click="${(event) => {
-                                                                    console.log("on delete file clicked");
-                                                                    this.deleteFile(file);
-                                                                }}"
-                                                                title="${i18n.t('show-requests.delete-file-button-text')}" 
-                                                                icon-name="trash"></dbp-icon-button>` : ``
-                                                }
-                                            </div>
-                                        </div>
-                                    `)}
-                                    <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
-                                   
-                                </div>
-                            </div>
-
-                            <div class="details recipients">
-                                <div class="header-btn">
-                                    <div class="section-titles">${i18n.t('show-requests.recipients')} <span class="section-title-counts">
-                                            ${this.currentItem.recipients.length !== 0 ? `(` + this.currentItem.recipients.length + `)` : ``}</span>
-                                    </div>
-                                    ${!this.currentItem.dateSubmitted ? html`
-                                        <dbp-loading-button id="add-recipient-btn"
-                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                        value="${i18n.t('show-requests.add-recipient-button-text')}" 
-                                                        @click="${(event) => {
-                                                            console.log("on add recipient clicked");
-                                                            this.currentRecipient = {};
-                                                            MicroModal.show(this._('#add-recipient-modal'), {
+                                                            console.log("on edit sender clicked");
+                                                            if (this.currentItem.senderAddressCountry !== '') {
+                                                                this._('#edit-sender-country-select').value = this.currentItem.senderAddressCountry;
+                                                            }
+                                                            MicroModal.show(this._('#edit-sender-modal'), {
                                                                 disableScroll: true,
                                                                 onClose: (modal) => {
                                                                     this.loading = false;
                                                                 },
                                                             });
-                                                        }}" 
-                                                        title="${i18n.t('show-requests.add-recipient-button-text')}">
-                                            ${i18n.t('show-requests.add-recipient-button-text')}
-                                        </dbp-loading-button>` : ``
-                                    }
+                                                        }}"
+                                                        title="${i18n.t('show-requests.edit-sender-button-text')}" 
+                                                        icon-name="pencil"></dbp-icon-button>` : ``}
+                                    </div>
+                                    <div class="sender-data">
+                                        ${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
+                                        ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName
+                                                ? html` ${this.currentItem.senderFamilyName}` :
+                                                html`${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
+                                        `}
+                                        ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
+                                        ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
+                                        ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
+                                        ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
+                                        ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
+                                    </div>
+    
+                                    <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFamilyName})}">${i18n.t('show-requests.empty-sender-text')}</div>
+    
+                                </div>
+                                
+                                <div class="details files">
+                                    <div class="header-btn">
+                                        <div class="section-titles">${i18n.t('show-requests.files')} <span class="section-title-counts">
+                                                ${this.currentItem.files.length !== 0 ? `(` + this.currentItem.files.length + `)` : ``}</span>
+                                        </div>
+                                        ${!this.currentItem.dateSubmitted ? html`
+                                             <dbp-loading-button id="add-files-btn"
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                            value="${i18n.t('show-requests.add-files-button-text')}" 
+                                                            @click="${(event) => {
+                                                                this.openFileSource();
+                                                            }}"
+                                                            title="${i18n.t('show-requests.add-files-button-text')}"
+                                            >
+                                                ${i18n.t('show-requests.add-files-button-text')}
+                                            </dbp-loading-button>` : ``
+                                        }
+                                    </div>
+                                    <div class="files-data">
+                                        ${this.currentItem.files.map(file => html`
+                                            <div class="file card">
+                                                <div class="left-side">
+                                                    <div>${file.name}</div>
+                                                    <div>${humanFileSize(file.contentSize)}</div>
+                                                    <div>${file.fileFormat}</div>
+                                                    <div>${this.convertToReadableDate(file.dateCreated)}</div>
+                                                </div>
+                                                <div class="right-side">
+                                                    <dbp-icon-button id="show-file-btn"
+                                                                @click="${(event) => {
+                                                                    console.log("on show file clicked");
+                                                                    //TODO show file viewer with pdf
+                                                                }}"
+                                                                class="hidden" <!-- TODO -->
+                                                                title="${i18n.t('show-requests.show-file-button-text')}"
+                                                                icon-name="keyword-research"></dbp-icon-button>
+                                                    ${!this.currentItem.dateSubmitted ? html`
+                                                        <dbp-icon-button id="delete-file-btn"
+                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                                    @click="${(event) => {
+                                                                        console.log("on delete file clicked");
+                                                                        this.deleteFile(file);
+                                                                    }}"
+                                                                    title="${i18n.t('show-requests.delete-file-button-text')}" 
+                                                                    icon-name="trash"></dbp-icon-button>` : ``
+                                                    }
+                                                </div>
+                                            </div>
+                                        `)}
+                                        <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
+                                       
+                                    </div>
+                                </div>
+    
+                                <div class="details recipients">
+                                    <div class="header-btn">
+                                        <div class="section-titles">${i18n.t('show-requests.recipients')} <span class="section-title-counts">
+                                                ${this.currentItem.recipients.length !== 0 ? `(` + this.currentItem.recipients.length + `)` : ``}</span>
+                                        </div>
+                                        ${!this.currentItem.dateSubmitted ? html`
+                                            <dbp-loading-button id="add-recipient-btn"
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                            value="${i18n.t('show-requests.add-recipient-button-text')}" 
+                                                            @click="${(event) => {
+                                                                console.log("on add recipient clicked");
+                                                                this.currentRecipient = {};
+                                                                MicroModal.show(this._('#add-recipient-modal'), {
+                                                                    disableScroll: true,
+                                                                    onClose: (modal) => {
+                                                                        this.loading = false;
+                                                                    },
+                                                                });
+                                                            }}" 
+                                                            title="${i18n.t('show-requests.add-recipient-button-text')}">
+                                                ${i18n.t('show-requests.add-recipient-button-text')}
+                                            </dbp-loading-button>` : ``
+                                        }
+                                    </div>
+                                </div>
+                                
+                                <div class="recipients-data">
+                                    ${this.currentItem.recipients.map(recipient => html`
+    
+                                        <div class="recipient card">
+                                            <div class="left-side">
+                                                <div>${recipient.givenName} ${recipient.familyName}</div>
+                                                <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
+                                                <div>${recipient.postalCode} ${recipient.addressLocality}</div>
+                                                <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
+                                                <div>${this.currentRecipient.statusDescription ? html`Status: ${this.currentRecipient.statusDescription}` : ``}</div>
+                                            </div>
+                                            <div class="right-side">
+                                                    <dbp-icon-button id="show-recipient-btn"
+                                                                @click="${(event) => {
+                                                                    this.currentRecipient = recipient;
+                                                                    this.fetchDetailedRecipientInformation(recipient.identifier).then(r => {
+                                                                        
+                                                                        MicroModal.show(this._('#show-recipient-modal'), {
+                                                                            disableScroll: true,
+                                                                            onClose: (modal) => {
+                                                                                this.loading = false;
+                                                                                this.currentRecipient = null;
+                                                                            },
+                                                                        });
+                                                                    });
+                                                                }}"
+                                                                title="${i18n.t('show-requests.show-recipient-button-text')}"
+                                                                icon-name="keyword-research"></dbp-icon></dbp-icon-button>
+                                                    ${!this.currentItem.dateSubmitted ? html`
+                                                        <dbp-icon-button id="edit-recipient-btn"
+                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                                     @click="${(event) => {
+                                                                         this.currentRecipient = recipient;
+                                                                         this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                                                                         this.fetchDetailedRecipientInformation(recipient.identifier).then(r => {
+                                                                             MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                                 disableScroll: true,
+                                                                                 onClose: (modal) => {
+                                                                                     this.loading = false;
+                                                                                     this.currentRecipient = null;
+                                                                                 },
+                                                                             });
+                                                                         });
+                                                                     }}"
+                                                                     title="${i18n.t('show-requests.edit-recipients-button-text')}"
+                                                                     icon-name="pencil"></dbp-icon-button>
+                                                        <dbp-icon-button id="delete-recipient-btn"
+                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                                    @click="${(event) => {
+                                                                        console.log("on delete recipient clicked");
+                                                                        this.deleteRecipient(recipient);
+                                                                    }}"
+                                                                    title="${i18n.t('show-requests.delete-recipient-button-text')}"
+                                                                    icon-name="trash"></dbp-icon-button>` : ``
+                                                    }
+                                            </div>
+                                        </div>
+                                    `)}
+                                    <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
+                                  
                                 </div>
                             </div>
-                            
-                            <div class="recipients-data">
-                                ${this.currentItem.recipients.map(recipient => html`
-
-                                    <div class="recipient card">
-                                        <div class="left-side">
-                                            <div>${recipient.familyName} ${recipient.givenName}</div>
-                                            <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
-                                            <div>${recipient.postalCode} ${recipient.addressLocality}</div>
-                                            <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
-                                            <div>${this.currentRecipient.statusDescription ? html`Status: ${this.currentRecipient.statusDescription}` : ``}</div>
-                                        </div>
-                                        <div class="right-side">
-                                                <dbp-icon-button id="show-recipient-btn"
-                                                            @click="${(event) => {
-                                                                this.currentRecipient = recipient;
-                                                                this.fetchDetailedRecipientInformation(recipient.identifier).then(r => {
-                                                                    
-                                                                    MicroModal.show(this._('#show-recipient-modal'), {
-                                                                        disableScroll: true,
-                                                                        onClose: (modal) => {
-                                                                            this.loading = false;
-                                                                            this.currentRecipient = null;
-                                                                        },
-                                                                    });
-                                                                });
-                                                            }}"
-                                                            title="${i18n.t('show-requests.show-recipient-button-text')}"
-                                                            icon-name="keyword-research"></dbp-icon></dbp-icon-button>
-                                                ${!this.currentItem.dateSubmitted ? html`
-                                                    <dbp-icon-button id="edit-recipient-btn"
-                                                                 ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                                 @click="${(event) => {
-                                                                     this.currentRecipient = recipient;
-                                                                     this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                     this.fetchDetailedRecipientInformation(recipient.identifier).then(r => {
-                                                                         MicroModal.show(this._('#edit-recipient-modal'), {
-                                                                             disableScroll: true,
-                                                                             onClose: (modal) => {
-                                                                                 this.loading = false;
-                                                                                 this.currentRecipient = null;
-                                                                             },
-                                                                         });
-                                                                     });
-                                                                 }}"
-                                                                 title="${i18n.t('show-requests.edit-recipients-button-text')}"
-                                                                 icon-name="pencil"></dbp-icon-button>
-                                                    <dbp-icon-button id="delete-recipient-btn"
-                                                                ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                                @click="${(event) => {
-                                                                    console.log("on delete recipient clicked");
-                                                                    this.deleteRecipient(recipient);
-                                                                }}"
-                                                                title="${i18n.t('show-requests.delete-recipient-button-text')}"
-                                                                icon-name="trash"></dbp-icon-button>` : ``
-                                                }
-                                        </div>
-                                    </div>
-                                `)}
-                                <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
-                              
-                            </div>
-                        </div>
-                    ` : ``}
-                </div>
+                        ` : ``}
+                    </div>
+       
             </div>
             
             ${this.addFilePicker()}

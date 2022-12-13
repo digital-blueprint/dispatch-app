@@ -17,6 +17,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentItem = {};
         this.currentRecipient = {};
         this.subject = '';
+        this.groupId = '';
     }
 
     static get scopedElements() {
@@ -35,6 +36,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             currentItem: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
             subject: {type: String, attribute: false},
+            groupId: {type: String, attribute: false},
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -120,15 +122,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      *
      * @returns {object} response
      */
-    async getListOfDispatchRequests() {
-        const options = { //TODO add group id
+    async getListOfDispatchRequests(groupId) {
+        const options = {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/ld+json',
                 Authorization: "Bearer " + this.auth.token
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests?perPage=999&groupId=11072', options);
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests?perPage=999&groupId=' + groupId, options);
     }
 
     /**
@@ -170,8 +172,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      *
      * @returns {object} response
      */
-    async sendCreateDispatchRequest() { //TODO add group id
-
+    async sendCreateDispatchRequest() {
         let body = {
             "name": this.subject,
             "senderGivenName": this.currentItem.senderGivenName,
@@ -181,7 +182,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "senderAddressLocality": this.currentItem.senderAddressLocality,
             "senderStreetAddress": this.currentItem.senderStreetAddress,
             "senderBuildingNumber": this.currentItem.senderBuildingNumber,
-            "groupId": "11072",
+            "groupId": this.groupId,
         };
 
         const options = {
@@ -227,7 +228,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param senderBuildingNumber
      * @returns {object} response
      */
-    async sendEditDispatchRequest(identifier, senderGivenName, senderFamilyName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber) { //TODO Add group ID
+    async sendEditDispatchRequest(identifier, senderGivenName, senderFamilyName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId) {
         let body = {
             "senderGivenName": senderGivenName,
             "senderFamilyName": senderFamilyName,
@@ -236,7 +237,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "senderAddressLocality": senderAddressLocality,
             "senderStreetAddress": senderStreetAddress,
             "senderBuildingNumber": senderBuildingNumber,
-            "groupId": "11072"
+            "groupId": groupId
         };
 
         const options = {
@@ -333,8 +334,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             body: JSON.stringify(body),
         };
 
-        console.log('send update recipient request');
-
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients/' + recipientId, options);
     }
 
@@ -412,8 +411,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
             body: JSON.stringify(body),
         };
-
-        console.log('send update subject request');
 
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
     }
@@ -758,6 +755,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         "timeout": 5,
                     });
                     this.clearAll();
+                } else if (response.status === 403) {
+                    send({
+                        "summary": i18n.t('create-request.error-requested-title'),
+                        "body": i18n.t('error-not-permitted'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
                 } else {
                     // TODO error handling
 
@@ -788,6 +792,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && response.status === 200) {
                 this.currentItem = responseBody;
                 this.subject = this.currentItem.name;
+            } else if (response.status === 403) {
+                send({
+                    "summary": i18n.t('create-request.error-requested-title'),
+                    "body": i18n.t('error-not-permitted'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
             } else {
                 // TODO show error code specific notification
                 send({
@@ -813,13 +824,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // let senderBuildingNumber = this._('#tf-edit-sender-bn-dialog').value ? this._('#tf-edit-sender-bn-dialog').value : ``;
         let senderBuildingNumber = ''; //TODO
 
+        let groupId = this.groupId;
 
         var e = this._('#edit-sender-country-select');
         var value = e.value;
         var text = e.options[e.selectedIndex].text;
         let senderAddressCountry = [value, text];
 
-        let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber);
+        let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId);
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
@@ -832,6 +844,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             this.currentItem = responseBody;
             this.getListOfRequests();
+        } else if (response.status === 403) {
+            send({
+                "summary": i18n.t('create-request.error-requested-title'),
+                "body": i18n.t('error-not-permitted'),
+                "type": "danger",
+                "timeout": 5,
+            });
         } else {
             // TODO error handling
 
@@ -907,7 +926,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
 
         let selectedItems = this.dispatchRequestsTable.getSelectedRows();
-        console.log('selectedItems: ', selectedItems);
+        // console.log('selectedItems: ', selectedItems);
 
         let somethingWentWrong = false;
 
@@ -1156,9 +1175,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @returns {Array} list
      */
     async getListOfRequests() {
+        const i18n = this._i18n;
         this.initialRequestsLoading = !this._initialFetchDone;
         try {
-            let response = await this.getListOfDispatchRequests();
+            let response = await this.getListOfDispatchRequests(this.groupId);
             let responseBody = await response.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
@@ -1171,6 +1191,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     send({
                         "summary": 'Error!',
                         "body": 'Could not fetch dispatch requests. Response code: 500',
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }  else if (response.status === 403) {
+                    send({
+                        "summary": i18n.t('create-request.error-requested-title'),
+                        "body": i18n.t('error-not-permitted'),
                         "type": "danger",
                         "timeout": 5,
                     });
@@ -1261,6 +1288,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentItem.senderStreetAddress = event.target.valueObject.street;
         this.currentItem.senderAddressLocality = event.target.valueObject.locality;
         this.currentItem.senderPostalCode = event.target.valueObject.postalCode;
+
+        this.groupId = event.target.valueObject.identifier;
 
         // let response = await this.sendGetOrganizationDetailsRequest(organizationId);
         //

@@ -175,5 +175,6 @@
         "loading-table-message": "Versandaufträge werden geladen. Dies kann eine Weile dauern."
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
-    "loading-message": "Lädt..."
+    "loading-message": "Lädt...",
+    "error-not-permitted": "Sie haben nicht die Berechtigung, um diese Aktion durchführen zu Können!"
 }
