@@ -128,7 +128,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: "Bearer " + this.auth.token
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests?perPage=999', options);
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests?perPage=999&groupId=11072', options);
     }
 
     /**
@@ -180,7 +180,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "senderPostalCode": this.currentItem.senderPostalCode,
             "senderAddressLocality": this.currentItem.senderAddressLocality,
             "senderStreetAddress": this.currentItem.senderStreetAddress,
-            "senderBuildingNumber": this.currentItem.senderBuildingNumber
+            "senderBuildingNumber": this.currentItem.senderBuildingNumber,
+            "groupId": "11072",
         };
 
         const options = {
@@ -234,7 +235,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "senderPostalCode": senderPostalCode,
             "senderAddressLocality": senderAddressLocality,
             "senderStreetAddress": senderStreetAddress,
-            "senderBuildingNumber": senderBuildingNumber
+            "senderBuildingNumber": senderBuildingNumber,
+            "groupId": "11072"
         };
 
         const options = {
