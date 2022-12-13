@@ -383,9 +383,9 @@ export function getDispatchRequestStyles() {
                 background-position-x: calc(100% - 0.4rem);
                 padding-right: 1.3rem;
                 height: 33px;
+                width: 100%;
             }
             
-
             .country-select {
                 width: 100%;
             }
@@ -750,6 +750,14 @@ export function getDispatchRequestStyles() {
             
             input[type="date"] {
                 width: 100%;
+            }
+
+            .recipient-status {
+                margin-bottom: 1em;
+            }
+
+            .recipient-status .status-detail {
+                font-weight: bolder;
             }
 
             

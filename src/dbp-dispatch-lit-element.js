@@ -121,7 +121,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @returns {object} response
      */
     async getListOfDispatchRequests() {
-        const options = {
+        const options = { //TODO add group id
             method: 'GET',
             headers: {
                 'Content-Type': 'application/ld+json',
@@ -170,7 +170,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      *
      * @returns {object} response
      */
-    async sendCreateDispatchRequest() {
+    async sendCreateDispatchRequest() { //TODO add group id
 
         let body = {
             "name": this.subject,
@@ -227,7 +227,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param senderBuildingNumber
      * @returns {object} response
      */
-    async sendEditDispatchRequest(identifier, senderGivenName, senderFamilyName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber) {
+    async sendEditDispatchRequest(identifier, senderGivenName, senderFamilyName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber) { //TODO Add group ID
         let body = {
             "senderGivenName": senderGivenName,
             "senderFamilyName": senderFamilyName,
@@ -787,7 +787,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             if (responseBody !== undefined && response.status === 200) {
                 this.currentItem = responseBody;
-                this.subject = subject;
+                this.subject = this.currentItem.name;
             } else {
                 // TODO show error code specific notification
                 send({
@@ -1323,8 +1323,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (this._('#create-resource-select') && this._('#create-resource-select').getAttribute('data-object') !== null) {
             const organization = JSON.parse(this._('#create-resource-select').getAttribute('data-object'));
 
-            console.log('sender selector', this._('#create-resource-select'));
-
             this.currentItem.senderFamilyName = organization.identifier;
             this.currentItem.senderGivenName = organization['name'];
 
@@ -1332,7 +1330,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentItem.senderPostalCode = organization['postalCode'] ? organization['postalCode'] : '';
             this.currentItem.senderStreetAddress = organization['street'] ? organization['street'] : '';
 
-            console.log('sender', this.currentItem);
+            // console.log('sender', this.currentItem);
             this.requestUpdate();
         }
     }
@@ -1557,14 +1555,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            type="text"
+                                            type="number"
                                             class="input"
                                             name="tf-edit-sender-pc-dialog"
                                             id="tf-edit-sender-pc-dialog"
                                             value="${this.currentItem && this.currentItem.senderPostalCode}"
                                             @input="${() => {
-            // TODO
-        }}"
+                                                // TODO
+                                            }}"
                                     />
                                 </div>
                             </div>
@@ -1759,7 +1757,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            type="text"
+                                            type="number"
                                             class="input"
                                             name="tf-add-recipient-pc-dialog"
                                             id="tf-add-recipient-pc-dialog"
@@ -1971,7 +1969,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            type="text"
+                                            type="number"
                                             class="input"
                                             name="tf-edit-recipient-pc-dialog"
                                             id="tf-edit-recipient-pc-dialog"
@@ -2105,6 +2103,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div class="element-right">
                                     ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
+                                </div>
+
+                                <div class="element-left">
+                                    ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}:
+                                </div>
+                                <div class="element-right">
+                                    ${this.currentRecipient && this.currentRecipient.birthDate ? this.currentRecipient.birthDate : ``}
                                 </div>
                                 
                                 <div class="element-left">
