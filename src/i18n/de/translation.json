@@ -176,5 +176,7 @@
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",
-    "error-not-permitted": "Sie haben nicht die Berechtigung, um diese Aktion durchführen zu Können!"
+    "error-not-permitted": "Sie haben nicht die Berechtigung, um diese Aktion durchführen zu Können!",
+    "error-no-read": "Sie sind derzeit keiner Organisation zugeordnet, in der Sie Lese- oder Schreibrechte für Versandaufträge haben.",
+    "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge  und können daher keine Aufträge bearbeiten, freigeben oder löschen."
 }

@@ -1272,7 +1272,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentItem.senderFamilyName = event.target.valueObject.identifier;
         this.currentItem.senderGivenName = event.target.valueObject.name;
 
-        console.log(event.target.valueObject);
+        // console.log(event.target.valueObject);
         this.currentItem.senderAddressCountry = event.target.valueObject.country;
         this.currentItem.senderStreetAddress = event.target.valueObject.street;
         this.currentItem.senderAddressLocality = event.target.valueObject.locality;

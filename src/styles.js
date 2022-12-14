@@ -386,6 +386,11 @@ export function getDispatchRequestStyles() {
                 width: 100%;
             }
             
+            .no-access-notification {
+                margin-top: 1.3em;
+                margin-bottom: 1.3em;
+            }
+            
             .country-select {
                 width: 100%;
             }

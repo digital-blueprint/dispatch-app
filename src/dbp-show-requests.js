@@ -1054,16 +1054,25 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     resource-path="dispatch/groups?lang=${this.lang}"
                                     @change=${(event) => {
                                         this.processSelectedOrganization(event);
+                                        // console.log("read: ", this.mayRead);
+                                        // console.log("write: ", this.mayWrite);
                                     }}
                         ></dbp-resource-select>
                     </div>
                 </div>
                 
+                <div class="no-access-notification">
+                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.mayWrite})}"
+                                             type="${this.mayRead ? 'warning' : 'danger'}"
+                                             body="${this.mayRead ? i18n.t('error-no-writes') : i18n.t('error-no-read')}">
+                    </dbp-inline-notification>
+                </div>
                 
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
                     ${i18n.t('show-requests.dispatch-orders')}
                 </h3>
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
+                
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet || !this.mayRead})}">
                     <div class="table-wrapper">
                         <div class="selected-buttons">
                             <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}"
