@@ -646,6 +646,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     processSelectedOrganization(event) {
         this.groupId = event.target.valueObject.identifier;
+        this.mayWrite = event.target.valueObject.mayWrite;
+        this.mayRead = event.target.valueObject.mayRead;
+        console.log('write: ', this.mayWrite);
+        console.log('read: ', this.mayRead);
         this.organizationSet = true;
         this.getListOfRequests(this.groupId);
     }
@@ -655,6 +659,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             const organization = JSON.parse(this._('#show-resource-select').getAttribute('data-object'));
 
             this.groupId = organization.identifier;
+            this.mayWrite = event.target.valueObject.mayWrite;
+            this.mayRead = event.target.valueObject.mayRead;
+            console.log('write: ', this.mayWrite);
+            console.log('read: ', this.mayRead);
             this.organizationSet = true;
         }
     }
@@ -1050,67 +1058,69 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         ></dbp-resource-select>
                     </div>
                 </div>
-
-                <!--TODO-->
-                    <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
-                        ${i18n.t('show-requests.dispatch-orders')}
-                    </h3>
-                    <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
-                        <div class="table-wrapper">
-                            <div class="selected-buttons">
-                                <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}"
-                                    <div class="search-wrapper ">
-                                        <div id="extendable-searchbar">
-                                            <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
-                                                this.toggleSearchMenu();
-                                            }}'>
-                                            <dbp-icon-button id="search-button" title="Suchen" icon-name="search" 
-                                                @click='${() => {
-                                                    this.filterTable();
-                                                }}'></dbp-icon-button>
-                                            <ul class='extended-menu hidden' id='searchbar-menu'>
-                                                <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
-                                                <select id='search-select' class='button dropdown-menu'
-                                                        title='${i18n.t('show-requests.search-in-column')}:'>
-                                                    ${this.getTableHeaderOptions()}
-                                                </select>
-                                                
-                                                <label for='search-operator'>${i18n.t('show-requests.search-operator')}
-                                                    :</label>
-                                                <select id='search-operator' class='button dropdown-menu'>
-                                                    <option value='like'>${i18n.t('show-requests.search-operator-like')}
-                                                    </option>
-                                                    <option value='='>${i18n.t('show-requests.search-operator-equal')}</option>
-                                                    <option value='!='>${i18n.t('show-requests.search-operator-notequal')}
-                                                    </option>
-                                                    <option value='starts'>${i18n.t('show-requests.search-operator-starts')}
-                                                    </option>
-                                                    <option value='ends'>${i18n.t('show-requests.search-operator-ends')}
-                                                    </option>
-                                                    <option value='<'>${i18n.t('show-requests.search-operator-less')}</option>
-                                                    <option value='<='>
-                                                        ${i18n.t('show-requests.search-operator-lessthanorequal')}
-                                                    </option>
-                                                    <option value='>'>${i18n.t('show-requests.search-operator-greater')}
-                                                    </option>
-                                                    <option value='>='>
-                                                        ${i18n.t('show-requests.search-operator-greaterorequal')}
-                                                    </option>
-                                                    <option value='regex'>${i18n.t('show-requests.search-operator-regex')}
-                                                    </option>
-                                                    <option value='keywords'>
-                                                        ${i18n.t('show-requests.search-operator-keywords')}
-                                                    </option>
-                                                </select>
-                                            </ul>
-                                        </div>
+                
+                
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
+                    ${i18n.t('show-requests.dispatch-orders')}
+                </h3>
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
+                    <div class="table-wrapper">
+                        <div class="selected-buttons">
+                            <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}"
+                                <div class="search-wrapper ">
+                                    <div id="extendable-searchbar">
+                                        <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
+                                            this.toggleSearchMenu();
+                                        }}'>
+                                        <dbp-icon-button id="search-button" title="Suchen" icon-name="search" 
+                                            @click='${() => {
+                                                this.filterTable();
+                                            }}'></dbp-icon-button>
+                                        <ul class='extended-menu hidden' id='searchbar-menu'>
+                                            <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
+                                            <select id='search-select' class='button dropdown-menu'
+                                                    title='${i18n.t('show-requests.search-in-column')}:'>
+                                                ${this.getTableHeaderOptions()}
+                                            </select>
+                                            
+                                            <label for='search-operator'>${i18n.t('show-requests.search-operator')}
+                                                :</label>
+                                            <select id='search-operator' class='button dropdown-menu'>
+                                                <option value='like'>${i18n.t('show-requests.search-operator-like')}
+                                                </option>
+                                                <option value='='>${i18n.t('show-requests.search-operator-equal')}</option>
+                                                <option value='!='>${i18n.t('show-requests.search-operator-notequal')}
+                                                </option>
+                                                <option value='starts'>${i18n.t('show-requests.search-operator-starts')}
+                                                </option>
+                                                <option value='ends'>${i18n.t('show-requests.search-operator-ends')}
+                                                </option>
+                                                <option value='<'>${i18n.t('show-requests.search-operator-less')}</option>
+                                                <option value='<='>
+                                                    ${i18n.t('show-requests.search-operator-lessthanorequal')}
+                                                </option>
+                                                <option value='>'>${i18n.t('show-requests.search-operator-greater')}
+                                                </option>
+                                                <option value='>='>
+                                                    ${i18n.t('show-requests.search-operator-greaterorequal')}
+                                                </option>
+                                                <option value='regex'>${i18n.t('show-requests.search-operator-regex')}
+                                                </option>
+                                                <option value='keywords'>
+                                                    ${i18n.t('show-requests.search-operator-keywords')}
+                                                </option>
+                                            </select>
+                                        </ul>
                                     </div>
-                                    <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
-                                                ?disabled="${this.loading}"
-                                                @click="${() => { console.log('open settings'); }}"
-                                                title="TODO"
-                                                icon-name="iconoir_settings"></dbp-icon-button>
                                 </div>
+                                <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
+                                            ?disabled="${this.loading}"
+                                            @click="${() => { console.log('open settings'); }}"
+                                            title="TODO"
+                                            icon-name="iconoir_settings"></dbp-icon-button>
+                            </div>
+                        
+                            ${ this.mayWrite ? html`
                                 <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
                                     <dbp-loading-button id="delete-all-btn"
                                                         ?disabled="${this.loading}"
@@ -1130,7 +1140,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         ${i18n.t('show-requests.submit-button-text')}
                                     </dbp-loading-button>
                                 </div>
-                            </div>
+                            ` : `` }
+                        </div>
                         
                         
                             <div class="control table ${classMap({hidden: !this.initialRequestsLoading})}">
@@ -1152,7 +1163,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                         </div>
                     </div>
-                    
+                ${ this.mayRead ? html`
                     <div class="back-container">
                         <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
                             <a href="#" title="${i18n.t('show-requests.back-to-list')}"
@@ -1180,7 +1191,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     </div>
                     
                     <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
-                        ${this.currentItem && this.currentItem.dateSubmitted ? 
+                        ${(this.currentItem && this.currentItem.dateSubmitted) || !this.mayWrite ? 
                                i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier }) 
                                : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })
                         }:
@@ -1193,29 +1204,29 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
     
                         ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
-                                    <div class="request-buttons">
-                                        <div class="edit-buttons">
-                                            <dbp-loading-button id="delete-btn" 
-                                                                ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
-                                                                value="${i18n.t('show-requests.delete-button-text')}" 
-                                                                @click="${(event) => { this.deleteRequest(event, this.currentItem); }}" 
-                                                                title="${i18n.t('show-requests.delete-button-text')}"
-                                            >
-                                                ${i18n.t('show-requests.delete-button-text')}
-                                            </dbp-loading-button>
-                                        </div>
-                                        <div class="submit-button">
-                                            <dbp-loading-button type="is-primary"
-                                                                id="submit-btn" 
-                                                                ?disabled="${this.loading || this.currentItem.dateSubmitted}" 
-                                                                value="${i18n.t('show-requests.submit-button-text')}" 
-                                                                @click="${(event) => { this.submitRequest(event, this.currentItem); }}" 
-                                                                title="${i18n.t('show-requests.submit-button-text')}"
-                                            >
-                                                ${i18n.t('show-requests.submit-button-text')}
-                                            </dbp-loading-button>
-                                        </div>
-                                    </div>` : ``
+                                <div class="request-buttons">
+                                    <div class="edit-buttons">
+                                        <dbp-loading-button id="delete-btn" 
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}" 
+                                                            value="${i18n.t('show-requests.delete-button-text')}" 
+                                                            @click="${(event) => { this.deleteRequest(event, this.currentItem); }}" 
+                                                            title="${i18n.t('show-requests.delete-button-text')}"
+                                        >
+                                            ${i18n.t('show-requests.delete-button-text')}
+                                        </dbp-loading-button>
+                                    </div>
+                                    <div class="submit-button">
+                                        <dbp-loading-button type="is-primary"
+                                                            id="submit-btn" 
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}" 
+                                                            value="${i18n.t('show-requests.submit-button-text')}" 
+                                                            @click="${(event) => { this.submitRequest(event, this.currentItem); }}" 
+                                                            title="${i18n.t('show-requests.submit-button-text')}"
+                                        >
+                                            ${i18n.t('show-requests.submit-button-text')}
+                                        </dbp-loading-button>
+                                    </div>
+                                </div>` : ``
                         }
                         
                         ${ this.currentItem ? html`
@@ -1226,7 +1237,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             ${i18n.t('show-requests.id')}
                                             ${!this.currentItem.dateSubmitted ? html`
                                                 <dbp-icon-button id="edit-btn"
-                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                              @click="${(event) => {
                                                                  this.subject = this.currentItem.name ? this.currentItem.name : '';
                                                                  MicroModal.show(this._('#edit-subject-modal'), {
@@ -1258,9 +1269,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                                         ${!this.currentItem.dateSubmitted ? html`
                                             <dbp-icon-button id="edit-btn"
-                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                         @click="${(event) => {
-                                                            console.log("on edit sender clicked");
                                                             if (this.currentItem.senderAddressCountry !== '') {
                                                                 this._('#edit-sender-country-select').value = this.currentItem.senderAddressCountry;
                                                             }
@@ -1298,7 +1308,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         </div>
                                         ${!this.currentItem.dateSubmitted ? html`
                                              <dbp-loading-button id="add-files-btn"
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                             value="${i18n.t('show-requests.add-files-button-text')}" 
                                                             @click="${(event) => {
                                                                 this.openFileSource();
@@ -1329,7 +1339,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 icon-name="keyword-research"></dbp-icon-button>
                                                     ${!this.currentItem.dateSubmitted ? html`
                                                         <dbp-icon-button id="delete-file-btn"
-                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                                     @click="${(event) => {
                                                                         console.log("on delete file clicked");
                                                                         this.deleteFile(file);
@@ -1352,7 +1362,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         </div>
                                         ${!this.currentItem.dateSubmitted ? html`
                                             <dbp-loading-button id="add-recipient-btn"
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                             value="${i18n.t('show-requests.add-recipient-button-text')}" 
                                                             @click="${(event) => {
                                                                 console.log("on add recipient clicked");
@@ -1434,8 +1444,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </div>
                             </div>
                         ` : ``}
-                    </div>
-       
+                    ` : ``}
+                </div>
             </div>
             
             ${this.addFilePicker()}

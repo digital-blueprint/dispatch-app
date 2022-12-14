@@ -375,17 +375,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-files/' + id, options);
     }
 
-    async sendGetOrganizationDetailsRequest(identifier) {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/ld+json',
-                Authorization: "Bearer " + this.auth.token
-            },
-        };
-        return await this.httpGetAsync(this.entryPointUrl + '/base/organizations/' + identifier + '?includeLocal=street%2Ccity%2CpostalCode%2Ccountry', options);
-    }
-
     async sendGetPersonDetailsRequest(identifier) {
         const options = {
             method: 'GET',
@@ -1100,7 +1089,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let div = this.createScopedElement('div');
         div.classList.add('tabulator-icon-buttons');
 
-        if (item.dateSubmitted) {
+        if (item.dateSubmitted || !this.mayWrite) {
             let btn = this.createScopedElement('dbp-icon-button');
             btn.addEventListener('click', async event => {
                 this.editRequest(event, item);
@@ -1291,22 +1280,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this.groupId = event.target.valueObject.identifier;
 
-        // let response = await this.sendGetOrganizationDetailsRequest(organizationId);
-        //
-        // let responseBody = await response.json();
-        // if (responseBody !== undefined && response.status === 200) {
-        //
-        //
-        // } else {
-        //     // TODO error handling
-        //
-        //     // send({
-        //     //     "summary": 'Error!',
-        //     //     "body": 'Could not fetch sender with ID ' + organizationId + '. Response code: ' + response.status,
-        //     //     "type": "danger",
-        //     //     "timeout": 5,
-        //     // });
-        // }
+        //TODO Error handling
 
         this.requestUpdate();
     }
