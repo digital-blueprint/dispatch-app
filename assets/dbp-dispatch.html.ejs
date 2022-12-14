@@ -110,8 +110,6 @@
     src="<%= getUrl(name + '.topic.metadata.json') %>"
     base-path="<%= getUrl('') %>"
     keycloak-config='{"url": "<%= keyCloakBaseURL %>", "realm": "<%= keyCloakRealm %>", "clientId": "<%= keyCloakClientId %>", "silentCheckSsoRedirectUri": "<%= getUrl('silent-check-sso.html') %>"}'
-    matomo-url='<%= matomoUrl %>'
-    matomo-site-id='<%= matomoSiteId %>'
     git-info='<%= buildInfo.info %>'
     build-url='<%= buildInfo.url %>'
     build-time='<%= buildInfo.time %>'
