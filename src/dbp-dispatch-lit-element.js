@@ -1280,6 +1280,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this.groupId = event.target.valueObject.identifier;
 
+        this.mayRead = event.target.valueObject.mayRead;
+        this.mayWrite = event.target.valueObject.mayWrite;
+
         //TODO Error handling
 
         this.requestUpdate();

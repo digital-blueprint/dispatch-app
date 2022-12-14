@@ -44,6 +44,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.subject = '';
         this.groupId = '';
 
+        this.mayRead = false;
+        this.mayWrite = false;
+
         this.showDetailsView = false;
 
         this.hasEmptyFields = false;
@@ -90,6 +93,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             organization: {type: String, attribute: false},
             organizationId: {type: String, attribute: false},
+
+            mayWrite: { type: Boolean, attribute: false },
+            mayRead: { type: Boolean, attribute: false },
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -266,7 +272,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             value="${i18n.t('create-request.create-request-button-text')}"
                                             @click="${this._onCreateRequestButtonClicked}"
                                             title="${i18n.t('create-request.create-request-button-text')}"
-                                            ?disabled="false"
+                                            ?disabled="${!this.mayWrite}"
                                             class="${classMap({hidden: this.showDetailsView})}"
                         ></dbp-loading-button>
                     </div>
