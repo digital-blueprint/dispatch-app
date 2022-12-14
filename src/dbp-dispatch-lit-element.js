@@ -6,6 +6,7 @@ import {html} from "lit";
 import * as dispatchHelper from './utils';
 import {PersonSelect} from "@dbp-toolkit/person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
+import {IconButton} from "@dbp-toolkit/common";
 
 
 export default class DBPDispatchLitElement extends DBPLitElement {
@@ -24,7 +25,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return {
             'dbp-file-source': FileSource,
             'dbp-person-select': PersonSelect,
-            'dbp-resource-select': ResourceSelect
+            'dbp-resource-select': ResourceSelect,
+            'dbp-icon-button': IconButton
         };
     }
 
@@ -385,8 +387,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: "Bearer " + this.auth.token
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + identifier, options); ///'base/people/'
-        // return await this.httpGetAsync(this.entryPointUrl + identifier + '?includeLocal=street%2Ccity%2CpostalCode%2Ccountry', options);
+        // return await this.httpGetAsync(this.entryPointUrl + identifier, options); ///'base/people/'
+        return await this.httpGetAsync(this.entryPointUrl + identifier + '?includeLocal=streetAddress%2CaddressLocality%2CpostalCode%2CaddressCountry', options);
     }
 
     async sendChangeSubjectRequest(identifier, subject) {
@@ -539,7 +541,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             // this._('#tf-add-recipient-sa-dialog').value = '';
             // this._('#tf-add-recipient-bn-dialog').value = '';
             // this._('#tf-add-recipient-birthdate').value = '';
-            // this._('#recipient-selector').value = ''; //TODO reset selector + values
+            // this._('#recipient-selector').clear(); //TODO reset selector + values
 
             this.requestUpdate();
 
@@ -890,13 +892,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // let id = this.currentRecipient.identifier;
 
         let response = await this.getDispatchRecipient(identifier);
-        // console.log('fetchdetailedrecipientinformation', response);
+        console.log('fetchdetailedrecipientinformation', response);
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
 
             this.currentRecipient = responseBody;
+            console.log('bdate: ', responseBody['birthDate']);
+
             this.currentRecipient.birthDate = this.convertToBirthDate(responseBody['birthDate']);
+            console.log('bdate: ', this.currentRecipient.birthDate);
+
             this.currentRecipient.statusChanges = responseBody['statusChanges'];
             if (this.currentRecipient.statusChanges.length > 0) {
                 this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
@@ -1239,11 +1245,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.givenName = responseBody.givenName;
             this.currentRecipient.birthDate = responseBody.birthDate ? responseBody.birthDate : '';
 
-            if (responseBody['localData'] !== null) { //TODO wait for localData
-                this.currentRecipient.addressLocality = responseBody['localData']['city'] ? responseBody['localData']['city'] : '';
+            console.log(responseBody['localData']);
+
+            if (responseBody['localData'] !== null) {
+                this.currentRecipient.addressLocality = responseBody['localData']['addressLocality'] ? responseBody['localData']['addressLocality'] : '';
                 this.currentRecipient.postalCode = responseBody['localData']['postalCode'] ? responseBody['localData']['postalCode'] : '';
-                this.currentRecipient.streetAddress = responseBody['localData']['address'] ? responseBody['localData']['address'] : '';
-                this.currentRecipient.addressCountry = responseBody['localData']['country'] ? dispatchHelper.getCountryMapping(responseBody['localData']['country']) : dispatchHelper.getCountryMapping('AT');
+                this.currentRecipient.streetAddress = responseBody['localData']['streetAddress'] ? responseBody['localData']['streetAddress'] : '';
+                this.currentRecipient.addressCountry = responseBody['localData']['addressCountry'] ? dispatchHelper.getCountryMapping(responseBody['localData']['addressCountry']) : dispatchHelper.getCountryMapping('AT');
             } else {
                 this.currentRecipient.addressLocality = '';
                 this.currentRecipient.postalCode = '';
@@ -1315,10 +1323,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.givenName = responseBody.givenName;
                 this.currentRecipient.birthDate = responseBody.birthDate ? responseBody.birthDate : '';
 
-                if (responseBody['localData'] !== null) { //TODO wait for localData
-                    this.currentRecipient.addressLocality = responseBody['localData']['city'] ? responseBody['localData']['city'] : '';
+                if (responseBody['localData'] !== null) {
+                    this.currentRecipient.addressLocality = responseBody['localData']['addressLocality'] ? responseBody['localData']['addressLocality'] : '';
                     this.currentRecipient.postalCode = responseBody['localData']['postalCode'] ? responseBody['localData']['postalCode'] : '';
-                    this.currentRecipient.streetAddress = responseBody['localData']['address'] ? responseBody['localData']['address'] : '';
+                    this.currentRecipient.streetAddress = responseBody['localData']['streetAddress'] ? responseBody['localData']['streetAddress'] : '';
+                    this.currentRecipient.addressCountry = responseBody['localData']['addressCountry'] ? dispatchHelper.getCountryMapping(responseBody['localData']['addressCountry']) : dispatchHelper.getCountryMapping('AT');
                 }
             } else {
                 // TODO error handling
@@ -1550,7 +1559,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     </div>
                                     <div>
                                         <input
-                                                required
                                                 type="text"
                                                 class="input"
                                                 name="tf-edit-sender-bn-dialog"
@@ -1775,7 +1783,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-bn-dialog"
@@ -1991,7 +1998,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-bn-dialog"
@@ -2207,14 +2213,28 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <div class="">
                                 ${this.currentRecipient.statusChanges.map(statusChange => html`
                                     <div class="recipient-status">
-                                        <div>${this.convertToReadableDate(statusChange.dateCreated)} </div>
-                                        <div class="status-detail">${statusChange.description} (StatusType ${statusChange.statusType})</div>
+                                        <div>
+                                            <div>${this.convertToReadableDate(statusChange.dateCreated)} </div>
+                                            <div class="status-detail">${statusChange.description} (StatusType ${statusChange.statusType})</div>
+                                        </div>
+                                        <div>
+                                            ${statusChange.file ? html`
+                                                <dbp-icon-button class="download-btn"
+                                                                 @click="${(event) => {
+                                                                        // TODO
+                                                                        console.log('download file clicked');
+                                                                    }}"
+                                                                 title="${i18n.t('show-requests.download-button-text')}"
+                                                                 icon-name="download"></dbp-icon-button>
+                                            ` : ``}
+                                        </div>
                                     </div>
                                 `)}
                             </div>` : ``}
                         </main>
                         <footer class="modal-footer">
-                            <div class="modal-footer-btn"></div>
+                            <div class="modal-footer-btn">
+                            </div>
                         </footer>
                     </div>
                 </div>

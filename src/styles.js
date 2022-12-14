@@ -760,6 +760,8 @@ export function getDispatchRequestStyles() {
 
             .recipient-status {
                 margin-bottom: 1em;
+                display: flex;
+                justify-content: space-between;
             }
 
             .recipient-status .status-detail {

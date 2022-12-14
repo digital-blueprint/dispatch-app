@@ -1032,7 +1032,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     </p>
                 </slot>
                 
-                 <div >
+                 <div class="${classMap({hidden: this.showDetailsView })}">
                     ${i18n.t('show-requests.organization-select-description')}
                     <div class="choose-and-create-btns">
                         <dbp-resource-select
@@ -1394,7 +1394,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 @click="${(event) => {
                                                                     this.currentRecipient = recipient;
                                                                     this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                        
                                                                         MicroModal.show(this._('#show-recipient-modal'), {
                                                                             disableScroll: true,
                                                                             onClose: (modal) => {
@@ -1413,6 +1412,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                          this.currentRecipient = recipient;
                                                                          this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
                                                                          this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                             console.log('bdate show', this.currentRecipient.birthDate);
                                                                              MicroModal.show(this._('#edit-recipient-modal'), {
                                                                                  disableScroll: true,
                                                                                  onClose: (modal) => {

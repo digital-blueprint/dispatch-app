@@ -483,15 +483,15 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         <div class="right-side">
                                             <dbp-icon-button id="show-recipient-btn"
                                                              @click="${(event) => {
-                                                                 console.log("on show recipient clicked");
                                                                  this.currentRecipient = recipient;
-
-                                                                 MicroModal.show(this._('#show-recipient-modal'), {
-                                                                     disableScroll: true,
-                                                                     onClose: (modal) => {
-                                                                         this.loading = false;
-                                                                         this.currentRecipient = null;
-                                                                     },
+                                                                 this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                     MicroModal.show(this._('#show-recipient-modal'), {
+                                                                         disableScroll: true,
+                                                                         onClose: (modal) => {
+                                                                             this.loading = false;
+                                                                             this.currentRecipient = null;
+                                                                         },
+                                                                     });
                                                                  });
                                                              }}"
                                                              title="${i18n.t('show-requests.show-recipient-button-text')}"
