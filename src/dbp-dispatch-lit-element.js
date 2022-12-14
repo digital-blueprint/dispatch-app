@@ -671,7 +671,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         this.currentItem.recipients.forEach((element) => {
-            console.log(element.identifier);
+            // console.log(element.identifier);
             this.fetchDetailedRecipientInformation(element.identifier).then(result => {
                 //TODO
             });
@@ -1283,6 +1283,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.mayRead = event.target.valueObject.mayRead;
         this.mayWrite = event.target.valueObject.mayWrite;
 
+        this.organizationSet = true;
         //TODO Error handling
 
         this.requestUpdate();
@@ -2143,7 +2144,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}:
                                 </div>
                                 <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.birthDate ? this.currentRecipient.birthDate : ``}
+                                    ${this.currentRecipient && this.currentRecipient.birthDate ? this.convertToBirthDate(this.currentRecipient.birthDate) : ``}
                                 </div>
                                 
                                 <div class="element-left">

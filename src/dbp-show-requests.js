@@ -210,12 +210,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         responsive: 3,
                         widthGrow: 1,
                         minWidth: 160,
-                        sorter: (a, b, aRow, bRow, column, dir, sorterParams) => {
+                        sorter: (a, b) => {
                             const a_timestamp = Date.parse(a);
                             const b_timestamp = Date.parse(b);
                             return a_timestamp - b_timestamp;
                         },
-                        formatter: function (cell, formatterParams, onRendered) {
+                        formatter: function (cell) {
                             const d = Date.parse(cell.getValue());
                             const timestamp = new Date(d);
                             const year = timestamp.getFullYear();
@@ -247,7 +247,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         // visible: false,
                         responsive: 8,
                         minWidth: 800,
-                        formatter: function(cell, formatterParams, onRendered) {
+                        formatter: function(cell) {
                             let value = cell.getValue();
                             return value;
                         }
@@ -258,7 +258,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         // visible: false,
                         responsive: 8,
                         minWidth: 800,
-                        formatter: function(cell, formatterParams, onRendered) {
+                        formatter: function(cell) {
                             let value = cell.getValue();
                             return value;
                         }
@@ -269,7 +269,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         // visible: false,
                         responsive: 8,
                         minWidth: 800,
-                        formatter: function(cell, formatterParams, onRendered) {
+                        formatter: function(cell) {
                             let value = cell.getValue();
                             return value;
                         }
@@ -279,7 +279,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         field: 'dateSubmitted',
                         responsive: 8,
                         minwidth: 150,
-                        formatter: function(cell, formatterParams, onRendered) {
+                        formatter: function(cell) {
                             let value = cell.getValue();
                             return value;
                         }
@@ -289,7 +289,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         field: 'requestId',
                         responsive: 8,
                         minWidth: 150,
-                        formatter: function(cell, formatterParams, onRendered) {
+                        formatter: function(cell) {
                             let value = cell.getValue();
                             return value;
                         }
@@ -302,7 +302,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         widthGrow: 1,
                         headerSort: false,
                         responsive: 0,
-                        formatter: (cell, formatterParams, onRendered) => {
+                        formatter: (cell) => {
                             let value = cell.getValue();
                             return value;
                         },
@@ -648,27 +648,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.groupId = event.target.valueObject.identifier;
         this.mayWrite = event.target.valueObject.mayWrite;
         this.mayRead = event.target.valueObject.mayRead;
-        console.log('write: ', this.mayWrite);
-        console.log('read: ', this.mayRead);
+        // console.log('write: ', this.mayWrite);
+        // console.log('read: ', this.mayRead);
         this.organizationSet = true;
-        this.getListOfRequests(this.groupId);
-    }
-
-    preloadSelectedOrganization() {
-        if (this._('#show-resource-select') && this._('#show-resource-select').getAttribute('data-object') !== null) {
-            const organization = JSON.parse(this._('#show-resource-select').getAttribute('data-object'));
-
-            this.groupId = organization.identifier;
-            this.mayWrite = event.target.valueObject.mayWrite;
-            this.mayRead = event.target.valueObject.mayRead;
-            console.log('write: ', this.mayWrite);
-            console.log('read: ', this.mayRead);
-            this.organizationSet = true;
-        }
+        this.getListOfRequests();
     }
 
     static get styles() {
         // language=css
+        // noinspection CssUnresolvedCustomProperty
         return css`
             ${commonStyles.getThemeCSS()}
             ${commonStyles.getGeneralCSS(false)}
@@ -1000,7 +988,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         );
 
         if (this.isLoggedIn() && !this.isLoading() && !this._initialFetchDone && !this.initialRequestsLoading && this.organizationSet) {
-            this.getListOfRequests(this.groupId);
+            this.getListOfRequests();
         }
 
         return html`
@@ -1062,7 +1050,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
                 
                 <div class="no-access-notification">
-                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.mayWrite})}"
+                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.mayWrite || !this.organizationSet })}"
                                              type="${this.mayRead ? 'warning' : 'danger'}"
                                              body="${this.mayRead ? i18n.t('error-no-writes') : i18n.t('error-no-read')}">
                     </dbp-inline-notification>
@@ -1176,7 +1164,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     <div class="back-container">
                         <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
                             <a href="#" title="${i18n.t('show-requests.back-to-list')}"
-                               @click="${(e) => {
+                               @click="${() => {
                                    this.getListOfRequests();
                                    this.showListView = true;
                                    this.showDetailsView = false;
@@ -1399,13 +1387,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
                                                 <div>${recipient.postalCode} ${recipient.addressLocality}</div>
                                                 <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
-                                                <div>${this.currentRecipient.statusDescription ? html`Status: ${this.currentRecipient.statusDescription}` : ``}</div>
+                                                <div>${this.currentRecipient && this.currentRecipient.statusDescription ? html`Status: ${this.currentRecipient.statusDescription}` : ``}</div>
                                             </div>
                                             <div class="right-side">
                                                     <dbp-icon-button id="show-recipient-btn"
                                                                 @click="${(event) => {
                                                                     this.currentRecipient = recipient;
-                                                                    this.fetchDetailedRecipientInformation(recipient.identifier).then(r => {
+                                                                    this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
                                                                         
                                                                         MicroModal.show(this._('#show-recipient-modal'), {
                                                                             disableScroll: true,
@@ -1421,10 +1409,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     ${!this.currentItem.dateSubmitted ? html`
                                                         <dbp-icon-button id="edit-recipient-btn"
                                                                      ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                                     @click="${(event) => {
+                                                                     @click="${() => {
                                                                          this.currentRecipient = recipient;
                                                                          this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                         this.fetchDetailedRecipientInformation(recipient.identifier).then(r => {
+                                                                         this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
                                                                              MicroModal.show(this._('#edit-recipient-modal'), {
                                                                                  disableScroll: true,
                                                                                  onClose: (modal) => {
@@ -1438,8 +1426,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                      icon-name="pencil"></dbp-icon-button>
                                                         <dbp-icon-button id="delete-recipient-btn"
                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                                    @click="${(event) => {
-                                                                        console.log("on delete recipient clicked");
+                                                                    @click="${() => {
                                                                         this.deleteRecipient(recipient);
                                                                     }}"
                                                                     title="${i18n.t('show-requests.delete-recipient-button-text')}"

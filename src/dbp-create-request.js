@@ -44,6 +44,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.subject = '';
         this.groupId = '';
 
+        this.organizationSet = false;
         this.mayRead = false;
         this.mayWrite = false;
 
@@ -94,6 +95,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             organization: {type: String, attribute: false},
             organizationId: {type: String, attribute: false},
 
+            organizationSet: { type: Boolean, attribute: false },
             mayWrite: { type: Boolean, attribute: false },
             mayRead: { type: Boolean, attribute: false },
 
@@ -172,14 +174,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     saveRequest() {
         this.clearAll();
-
-        const i18n = this._i18n;
-        // send({
-        //     "summary": i18n.t('create-request.successfully-saved-title'),
-        //     "body": i18n.t('create-request.successfully-saved-text'),
-        //     "type": "success",
-        //     "timeout": 5,
-        // });
     }
 
     static get styles() {
@@ -276,6 +270,13 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="${classMap({hidden: this.showDetailsView})}"
                         ></dbp-loading-button>
                     </div>
+                </div>
+
+                <div class="no-access-notification">
+                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.mayWrite || !this.organizationSet})}"
+                                             type="danger"
+                                             body="${this.mayRead ? i18n.t('create-request.error-no-writes') : i18n.t('error-no-read')}">
+                    </dbp-inline-notification>
                 </div>
 
                 <div class="back-container">

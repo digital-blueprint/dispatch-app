@@ -20,7 +20,8 @@
         "create-dispatch-order": "Create dispatch order",
         "empty-subject": "Please enter a subject for the dispatch order:",
         "add-sender-button-text": "Add sender",
-        "back-to-create": "Back to create a request"
+        "back-to-create": "Back to create a request",
+        "error-no-writes": "You only have read rights for shipping orders in this organization, and therefore cannot create new orders."
     },
     "show-requests": {
         "description-text": "Here you can view the list of all your created dispatch orders and edit, delete or submit. You can also ",
@@ -175,5 +176,8 @@
         "loading-table-message": "Dispatch requests are loading. This may take a while."
     },
     "error-login-message": "You need to be logged in to use this function!",
-    "loading-message": "Loading..."
+    "loading-message": "Loading...",
+    "error-not-permitted": "You do not have the permission to perform this action!",
+    "error-no-read": "You are currently not assigned to an organization in which you have read or write permissions for dispatch requests.",
+    "error-no-writes": "You have read-only rights for shipping orders in this organizations, and therefore cannot edit, submit, or delete dispatch requests."
 }

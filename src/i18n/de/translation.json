@@ -20,7 +20,8 @@
         "create-dispatch-order": "Versandauftrag erstellen",
         "empty-subject": "Bitte geben Sie einen Betreff für den Versandauftrag ein:",
         "add-sender-button-text": "Absender hinzufügen",
-        "back-to-create": "Zurück einen neuen Auftrag erstellen"
+        "back-to-create": "Zurück einen neuen Auftrag erstellen",
+        "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine neuen Aufträge erstellen."
     },
     "show-requests": {
         "description-text": "Hier können Sie die Liste aller Ihrer bisher angelegten Versandaufträge einsehen und diese bearbeiten, löschen oder abschließen. Alternativ können Sie auch einen ",
@@ -178,5 +179,5 @@
     "loading-message": "Lädt...",
     "error-not-permitted": "Sie haben nicht die Berechtigung, um diese Aktion durchführen zu Können!",
     "error-no-read": "Sie sind derzeit keiner Organisation zugeordnet, in der Sie Lese- oder Schreibrechte für Versandaufträge haben.",
-    "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge  und können daher keine Aufträge bearbeiten, freigeben oder löschen."
+    "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine Aufträge bearbeiten, freigeben oder löschen."
 }
