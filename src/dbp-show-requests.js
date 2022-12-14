@@ -1042,7 +1042,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <dbp-resource-select
                                     id="show-resource-select"
                                     subscribe="lang,entry-point-url,auth"
-                                    resource-path="dispatch/groups"
+                                    lang="${this.lang}"
+                                    resource-path="dispatch/groups?lang=${this.lang}"
                                     @change=${(event) => {
                                         this.processSelectedOrganization(event);
                                     }}
@@ -1050,7 +1051,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     </div>
                 </div>
 
-               
+                <!--TODO-->
                     <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
                         ${i18n.t('show-requests.dispatch-orders')}
                     </h3>

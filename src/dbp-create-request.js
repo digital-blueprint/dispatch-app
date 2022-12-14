@@ -256,7 +256,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <dbp-resource-select
                                     id="create-resource-select"
                                     subscribe="lang,entry-point-url,auth"
-                                    resource-path="dispatch/groups"
+                                    lang="${this.lang}"
+                                    resource-path="dispatch/groups?lang=${this.lang}"
                                     @change=${(event) => {
                                         this.processSelectedSender(event);
                                     }}
