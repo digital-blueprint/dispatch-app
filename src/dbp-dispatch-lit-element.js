@@ -120,6 +120,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Gets the list of all dispatch requests of the current logged-in user
      *
+     * @param groupId
      * @returns {object} response
      */
     async getListOfDispatchRequests(groupId) {
@@ -226,6 +227,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param senderAddressLocality
      * @param senderStreetAddress
      * @param senderBuildingNumber
+     * @param groupId
      * @returns {object} response
      */
     async sendEditDispatchRequest(identifier, senderGivenName, senderFamilyName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId) {
@@ -815,9 +817,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let groupId = this.groupId;
 
-        var e = this._('#edit-sender-country-select');
-        var value = e.value;
-        var text = e.options[e.selectedIndex].text;
+        let e = this._('#edit-sender-country-select');
+        let value = e.value;
+        let text = e.options[e.selectedIndex].text;
         let senderAddressCountry = [value, text];
 
         let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId);
@@ -904,6 +906,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.statusType = null;
             }
             this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
+            this.currentRecipient.appDeliveryId = responseBody['appDeliveryID'] ? responseBody['appDeliveryID'] : '';
             // console.log('rec: ', this.currentRecipient);
         } else {
             // TODO error handling
@@ -1062,11 +1065,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     createFormattedFilesList(list) {
-        let output = "";
+        let output = '';
         list.forEach((file) => {
             output += file.name + "<br>";
         });
-        if (output != "") {
+        if (output !== '') {
             return output;
         } else {
             return '(Noch) keine Dateien angehängt'; //TODO translate
@@ -1074,11 +1077,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     createFormattedRecipientsList(list) {
-        let output = "";
+        let output = '';
         list.forEach((recipient) => {
             output += recipient.familyName + ", " + recipient.givenName + "<br>";
         });
-        if (output != "") {
+        if (output !== '') {
             return output;
         } else {
             return '(Noch) keine Empfänger'; //TODO translate
@@ -2191,6 +2194,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div class="element-right">
                                     ${this.currentRecipient && this.currentRecipient.identifier ? this.currentRecipient.identifier : ``}
+                                </div>
+                                <div class="element-left">
+                                    ${i18n.t('show-requests.app-delivery-id')}:
+                                </div>
+                                <div class="element-right">
+                                    ${this.currentRecipient && this.currentRecipient.appDeliveryId ? this.currentRecipient.appDeliveryId : ``}
                                 </div>
                             </div>
                             ${this.currentRecipient && this.currentRecipient.statusChanges && this.currentRecipient.statusChanges.length > 0 ? html`
