@@ -135,6 +135,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     "timeout": 5,
                 });
                 this.currentItem = responseBody;
+                console.log(this.currentItem);
                 this.requestCreated = true;
             } else if (response.status === 403) {
                 send({

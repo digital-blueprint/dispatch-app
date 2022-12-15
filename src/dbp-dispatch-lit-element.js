@@ -22,6 +22,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this.tempItem = {};
         this.tempValue = {};
+        this.tempChange = false;
     }
 
     static get scopedElements() {
@@ -1280,10 +1281,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.mayRead = event.target.valueObject.mayRead;
             this.mayWrite = mayWrite;
         } else if (!mayWrite && this.requestCreated) {
-
             if (Object.keys(this.tempItem).length !== 0) {
                 this.currentItem = this.tempItem;
-                this._('#create-resource-select').value = this.tempValue; //TODO gleiches problem
+                // console.log('case 2 current: ', this.currentItem);
+                this.tempChange = true;
+                this._('#create-resource-select').value = this.tempValue;
 
                 send({
                     "summary": i18n.t('create-request.create-not-allowed-title'),
@@ -1294,8 +1296,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
             this.mayRead = event.target.valueObject.mayRead;
             this.mayWrite = mayWrite;
-        } else if (mayWrite && this.requestCreated) {
-            console.log('case3');
+            return;
+        } else if (mayWrite && this.requestCreated && !this.tempChange) {
+            // console.log('case3 curr', this.currentItem);
             let senderFamilyName = event.target.valueObject.identifier;
             let senderGivenName = event.target.valueObject.name;
             let senderAddressCountry = event.target.valueObject.country;
@@ -1303,6 +1306,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let senderAddressLocality = event.target.valueObject.locality;
             let senderPostalCode = event.target.valueObject.postalCode;
             let groupId = event.target.valueObject.identifier;
+            let mayRead = event.target.valueObject.mayRead;
 
             let response = await this.sendEditDispatchRequest(this.currentItem.identifier, senderGivenName, senderFamilyName,
                 senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, groupId);
@@ -1317,11 +1321,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
 
                 this.currentItem = responseBody;
-
+                // console.log(event.target.valueObject);
                 this.currentItem.senderFamilyName = senderFamilyName;
                 this.currentItem.senderGivenName = senderGivenName;
-
-                // console.log(event.target.valueObject);
                 this.currentItem.senderAddressCountry = senderAddressCountry;
                 this.currentItem.senderStreetAddress = senderStreetAddress;
                 this.currentItem.senderAddressLocality = senderAddressLocality;
@@ -1329,7 +1331,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 this.groupId = groupId;
 
-                this.mayRead = event.target.valueObject.mayRead;
+                this.mayRead = mayRead;
                 this.mayWrite = mayWrite;
 
                 this.tempItem = this.currentItem;
@@ -1368,8 +1370,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.tempValue = this._('#create-resource-select').value;
         }
 
-        //TODO Error handling
-
+        this.tempChange = false;
     }
 
     async preloadSelectedRecipient() {
@@ -1738,8 +1739,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     class="modal-close"
                                     aria-label="Close modal"
                                     @click="${() => {
-            MicroModal.close(this._('#add-recipient-modal'));
-        }}">
+                                        MicroModal.close(this._('#add-recipient-modal'));
+                                    }}">
                                 <dbp-icon
                                         title="${i18n.t('show-requests.modal-close')}"
                                         name="close"
