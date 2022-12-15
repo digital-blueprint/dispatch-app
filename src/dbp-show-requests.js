@@ -1398,7 +1398,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                             disableScroll: true,
                                                                             onClose: (modal) => {
                                                                                 this.loading = false;
-                                                                                this.currentRecipient = null;
+                                                                                this.currentRecipient = {};
                                                                             },
                                                                         });
                                                                     });

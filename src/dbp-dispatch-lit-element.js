@@ -19,6 +19,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentRecipient = {};
         this.subject = '';
         this.groupId = '';
+
+        this.tempItem = {};
+        this.tempValue = {};
     }
 
     static get scopedElements() {
@@ -39,6 +42,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             currentRecipient: {type: Object, attribute: false},
             subject: {type: String, attribute: false},
             groupId: {type: String, attribute: false},
+            tempItem: {type: Object, attribute: false},
+            tempValue: {type: Object, attribute: false},
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -610,7 +615,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async deleteRecipient(recipient) {
         const i18n = this._i18n;
-        console.log(recipient);
+        // console.log(recipient);
 
         let response = await this.sendDeleteRecipientRequest(recipient.identifier);
         if (response.status === 204) {
@@ -626,6 +631,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let responseBody = await resp.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.currentItem = responseBody;
+                this.requestCreated = false;
             }
         } else {
             // TODO error handling
@@ -748,6 +754,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         "timeout": 5,
                     });
                     this.clearAll();
+                    this.requestCreated = false;
                 } else if (response.status === 403) {
                     send({
                         "summary": i18n.t('create-request.error-requested-title'),
@@ -866,11 +873,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         //TODO
         this.subject = this._('#tf-add-subject-fn-dialog').value ? this._('#tf-add-subject-fn-dialog').value : '';
 
-        // this.confirmAddSender(); //TODO add sender details here
-
-        this.preloadSelectedSender();
-
-
         await this.processCreateDispatchRequest();
 
         this._('#tf-add-subject-fn-dialog').value = '';
@@ -879,13 +881,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.hasSubject = true;
 
         this.hasSender = true;
-
-        // MicroModal.show(this._('#add-sender-modal'), {
-        //     disableScroll: true,
-        //     onClose: (modal) => {
-        //         this.loading = false;
-        //     },
-        // });
     }
 
     async fetchDetailedRecipientInformation(identifier) {
@@ -898,10 +893,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (responseBody !== undefined && response.status === 200) {
 
             this.currentRecipient = responseBody;
-            console.log('bdate: ', responseBody['birthDate']);
 
             this.currentRecipient.birthDate = this.convertToBirthDate(responseBody['birthDate']);
-            console.log('bdate: ', this.currentRecipient.birthDate);
 
             this.currentRecipient.statusChanges = responseBody['statusChanges'];
             if (this.currentRecipient.statusChanges.length > 0) {
@@ -1280,24 +1273,103 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async processSelectedSender(event) {
-        this.currentItem.senderFamilyName = event.target.valueObject.identifier;
-        this.currentItem.senderGivenName = event.target.valueObject.name;
+        const i18n = this._i18n;
 
-        // console.log(event.target.valueObject);
-        this.currentItem.senderAddressCountry = event.target.valueObject.country;
-        this.currentItem.senderStreetAddress = event.target.valueObject.street;
-        this.currentItem.senderAddressLocality = event.target.valueObject.locality;
-        this.currentItem.senderPostalCode = event.target.valueObject.postalCode;
+        let mayWrite = event.target.valueObject.mayWrite;
+        if (!mayWrite && !this.requestCreated) {
+            this.mayRead = event.target.valueObject.mayRead;
+            this.mayWrite = mayWrite;
+        } else if (!mayWrite && this.requestCreated) {
 
-        this.groupId = event.target.valueObject.identifier;
+            if (Object.keys(this.tempItem).length !== 0) {
+                this.currentItem = this.tempItem;
+                this._('#create-resource-select').value = this.tempValue; //TODO gleiches problem
 
-        this.mayRead = event.target.valueObject.mayRead;
-        this.mayWrite = event.target.valueObject.mayWrite;
+                send({
+                    "summary": i18n.t('create-request.create-not-allowed-title'),
+                    "body": i18n.t('create-request.create-not-allowed-text'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            }
+            this.mayRead = event.target.valueObject.mayRead;
+            this.mayWrite = mayWrite;
+        } else if (mayWrite && this.requestCreated) {
+            console.log('case3');
+            let senderFamilyName = event.target.valueObject.identifier;
+            let senderGivenName = event.target.valueObject.name;
+            let senderAddressCountry = event.target.valueObject.country;
+            let senderStreetAddress = event.target.valueObject.street;
+            let senderAddressLocality = event.target.valueObject.locality;
+            let senderPostalCode = event.target.valueObject.postalCode;
+            let groupId = event.target.valueObject.identifier;
 
-        this.organizationSet = true;
+            let response = await this.sendEditDispatchRequest(this.currentItem.identifier, senderGivenName, senderFamilyName,
+                senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, groupId);
+
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
+                send({
+                    "summary": i18n.t('show-requests.successfully-updated-sender-title'),
+                    "body": i18n.t('show-requests.successfully-updated-sender-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
+
+                this.currentItem = responseBody;
+
+                this.currentItem.senderFamilyName = senderFamilyName;
+                this.currentItem.senderGivenName = senderGivenName;
+
+                // console.log(event.target.valueObject);
+                this.currentItem.senderAddressCountry = senderAddressCountry;
+                this.currentItem.senderStreetAddress = senderStreetAddress;
+                this.currentItem.senderAddressLocality = senderAddressLocality;
+                this.currentItem.senderPostalCode = senderPostalCode;
+
+                this.groupId = groupId;
+
+                this.mayRead = event.target.valueObject.mayRead;
+                this.mayWrite = mayWrite;
+
+                this.tempItem = this.currentItem;
+                this.tempValue = this._('#create-resource-select').value;
+
+            } else if (response.status === 403) {
+                send({
+                    "summary": i18n.t('create-request.error-requested-title'),
+                    "body": i18n.t('error-not-permitted'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            } else {
+                // TODO error handling
+                send({
+                    "summary": 'Error!',
+                    "body": 'Could not edit sender. Response code: ' + response.status,
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            }
+        } else {
+            // console.log(event.target.valueObject);
+            this.currentItem.senderFamilyName = event.target.valueObject.identifier;
+            this.currentItem.senderGivenName = event.target.valueObject.name;
+            this.currentItem.senderAddressCountry = event.target.valueObject.country;
+            this.currentItem.senderStreetAddress = event.target.valueObject.street;
+            this.currentItem.senderAddressLocality = event.target.valueObject.locality;
+            this.currentItem.senderPostalCode = event.target.valueObject.postalCode;
+
+            this.groupId = event.target.valueObject.identifier;
+            this.mayRead = event.target.valueObject.mayRead;
+            this.mayWrite = event.target.valueObject.mayWrite;
+
+            this.tempItem = this.currentItem;
+            this.tempValue = this._('#create-resource-select').value;
+        }
+
         //TODO Error handling
 
-        this.requestUpdate();
     }
 
     async preloadSelectedRecipient() {
@@ -1333,23 +1405,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 // TODO error handling
             }
             console.log('rec', this.currentRecipient);
-            this.requestUpdate();
-        }
-    }
-
-    preloadSelectedSender() {
-
-        if (this._('#create-resource-select') && this._('#create-resource-select').getAttribute('data-object') !== null) {
-            const organization = JSON.parse(this._('#create-resource-select').getAttribute('data-object'));
-
-            this.currentItem.senderFamilyName = organization.identifier;
-            this.currentItem.senderGivenName = organization['name'];
-
-            this.currentItem.senderAddressLocality = organization['country'] ? organization['country'] : '';
-            this.currentItem.senderPostalCode = organization['postalCode'] ? organization['postalCode'] : '';
-            this.currentItem.senderStreetAddress = organization['street'] ? organization['street'] : '';
-
-            // console.log('sender', this.currentItem);
             this.requestUpdate();
         }
     }
@@ -1755,6 +1810,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             required
                                             type="date" 
                                             id="tf-add-recipient-birthdate"
+                                            lang="${this.lang}"
                                             value="${this.currentRecipient ? this.currentRecipient.birthDate : ``}"
                                     />
                                 </div>
@@ -1970,6 +2026,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             required
                                             type="date" 
                                             id="tf-edit-recipient-birthdate"
+                                            lang="${this.lang}"
                                             value="${this.currentRecipient ? this.currentRecipient.birthDate : ``}"
                                     >
                                 </div>
