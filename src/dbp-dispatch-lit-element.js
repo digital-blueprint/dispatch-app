@@ -1242,10 +1242,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 status: item.dateSubmitted ? i18n.t('show-requests.status-completed') : i18n.t('show-requests.empty-date-submitted'),
                 dateCreated: item.dateCreated,
                 details: "Details",
-                sender: item.senderFamilyName ? item.senderFamilyName + " " + item.senderGivenName + "<br>"
-                    + item.senderStreetAddress + " " + item.senderBuildingNumber + "<br>"
-                    + item.senderPostalCode + " " + item.senderAddressLocality + "<br>"
-                    + item.senderAddressCountry : i18n.t('show-requests.empty-sender-text'),
+                // sender: item.senderFamilyName ? item.senderFamilyName + " " + item.senderGivenName + "<br>"
+                //     + item.senderStreetAddress + " " + item.senderBuildingNumber + "<br>"
+                //     + item.senderPostalCode + " " + item.senderAddressLocality + "<br>"
+                //     + item.senderAddressCountry : i18n.t('show-requests.empty-sender-text'),
                 files: this.createFormattedFilesList(item.files),
                 recipients: this.createFormattedRecipientsList(item.recipients),
                 dateSubmitted: item.dateSubmitted ? this.convertToReadableDate(item.dateSubmitted) : i18n.t('show-requests.date-submitted-not-submitted'),
@@ -1688,8 +1688,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             id="tf-edit-sender-gn-dialog"
                                             value="${this.currentItem && this.currentItem.senderGivenName}"
                                             @input="${() => {
-            // TODO
-        }}"
+                                                // TODO
+                                            }}"
                                     />
                                 </div>
                             </div>
@@ -1706,8 +1706,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             id="tf-edit-sender-sa-dialog"
                                             value="${this.currentItem && this.currentItem.senderStreetAddress}"
                                             @input="${() => {
-            // TODO
-        }}"
+                                                // TODO
+                                            }}"
                                     />
                                 </div>
                             </div>
@@ -1725,8 +1725,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 id="tf-edit-sender-bn-dialog"
                                                 value="${this.currentItem && this.currentItem.senderBuildingNumber}"
                                                 @input="${() => {
-                // TODO
-            }}"
+                                                    // TODO
+                                                }}"
                                         />
                                     </div>
                                 </div>
@@ -1762,8 +1762,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             id="tf-edit-sender-al-dialog"
                                             value="${this.currentItem && this.currentItem.senderAddressLocality}"
                                             @input="${() => {
-            // TODO
-        }}"
+                                                // TODO
+                                            }}"
                                     />
                                 </div>
                             </div>

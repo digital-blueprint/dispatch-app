@@ -241,17 +241,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         widthGrow: 1,
                         minWidth: 120,
                     },
-                    {
-                        title: i18n.t('show-requests.table-header-sender'),
-                        field: 'sender',
-                        // visible: false,
-                        responsive: 8,
-                        minWidth: 800,
-                        formatter: function(cell) {
-                            let value = cell.getValue();
-                            return value;
-                        }
-                    },
+                    // {
+                    //     title: i18n.t('show-requests.table-header-sender'),
+                    //     field: 'sender',
+                    //     // visible: false,
+                    //     responsive: 8,
+                    //     minWidth: 800,
+                    //     formatter: function(cell) {
+                    //         let value = cell.getValue();
+                    //         return value;
+                    //     }
+                    // },
                     {
                         title: i18n.t('show-requests.table-header-files'),
                         field: 'files',
@@ -313,7 +313,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         'columns': {
                             'dateCreated': 'Date created',
                             'subject': 'Subject',
-                            'sender': 'Sender',
+                            // 'sender': 'Sender',
                             'files': 'Files',
                             'recipients': 'Recipients',
                             'dateSubmitted': 'Date submitted',
@@ -336,7 +336,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         'columns': {
                             'dateCreated': 'Erstelldatum',
                             'subject': 'Betreff',
-                            'sender': 'Absender',
+                            // 'sender': 'Absender',
                             'files': 'Angehängte Dateien',
                             'recipients': 'Empfänger',
                             'dateSubmitted': 'Freigabedatum',
@@ -1261,7 +1261,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
                                 </div>
                                 
-                                <div class="details sender">
+                                <div class="details sender hidden">
                                     <div class="header-btn">
                                         <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                                         ${!this.currentItem.dateSubmitted ? html`

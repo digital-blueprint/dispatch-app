@@ -360,7 +360,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </div>
                             </div>
                             
-                            <div class="details sender ${classMap({hidden: !this.hasSubject})}">
+                            <div class="details sender hidden ${classMap({hidden: !this.hasSubject})}">
                                 <div class="header-btn">
                                     <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                                     ${!this.currentItem.dateSubmitted && this.hasSender ? html`
