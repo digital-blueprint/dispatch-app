@@ -493,15 +493,21 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <dbp-icon-button id="show-recipient-btn"
                                                              @click="${(event) => {
                                                                  this.currentRecipient = recipient;
-                                                                 this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                     MicroModal.show(this._('#show-recipient-modal'), {
-                                                                         disableScroll: true,
-                                                                         onClose: (modal) => {
-                                                                             this.loading = false;
-                                                                             this.currentRecipient = {};
-                                                                         },
+                                                                 this._('#show-recipient-btn').start();
+                                                                 try {
+                                                                     this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                         MicroModal.show(this._('#show-recipient-modal'), {
+                                                                             disableScroll: true,
+                                                                             onClose: (modal) => {
+                                                                                 this.loading = false;
+                                                                                 this.currentRecipient = {};
+                                                                                 this._('#show-recipient-btn').stop();
+                                                                             },
+                                                                         });
                                                                      });
-                                                                 });
+                                                                 } catch {
+                                                                     this._('#show-recipient-btn').stop();
+                                                                 }
                                                              }}"
                                                              title="${i18n.t('show-requests.show-recipient-button-text')}"
                                                              icon-name="keyword-research"></dbp-icon></dbp-icon-button>
@@ -509,17 +515,22 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <dbp-icon-button id="edit-recipient-btn"
                                                              ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                              @click="${(event) => {
-                                                                 this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                     this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                     this._('#tf-edit-recipient-birthdate').value = this.currentRecipient.birthDate;
-                                                                     MicroModal.show(this._('#edit-recipient-modal'), {
-                                                                         disableScroll: true,
-                                                                         onClose: (modal) => {
-                                                                             this.loading = false;
-                                                                             this.currentRecipient = null;
-                                                                         },
+                                                                 this._('#edit-recipient-btn').start();
+                                                                 try {
+                                                                     this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                         this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                                                                         this._('#tf-edit-recipient-birthdate').value = this.currentRecipient.birthDate;
+                                                                         MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                             disableScroll: true,
+                                                                             onClose: (modal) => {
+                                                                                 this.loading = false;
+                                                                                 this.currentRecipient = {};
+                                                                             },
+                                                                         });
                                                                      });
-                                                                 });
+                                                                 } catch {
+                                                                     this._('#edit-recipient-btn').stop();
+                                                                 }
                                                              }}"
                                                              title="${i18n.t('show-requests.edit-recipients-button-text')}"
                                                              icon-name="pencil"></dbp-icon-button>

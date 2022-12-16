@@ -1233,7 +1233,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         <div class="section-titles">
                                             ${i18n.t('show-requests.id')}
                                             ${!this.currentItem.dateSubmitted ? html`
-                                                <dbp-icon-button id="edit-btn"
+                                                <dbp-icon-button id="edit-subject-btn"
                                                              ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                              @click="${(event) => {
                                                                  this.subject = this.currentItem.name ? this.currentItem.name : '';
@@ -1265,7 +1265,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <div class="header-btn">
                                         <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                                         ${!this.currentItem.dateSubmitted ? html`
-                                            <dbp-icon-button id="edit-btn"
+                                            <dbp-icon-button id="edit-sender-btn"
                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                         @click="${(event) => {
                                                             if (this.currentItem.senderAddressCountry !== '') {
@@ -1362,7 +1362,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                             value="${i18n.t('show-requests.add-recipient-button-text')}" 
                                                             @click="${(event) => {
-                                                                console.log("on add recipient clicked");
                                                                 this.currentRecipient = {};
                                                                 MicroModal.show(this._('#add-recipient-modal'), {
                                                                     disableScroll: true,
@@ -1391,17 +1390,23 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             </div>
                                             <div class="right-side">
                                                     <dbp-icon-button id="show-recipient-btn"
-                                                                @click="${(event) => {
+                                                                @click="${() => {
                                                                     this.currentRecipient = recipient;
-                                                                    this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                        MicroModal.show(this._('#show-recipient-modal'), {
-                                                                            disableScroll: true,
-                                                                            onClose: (modal) => {
-                                                                                this.loading = false;
-                                                                                this.currentRecipient = {};
-                                                                            },
+                                                                    this._('#show-recipient-btn').start();
+                                                                    try {
+                                                                        this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                            MicroModal.show(this._('#show-recipient-modal'), {
+                                                                                disableScroll: true,
+                                                                                onClose: (modal) => {
+                                                                                    this.loading = false;
+                                                                                    this.currentRecipient = {};
+                                                                                    this._('#show-recipient-btn').stop();
+                                                                                },
+                                                                            });
                                                                         });
-                                                                    });
+                                                                    } catch {
+                                                                        this._('#show-recipient-btn').stop();
+                                                                    }
                                                                 }}"
                                                                 title="${i18n.t('show-requests.show-recipient-button-text')}"
                                                                 icon-name="keyword-research"></dbp-icon></dbp-icon-button>
@@ -1410,17 +1415,22 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                      ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                                      @click="${() => {
                                                                          this.currentRecipient = recipient;
-                                                                         this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                         this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                             console.log('bdate show', this.currentRecipient.birthDate);
-                                                                             MicroModal.show(this._('#edit-recipient-modal'), {
-                                                                                 disableScroll: true,
-                                                                                 onClose: (modal) => {
-                                                                                     this.loading = false;
-                                                                                     this.currentRecipient = null;
-                                                                                 },
-                                                                             });
-                                                                         });
+                                                                         this._('#edit-recipient-btn').start();
+                                                                         try {
+                                                                            this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                                this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                                                                                this._('#tf-edit-recipient-birthdate').value = this.currentRecipient.birthDate;
+                                                                                MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                                    disableScroll: true,
+                                                                                    onClose: (modal) => {
+                                                                                        this.loading = false;
+                                                                                        this.currentRecipient = {};
+                                                                                    }
+                                                                                });
+                                                                            });
+                                                                         } catch {
+                                                                             this._('#edit-recipient-btn').stop();
+                                                                         }
                                                                      }}"
                                                                      title="${i18n.t('show-requests.edit-recipients-button-text')}"
                                                                      icon-name="pencil"></dbp-icon-button>

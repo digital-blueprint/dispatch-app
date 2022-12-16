@@ -476,32 +476,37 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async deleteFile(file) {
         const i18n = this._i18n;
-        console.log(file);
 
-        let response = await this.sendDeleteFileRequest(file.identifier, file);
-        if (response.status === 204) {
-            send({
-                "summary": i18n.t('show-requests.successfully-deleted-file-title'),
-                "body": i18n.t('show-requests.successfully-deleted-file-text'),
-                "type": "success",
-                "timeout": 5,
-            });
+        this._('#delete-file-btn').start();
 
-            let id = this.currentItem.identifier;
-            let resp = await this.getDispatchRequest(id);
-            let responseBody = await resp.json();
-            if (responseBody !== undefined && responseBody.status !== 403) {
-                this.currentItem = responseBody;
+        try {
+            let response = await this.sendDeleteFileRequest(file.identifier, file);
+            if (response.status === 204) {
+                send({
+                    "summary": i18n.t('show-requests.successfully-deleted-file-title'),
+                    "body": i18n.t('show-requests.successfully-deleted-file-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
+
+                let id = this.currentItem.identifier;
+                let resp = await this.getDispatchRequest(id);
+                let responseBody = await resp.json();
+                if (responseBody !== undefined && responseBody.status !== 403) {
+                    this.currentItem = responseBody;
+                }
+            } else {
+                // TODO error handling
+
+                send({
+                    "summary": 'Error!',
+                    "body": 'File could not be deleted.',
+                    "type": "danger",
+                    "timeout": 5,
+                });
             }
-        } else {
-            // TODO error handling
-
-            send({
-                "summary": 'Error!',
-                "body": 'File could not be deleted.',
-                "type": "danger",
-                "timeout": 5,
-            });
+        } finally {
+            this._('#delete-file-btn').stop();
         }
     }
 
@@ -579,7 +584,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             //TODO
             send({
                 "summary": 'Error!',
-                "body": 'Could not add recipient. Response code: ' + response.status,
+                "body": 'Could not add recipient.',
                 "type": "danger",
                 "timeout": 5,
             });
@@ -589,6 +594,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async updateRecipient(event, item) {
+        this._('#edit-recipient-btn').start();
+
         try {
             const i18n = this._i18n;
             let id = this.currentItem.identifier;
@@ -614,19 +621,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     "timeout": 5,
                 });
 
-                // this.currentRecipient = responseBody;
+                this.currentRecipient = responseBody;
 
                 let resp = await this.getDispatchRequest(id);
                 let responseBody2 = await resp.json();
                 if (responseBody2 !== undefined && responseBody2.status !== 403) {
                     this.currentItem = responseBody2;
-
-                    //TODO recipient request?
-                    // let recipientResponse = await this.fetchDetailedRecipientInformation(this.currentRecipient.identifier);
-                    // let recipientResponseBody = await recipientResponse.json();
-                    // if (recipientResponseBody !== undefined && recipientResponseBody.status !== 403) {
-                    //     this.currentRecipient = recipientResponseBody;
-                    // }
                 }
             } else {
                 // TODO error handling
@@ -641,39 +641,44 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } catch (e) {
             //TODO
         } finally {
-            //TODO enable button + disable spinner
+            this._('#edit-recipient-btn').stop();
         }
     }
 
     async deleteRecipient(recipient) {
         const i18n = this._i18n;
         // console.log(recipient);
+        this._('#delete-recipient-btn').start();
 
-        let response = await this.sendDeleteRecipientRequest(recipient.identifier);
-        if (response.status === 204) {
-            send({
-                "summary": i18n.t('show-requests.successfully-deleted-recipient-title'),
-                "body": i18n.t('show-requests.successfully-deleted-recipient-text'),
-                "type": "success",
-                "timeout": 5,
-            });
+        try {
+            let response = await this.sendDeleteRecipientRequest(recipient.identifier);
+            if (response.status === 204) {
+                send({
+                    "summary": i18n.t('show-requests.successfully-deleted-recipient-title'),
+                    "body": i18n.t('show-requests.successfully-deleted-recipient-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
 
-            let id = this.currentItem.identifier;
-            let resp = await this.getDispatchRequest(id);
-            let responseBody = await resp.json();
-            if (responseBody !== undefined && responseBody.status !== 403) {
-                this.currentItem = responseBody;
-                this.requestCreated = false;
+                let id = this.currentItem.identifier;
+                let resp = await this.getDispatchRequest(id);
+                let responseBody = await resp.json();
+                if (responseBody !== undefined && responseBody.status !== 403) {
+                    this.currentItem = responseBody;
+                    this.requestCreated = false;
+                }
+            } else {
+                // TODO error handling
+
+                send({
+                    "summary": 'Error!',
+                    "body": 'Could not delete recipient. Response code: ' + response.status,
+                    "type": "danger",
+                    "timeout": 5,
+                });
             }
-        } else {
-            // TODO error handling
-
-            send({
-                "summary": 'Error!',
-                "body": 'Could not delete recipient. Response code: ' + response.status,
-                "type": "danger",
-                "timeout": 5,
-            });
+        } finally {
+            this._('#delete-recipient-btn').stop();
         }
     }
 
@@ -706,25 +711,33 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async editRequest(event, item) {
-        let resp = await this.getDispatchRequest(item.identifier);
-        let responseBody = await resp.json();
-        if (responseBody !== undefined && responseBody.status !== 403) {
-            this.currentItem = responseBody;
-        }
+        let button = event.target;
+        button.start();
 
-        this.currentItem.recipients.forEach((element) => {
-            // console.log(element.identifier);
-            this.fetchDetailedRecipientInformation(element.identifier).then(result => {
-                //TODO
+        try {
+            let resp = await this.getDispatchRequest(item.identifier);
+            let responseBody = await resp.json();
+            if (responseBody !== undefined && responseBody.status !== 403) {
+                this.currentItem = responseBody;
+            }
+
+            this.currentItem.recipients.forEach((element) => {
+                // console.log(element.identifier);
+                this.fetchDetailedRecipientInformation(element.identifier).then(result => {
+                    //TODO
+                });
             });
-        });
 
-        this.showListView = false;
-        this.showDetailsView = true;
+            this.showListView = false;
+            this.showDetailsView = true;
+        } finally {
+            button.stop();
+        }
     }
 
     async deleteRequest(event, item) {
         const i18n = this._i18n;
+        let button = event.target;
 
         if (item.dateSubmitted) {
             send({
@@ -737,7 +750,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         if(confirm(i18n.t('show-requests.delete-dialog-text'))) {
-            this._('#delete-btn').start();
+            this._('#delete-btn').start(); //TODO check if code below works
+            button.start();
+
             try {
                 let response = await this.sendDeleteDispatchRequest(item.identifier);
                 if (response.status === 204) {
@@ -765,12 +780,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 //TODO
             } finally {
                 this._('#delete-btn').stop();
+                button.stop();
             }
         }
     }
 
     async submitRequest(event, item) {
         const i18n = this._i18n;
+        let button = event.target;
 
         if (item.dateSubmitted) {
             send({
@@ -785,7 +802,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (item.files && item.files.length > 0 && item.recipients && item.recipients.length > 0) {
             if(confirm(i18n.t('show-requests.submit-dialog-text'))) {
                 try {
-                    this._('#submit-btn').start();
+                    this._('#submit-btn').start(); //TODO
+                    button.start();
+
                     let response = await this.sendSubmitDispatchRequest(item.identifier);
                     if (response.status === 201) {
                         if (this.dispatchRequestsTable) {
@@ -820,6 +839,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     //TODO
                 } finally {
                     this._('#submit-btn').stop();
+                    button.stop();
                 }
             }
         } else {
@@ -865,53 +885,59 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async confirmEditSender() {
         const i18n = this._i18n;
-        let id = this.currentItem.identifier;
-        let senderGivenName = this._('#tf-edit-sender-gn-dialog').value;
-        let senderFamilyName = this._('#tf-edit-sender-fn-dialog').value;
-        let senderPostalCode = this._('#tf-edit-sender-pc-dialog').value;
-        let senderAddressLocality = this._('#tf-edit-sender-al-dialog').value;
-        let senderStreetAddress = this._('#tf-edit-sender-sa-dialog').value;
-        // let senderBuildingNumber = this._('#tf-edit-sender-bn-dialog').value ? this._('#tf-edit-sender-bn-dialog').value : ``;
-        let senderBuildingNumber = ''; //TODO
 
-        let groupId = this.groupId;
+        try {
+            this._('#edit-sender-btn').start();
+            let id = this.currentItem.identifier;
+            let senderGivenName = this._('#tf-edit-sender-gn-dialog').value;
+            let senderFamilyName = this._('#tf-edit-sender-fn-dialog').value;
+            let senderPostalCode = this._('#tf-edit-sender-pc-dialog').value;
+            let senderAddressLocality = this._('#tf-edit-sender-al-dialog').value;
+            let senderStreetAddress = this._('#tf-edit-sender-sa-dialog').value;
+            let senderBuildingNumber = (this._('#tf-edit-sender-bn-dialog') && this._('#tf-edit-sender-bn-dialog').value)
+                ? this._('#tf-edit-sender-bn-dialog').value : '';
 
-        let e = this._('#edit-sender-country-select');
-        let value = e.value;
-        let text = e.options[e.selectedIndex].text;
-        let senderAddressCountry = [value, text];
+            let groupId = this.groupId;
 
-        let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId);
+            let e = this._('#edit-sender-country-select');
+            let value = e.value;
+            let text = e.options[e.selectedIndex].text;
+            let senderAddressCountry = [value, text];
 
-        let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 200) {
-            send({
-                "summary": i18n.t('show-requests.successfully-updated-sender-title'),
-                "body": i18n.t('show-requests.successfully-updated-sender-text'),
-                "type": "success",
-                "timeout": 5,
-            });
+            let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId);
 
-            this.currentItem = responseBody;
-            if (this.dispatchRequestsTable) {
-                this.getListOfRequests();
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
+                send({
+                    "summary": i18n.t('show-requests.successfully-updated-sender-title'),
+                    "body": i18n.t('show-requests.successfully-updated-sender-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
+
+                this.currentItem = responseBody;
+                if (this.dispatchRequestsTable) {
+                    this.getListOfRequests();
+                }
+            } else if (response.status === 403) {
+                send({
+                    "summary": i18n.t('create-request.error-requested-title'),
+                    "body": i18n.t('error-not-permitted'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            } else {
+                // TODO error handling
+
+                send({
+                    "summary": 'Error!',
+                    "body": 'Could not edit sender. Response code: ' + response.status,
+                    "type": "danger",
+                    "timeout": 5,
+                });
             }
-        } else if (response.status === 403) {
-            send({
-                "summary": i18n.t('create-request.error-requested-title'),
-                "body": i18n.t('error-not-permitted'),
-                "type": "danger",
-                "timeout": 5,
-            });
-        } else {
-            // TODO error handling
-
-            send({
-                "summary": 'Error!',
-                "body": 'Could not edit sender. Response code: ' + response.status,
-                "type": "danger",
-                "timeout": 5,
-            });
+        } finally {
+            this._('#edit-sender-btn').stop();
         }
     }
 
@@ -973,150 +999,164 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async submitSelected() {
         const i18n = this._i18n;
 
-        let selectedItems = this.dispatchRequestsTable.getSelectedRows();
-        // console.log('selectedItems: ', selectedItems);
+        this._('#submit-all-btn').start();
 
-        let somethingWentWrong = false;
+        try {
 
-        for (let i = 0; i < selectedItems.length; i++) {
-            let id = selectedItems[i].getData()['requestId'];
-            let response = await this.getDispatchRequest(id);
-            let result =  await response.json();
-            if (result.dateSubmitted) {
-                send({
-                    "summary": i18n.t('show-requests.delete-not-allowed-title'),
-                    "body": i18n.t('show-requests.delete-not-allowed-text'), //TODO add more specific text here
-                    "type": "danger",
-                    "timeout": 5,
-                });
-                somethingWentWrong = true;
-                break;
-            }
-            if (!(result.files && result.files.length > 0 && result.recipients && result.recipients.length > 0)) {
-                send({
-                    "summary": i18n.t('show-requests.empty-fields-submitted-title'),
-                    "body": i18n.t('show-requests.empty-fields-submitted-text'),
-                    "type": "danger",
-                    "timeout": 5,
-                });
-                somethingWentWrong = true;
-                break;
-            }
-        }
+            let selectedItems = this.dispatchRequestsTable.getSelectedRows();
+            // console.log('selectedItems: ', selectedItems);
 
-        if (somethingWentWrong) {
-            return;
-        }
+            let somethingWentWrong = false;
 
-        let dialogText;
-        if (this.dispatchRequestsTable.getSelectedRows().length > 1) {
-            dialogText = i18n.t('show-requests.submit-more-dialog-text', { count: this.dispatchRequestsTable.getSelectedRows().length });
-        } else {
-            dialogText = i18n.t('show-requests.submit-dialog-text');
-        }
-
-        if(confirm(dialogText)) {
             for (let i = 0; i < selectedItems.length; i++) {
                 let id = selectedItems[i].getData()['requestId'];
                 let response = await this.getDispatchRequest(id);
                 let result = await response.json();
-
-                let submitResponse = await this.sendSubmitDispatchRequest(result.identifier);
-
-                if (submitResponse.status !== 201) {
+                if (result.dateSubmitted) {
+                    send({
+                        "summary": i18n.t('show-requests.delete-not-allowed-title'),
+                        "body": i18n.t('show-requests.delete-not-allowed-text'), //TODO add more specific text here
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                    somethingWentWrong = true;
+                    break;
+                }
+                if (!(result.files && result.files.length > 0 && result.recipients && result.recipients.length > 0)) {
+                    send({
+                        "summary": i18n.t('show-requests.empty-fields-submitted-title'),
+                        "body": i18n.t('show-requests.empty-fields-submitted-text'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
                     somethingWentWrong = true;
                     break;
                 }
             }
 
-            if (!somethingWentWrong) {
-                this.getListOfRequests();
-                send({
-                    "summary": i18n.t('show-requests.successfully-submitted-title'),
-                    "body": i18n.t('show-requests.successfully-submitted-text'),
-                    "type": "success",
-                    "timeout": 5,
-                });
-                this.clearAll();
-            } else {
-                // TODO error handling
-                send({
-                    "summary": 'Error!',
-                    "body": 'Could not submit request.',
-                    "type": "danger",
-                    "timeout": 5,
-                });
+            if (somethingWentWrong) {
+                return;
             }
+
+            let dialogText;
+            if (this.dispatchRequestsTable.getSelectedRows().length > 1) {
+                dialogText = i18n.t('show-requests.submit-more-dialog-text', {count: this.dispatchRequestsTable.getSelectedRows().length});
+            } else {
+                dialogText = i18n.t('show-requests.submit-dialog-text');
+            }
+
+            if (confirm(dialogText)) {
+                for (let i = 0; i < selectedItems.length; i++) {
+                    let id = selectedItems[i].getData()['requestId'];
+                    let response = await this.getDispatchRequest(id);
+                    let result = await response.json();
+
+                    let submitResponse = await this.sendSubmitDispatchRequest(result.identifier);
+
+                    if (submitResponse.status !== 201) {
+                        somethingWentWrong = true;
+                        break;
+                    }
+                }
+
+                if (!somethingWentWrong) {
+                    this.getListOfRequests();
+                    send({
+                        "summary": i18n.t('show-requests.successfully-submitted-title'),
+                        "body": i18n.t('show-requests.successfully-submitted-text'),
+                        "type": "success",
+                        "timeout": 5,
+                    });
+                    this.clearAll();
+                } else {
+                    // TODO error handling
+                    send({
+                        "summary": 'Error!',
+                        "body": 'Could not submit request.',
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
+            }
+        } finally {
+            this._('#submit-all-btn').stop();
         }
     }
 
     async deleteSelected() {
         const i18n = this._i18n;
 
-        let selectedItems = this.dispatchRequestsTable.getSelectedRows();
-        console.log('selectedItems: ', selectedItems);
+        this._('#delete-all-btn').start();
 
-        let somethingWentWrong = false;
+        try {
 
-        for (let i = 0; i < selectedItems.length; i++) {
-            let id = selectedItems[i].getData()['requestId'];
-            let response = await this.getDispatchRequest(id);
-            let result =  await response.json();
-            if (result.dateSubmitted) {
-                send({
-                    "summary": i18n.t('show-requests.delete-not-allowed-title'),
-                    "body": i18n.t('show-requests.delete-not-allowed-text'),
-                    "type": "danger",
-                    "timeout": 5,
-                });
-                somethingWentWrong = true;
-                break;
-            }
-        }
+            let selectedItems = this.dispatchRequestsTable.getSelectedRows();
+            console.log('selectedItems: ', selectedItems);
 
-        if (somethingWentWrong) {
-            return;
-        }
+            let somethingWentWrong = false;
 
-        let dialogText;
-        if (this.dispatchRequestsTable.getSelectedRows().length > 1) {
-            dialogText = i18n.t('show-requests.delete-more-dialog-text', { count: this.dispatchRequestsTable.getSelectedRows().length });
-        } else {
-            dialogText = i18n.t('show-requests.delete-dialog-text');
-        }
-
-        if(confirm(dialogText)) {
             for (let i = 0; i < selectedItems.length; i++) {
                 let id = selectedItems[i].getData()['requestId'];
                 let response = await this.getDispatchRequest(id);
                 let result = await response.json();
-
-                let deleteResponse = await this.sendDeleteDispatchRequest(result.identifier);
-
-                if (deleteResponse.status !== 204) {
+                if (result.dateSubmitted) {
+                    send({
+                        "summary": i18n.t('show-requests.delete-not-allowed-title'),
+                        "body": i18n.t('show-requests.delete-not-allowed-text'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
                     somethingWentWrong = true;
                     break;
                 }
             }
 
-            if (!somethingWentWrong) {
-                this.getListOfRequests();
-                send({
-                    "summary": i18n.t('show-requests.successfully-deleted-title'),
-                    "body": i18n.t('show-requests.successfully-deleted-text'),
-                    "type": "success",
-                    "timeout": 5,
-                });
-                this.clearAll();
-            } else {
-                // TODO error handling
-                send({
-                    "summary": 'Error!',
-                    "body": 'Could not delete request.',
-                    "type": "danger",
-                    "timeout": 5,
-                });
+            if (somethingWentWrong) {
+                return;
             }
+
+            let dialogText;
+            if (this.dispatchRequestsTable.getSelectedRows().length > 1) {
+                dialogText = i18n.t('show-requests.delete-more-dialog-text', {count: this.dispatchRequestsTable.getSelectedRows().length});
+            } else {
+                dialogText = i18n.t('show-requests.delete-dialog-text');
+            }
+
+            if (confirm(dialogText)) {
+                for (let i = 0; i < selectedItems.length; i++) {
+                    let id = selectedItems[i].getData()['requestId'];
+                    let response = await this.getDispatchRequest(id);
+                    let result = await response.json();
+
+                    let deleteResponse = await this.sendDeleteDispatchRequest(result.identifier);
+
+                    if (deleteResponse.status !== 204) {
+                        somethingWentWrong = true;
+                        break;
+                    }
+                }
+
+                if (!somethingWentWrong) {
+                    this.getListOfRequests();
+                    send({
+                        "summary": i18n.t('show-requests.successfully-deleted-title'),
+                        "body": i18n.t('show-requests.successfully-deleted-text'),
+                        "type": "success",
+                        "timeout": 5,
+                    });
+                    this.clearAll();
+                } else {
+                    // TODO error handling
+                    send({
+                        "summary": 'Error!',
+                        "body": 'Could not delete request.',
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
+            }
+        } finally {
+            this._('#delete-all-btn').stop();
         }
     }
 
@@ -1290,12 +1330,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
 
-            console.log(responseBody);
+            // console.log(responseBody);
             this.currentRecipient.familyName = responseBody.familyName;
             this.currentRecipient.givenName = responseBody.givenName;
             this.currentRecipient.birthDate = responseBody.birthDate ? responseBody.birthDate : '';
 
-            console.log(responseBody['localData']);
+            // console.log(responseBody['localData']);
 
             if (responseBody['localData'] !== null) {
                 this.currentRecipient.addressLocality = responseBody['localData']['addressLocality'] ? responseBody['localData']['addressLocality'] : '';
@@ -1313,7 +1353,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this._('#tf-add-recipient-pc-dialog').value = this.currentRecipient.postalCode;
                 this._('#tf-add-recipient-al-dialog').value = this.currentRecipient.addressLocality;
                 this._('#tf-add-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
-                this._('#tf-add-recipient-bn-dialog').value = this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : ''; //TODO check
+                this._('#tf-add-recipient-bn-dialog').value = this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : '';
             }
         } else {
             // TODO error handling
@@ -1680,6 +1720,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         <input
                                                 type="text"
                                                 class="input"
+                                                maxlength="10"
                                                 name="tf-edit-sender-bn-dialog"
                                                 id="tf-edit-sender-bn-dialog"
                                                 value="${this.currentItem && this.currentItem.senderBuildingNumber}"
@@ -1900,6 +1941,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     <input
                                             type="text"
                                             class="input"
+                                            maxlength="10"
                                             name="tf-add-recipient-bn-dialog"
                                             id="tf-add-recipient-bn-dialog"
                                             value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
@@ -2030,8 +2072,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     class="modal-close"
                                     aria-label="Close modal"
                                     @click="${() => {
-            MicroModal.close(this._('#edit-recipient-modal'));
-        }}">
+                                        this._('#edit-recipient-btn').stop();
+                                        MicroModal.close(this._('#edit-recipient-modal'));
+                                    }}">
                                 <dbp-icon
                                         title="${i18n.t('show-requests.modal-close')}"
                                         name="close"
@@ -2115,6 +2158,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     <input
                                             type="text"
                                             class="input"
+                                            maxlength="10"
                                             name="tf-edit-recipient-bn-dialog"
                                             id="tf-edit-recipient-bn-dialog"
                                             value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
@@ -2177,9 +2221,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <div class="modal-footer-btn">
                                 <button
                                         class="button"
-                                        data-micromodal-close
                                         aria-label="Close this dialog window"
                                         @click="${() => {
+                                            this._('#edit-recipient-btn').stop();
                                             MicroModal.close(this._('#edit-recipient-modal'));
                                         }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
@@ -2206,9 +2250,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 this.currentRecipient.streetAddress = this._('#tf-edit-recipient-sa-dialog').value;
                                                 this.currentRecipient.buildingNumber = this._('#tf-edit-recipient-bn-dialog').value;
                                                 this.currentRecipient.birthDate = this._('#tf-edit-recipient-birthdate').value;
-                                                this.updateRecipient().then(r => {
-                                                    MicroModal.close(this._('#edit-recipient-modal'));
-                                                });
+                                                this.updateRecipient();
+                                                MicroModal.close(this._('#edit-recipient-modal'));
+                                            } else {
+                                                this._('#edit-recipient-btn').stop();
                                             }
                                         }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-ok')}
