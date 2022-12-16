@@ -430,34 +430,47 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async addFile(file) {
-        const i18n = this._i18n;
-        let id = this.currentItem.identifier;
+        this._('#add-files-btn').start();
+        try {
+            const i18n = this._i18n;
+            let id = this.currentItem.identifier;
 
-        let response = await this.sendAddFileToRequest(id, file);
+            let response = await this.sendAddFileToRequest(id, file);
 
-        let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 201) {
-            send({
-                "summary": i18n.t('show-requests.successfully-added-file-title'),
-                "body": i18n.t('show-requests.successfully-added-file-text'),
-                "type": "success",
-                "timeout": 5,
-            });
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 201) {
+                send({
+                    "summary": i18n.t('show-requests.successfully-added-file-title'),
+                    "body": i18n.t('show-requests.successfully-added-file-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
 
-            let resp = await this.getDispatchRequest(id);
-            let responseBody = await resp.json();
-            if (responseBody !== undefined && responseBody.status !== 403) {
-                this.currentItem = responseBody;
+                let resp = await this.getDispatchRequest(id);
+                let responseBody = await resp.json();
+                if (responseBody !== undefined && responseBody.status !== 403) {
+                    this.currentItem = responseBody;
+                }
+            } else {
+                // TODO error handling
+
+                send({
+                    "summary": 'Error!',
+                    "body": 'File could not be added.',
+                    "type": "danger",
+                    "timeout": 5,
+                });
             }
-        } else {
-            // TODO error handling
-
+        } catch (e) {
+            //TODO
             send({
                 "summary": 'Error!',
-                "body": 'File could not be added.',
+                "body": 'There was an error.',
                 "type": "danger",
                 "timeout": 5,
             });
+        } finally {
+            this._('#add-files-btn').stop();
         }
     }
 
@@ -508,109 +521,127 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async addRecipientToRequest(event, item) {
-        const i18n = this._i18n;
-        let id = this.currentItem.identifier;
+        this._('#add-recipient-btn').start();
+        try {
+            const i18n = this._i18n;
+            let id = this.currentItem.identifier;
+            let givenName = this.currentRecipient.givenName;
+            let familyName = this.currentRecipient.familyName;
+            let addressCountry = this.currentRecipient.addressCountry;
+            let postalCode = this.currentRecipient.postalCode;
+            let addressLocality = this.currentRecipient.addressLocality;
+            let streetAddress = this.currentRecipient.streetAddress;
+            let buildingNumber = this.currentRecipient.buildingNumber;
+            let birthDate = this.currentRecipient.birthDate;
 
-        let givenName = this.currentRecipient.givenName;
-        let familyName = this.currentRecipient.familyName;
-        let addressCountry = this.currentRecipient.addressCountry;
-        let postalCode = this.currentRecipient.postalCode;
-        let addressLocality = this.currentRecipient.addressLocality;
-        let streetAddress = this.currentRecipient.streetAddress;
-        let buildingNumber = this.currentRecipient.buildingNumber;
-        let birthDate = this.currentRecipient.birthDate;
+            let response = await this.sendAddRequestRecipientsRequest(id, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
 
-        let response = await this.sendAddRequestRecipientsRequest(id, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 201) {
+                send({
+                    "summary": i18n.t('show-requests.successfully-added-recipient-title'),
+                    "body": i18n.t('show-requests.successfully-added-recipient-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
 
-        let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 201) {
-            send({
-                "summary": i18n.t('show-requests.successfully-added-recipient-title'),
-                "body": i18n.t('show-requests.successfully-added-recipient-text'),
-                "type": "success",
-                "timeout": 5,
-            });
+                let resp = await this.getDispatchRequest(id);
+                let responseBody = await resp.json();
+                if (responseBody !== undefined && responseBody.status !== 403) {
+                    this.currentItem = responseBody;
+                    // console.log(this.currentItem);
+                    this.currentRecipient = {};
+                }
 
-            let resp = await this.getDispatchRequest(id);
-            let responseBody = await resp.json();
-            if (responseBody !== undefined && responseBody.status !== 403) {
-                this.currentItem = responseBody;
-                // console.log(this.currentItem);
-                this.currentRecipient = {};
+                // this._('#tf-add-recipient-gn-dialog').value = '';
+                // this._('#tf-add-recipient-fn-dialog').value = '';
+                // this._('#add-recipient-country-select').value = '';
+                // this._('#tf-add-recipient-pc-dialog').value = '';
+                // this._('#tf-add-recipient-al-dialog').value = '';
+                // this._('#tf-add-recipient-sa-dialog').value = '';
+                // this._('#tf-add-recipient-bn-dialog').value = '';
+                // this._('#tf-add-recipient-birthdate').value = '';
+                // this._('#recipient-selector').clear(); //TODO reset selector + values
+
+                this.requestUpdate();
+
+            } else {
+                // TODO error handling
+
+                send({
+                    "summary": 'Error!',
+                    "body": 'Could not add recipient. Response code: ' + response.status,
+                    "type": "danger",
+                    "timeout": 5,
+                });
             }
-
-            // this._('#tf-add-recipient-gn-dialog').value = '';
-            // this._('#tf-add-recipient-fn-dialog').value = '';
-            // this._('#add-recipient-country-select').value = '';
-            // this._('#tf-add-recipient-pc-dialog').value = '';
-            // this._('#tf-add-recipient-al-dialog').value = '';
-            // this._('#tf-add-recipient-sa-dialog').value = '';
-            // this._('#tf-add-recipient-bn-dialog').value = '';
-            // this._('#tf-add-recipient-birthdate').value = '';
-            // this._('#recipient-selector').clear(); //TODO reset selector + values
-
-            this.requestUpdate();
-
-        } else {
-            // TODO error handling
-
+        } catch (e) {
+            //TODO
             send({
                 "summary": 'Error!',
                 "body": 'Could not add recipient. Response code: ' + response.status,
                 "type": "danger",
                 "timeout": 5,
             });
+        } finally {
+            this._('#add-recipient-btn').stop();
         }
     }
 
     async updateRecipient(event, item) {
-        const i18n = this._i18n;
-        let id = this.currentItem.identifier;
-        let recipientId = this.currentRecipient.identifier;
+        try {
+            const i18n = this._i18n;
+            let id = this.currentItem.identifier;
+            let recipientId = this.currentRecipient.identifier;
 
-        let givenName = this.currentRecipient.givenName;
-        let familyName = this.currentRecipient.familyName;
-        let addressCountry = this.currentRecipient.addressCountry;
-        let postalCode = this.currentRecipient.postalCode;
-        let addressLocality = this.currentRecipient.addressLocality;
-        let streetAddress = this.currentRecipient.streetAddress;
-        let buildingNumber = this.currentRecipient.buildingNumber;
-        let birthDate = this.currentRecipient.birthDate;
+            let givenName = this.currentRecipient.givenName;
+            let familyName = this.currentRecipient.familyName;
+            let addressCountry = this.currentRecipient.addressCountry;
+            let postalCode = this.currentRecipient.postalCode;
+            let addressLocality = this.currentRecipient.addressLocality;
+            let streetAddress = this.currentRecipient.streetAddress;
+            let buildingNumber = this.currentRecipient.buildingNumber;
+            let birthDate = this.currentRecipient.birthDate;
 
-        let response = await this.sendUpdateRecipientRequest(recipientId, id, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
+            let response = await this.sendUpdateRecipientRequest(recipientId, id, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
 
-        let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 200) {
-            send({
-                "summary": i18n.t('show-requests.successfully-edited-recipient-title'),
-                "body": i18n.t('show-requests.successfully-edited-recipient-text'),
-                "type": "success",
-                "timeout": 5,
-            });
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
+                send({
+                    "summary": i18n.t('show-requests.successfully-edited-recipient-title'),
+                    "body": i18n.t('show-requests.successfully-edited-recipient-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
 
-            // this.currentRecipient = responseBody;
+                // this.currentRecipient = responseBody;
 
-            let resp = await this.getDispatchRequest(id);
-            let responseBody2 = await resp.json();
-            if (responseBody2 !== undefined && responseBody2.status !== 403) {
-                this.currentItem = responseBody2;
+                let resp = await this.getDispatchRequest(id);
+                let responseBody2 = await resp.json();
+                if (responseBody2 !== undefined && responseBody2.status !== 403) {
+                    this.currentItem = responseBody2;
 
-                //TODO recipient request?
-                // let recipientResponse = await this.fetchDetailedRecipientInformation(this.currentRecipient.identifier);
-                // let recipientResponseBody = await recipientResponse.json();
-                // if (recipientResponseBody !== undefined && recipientResponseBody.status !== 403) {
-                //     this.currentRecipient = recipientResponseBody;
-                // }
+                    //TODO recipient request?
+                    // let recipientResponse = await this.fetchDetailedRecipientInformation(this.currentRecipient.identifier);
+                    // let recipientResponseBody = await recipientResponse.json();
+                    // if (recipientResponseBody !== undefined && recipientResponseBody.status !== 403) {
+                    //     this.currentRecipient = recipientResponseBody;
+                    // }
+                }
+            } else {
+                // TODO error handling
+
+                send({
+                    "summary": 'Error!',
+                    "body": 'Could not update recipient. Response code: ' + response.status,
+                    "type": "danger",
+                    "timeout": 5,
+                });
             }
-        } else {
-            // TODO error handling
-
-            send({
-                "summary": 'Error!',
-                "body": 'Could not update recipient. Response code: ' + response.status,
-                "type": "danger",
-                "timeout": 5,
-            });
+        } catch (e) {
+            //TODO
+        } finally {
+            //TODO enable button + disable spinner
         }
     }
 
@@ -706,25 +737,34 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         if(confirm(i18n.t('show-requests.delete-dialog-text'))) {
-            let response = await this.sendDeleteDispatchRequest(item.identifier);
-            if (response.status === 204) {
-                this.getListOfRequests();
-                send({
-                    "summary": i18n.t('show-requests.successfully-deleted-title'),
-                    "body": i18n.t('show-requests.successfully-deleted-text'),
-                    "type": "success",
-                    "timeout": 5,
-                });
-                this.clearAll();
-            } else {
-                // TODO error handling
+            this._('#delete-btn').start();
+            try {
+                let response = await this.sendDeleteDispatchRequest(item.identifier);
+                if (response.status === 204) {
+                    if (this.dispatchRequestsTable) {
+                        this.getListOfRequests();
+                    }
+                    send({
+                        "summary": i18n.t('show-requests.successfully-deleted-title'),
+                        "body": i18n.t('show-requests.successfully-deleted-text'),
+                        "type": "success",
+                        "timeout": 5,
+                    });
+                    this.clearAll();
+                } else {
+                    // TODO error handling
 
-                send({
-                    "summary": 'Error!',
-                    "body": 'Could not delete request. Response code: ' + response.status,
-                    "type": "danger",
-                    "timeout": 5,
-                });
+                    send({
+                        "summary": 'Error!',
+                        "body": 'Could not delete request. Response code: ' + response.status,
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
+            } catch (e) {
+                //TODO
+            } finally {
+                this._('#delete-btn').stop();
             }
         }
     }
@@ -743,35 +783,43 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         if (item.files && item.files.length > 0 && item.recipients && item.recipients.length > 0) {
-
             if(confirm(i18n.t('show-requests.submit-dialog-text'))) {
-                let response = await this.sendSubmitDispatchRequest(item.identifier);
-                if (response.status === 201) {
-                    this.getListOfRequests();
-                    send({
-                        "summary": i18n.t('show-requests.successfully-submitted-title'),
-                        "body": i18n.t('show-requests.successfully-submitted-text'),
-                        "type": "success",
-                        "timeout": 5,
-                    });
-                    this.clearAll();
-                    this.requestCreated = false;
-                } else if (response.status === 403) {
-                    send({
-                        "summary": i18n.t('create-request.error-requested-title'),
-                        "body": i18n.t('error-not-permitted'),
-                        "type": "danger",
-                        "timeout": 5,
-                    });
-                } else {
-                    // TODO error handling
+                try {
+                    this._('#submit-btn').start();
+                    let response = await this.sendSubmitDispatchRequest(item.identifier);
+                    if (response.status === 201) {
+                        if (this.dispatchRequestsTable) {
+                            this.getListOfRequests();
+                        }
+                        send({
+                            "summary": i18n.t('show-requests.successfully-submitted-title'),
+                            "body": i18n.t('show-requests.successfully-submitted-text'),
+                            "type": "success",
+                            "timeout": 5,
+                        });
+                        this.clearAll();
+                        this.requestCreated = false;
+                    } else if (response.status === 403) {
+                        send({
+                            "summary": i18n.t('create-request.error-requested-title'),
+                            "body": i18n.t('error-not-permitted'),
+                            "type": "danger",
+                            "timeout": 5,
+                        });
+                    } else {
+                        // TODO error handling
 
-                    send({
-                        "summary": 'Error!',
-                        "body": 'Could not submit request. Response code: ' + response.status,
-                        "type": "danger",
-                        "timeout": 5,
-                    });
+                        send({
+                            "summary": 'Error!',
+                            "body": 'Could not submit request. Response code: ' + response.status,
+                            "type": "danger",
+                            "timeout": 5,
+                        });
+                    }
+                } catch (e) {
+                    //TODO
+                } finally {
+                    this._('#submit-btn').stop();
                 }
             }
         } else {
@@ -785,6 +833,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async changeSubjectRequest(id, subject) {
+        this._('#edit-subject-btn').start();
         const i18n = this._i18n;
         try {
             let response = await this.sendChangeSubjectRequest(id, subject);
@@ -810,7 +859,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } finally {
-            // TODO
+            this._('#edit-subject-btn').stop();
         }
     }
 
@@ -844,7 +893,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             });
 
             this.currentItem = responseBody;
-            this.getListOfRequests();
+            if (this.dispatchRequestsTable) {
+                this.getListOfRequests();
+            }
         } else if (response.status === 403) {
             send({
                 "summary": i18n.t('create-request.error-requested-title'),
@@ -871,6 +922,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmAddSubject() {
+
+        this._('#add-subject-confirm-btn').disabled = true;
+
         //TODO
         this.subject = this._('#tf-add-subject-fn-dialog').value ? this._('#tf-add-subject-fn-dialog').value : '';
 
@@ -882,6 +936,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.hasSubject = true;
 
         this.hasSender = true;
+
+        this._('#add-subject-confirm-btn').disabled = false;
     }
 
     async fetchDetailedRecipientInformation(identifier) {
@@ -1275,6 +1331,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async processSelectedSender(event) {
         const i18n = this._i18n;
+        this.organizationLoaded = true;
 
         let mayWrite = event.target.valueObject.mayWrite;
         if (!mayWrite && !this.requestCreated) {
@@ -1523,6 +1580,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    checkValidity(input) {
+        const isValid = input.reportValidity();
+        input.setAttribute('aria-invalid', !isValid);
+        return isValid;
+    }
+
     addEditSenderModal() {
         const i18n = this._i18n;
 
@@ -1712,12 +1775,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         `;
     }
 
-    checkValidity(input) {
-        const isValid = input.reportValidity();
-        input.setAttribute('aria-invalid', !isValid);
-        return isValid;
-    }
-
     addAddRecipientModal() {
         const i18n = this._i18n;
 
@@ -1739,6 +1796,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     class="modal-close"
                                     aria-label="Close modal"
                                     @click="${() => {
+                                        this._('#add-recipient-btn').stop();
                                         MicroModal.close(this._('#add-recipient-modal'));
                                     }}">
                                 <dbp-icon
@@ -1933,15 +1991,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 this.currentRecipient.birthDate = this._('#tf-add-recipient-birthdate').value;
                                                 
                                                 this.addRecipientToRequest().then(r => {
-
                                                     MicroModal.close(this._('#add-recipient-modal'));
 
                                                     // TODO clear selector value
                                                     this._('#recipient-selector').value = "";
-                                                    console.log(this._('#recipient-selector'));
-                                                    console.log('value: ', this._('#recipient-selector').value);
+                                                    // console.log(this._('#recipient-selector'));
+                                                    // console.log('value: ', this._('#recipient-selector').value);
                                                 });
-                                            }
+                                            } 
                                         }}">
                                     ${i18n.t('show-requests.add-recipient-dialog-button-ok')}
                                 </button>
@@ -2363,8 +2420,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </button>
                                 <button
                                         class="button select-button is-primary"
-                                        id="add-subject-confirm-btn"
+                                        id="edit-subject-confirm-btn"
                                         @click="${() => {
+                                            // this._('#edit-subject-confirm-btn').start();
                                             this.confirmEditSubject().then(r => {
                                                 MicroModal.close(this._('#edit-subject-modal'));
                                             });

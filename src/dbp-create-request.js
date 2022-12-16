@@ -46,6 +46,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.mayRead = false;
         this.mayWrite = false;
+        this.organizationLoaded = false;
 
         this.showDetailsView = false;
 
@@ -99,6 +100,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             mayWrite: { type: Boolean, attribute: false },
             mayRead: { type: Boolean, attribute: false },
+            organizationLoaded: { type: Boolean, attribute: false },
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -135,7 +137,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     "timeout": 5,
                 });
                 this.currentItem = responseBody;
-                console.log(this.currentItem);
+                // console.log(this.currentItem);
                 this.requestCreated = true;
             } else if (response.status === 403) {
                 send({
@@ -155,10 +157,13 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
         } finally {
             // TODO
+            this._('#create-btn').stop();
         }
     }
 
-    async _onCreateRequestButtonClicked(event) {
+    _onCreateRequestButtonClicked(event) {
+        this._('#create-btn').start();
+
         MicroModal.show(this._('#add-subject-modal'), {
             disableScroll: true,
             onClose: (modal) => {
@@ -266,9 +271,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         this.processSelectedSender(event);
                                     }}
                         ></dbp-resource-select>
-                        <dbp-loading-button id="send-btn" type="is-primary"
+                        <dbp-loading-button id="create-btn" type="is-primary"
                                             value="${i18n.t('create-request.create-request-button-text')}"
-                                            @click="${this._onCreateRequestButtonClicked}"
+                                            @click="${(event) => { this._onCreateRequestButtonClicked(event); }}"
                                             title="${i18n.t('create-request.create-request-button-text')}"
                                             ?disabled="${!this.mayWrite}"
                                             class="${classMap({hidden: this.showDetailsView})}"
@@ -277,7 +282,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
 
                 <div class="no-access-notification">
-                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.mayWrite || this.requestCreated })}"
+                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.mayWrite || this.requestCreated || !this.organizationLoaded })}"
                                              type="danger"
                                              body="${this.mayRead ? i18n.t('create-request.error-no-writes') : i18n.t('error-no-read')}">
                     </dbp-inline-notification>
@@ -336,7 +341,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         <div class="section-titles">
                                             ${i18n.t('create-request.request-subject')}
                                         ${!this.currentItem.dateSubmitted && this.hasSender ? html`
-                                            <dbp-icon-button id="edit-btn"
+                                            <dbp-icon-button id="edit-subject-btn"
                                                          ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                          @click="${(event) => {
                                                                 MicroModal.show(this._('#edit-subject-modal'), {
@@ -359,7 +364,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="header-btn">
                                     <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                                     ${!this.currentItem.dateSubmitted && this.hasSender ? html`
-                                        <dbp-icon-button id="edit-btn"
+                                        <dbp-icon-button id="edit-sender-btn"
                                                      ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                      @click="${(event) => {
                                                          console.log("on edit sender clicked");
@@ -403,7 +408,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                         value="${i18n.t('show-requests.add-files-button-text')}" 
                                                         @click="${(event) => {
-                                                            console.log("on add files clicked");
                                                             this.openFileSource();
                                                         }}" 
                                                         title="${i18n.t('show-requests.add-files-button-text')}"
@@ -464,8 +468,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                     disableFocus: false,
                                                                     onClose: (modal) => {
                                                                         this.loading = false;
+                                                                        this._('#add-recipient-btn').stop();
                                                                     },
-                                                                }); 
+                                                                });
                                                             });
                                                         }}" 
                                                         title="${i18n.t('show-requests.add-recipient-button-text')}">
@@ -611,9 +616,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         class="button select-button is-primary"
                                         id="add-subject-confirm-btn"
                                         @click="${() => {
-                                            this.confirmAddSubject().then(r => {
-                                                MicroModal.close(this._('#add-subject-modal'));
-                                            });
+                                            // this._('#add-subject-confirm-btn').disabled = true;
+                                            MicroModal.close(this._('#add-subject-modal'));
+                                            this.confirmAddSubject();
                                         }}">
                                     ${i18n.t('show-requests.add-subject-dialog-button-ok')}
                                 </button>
