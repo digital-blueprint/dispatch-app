@@ -60,6 +60,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.dispatchRequestsTable = null;
         this.totalNumberOfItems = 0;
+        this.rowsSelected = false;
 
         this.boundSelectHandler = this.selectAllFiles.bind(this);
 
@@ -101,6 +102,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             organizationSet: { type: Boolean, attribute: false },
             mayWrite: { type: Boolean, attribute: false },
             mayRead: { type: Boolean, attribute: false },
+            rowsSelected: { type: Boolean, attribute: false },
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -430,6 +432,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 this._('#select_all').checked = true;
         } else {
                 this._('#select_all').checked = false;
+        }
+        if (
+            this.dispatchRequestsTable !== null &&
+            this.dispatchRequestsTable.getSelectedRows().length > 0 ) {
+            this.rowsSelected = true;
+        } else {
+            this.rowsSelected = false;
         }
     }
 
@@ -1120,7 +1129,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             ${ this.mayWrite ? html`
                                 <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
                                     <dbp-loading-button id="delete-all-btn"
-                                                        ?disabled="${this.loading}"
+                                                        ?disabled="${this.loading || !this.rowsSelected}"
                                                         value="${i18n.t('show-requests.delete-button-text')}"
                                                         @click="${(event) => { this.deleteSelected(event); }}"
                                                         title="${i18n.t('show-requests.delete-button-text')}"
@@ -1129,7 +1138,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </dbp-loading-button>
                                     <dbp-loading-button id="submit-all-btn"
                                                         type="is-primary"
-                                                        ?disabled="${this.loading}"
+                                                        ?disabled="${this.loading || !this.rowsSelected}"
                                                         value="${i18n.t('show-requests.submit-button-text')}"
                                                         @click="${(event) => { this.submitSelected(event); }}"
                                                         title="${i18n.t('show-requests.submit-button-text')}"

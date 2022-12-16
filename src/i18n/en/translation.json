@@ -17,7 +17,7 @@
         "error-requested-title": "Error!",
         "error-requested-text": "There was an error.",
         "request-subject": "Subject",
-        "create-dispatch-order": "Create dispatch order",
+        "create-dispatch-order": "Fill in dispatch order",
         "empty-subject": "Please enter a subject for the dispatch order:",
         "add-sender-button-text": "Add sender",
         "back-to-create": "Back to create a request",
