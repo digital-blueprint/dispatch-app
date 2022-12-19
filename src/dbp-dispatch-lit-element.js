@@ -2447,7 +2447,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             ${statusChange.fileFormat ? html`
                                                 <dbp-icon-button class="download-btn"
                                                                  @click="${(event) => {
-                                                                        // TODO
                                                                         console.log('download file clicked');
                                                                         this._onDownloadFileClicked(event, statusChange['@id']);
                                                                     }}"
