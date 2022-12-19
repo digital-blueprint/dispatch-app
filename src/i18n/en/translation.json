@@ -177,7 +177,10 @@
         "edit-subject-modal-title": "Edit subject",
         "loading-table-message": "Dispatch requests are loading. This may take a while.",
         "app-delivery-id": "App Delivery ID",
-        "save-field-label": "Download file"
+        "save-field-label": "Download file",
+        "edit-subject-success-title": "Successfully changed!",
+        "edit-subject-success-text": "The subject was successfully changed.",
+        "download-button-text": "Download file"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading...",

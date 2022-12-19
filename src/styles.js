@@ -772,6 +772,18 @@ export function getDispatchRequestStyles() {
                 font-weight: bolder;
             }
 
+            .download-btn {
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+            
+            .new-line-content {
+                white-space: pre-line;
+            }
+            
+            .scroll {
+                overflow-y: auto;
+            }
             
             @media only screen and (orientation: portrait) and (max-width: 768px) {
 

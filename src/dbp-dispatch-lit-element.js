@@ -913,6 +913,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && response.status === 200) {
                 this.currentItem = responseBody;
                 this.subject = this.currentItem.name;
+
+                send({
+                    "summary": i18n.t('show-requests.edit-subject-success-title'),
+                    "body": i18n.t('show-requests.edit-subject-success-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
+
             } else if (response.status === 403) {
                 send({
                     "summary": i18n.t('create-request.error-requested-title'),
@@ -2436,14 +2444,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                             ${this.currentRecipient && this.currentRecipient.statusChanges && this.currentRecipient.statusChanges.length > 0 ? html`
                             <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
-                            <div class="">
+                            <div class="scroll">
                                 ${this.currentRecipient.statusChanges.map(statusChange => html`
                                     <div class="recipient-status">
                                         <div>
                                             <div>${this.convertToReadableDate(statusChange.dateCreated)} </div>
-                                            <div class="status-detail">${statusChange.description} (StatusType ${statusChange.statusType})</div>
+                                            <div class="status-detail new-line-content">${statusChange.description} (StatusType ${statusChange.statusType})</div>
                                         </div>
-                                        <div>
+                                        <div class="download-btn">
                                             ${statusChange.fileFormat ? html`
                                                 <dbp-icon-button class="download-btn"
                                                                  @click="${(event) => {

@@ -1395,7 +1395,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
                                                 <div>${recipient.postalCode} ${recipient.addressLocality}</div>
                                                 <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
-                                                <div>${this.currentRecipient && this.currentRecipient.statusDescription ? html`Status: ${this.currentRecipient.statusDescription}` : ``}</div>
+                                                <div>${this.currentRecipient && this.currentRecipient.statusDescription ? html`
+                                                    ${this.currentRecipient.statusDescription.includes('P6') && this.currentItem.dateSubmitted ? html `
+                                                        <span class="status-green">●</span><span class="new-line-content"> Status: ${this.currentRecipient.statusDescription}</span>
+                                                    ` : html`
+                                                        Status: ${this.currentRecipient.statusDescription}
+                                                    `}
+                                                ` : ``}</div>
                                             </div>
                                             <div class="right-side">
                                                     <dbp-icon-button id="show-recipient-btn"
@@ -1408,7 +1414,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                                 disableScroll: true,
                                                                                 onClose: (modal) => {
                                                                                     this.loading = false;
-                                                                                    this.currentRecipient = {};
+                                                                                    // this.currentRecipient = {};
                                                                                     this._('#show-recipient-btn').stop();
                                                                                 },
                                                                             });
