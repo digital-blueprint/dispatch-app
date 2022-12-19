@@ -1,7 +1,7 @@
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import {send} from "@dbp-toolkit/common/notification";
 import MicroModal from "./micromodal.es";
-import {FileSource} from "@dbp-toolkit/file-handling";
+import {FileSource, FileSink} from "@dbp-toolkit/file-handling";
 import {html} from "lit";
 import * as dispatchHelper from './utils';
 import {PersonSelect} from "@dbp-toolkit/person-select";
@@ -28,6 +28,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     static get scopedElements() {
         return {
             'dbp-file-source': FileSource,
+            'dbp-file-sink': FileSink,
             'dbp-person-select': PersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-icon-button': IconButton
@@ -414,6 +415,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
     }
 
+    async sendGetStatusChangeRequest(identifier) {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: "Bearer " + this.auth.token
+            },
+        };
+        return await this.httpGetAsync(this.entryPointUrl + identifier, options);
+    }
+
     /*
     * Open  file source
     *
@@ -507,6 +519,45 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         } finally {
             this._('#delete-file-btn').stop();
+        }
+    }
+
+    /**
+     * Open Filesink for a single File
+     *
+     * @param fileContentUrl
+     * @param fileName
+     */
+    async downloadFileClickHandler(fileContentUrl, fileName) {
+        let files = [];
+        const arr = dispatchHelper.convertDataURIToBinary(fileContentUrl);
+        const binaryFile = new File([arr], fileName, {
+            type: dispatchHelper.getDataURIContentType(fileContentUrl),
+        });
+        files.push(binaryFile);
+        // this.signedFilesToDownload = files.length;
+        this._('#file-sink').files = [...files];
+    }
+
+    async _onDownloadFileClicked(event, statusRequestId) {
+        let button = event.target;
+        button.start();
+
+        try {
+            let response = await this.sendGetStatusChangeRequest(statusRequestId);
+
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
+                console.log('resp: ', responseBody);
+                let fileContentUrl = responseBody['fileContentUrl'];
+                let fileName = responseBody['description'];
+                await this.downloadFileClickHandler(fileContentUrl, fileName);
+
+            } else {
+                //TODO
+            }
+        } finally {
+            button.stop();
         }
     }
 
@@ -970,7 +1021,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // let id = this.currentRecipient.identifier;
 
         let response = await this.getDispatchRecipient(identifier);
-        console.log('fetchdetailedrecipientinformation', response);
+        // console.log('fetchdetailedrecipientinformation', response);
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
@@ -980,6 +1031,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.birthDate = this.convertToBirthDate(responseBody['birthDate']);
 
             this.currentRecipient.statusChanges = responseBody['statusChanges'];
+            console.log('statusChanges: ', this.currentRecipient.statusChanges);
             if (this.currentRecipient.statusChanges.length > 0) {
                 this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
                 this.currentRecipient.statusType = this.currentRecipient.statusChanges[0].statusType;
@@ -1554,6 +1606,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                   button-label="${i18n.t('show-requests.filepicker-button-title')}"
                   @dbp-file-source-file-selected="${this.onFileSelected}">
              </dbp-file-source>
+            
+            <dbp-file-sink
+                id="file-sink"
+                context="${i18n.t('show-requests.save-field-label', {
+                    count: 1,
+                })}"
+                filename="download.pdf"
+                subscribe="initial-file-handling-state,nextcloud-store-session"
+                enabled-targets="${this.fileHandlingEnabledTargets}"
+                nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
+                nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
+                nextcloud-name="${this.nextcloudName}"
+                nextcloud-file-url="${this.nextcloudFileURL}"
+                lang="${this.lang}"></dbp-file-sink>
         `;
     }
 
@@ -2378,11 +2444,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             <div class="status-detail">${statusChange.description} (StatusType ${statusChange.statusType})</div>
                                         </div>
                                         <div>
-                                            ${statusChange.file ? html`
+                                            ${statusChange.fileFormat ? html`
                                                 <dbp-icon-button class="download-btn"
                                                                  @click="${(event) => {
                                                                         // TODO
                                                                         console.log('download file clicked');
+                                                                        this._onDownloadFileClicked(event, statusChange['@id']);
                                                                     }}"
                                                                  title="${i18n.t('show-requests.download-button-text')}"
                                                                  icon-name="download"></dbp-icon-button>

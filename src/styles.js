@@ -386,6 +386,10 @@ export function getDispatchRequestStyles() {
                 width: 100%;
             }
             
+            .modal-overlay {
+                z-index: 9000;
+            }
+            
             .no-access-notification {
                 margin-top: 1.3em;
                 margin-bottom: 1.3em;

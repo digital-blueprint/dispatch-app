@@ -176,7 +176,8 @@
         "edit-subject-dialog-button-ok": "OK",
         "edit-subject-modal-title": "Edit subject",
         "loading-table-message": "Dispatch requests are loading. This may take a while.",
-        "app-delivery-id": "App Delivery ID"
+        "app-delivery-id": "App Delivery ID",
+        "save-field-label": "Download file"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading...",

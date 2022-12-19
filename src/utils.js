@@ -1,5 +1,31 @@
 import {html} from 'lit';
 
+export const getPDFFileBase64Content = (file) => {
+    return file.contentUrl.replace(/data:\s*application\/pdf;\s*base64,/, '');
+};
+
+export const convertDataURIToBinary = (dataURI) => {
+    const BASE64_MARKER = ';base64,';
+    const base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+    const base64 = dataURI.substring(base64Index);
+    const raw = window.atob(base64);
+    const rawLength = raw.length;
+    let array = new Uint8Array(rawLength);
+
+    for (let i = 0; i < rawLength; i++) {
+        array[i] = raw.charCodeAt(i);
+    }
+
+    return array;
+};
+
+export const getDataURIContentType = (dataURI) => {
+    const BASE64_MARKER = ';base64,';
+    const base64Index = dataURI.indexOf(BASE64_MARKER);
+
+    return dataURI.substring(5, base64Index);
+};
+
 export function getCountryList() {
     return html`
         <option value></option>

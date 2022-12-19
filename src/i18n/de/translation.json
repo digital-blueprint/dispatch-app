@@ -176,7 +176,8 @@
         "edit-subject-dialog-button-ok": "Übernehmen",
         "edit-subject-modal-title": "Betreff bearbeiten",
         "loading-table-message": "Versandaufträge werden geladen. Dies kann eine Weile dauern.",
-        "app-delivery-id": "App Delivery ID"
+        "app-delivery-id": "App Delivery ID",
+        "save-field-label": "Datei herunterladen"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",
