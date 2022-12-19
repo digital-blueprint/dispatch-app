@@ -1421,7 +1421,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 icon-name="keyword-research"></dbp-icon></dbp-icon-button>
                                                     ${!this.currentItem.dateSubmitted ? html`
                                                         <dbp-icon-button id="edit-recipient-btn"
-                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                                      @click="${() => {
                                                                          this.currentRecipient = recipient;
                                                                          this._('#edit-recipient-btn').start();
@@ -1444,7 +1444,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                      title="${i18n.t('show-requests.edit-recipients-button-text')}"
                                                                      icon-name="pencil"></dbp-icon-button>
                                                         <dbp-icon-button id="delete-recipient-btn"
-                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                                     @click="${() => {
                                                                         this.deleteRecipient(recipient);
                                                                     }}"
