@@ -550,7 +550,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && response.status === 200) {
                 console.log('resp: ', responseBody);
                 let fileContentUrl = responseBody['fileContentUrl'];
-                let fileName = responseBody['description'];
+                let fileName = 'DeliveryNotification'//responseBody['description']; //TODO
                 await this.downloadFileClickHandler(fileContentUrl, fileName);
 
             } else {
@@ -1052,7 +1052,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             // console.log('rec: ', this.currentRecipient);
         } else {
             // TODO error handling
-
         }
     }
 
@@ -1221,6 +1220,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     createFormattedFilesList(list) {
+        const i18n = this._i18n;
         let output = '';
         list.forEach((file) => {
             output += file.name + "<br>";
@@ -1228,11 +1228,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (output !== '') {
             return output;
         } else {
-            return '(Noch) keine Dateien angehängt'; //TODO translate
+            return i18n.t('show-requests.no-files-attached');
         }
     }
 
     createFormattedRecipientsList(list) {
+        const i18n = this._i18n;
         let output = '';
         list.forEach((recipient) => {
             output += recipient.familyName + ", " + recipient.givenName + "<br>";
@@ -1240,7 +1241,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (output !== '') {
             return output;
         } else {
-            return '(Noch) keine Empfänger'; //TODO translate
+            return i18n.t('show-requests.no-recipients-added');
         }
     }
 
@@ -2455,7 +2456,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             ${statusChange.fileFormat ? html`
                                                 <dbp-icon-button class="download-btn"
                                                                  @click="${(event) => {
-                                                                        console.log('download file clicked');
                                                                         this._onDownloadFileClicked(event, statusChange['@id']);
                                                                     }}"
                                                                  title="${i18n.t('show-requests.download-button-text')}"

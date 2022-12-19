@@ -180,7 +180,9 @@
         "save-field-label": "Download file",
         "edit-subject-success-title": "Successfully changed!",
         "edit-subject-success-text": "The subject was successfully changed.",
-        "download-button-text": "Download file"
+        "download-button-text": "Download file",
+        "no-files-attached": "No files attached (yet).",
+        "no-recipients-added": "No recipients specified (yet)."
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading...",
