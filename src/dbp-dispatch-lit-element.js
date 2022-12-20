@@ -19,6 +19,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentRecipient = {};
         this.subject = '';
         this.groupId = '';
+        this.groupValue = this.loadGroupValue();
 
         this.tempItem = {};
         this.tempValue = {};
@@ -1431,6 +1432,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async processSelectedSender(event) {
+        this.storeGroupValue(event.detail.value);
         const i18n = this._i18n;
         this.organizationLoaded = true;
 
@@ -2554,5 +2556,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 </div>
             </div>
         `;
+    }
+
+    storeGroupValue(value) {
+        this.groupValue = value;
+        sessionStorage.setItem('dbp-dispatch-group-value', this.groupValue);
+    }
+
+    loadGroupValue() {
+        this.groupValue = sessionStorage.getItem('dbp-dispatch-group-value');
+
+        return this.groupValue;
     }
 }
