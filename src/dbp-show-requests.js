@@ -637,7 +637,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     getTableHeaderOptions() {
         const i18n = this._i18n;
         if (!this.dispatchRequestsTable)
-            return;
+            return [];
 
         let options = [];
         options[0] = html`<option value='all'>${i18n.t('show-requests.all-columns')}</option>`;

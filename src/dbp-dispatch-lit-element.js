@@ -551,7 +551,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && response.status === 200) {
                 console.log('resp: ', responseBody);
                 let fileContentUrl = responseBody['fileContentUrl'];
-                let fileName = 'DeliveryNotification'//responseBody['description']; //TODO
+                let fileName = 'DeliveryNotification';//responseBody['description']; //TODO
                 await this.downloadFileClickHandler(fileContentUrl, fileName);
 
             } else {
