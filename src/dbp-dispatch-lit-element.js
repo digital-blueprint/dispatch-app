@@ -1477,6 +1477,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } else if (mayWrite && this.requestCreated && !this.tempChange) {
             // console.log('case3 curr', this.currentItem);
             let senderFamilyName = event.target.valueObject.identifier;
+
+            if (senderFamilyName === this.currentItem.senderFamilyName) {
+                return;
+            }
+
             let senderGivenName = event.target.valueObject.name;
             let senderAddressCountry = event.target.valueObject.country;
             let senderStreetAddress = event.target.valueObject.street;
