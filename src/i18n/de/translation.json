@@ -20,7 +20,7 @@
         "create-dispatch-order": "Versandauftrag ausfüllen",
         "empty-subject": "Bitte geben Sie einen Betreff für den Versandauftrag ein:",
         "add-sender-button-text": "Absender hinzufügen",
-        "back-to-create": "Zurück einen neuen Auftrag erstellen",
+        "back-to-create": "Zurück zu: einen neuen Auftrag erstellen",
         "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine neuen Aufträge erstellen.",
         "create-not-allowed-title": "Keine Rechte!",
         "create-not-allowed-text": "Sie besitzen in der gewählten Organisation nur Leserechte für Versandaufträge und können den Absender deshalb nicht ändern."

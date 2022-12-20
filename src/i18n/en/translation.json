@@ -20,7 +20,7 @@
         "create-dispatch-order": "Fill in dispatch order",
         "empty-subject": "Please enter a subject for the dispatch order:",
         "add-sender-button-text": "Add sender",
-        "back-to-create": "Back to create a request",
+        "back-to-create": "Back to: create a new dispatch request",
         "error-no-writes": "You only have read rights for shipping orders in this organization, and therefore cannot create new orders.",
         "create-not-allowed-title": "No access rights!",
         "create-not-allowed-text": "You only have read rights for dispatch orders in the selected organization and therefore cannot change the sender."
