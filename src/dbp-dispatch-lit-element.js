@@ -1617,6 +1617,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.hasEmptyFields = false;
         this.hasSender = false;
         this.hasRecipients = false;
+
+        // this.organizationLoaded = false;
+        this.requestCreated = false;
     }
 
     addFilePicker() {
