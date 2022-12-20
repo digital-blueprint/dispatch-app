@@ -609,16 +609,28 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     // console.log(this.currentItem);
                     this.currentRecipient = {};
                 }
+                this._('#recipient-selector').clear();
+                this.currentRecipient.givenName = '';
+                this.currentRecipient.familyName = '';
+                this.currentRecipient.postalCode = '';
+                this.currentRecipient.addressLocality = '';
+                this.currentRecipient.streetAddress = '';
+                this.currentRecipient.buildingNumber = '';
+                this.currentRecipient.birthDate = '';
 
-                // this._('#tf-add-recipient-gn-dialog').value = '';
-                // this._('#tf-add-recipient-fn-dialog').value = '';
-                // this._('#add-recipient-country-select').value = '';
-                // this._('#tf-add-recipient-pc-dialog').value = '';
-                // this._('#tf-add-recipient-al-dialog').value = '';
-                // this._('#tf-add-recipient-sa-dialog').value = '';
-                // this._('#tf-add-recipient-bn-dialog').value = '';
-                // this._('#tf-add-recipient-birthdate').value = '';
-                // this._('#recipient-selector').clear(); //TODO reset selector + values
+                this.currentRecipient.addressLocality = '';
+                this.currentRecipient.postalCode = '';
+                this.currentRecipient.streetAddress = '';
+                this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping('AT');
+
+                this._('#tf-add-recipient-gn-dialog').value = this.currentRecipient.givenName;
+                this._('#tf-add-recipient-fn-dialog').value = this.currentRecipient.familyName;
+                this._('#tf-add-recipient-pc-dialog').value = this.currentRecipient.postalCode;
+                this._('#tf-add-recipient-al-dialog').value = this.currentRecipient.addressLocality;
+                this._('#tf-add-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
+                this._('#tf-add-recipient-bn-dialog').value = this.currentRecipient.buildingNumber;
+                this._('#tf-add-recipient-birthdate').value = this.currentRecipient.birthDate;
+                this._('#add-recipient-country-select').value = 'AT';
 
                 this.requestUpdate();
 
@@ -1397,26 +1409,31 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.givenName = responseBody.givenName;
             this.currentRecipient.birthDate = responseBody.birthDate ? responseBody.birthDate : '';
 
+            this._('#tf-add-recipient-gn-dialog').value = this.currentRecipient.givenName;
+            this._('#tf-add-recipient-fn-dialog').value = this.currentRecipient.familyName;
+            this._('#tf-add-recipient-birthdate').value = this.currentRecipient.birthDate;
+
             // console.log(responseBody['localData']);
 
-            if (responseBody['localData'] !== null) {
+            if (responseBody['localData'] && responseBody['localData'] !== '') {
                 this.currentRecipient.addressLocality = responseBody['localData']['addressLocality'] ? responseBody['localData']['addressLocality'] : '';
                 this.currentRecipient.postalCode = responseBody['localData']['postalCode'] ? responseBody['localData']['postalCode'] : '';
                 this.currentRecipient.streetAddress = responseBody['localData']['streetAddress'] ? responseBody['localData']['streetAddress'] : '';
                 this.currentRecipient.addressCountry = responseBody['localData']['addressCountry'] ? dispatchHelper.getCountryMapping(responseBody['localData']['addressCountry']) : dispatchHelper.getCountryMapping('AT');
+                this._('#add-recipient-country-select').value = responseBody['localData']['addressCountry'] ? responseBody['localData']['addressCountry'] : 'AT';
             } else {
                 this.currentRecipient.addressLocality = '';
                 this.currentRecipient.postalCode = '';
                 this.currentRecipient.streetAddress = '';
                 this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping('AT');
-
-
-                // this._('#add-recipient-country-select').value;
-                this._('#tf-add-recipient-pc-dialog').value = this.currentRecipient.postalCode;
-                this._('#tf-add-recipient-al-dialog').value = this.currentRecipient.addressLocality;
-                this._('#tf-add-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
-                this._('#tf-add-recipient-bn-dialog').value = this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : '';
+                this._('#add-recipient-country-select').value = 'AT';
             }
+
+            this._('#tf-add-recipient-pc-dialog').value = this.currentRecipient.postalCode;
+            this._('#tf-add-recipient-al-dialog').value = this.currentRecipient.addressLocality;
+            this._('#tf-add-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
+            this._('#tf-add-recipient-bn-dialog').value = this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : '';
+
         } else {
             // TODO error handling
 
