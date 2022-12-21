@@ -7,6 +7,8 @@ import * as dispatchHelper from './utils';
 import {PersonSelect} from "@dbp-toolkit/person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {IconButton} from "@dbp-toolkit/common";
+import {classMap} from "lit/directives/class-map.js";
+import {humanFileSize} from "@dbp-toolkit/common/i18next";
 
 
 export default class DBPDispatchLitElement extends DBPLitElement {
@@ -1562,18 +1564,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
             const personId = person['@id'];
 
-            let value = this._('#recipient-selector').getAttribute('data-object');
-
-            console.log('selector', this._('#recipient-selector'));
-            console.log('value: ', value);
-            console.log('persId', personId);
-
+            // let value = this._('#recipient-selector').getAttribute('data-object');
             let response = await this.sendGetPersonDetailsRequest(personId);
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
 
-                console.log(responseBody);
+                // console.log(responseBody);
                 this.currentRecipient.familyName = responseBody.familyName;
                 this.currentRecipient.givenName = responseBody.givenName;
                 this.currentRecipient.birthDate = responseBody.birthDate ? responseBody.birthDate : '';
@@ -1587,7 +1584,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             } else {
                 // TODO error handling
             }
-            console.log('rec', this.currentRecipient);
+            // console.log('rec', this.currentRecipient);
             this.requestUpdate();
         }
     }
@@ -2592,5 +2589,176 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.groupValue = sessionStorage.getItem('dbp-dispatch-group-value');
 
         return this.groupValue;
+    }
+
+    addSenderDetailsView() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="sender-data">
+                ${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
+                ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName
+                    ? html` ${this.currentItem.senderFamilyName}` :
+                    html`${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
+                `}
+                ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
+                ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
+                ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
+                ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
+                ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
+            </div>
+
+            <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFamilyName})}">${i18n.t('show-requests.empty-sender-text')}</div>
+        `;
+    }
+
+    addRecipientDetailsView(recipient) {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="recipient card">
+                <div class="left-side">
+                    <div>${recipient.givenName} ${recipient.familyName}</div>
+                    <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
+                    <div>${recipient.postalCode} ${recipient.addressLocality}</div>
+                    <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
+                </div>
+                <div class="right-side">
+                        <dbp-icon-button id="show-recipient-btn"
+                                    @click="${() => {
+                                        this.currentRecipient = recipient;
+                                        this._('#show-recipient-btn').start();
+                                        try {
+                                            this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                MicroModal.show(this._('#show-recipient-modal'), {
+                                                    disableScroll: true,
+                                                    onClose: (modal) => {
+                                                        this.loading = false;
+                                                        this.currentRecipient = {};
+                                                        this._('#show-recipient-btn').stop();
+                                                    },
+                                                });
+                                            });
+                                        } catch {
+                                            this._('#show-recipient-btn').stop();
+                                        }
+                                    }}"
+                                    title="${i18n.t('show-requests.show-recipient-button-text')}"
+                                    icon-name="keyword-research"></dbp-icon></dbp-icon-button>
+                        ${!this.currentItem.dateSubmitted ? html`
+                            <dbp-icon-button id="edit-recipient-btn"
+                                 ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                 @click="${() => {
+                                        this.currentRecipient = recipient;
+                                        this._('#edit-recipient-btn').start();
+                                        try {
+                                            this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                                                this._('#tf-edit-recipient-birthdate').value = this.currentRecipient.birthDate;
+                                                MicroModal.show(this._('#edit-recipient-modal'), {
+                                                    disableScroll: true,
+                                                    onClose: (modal) => {
+                                                        this.loading = false;
+                                                        this.currentRecipient = {};
+                                                    }
+                                                });
+                                            });
+                                        } catch {
+                                            this._('#edit-recipient-btn').stop();
+                                        }
+                                 }}"
+                                 title="${i18n.t('show-requests.edit-recipients-button-text')}"
+                                 icon-name="pencil"></dbp-icon-button>
+                            <dbp-icon-button id="delete-recipient-btn"
+                                ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                @click="${() => {
+                                    this.deleteRecipient(recipient);
+                                }}"
+                                title="${i18n.t('show-requests.delete-recipient-button-text')}"
+                                icon-name="trash"></dbp-icon-button>` : ``
+                         }
+                </div>
+            </div>
+        `;
+    }
+
+    addFileDetailsView() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="header-btn">
+                <div class="section-titles">${i18n.t('show-requests.files')} <span class="section-title-counts">
+                        ${this.currentItem.files && this.currentItem.files.length !== 0 ? `(` + this.currentItem.files.length + `)` : ``}</span>
+                </div>
+                ${!this.currentItem.dateSubmitted ? html`
+                     <dbp-loading-button id="add-files-btn"
+                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                        value="${i18n.t('show-requests.add-files-button-text')}" 
+                        @click="${() => {
+                            this.openFileSource();
+                        }}" 
+                        title="${i18n.t('show-requests.add-files-button-text')}">${i18n.t('show-requests.add-files-button-text')}</dbp-loading-button>` : ``
+                }
+            </div>
+            <div class="files-data">
+                ${this.currentItem.files && this.currentItem.files.map(file => html`
+                    <div class="file card">
+                        <div class="left-side">
+                            <div>${file.name}</div>
+                            <div>${humanFileSize(file.contentSize)}</div>
+                            <div>${file.fileFormat}</div>
+                            <div>${this.convertToReadableDate(file.dateCreated)}</div>
+                        </div>
+                        <div class="right-side">
+                            <dbp-icon-button id="show-file-btn"
+                                @click="${(event) => {
+                                    console.log("on show file clicked");
+                                }}"
+                                class="hidden" <!--TODO -->
+                                title="${i18n.t('show-requests.show-file-button-text')}"
+                                icon-name="keyword-research"></dbp-icon-button>
+                            ${!this.currentItem.dateSubmitted ? html`
+                               <dbp-icon-button id="delete-file-btn"
+                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                    @click="${(event) => {
+                                        this.deleteFile(file);
+                                    }}"
+                                    title="${i18n.t('show-requests.delete-file-button-text')}" 
+                                    icon-name="trash"></dbp-icon-button>` : ``
+                            }
+                        </div>
+                    </div>
+                `)}
+                <div class="no-files ${classMap({hidden: !this.isLoggedIn() || (this.currentItem.files && this.currentItem.files.length !== 0)})}">${i18n.t('show-requests.empty-files-text')}</div>
+            </div>
+        `;
+    }
+
+    addSubmitAndDeleteButtons() {
+        const i18n = this._i18n;
+
+        return html`
+            ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
+                <div class="request-buttons">
+                    <div class="edit-buttons">
+                        <dbp-loading-button id="delete-btn" 
+                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}" 
+                                            value="${i18n.t('show-requests.delete-button-text')}" 
+                                            @click="${(event) => { this.deleteRequest(event, this.currentItem); }}" 
+                                            title="${i18n.t('show-requests.delete-button-text')}"
+                        >${i18n.t('show-requests.delete-button-text')}</dbp-loading-button>
+                    </div>
+                    <div class="submit-button">
+                        <dbp-loading-button type="is-primary"
+                                            id="submit-btn" 
+                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}" 
+                                            value="${i18n.t('show-requests.submit-button-text')}" 
+                                            @click="${(event) => { this.submitRequest(event, this.currentItem); }}" 
+                                            title="${i18n.t('show-requests.submit-button-text')}"
+                        >${i18n.t('show-requests.submit-button-text')}</dbp-loading-button>
+                    </div>
+                </div>` : ``
+            }
+        `;
     }
 }
