@@ -189,9 +189,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 // that.dispatchRequestsTable.deselectRow("visible"));
                                 this.dispatchRequestsTable.deselectRow();
                                 this._('#select_all').checked = false;
+                                this.rowsSelected = false;
                             } else {
                                 that.dispatchRequestsTable.selectRow("visible");
                                 this._('#select_all').checked = true;
+                                this.rowsSelected = true;
                             }
                             e.preventDefault();
                         },
