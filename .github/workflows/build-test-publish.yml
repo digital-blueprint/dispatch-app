@@ -1,0 +1,74 @@
+name: Build and Test
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
+    container:
+      image: ghcr.io/${{ github.repository }}-ci:latest
+      options: --user root
+
+    env:
+      # for firefox
+      HOME: /root
+      PLAYWRIGHT_BROWSERS_PATH: /tmp/_playwright_cache
+      YARN_CACHE_PATH: /tmp/_yarn_cache
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Set yarn cache path
+        run: |
+          yarn config set cache-folder "$YARN_CACHE_PATH"
+
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.YARN_CACHE_PATH }}
+            ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run build
+        run: APP_ENV=development yarn run build
+
+      - name: Run tests
+        run: yarn run test-full
+
+      - name: Run lint
+        run: yarn run lint
+
+      - name: Publish to NPM
+        if: github.ref == 'refs/heads/main'
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # https://www.npmjs.com/settings/dbp-deploy/tokens
+          # NPM_TOKEN needs to be a "Publish" token with 2FA disabled!
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
+          yarn install
+          yarn run build
+          # yarn always reports "https://registry.yarnpkg.com/@dbp-topics%2fsignature - Not found", so we are using npm directly
+          npm run do-publish
+
+      - name: Deploy
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.ref == 'refs/heads/production'
+        env:
+          DEPLOY_TRIGGER_TOKEN: ${{ secrets.DEPLOY_TRIGGER_TOKEN }}
+        run: |
+          curl -X POST --fail \
+              -F "token=${DEPLOY_TRIGGER_TOKEN}" \
+              -F "ref=main" \
+              -F "variables[UPSTREAM_PROJECT_PATH]=dbp/greenlight/greenlight" \
+              -F "variables[UPSTREAM_COMMIT_BRANCH]=${{ github.ref_name }}" \
+              -F "variables[UPSTREAM_COMMIT_SHA]=${{ github.ref_name }}" \
+              https://gitlab.tugraz.at/api/v4/projects/21238/trigger/pipeline
