@@ -289,6 +289,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * Sends a dispatch request-recipients post request
      *
      * @param id
+     * @param personIdentifier
      * @param givenName
      * @param familyName
      * @param birthDate
@@ -299,18 +300,27 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param buildingNumber
      * @returns {object} response
      */
-    async sendAddRequestRecipientsRequest(id, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber) {
-        let body = {
-            "dispatchRequestIdentifier": id,
-            "givenName": givenName,
-            "familyName": familyName,
-            "addressCountry": addressCountry,
-            "postalCode": postalCode,
-            "addressLocality": addressLocality,
-            "streetAddress": streetAddress,
-            "buildingNumber": buildingNumber,
-            "birthDate": birthDate
-        };
+    async sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber) {
+        let body;
+
+        if (personIdentifier === null) {
+            body = {
+                "dispatchRequestIdentifier": id,
+                "givenName": givenName,
+                "familyName": familyName,
+                "addressCountry": addressCountry,
+                "postalCode": postalCode,
+                "addressLocality": addressLocality,
+                "streetAddress": streetAddress,
+                "buildingNumber": buildingNumber,
+                "birthDate": birthDate
+            };
+        } else {
+            body = {
+                "dispatchRequestIdentifier": id,
+                "personIdentifier": personIdentifier
+            };
+        }
 
         const options = {
             method: 'POST',
@@ -324,18 +334,27 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients', options);
     }
 
-    async sendUpdateRecipientRequest(recipientId, id, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber) {
-        let body = {
-            "dispatchRequestIdentifier": id,
-            "givenName": givenName,
-            "familyName": familyName,
-            "addressCountry": addressCountry,
-            "postalCode": postalCode,
-            "addressLocality": addressLocality,
-            "streetAddress": streetAddress,
-            "buildingNumber": buildingNumber,
-            "birthDate": birthDate
-        };
+    async sendUpdateRecipientRequest(recipientId, id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber) {
+        let body;
+
+        if (personIdentifier === null) {
+            body = {
+                "dispatchRequestIdentifier": id,
+                "givenName": givenName,
+                "familyName": familyName,
+                "addressCountry": addressCountry,
+                "postalCode": postalCode,
+                "addressLocality": addressLocality,
+                "streetAddress": streetAddress,
+                "buildingNumber": buildingNumber,
+                "birthDate": birthDate
+            };
+        } else {
+            body = {
+                "dispatchRequestIdentifier": id,
+                "personIdentifier": personIdentifier
+            };
+        }
 
         const options = {
             method: 'PUT',
@@ -589,9 +608,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let addressLocality = this.currentRecipient.addressLocality;
             let streetAddress = this.currentRecipient.streetAddress;
             let buildingNumber = this.currentRecipient.buildingNumber;
-            let birthDate = this.currentRecipient.birthDate;
+            let birthDate = this.currentRecipient.birthDate ? this.currentRecipient.birthDate : null;
+            let personIdentifier = this.currentRecipient.personIdentifier ? this.currentRecipient.personIdentifier : null;
 
-            let response = await this.sendAddRequestRecipientsRequest(id, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
+            let response = await this.sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 201) {
@@ -610,6 +630,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient = {};
                 }
                 this._('#recipient-selector').clear();
+                this.currentRecipient.personIdentifier = '';
                 this.currentRecipient.givenName = '';
                 this.currentRecipient.familyName = '';
                 this.currentRecipient.postalCode = '';
@@ -658,7 +679,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async updateRecipient(event, item) {
-        this._('#edit-recipient-btn').start();
+        let button = event.target;
+        button.start();
+        // this._('#edit-recipient-btn').start();
 
         try {
             const i18n = this._i18n;
@@ -673,8 +696,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let streetAddress = this.currentRecipient.streetAddress;
             let buildingNumber = this.currentRecipient.buildingNumber;
             let birthDate = this.currentRecipient.birthDate;
+            let personIdentifier = this.currentRecipient.personIdentifier;
 
-            let response = await this.sendUpdateRecipientRequest(recipientId, id, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
+            let response = await this.sendUpdateRecipientRequest(recipientId, id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
@@ -705,14 +729,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } catch (e) {
             //TODO
         } finally {
-            this._('#edit-recipient-btn').stop();
+            // this._('#edit-recipient-btn').stop();
+            button.stop();
         }
     }
 
-    async deleteRecipient(recipient) {
+    async deleteRecipient(event, recipient) {
         const i18n = this._i18n;
         // console.log(recipient);
-        this._('#delete-recipient-btn').start();
+        let button = event.target;
+        button.start();
+        // this._('#delete-recipient-btn').start();
 
         try {
             let response = await this.sendDeleteRecipientRequest(recipient.identifier);
@@ -742,7 +769,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } finally {
-            this._('#delete-recipient-btn').stop();
+            // this._('#delete-recipient-btn').stop();
+            button.stop();
         }
     }
 
@@ -1039,20 +1067,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async fetchDetailedRecipientInformation(identifier) {
-        // let id = this.currentRecipient.identifier;
-
         let response = await this.getDispatchRecipient(identifier);
-        // console.log('fetchdetailedrecipientinformation', response);
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
 
             this.currentRecipient = responseBody;
 
-            this.currentRecipient.birthDate = this.convertToBirthDate(responseBody['birthDate']);
-
+            this.currentRecipient.personIdentifier = responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
+            this.currentRecipient.birthDate = responseBody['birthDate'] !== '' ?  this.convertToBirthDate(responseBody['birthDate']) : '';
             this.currentRecipient.statusChanges = responseBody['statusChanges'];
-            console.log('statusChanges: ', this.currentRecipient.statusChanges);
             if (this.currentRecipient.statusChanges.length > 0) {
                 this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
                 this.currentRecipient.statusType = this.currentRecipient.statusChanges[0].statusType;
@@ -1394,56 +1418,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async processSelectedRecipient(event) {
         this.currentRecipient = {};
         const person = JSON.parse(event.target.dataset.object);
-        const personId = person['@id'];
 
-        this.personId = personId;
-        this.person = person;
+        this.currentRecipient.personIdentifier = person['@id'];
 
-        let response = await this.sendGetPersonDetailsRequest(personId);
-
-        let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 200) {
-
-            // console.log(responseBody);
-            this.currentRecipient.familyName = responseBody.familyName;
-            this.currentRecipient.givenName = responseBody.givenName;
-            this.currentRecipient.birthDate = responseBody.birthDate ? responseBody.birthDate : '';
-
-            this._('#tf-add-recipient-gn-dialog').value = this.currentRecipient.givenName;
-            this._('#tf-add-recipient-fn-dialog').value = this.currentRecipient.familyName;
-            this._('#tf-add-recipient-birthdate').value = this.currentRecipient.birthDate;
-
-            // console.log(responseBody['localData']);
-
-            if (responseBody['localData'] && responseBody['localData'] !== '') {
-                this.currentRecipient.addressLocality = responseBody['localData']['addressLocality'] ? responseBody['localData']['addressLocality'] : '';
-                this.currentRecipient.postalCode = responseBody['localData']['postalCode'] ? responseBody['localData']['postalCode'] : '';
-                this.currentRecipient.streetAddress = responseBody['localData']['streetAddress'] ? responseBody['localData']['streetAddress'] : '';
-                this.currentRecipient.addressCountry = responseBody['localData']['addressCountry'] ? dispatchHelper.getCountryMapping(responseBody['localData']['addressCountry']) : dispatchHelper.getCountryMapping('AT');
-                this._('#add-recipient-country-select').value = responseBody['localData']['addressCountry'] ? responseBody['localData']['addressCountry'] : 'AT';
-            } else {
-                this.currentRecipient.addressLocality = '';
-                this.currentRecipient.postalCode = '';
-                this.currentRecipient.streetAddress = '';
-                this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping('AT');
-                this._('#add-recipient-country-select').value = 'AT';
-            }
-
-            this._('#tf-add-recipient-pc-dialog').value = this.currentRecipient.postalCode;
-            this._('#tf-add-recipient-al-dialog').value = this.currentRecipient.addressLocality;
-            this._('#tf-add-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
-            this._('#tf-add-recipient-bn-dialog').value = this.currentRecipient.buildingNumber ? this.currentRecipient.buildingNumber : '';
-
-        } else {
-            // TODO error handling
-
-            // send({
-            //     "summary": 'Error!',
-            //     "body": 'Could not fetch recipient with ID ' + personId + '. Response code: ' + response.status,
-            //     "type": "danger",
-            //     "timeout": 5,
-            // });
-        }
+        const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
+        elements.forEach((element) => { element.classList.add('muted'); });
 
         this.requestUpdate();
     }
@@ -1950,7 +1929,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         </header>
                         <main class="modal-content" id="add-recipient-modal-content">
                             <div class="modal-content-item">
-                                <div class="nf-label">
+                                <div class="nf-label selector">
                                     ${i18n.t('show-requests.add-recipient-person-select-label')}
                                 <div>
                                 <div>
@@ -1968,12 +1947,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             ${i18n.t('show-requests.add-recipient-or-text')}
                                     
                             <div class="modal-content-item">
-                                <div class="nf-label">
+                                <div class="nf-label no-selector">
                                     ${i18n.t('show-requests.add-recipient-gn-dialog-label')}
                                 </div>
                                 <div>
                                     <input
-                                            required
+                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-gn-dialog"
@@ -1986,12 +1965,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                             </div>
                             <div class="modal-content-item">
-                                <div class="nf-label">
+                                <div class="nf-label no-selector">
                                     ${i18n.t('show-requests.add-recipient-fn-dialog-label')}
                                 </div>
                                 <div>
                                     <input
-                                            required
+                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-fn-dialog"
@@ -2004,12 +1983,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                             </div>
                             <div class="modal-content-item">
-                                <div class="nf-label">
+                                <div class="nf-label no-selector">
                                     ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}
                                 </div>
                                 <div>
                                     <input
-                                            required
+                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
                                             type="date" 
                                             id="tf-add-recipient-birthdate"
                                             lang="${this.lang}"
@@ -2018,12 +1997,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                             </div>
                             <div class="modal-content-item">
-                                <div class="nf-label">
+                                <div class="nf-label no-selector">
                                     ${i18n.t('show-requests.add-recipient-sa-dialog-label')}
                                 </div>
                                 <div>
                                     <input
-                                            required
+                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-sa-dialog"
@@ -2036,11 +2015,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                             </div>
                             <div class="modal-content-item">
-                                <div class="nf-label">
+                                <div class="nf-label no-selector">
                                     ${i18n.t('show-requests.add-recipient-bn-dialog-label')}
                                 </div>
                                 <div>
                                     <input
+                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
                                             type="text"
                                             class="input"
                                             maxlength="10"
@@ -2054,12 +2034,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                             </div>
                             <div class="modal-content-item">
-                                <div class="nf-label">
+                                <div class="nf-label no-selector">
                                     ${i18n.t('show-requests.add-recipient-pc-dialog-label')}
                                 </div>
                                 <div>
                                     <input
-                                            required
+                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
                                             type="number"
                                             class="input"
                                             name="tf-add-recipient-pc-dialog"
@@ -2072,12 +2052,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                             </div>
                             <div class="modal-content-item">
-                                <div class="nf-label">
+                                <div class="nf-label no-selector">
                                     ${i18n.t('show-requests.add-recipient-al-dialog-label')}
                                 </div>
                                 <div>
                                     <input
-                                            required
+                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
                                             type="text"
                                             class="input"
                                             name="tf-add-recipient-al-dialog"
@@ -2090,11 +2070,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                             </div>
                             <div class="modal-content-item">
-                                <div class="nf-label">
+                                <div class="nf-label no-selector">
                                     ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                 </div>
                                 <div>
-                                    <select required id="add-recipient-country-select" class="country-select">
+                                    <select
+                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                            id="add-recipient-country-select" 
+                                            class="country-select">
                                         ${dispatchHelper.getCountryList()}
                                     </select>
                                 </div>
@@ -2136,11 +2119,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 
                                                 this.addRecipientToRequest().then(r => {
                                                     MicroModal.close(this._('#add-recipient-modal'));
-
-                                                    // TODO clear selector value
                                                     this._('#recipient-selector').value = "";
-                                                    // console.log(this._('#recipient-selector'));
-                                                    // console.log('value: ', this._('#recipient-selector').value);
+                                                    
+                                                    const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
+                                                    elements.forEach((element) => { element.classList.remove('muted'); });                                                  // console.log(this._('#recipient-selector'));
                                                 });
                                             } 
                                         }}">
@@ -2190,7 +2172,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-gn-dialog"
@@ -2208,7 +2189,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-fn-dialog"
@@ -2226,7 +2206,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
                                             type="date" 
                                             id="tf-edit-recipient-birthdate"
                                             lang="${this.lang}"
@@ -2240,7 +2219,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-sa-dialog"
@@ -2276,7 +2254,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
                                             type="number"
                                             class="input"
                                             name="tf-edit-recipient-pc-dialog"
@@ -2294,7 +2271,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
                                             type="text"
                                             class="input"
                                             name="tf-edit-recipient-al-dialog"
@@ -2312,7 +2288,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <div>
-                                        <select required id="edit-recipient-country-select" class="country-select">
+                                        <select 
+                                                id="edit-recipient-country-select" 
+                                                class="country-select">
                                             ${dispatchHelper.getCountryList()}
                                         </select>
                                     </div>
@@ -2410,21 +2388,24 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="element-right">
                                     ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
                                 </div>
-
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.birthDate ? this.convertToBirthDate(this.currentRecipient.birthDate) : ``}
-                                </div>
                                 
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-sa-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : ``}
-                                </div>
-                                ${this.currentRecipient && this.currentRecipient.buildingNumber ? html`
+                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                    <div class="element-left">
+                                        ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}:
+                                    </div>
+                                    <div class="element-right">
+                                        ${this.convertToBirthDate(this.currentRecipient.birthDate)}
+                                    </div>
+                                ` : ``}
+                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                    <div class="element-left">
+                                        ${i18n.t('show-requests.edit-recipient-sa-dialog-label')}:
+                                    </div>
+                                    <div class="element-right">
+                                        ${this.currentRecipient.streetAddress}
+                                    </div>
+                                ` : ``}
+                                ${this.currentRecipient && !this.currentRecipient.personIdentifier && this.currentRecipient.buildingNumber ? html`
                                     <div class="element-left">
                                         ${i18n.t('show-requests.edit-recipient-bn-dialog-label')}:
                                     </div>
@@ -2432,31 +2413,38 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.currentRecipient.buildingNumber}
                                     </div>
                                 ` : ``}
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-pc-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.postalCode ? this.currentRecipient.postalCode : ``}
-                                </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-al-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : ``}
-                                </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.addressCountry ? this.currentRecipient.addressCountry : ``}
-                                </div>
+                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                    <div class="element-left">
+                                        ${i18n.t('show-requests.edit-recipient-pc-dialog-label')}:
+                                    </div>
+                                    <div class="element-right">
+                                        ${this.currentRecipient.postalCode}
+                                    </div>
+                                ` : ``}
+                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                    <div class="element-left">
+                                        ${i18n.t('show-requests.edit-recipient-al-dialog-label')}:
+                                    </div>
+                                    <div class="element-right">
+                                        ${this.currentRecipient.addressLocality}
+                                    </div>
+                                ` : ``}
+                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                    <div class="element-left">
+                                        ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}:
+                                    </div>
+                                    <div class="element-right">
+                                        ${this.currentRecipient.addressCountry}
+                                    </div>
+                                ` : ``}
                                 ${this.currentRecipient && this.currentRecipient.deliveryEndDate ? html`
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.delivery-end-date')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.convertToReadableDate(this.currentRecipient.deliveryEndDate)}
-                                </div>` : ``}
+                                    <div class="element-left">
+                                        ${i18n.t('show-requests.delivery-end-date')}:
+                                    </div>
+                                    <div class="element-right">
+                                        ${this.convertToReadableDate(this.currentRecipient.deliveryEndDate)}
+                                    </div>
+                                ` : ``}
                                 <div class="element-left">
                                     ${i18n.t('show-requests.recipient-id')}:
                                 </div>

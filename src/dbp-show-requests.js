@@ -1425,9 +1425,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     ${!this.currentItem.dateSubmitted ? html`
                                                         <dbp-icon-button id="edit-recipient-btn"
                                                                      ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                                     @click="${() => {
+                                                                     @click="${(event) => {
+                                                                         // let button = event.target;
                                                                          this.currentRecipient = recipient;
                                                                          this._('#edit-recipient-btn').start();
+                                                                         // button.start();
                                                                          try {
                                                                             this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
                                                                                 this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
@@ -1442,14 +1444,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                             });
                                                                          } catch {
                                                                              this._('#edit-recipient-btn').stop();
+                                                                             // button.stop();
                                                                          }
                                                                      }}"
                                                                      title="${i18n.t('show-requests.edit-recipients-button-text')}"
                                                                      icon-name="pencil"></dbp-icon-button>
                                                         <dbp-icon-button id="delete-recipient-btn"
                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                                    @click="${() => {
-                                                                        this.deleteRecipient(recipient);
+                                                                    @click="${(event) => {
+                                                                        this.deleteRecipient(event, recipient);
                                                                     }}"
                                                                     title="${i18n.t('show-requests.delete-recipient-button-text')}"
                                                                     icon-name="trash"></dbp-icon-button>` : ``

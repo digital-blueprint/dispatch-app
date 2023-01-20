@@ -620,6 +620,10 @@ export function getDispatchRequestStyles() {
                 padding-bottom: 2px;
             }
 
+            .muted {
+                color: var(--dbp-override-muted);
+            }
+
             #edit-sender-modal-title,
             #add-sender-modal-title,
             #add-recipient-modal-title,

@@ -494,6 +494,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <dbp-icon-button id="show-recipient-btn"
                                                              @click="${(event) => {
                                                                  this.currentRecipient = recipient;
+                                                                 // let button = event.target;
+                                                                 // button.start();
                                                                  this._('#show-recipient-btn').start();
                                                                  try {
                                                                      this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
@@ -508,6 +510,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                      });
                                                                  } catch {
                                                                      this._('#show-recipient-btn').stop();
+                                                                     // button.stop();
                                                                  }
                                                              }}"
                                                              title="${i18n.t('show-requests.show-recipient-button-text')}"
@@ -516,6 +519,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <dbp-icon-button id="edit-recipient-btn"
                                                              ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                              @click="${(event) => {
+                                                                 // let button = event.target;
+                                                                 // button.start();
                                                                  this._('#edit-recipient-btn').start();
                                                                  try {
                                                                      this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
@@ -531,6 +536,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                      });
                                                                  } catch {
                                                                      this._('#edit-recipient-btn').stop();
+                                                                     // button.stop();
                                                                  }
                                                              }}"
                                                              title="${i18n.t('show-requests.edit-recipients-button-text')}"
@@ -538,8 +544,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <dbp-icon-button id="delete-recipient-btn"
                                                              ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                              @click="${(event) => {
-                                                                 console.log("on delete recipient clicked");
-                                                                 this.deleteRecipient(recipient);
+                                                                 this.deleteRecipient(event, recipient);
                                                              }}"
                                                              title="${i18n.t('show-requests.delete-recipient-button-text')}"
                                                              icon-name="trash"></dbp-icon-button>` : ``
