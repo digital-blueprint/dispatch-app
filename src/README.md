@@ -1,11 +1,11 @@
 # Dispatch activities
 
 Here you can find the individual activities of the `dispatch` app.
-If you want to use the whole app look at [dispatch documentation](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch).
+If you want to use the whole app look at [dispatch documentation](https://github.com/digital-blueprint/dispatch-frontend).
 
 ## Usage of an activity
 
-You can use every activity alone. Take a look at our examples [here](https://gitlab.tugraz.at/dbp/dual-delivery/dispatch/-/tree/main/examples).
+You can use every activity alone. Take a look at our examples [here](https://github.com/digital-blueprint/dispatch-frontend/tree/main/examples).
 
 ## Activities
 
