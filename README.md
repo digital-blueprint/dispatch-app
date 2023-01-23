@@ -5,6 +5,8 @@
 [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/) |
 [Dispatch Bundle](https://github.com/digital-blueprint/dbp-relay-dispatch-bundle)
 
+[![Build and Test](https://github.com/digital-blueprint/dispatch-frontend/actions/workflows/build-test-publish.yml/badge.svg)](https://github.com/digital-blueprint/dispatch-frontend/actions/workflows/build-test-publish.yml)
+
 This is an application for managing postal/electronic deliveries which get forwarded to an external "Dual Delivery" service provider.
 
 ## Prerequisites
