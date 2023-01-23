@@ -521,17 +521,36 @@ export function getDispatchRequestStyles() {
                 min-width: 320px;
             }
             
+            .modal-content-container {
+                display: flex;
+                flex-direction: row;
+            }
+            
             #edit-recipient-modal-box {
                 max-height: 680px;
                 min-height: 680px;
                 max-width: 400px;
             }
 
-            #add-recipient-modal-box,
-            #add-sender-modal-box {
-                max-height: 715px;
-                min-height: 715px;
-                max-width: 400px;
+            #add-recipient-modal-box {
+                max-height: 630px;
+                min-height: 630px;
+                max-width: 736px;
+            }
+            
+            #add-recipient-modal-box h4 {
+                margin-top: 0;
+            }
+
+            .modal-content-right {
+                display: flex;
+                flex-direction: column;
+                padding-left: 20px;
+            }
+
+            .modal-content-left {
+                border-right: var(--dbp-override-border);
+                padding-right: 20px;
             }
 
             #add-subject-modal-box, #edit-subject-modal-box {
@@ -539,7 +558,6 @@ export function getDispatchRequestStyles() {
                 min-height: 185px;
                 max-width: 500px;
             }
-
             
             #edit-sender-modal-box {
                 max-height: 550px;

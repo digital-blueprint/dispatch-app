@@ -125,7 +125,7 @@
         "add-subject-dialog-button-ok": "Confirm",
         "add-subject-description": "",
         "add-sender-dialog-title": "Add sender",
-        "add-recipient-person-select-label": "Please select a person",
+        "add-recipient-person-select-label": "Select a person using the person search:",
         "add-recipient-or-text": "Or enter a recipient manually:",
         "edit-sender-organization-title": "Please select your organization",
         "edit-sender-or-title": "Or enter a sender manually:",

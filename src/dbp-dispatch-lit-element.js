@@ -1928,158 +1928,165 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </button>
                         </header>
                         <main class="modal-content" id="add-recipient-modal-content">
-                            <div class="modal-content-item">
-                                <div class="nf-label selector">
-                                    ${i18n.t('show-requests.add-recipient-person-select-label')}
-                                <div>
-                                <div>
-                                    <div class="control">
-                                        <dbp-person-select
-                                                id="recipient-selector"
-                                                subscribe="auth"
-                                                lang="${this.lang}"
-                                                entry-point-url="${this.entryPointUrl}"
-                                                @change="${(event) => {this.processSelectedRecipient(event);}}"
-                                        ></dbp-person-select>
+                            <div class="modal-content-container">
+                                <div class="modal-content-left">
+                                    <div class="modal-content-item">
+                                        <div class="nf-label selector">
+                                            <h4>${i18n.t('show-requests.add-recipient-person-select-label')}</h4>
+                                        </div>
+                                        <div>
+                                            <div class="control">
+                                                <dbp-person-select
+                                                        id="recipient-selector"
+                                                        subscribe="auth"
+                                                        lang="${this.lang}"
+                                                        entry-point-url="${this.entryPointUrl}"
+                                                        @change="${(event) => {this.processSelectedRecipient(event);}}"
+                                                ></dbp-person-select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            ${i18n.t('show-requests.add-recipient-or-text')}
-                                    
-                            <div class="modal-content-item">
-                                <div class="nf-label no-selector">
-                                    ${i18n.t('show-requests.add-recipient-gn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-gn-dialog"
-                                            id="tf-add-recipient-gn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label no-selector">
-                                    ${i18n.t('show-requests.add-recipient-fn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-fn-dialog"
-                                            id="tf-add-recipient-fn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label no-selector">
-                                    ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                            type="date" 
-                                            id="tf-add-recipient-birthdate"
-                                            lang="${this.lang}"
-                                            value="${this.currentRecipient ? this.currentRecipient.birthDate : ``}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label no-selector">
-                                    ${i18n.t('show-requests.add-recipient-sa-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-sa-dialog"
-                                            id="tf-add-recipient-sa-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label no-selector">
-                                    ${i18n.t('show-requests.add-recipient-bn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                            type="text"
-                                            class="input"
-                                            maxlength="10"
-                                            name="tf-add-recipient-bn-dialog"
-                                            id="tf-add-recipient-bn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label no-selector">
-                                    ${i18n.t('show-requests.add-recipient-pc-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                            type="number"
-                                            class="input"
-                                            name="tf-add-recipient-pc-dialog"
-                                            id="tf-add-recipient-pc-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label no-selector">
-                                    ${i18n.t('show-requests.add-recipient-al-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                            type="text"
-                                            class="input"
-                                            name="tf-add-recipient-al-dialog"
-                                            id="tf-add-recipient-al-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label no-selector">
-                                    ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
-                                </div>
-                                <div>
-                                    <select
-                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                            id="add-recipient-country-select" 
-                                            class="country-select">
-                                        ${dispatchHelper.getCountryList()}
-                                    </select>
+                                <div class="modal-content-right">
+                                    <div>
+                                        <h4>${i18n.t('show-requests.add-recipient-or-text')}</h4>
+                                    </div>
+                                    <div class="modal-content-item">
+                                        <div class="nf-label no-selector">
+                                            ${i18n.t('show-requests.add-recipient-gn-dialog-label')}
+                                        </div>
+                                        <div>
+                                            <input
+                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                    type="text"
+                                                    class="input"
+                                                    name="tf-add-recipient-gn-dialog"
+                                                    id="tf-add-recipient-gn-dialog"
+                                                    value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
+                                                    @input="${() => {
+                                                        // TODO
+                                                    }}"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="modal-content-item">
+                                        <div class="nf-label no-selector">
+                                            ${i18n.t('show-requests.add-recipient-fn-dialog-label')}
+                                        </div>
+                                        <div>
+                                            <input
+                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                    type="text"
+                                                    class="input"
+                                                    name="tf-add-recipient-fn-dialog"
+                                                    id="tf-add-recipient-fn-dialog"
+                                                    value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
+                                                    @input="${() => {
+                                                        // TODO
+                                                    }}"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="modal-content-item">
+                                        <div class="nf-label no-selector">
+                                            ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}
+                                        </div>
+                                        <div>
+                                            <input
+                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                    type="date" 
+                                                    id="tf-add-recipient-birthdate"
+                                                    lang="${this.lang}"
+                                                    value="${this.currentRecipient ? this.currentRecipient.birthDate : ``}"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="modal-content-item">
+                                        <div class="nf-label no-selector">
+                                            ${i18n.t('show-requests.add-recipient-sa-dialog-label')}
+                                        </div>
+                                        <div>
+                                            <input
+                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                    type="text"
+                                                    class="input"
+                                                    name="tf-add-recipient-sa-dialog"
+                                                    id="tf-add-recipient-sa-dialog"
+                                                    value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
+                                                    @input="${() => {
+                                                        // TODO
+                                                    }}"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="modal-content-item">
+                                        <div class="nf-label no-selector">
+                                            ${i18n.t('show-requests.add-recipient-bn-dialog-label')}
+                                        </div>
+                                        <div>
+                                            <input
+                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                    type="text"
+                                                    class="input"
+                                                    maxlength="10"
+                                                    name="tf-add-recipient-bn-dialog"
+                                                    id="tf-add-recipient-bn-dialog"
+                                                    value="${this.currentRecipient ? this.currentRecipient.buildingNumber : ``}"
+                                                    @input="${() => {
+                                                        // TODO
+                                                    }}"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="modal-content-item">
+                                        <div class="nf-label no-selector">
+                                            ${i18n.t('show-requests.add-recipient-pc-dialog-label')}
+                                        </div>
+                                        <div>
+                                            <input
+                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                    type="number"
+                                                    class="input"
+                                                    name="tf-add-recipient-pc-dialog"
+                                                    id="tf-add-recipient-pc-dialog"
+                                                    value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
+                                                    @input="${() => {
+                                                        // TODO
+                                                    }}"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="modal-content-item">
+                                        <div class="nf-label no-selector">
+                                            ${i18n.t('show-requests.add-recipient-al-dialog-label')}
+                                        </div>
+                                        <div>
+                                            <input
+                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                    type="text"
+                                                    class="input"
+                                                    name="tf-add-recipient-al-dialog"
+                                                    id="tf-add-recipient-al-dialog"
+                                                    value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
+                                                    @input="${() => {
+                                                        // TODO
+                                                    }}"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="modal-content-item">
+                                        <div class="nf-label no-selector">
+                                            ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
+                                        </div>
+                                        <div>
+                                            <select
+                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                    id="add-recipient-country-select" 
+                                                    class="country-select">
+                                                ${dispatchHelper.getCountryList()}
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </main>
