@@ -5,7 +5,7 @@
 [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/) |
 [Dispatch Bundle](https://github.com/digital-blueprint/dbp-relay-dispatch-bundle)
 
-TODO: Dispatch description
+This is an application for managing postal/electronic deliveries which get forwarded to an external "Dual Delivery" service provider.
 
 ## Prerequisites
 
