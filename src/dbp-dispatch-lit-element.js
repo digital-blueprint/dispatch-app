@@ -608,7 +608,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let addressLocality = this.currentRecipient.addressLocality;
             let streetAddress = this.currentRecipient.streetAddress;
             let buildingNumber = this.currentRecipient.buildingNumber;
-            let birthDate = this.currentRecipient.birthDate ? this.currentRecipient.birthDate : null;
+            let birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
             let personIdentifier = this.currentRecipient.personIdentifier ? this.currentRecipient.personIdentifier : null;
 
             let response = await this.sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
@@ -637,7 +637,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.addressLocality = '';
                 this.currentRecipient.streetAddress = '';
                 this.currentRecipient.buildingNumber = '';
-                this.currentRecipient.birthDate = '';
+                this.currentRecipient.birthDateDay = '';
+                this.currentRecipient.birthDateMonth = '';
+                this.currentRecipient.birthDateYear = '';
 
                 this.currentRecipient.addressLocality = '';
                 this.currentRecipient.postalCode = '';
@@ -650,7 +652,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this._('#tf-add-recipient-al-dialog').value = this.currentRecipient.addressLocality;
                 this._('#tf-add-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
                 this._('#tf-add-recipient-bn-dialog').value = this.currentRecipient.buildingNumber;
-                this._('#tf-add-recipient-birthdate').value = this.currentRecipient.birthDate;
+                this._('#tf-add-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
+                this._('#tf-add-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
+                this._('#tf-add-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
                 this._('#add-recipient-country-select').value = 'AT';
 
                 this.requestUpdate();
@@ -679,9 +683,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async updateRecipient(event, item) {
-        let button = event.target;
-        button.start();
-        // this._('#edit-recipient-btn').start();
+        // let button = event.target;
+        // button.start();
+        this._('#edit-recipient-btn').start();
 
         try {
             const i18n = this._i18n;
@@ -695,7 +699,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let addressLocality = this.currentRecipient.addressLocality;
             let streetAddress = this.currentRecipient.streetAddress;
             let buildingNumber = this.currentRecipient.buildingNumber;
-            let birthDate = this.currentRecipient.birthDate;
+            let birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
             let personIdentifier = this.currentRecipient.personIdentifier;
 
             let response = await this.sendUpdateRecipientRequest(recipientId, id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
@@ -729,8 +733,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } catch (e) {
             //TODO
         } finally {
-            // this._('#edit-recipient-btn').stop();
-            button.stop();
+            this._('#edit-recipient-btn').stop();
+            // button.stop();
         }
     }
 
@@ -782,7 +786,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
             send({
-                "summary": i18n.t('show-requests.successfully-updated-sender-title'),
+                "summary": i18n.t('show-requests.successfully-updated-sender-title'), //TODO
                 "body": i18n.t('show-requests.successfully-updated-sender-text'),
                 "type": "success",
                 "timeout": 5,
@@ -1075,7 +1079,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient = responseBody;
 
             this.currentRecipient.personIdentifier = responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
-            this.currentRecipient.birthDate = responseBody['birthDate'] !== '' ?  this.convertToBirthDate(responseBody['birthDate']) : '';
+            let birthDate = responseBody['birthDate'] !== '' ?  this.convertToBirthDateTuple(responseBody['birthDate']) : '';
+
+            this.currentRecipient.birthDateDay = birthDate.day;
+            this.currentRecipient.birthDateMonth = birthDate.month;
+            this.currentRecipient.birthDateYear = birthDate.year;
+
             this.currentRecipient.statusChanges = responseBody['statusChanges'];
             if (this.currentRecipient.statusChanges.length > 0) {
                 this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
@@ -1415,6 +1424,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return year + '-' + month + '-' + date;
     }
 
+    convertToBirthDateTuple(inputDate) {
+        const d = Date.parse(inputDate);
+        const timestamp = new Date(d);
+        const year = timestamp.getFullYear();
+        const month = ('0' + (timestamp.getMonth() + 1)).slice(-2);
+        const date = ('0' + timestamp.getDate()).slice(-2);
+
+        let dateTuple = {
+            year: year,
+            month: month,
+            day: date
+        }
+        return dateTuple;
+    }
+
     async processSelectedRecipient(event) {
         this.currentRecipient = {};
         const person = JSON.parse(event.target.dataset.object);
@@ -1555,7 +1579,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 console.log(responseBody);
                 this.currentRecipient.familyName = responseBody.familyName;
                 this.currentRecipient.givenName = responseBody.givenName;
-                this.currentRecipient.birthDate = responseBody.birthDate ? responseBody.birthDate : '';
+                let birthDate = responseBody.birthDate ? responseBody.birthDate : '';
+                this.currentRecipient.birthDateDay = birthDate.day ? birthDate.day : '';
+                this.currentRecipient.birthDateMonth = birthDate.month ? birthDate.month : '';
+                this.currentRecipient.birthDateYear = birthDate.year ? birthDate.year : '';
 
                 if (responseBody['localData'] !== null) {
                     this.currentRecipient.addressLocality = responseBody['localData']['addressLocality'] ? responseBody['localData']['addressLocality'] : '';
@@ -1991,13 +2018,36 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         <div class="nf-label no-selector">
                                             ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}
                                         </div>
-                                        <div>
+                                        <div class="birthdate-input">
                                             <input
-                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                                    type="date" 
-                                                    id="tf-add-recipient-birthdate"
-                                                    lang="${this.lang}"
-                                                    value="${this.currentRecipient ? this.currentRecipient.birthDate : ``}"
+                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                type="number"
+                                                class="input"
+                                                id="tf-add-recipient-birthdate-day"
+                                                min="1" max="31"
+                                                lang="${this.lang}"
+                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-day')}"
+                                                value="${this.currentRecipient ? this.currentRecipient.birthDateDay : ``}"
+                                            />
+                                            <input
+                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                type="number"
+                                                class="input"
+                                                id="tf-add-recipient-birthdate-month"
+                                                min="1" max="12"
+                                                lang="${this.lang}"
+                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-month')}"
+                                                value="${this.currentRecipient ? this.currentRecipient.birthDateMonth : ``}"
+                                            />
+                                            <input
+                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                type="number"
+                                                class="input"
+                                                id="tf-add-recipient-birthdate-year"
+                                                min="1800" max="2300"
+                                                lang="${this.lang}"
+                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-year')}"
+                                                value="${this.currentRecipient ? this.currentRecipient.birthDateYear : ``}"
                                             />
                                         </div>
                                     </div>
@@ -2110,11 +2160,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             let validpc = this.checkValidity(this._('#tf-add-recipient-pc-dialog'));
                                             let validbn = this.checkValidity(this._('#tf-add-recipient-bn-dialog'));
                                             let validsa = this.checkValidity(this._('#tf-add-recipient-sa-dialog'));
-                                            let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate'));
+                                            let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
+                                            let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
+                                            let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
                                             let validfn = this.checkValidity(this._('#tf-add-recipient-fn-dialog'));
                                             let validgn = this.checkValidity(this._('#tf-add-recipient-gn-dialog'));
 
-                                            if (validgn && validfn && validcountry && validpc && validal && validsa && validbn && validbirthday) {
+                                            if (validgn && validfn && validcountry && validpc && validal && validsa && validbn && validbirthday && validbirthmonth && validbirthyear) {
                                                 this.currentRecipient.givenName = this._('#tf-add-recipient-gn-dialog').value;
                                                 this.currentRecipient.familyName = this._('#tf-add-recipient-fn-dialog').value;
                                                 this.currentRecipient.addressCountry = this._('#add-recipient-country-select').value;
@@ -2122,7 +2174,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 this.currentRecipient.addressLocality = this._('#tf-add-recipient-al-dialog').value;
                                                 this.currentRecipient.streetAddress = this._('#tf-add-recipient-sa-dialog').value;
                                                 this.currentRecipient.buildingNumber = this._('#tf-add-recipient-bn-dialog').value;
-                                                this.currentRecipient.birthDate = this._('#tf-add-recipient-birthdate').value;
+                                                this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
+                                                this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
+                                                this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
                                                 
                                                 this.addRecipientToRequest().then(r => {
                                                     MicroModal.close(this._('#add-recipient-modal'));
@@ -2211,14 +2265,35 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}
                                 </div>
-                                <div>
-                                    <input
-                                            type="date" 
-                                            id="tf-edit-recipient-birthdate"
-                                            lang="${this.lang}"
-                                            value="${this.currentRecipient ? this.currentRecipient.birthDate : ``}"
-                                    >
-                                </div>
+                                 <div class="birthdate-input">
+                                            <input
+                                                type="number"
+                                                class="input"
+                                                id="tf-edit-recipient-birthdate-day"
+                                                min="1" max="31"
+                                                lang="${this.lang}"
+                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-day')}"
+                                                value="${this.currentRecipient ? this.currentRecipient.birthDateDay : ``}"
+                                            />
+                                            <input
+                                                type="number"
+                                                class="input"
+                                                id="tf-edit-recipient-birthdate-month"
+                                                min="1" max="12"
+                                                lang="${this.lang}"
+                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-month')}"
+                                                value="${this.currentRecipient ? this.currentRecipient.birthDateMonth : ``}"
+                                            />
+                                            <input
+                                                type="number"
+                                                class="input"
+                                                id="tf-edit-recipient-birthdate-year"
+                                                min="1800" max="2300"
+                                                lang="${this.lang}"
+                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-year')}"
+                                                value="${this.currentRecipient ? this.currentRecipient.birthDateYear : ``}"
+                                            />
+                                        </div>
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
@@ -2324,11 +2399,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'));
                                             let validbn = this.checkValidity(this._('#tf-edit-recipient-bn-dialog'));
                                             let validsa = this.checkValidity(this._('#tf-edit-recipient-sa-dialog'));
-                                            let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate'));
+                                            let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
+                                            let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
+                                            let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
                                             let validfn = this.checkValidity(this._('#tf-edit-recipient-fn-dialog'));
                                             let validgn = this.checkValidity(this._('#tf-edit-recipient-gn-dialog'));
                                             
-                                            if (validgn && validfn && validcountry && validpc && validal && validsa && validbn && validbirthday) {
+                                            if (validgn && validfn && validcountry && validpc && validal && validsa && validbn && validbirthday && validbirthmonth && validbirthyear) {
                                                 this.currentRecipient.givenName = this._('#tf-edit-recipient-gn-dialog').value;
                                                 this.currentRecipient.familyName = this._('#tf-edit-recipient-fn-dialog').value;
                                                 this.currentRecipient.addressCountry = this._('#edit-recipient-country-select').value;
@@ -2336,7 +2413,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 this.currentRecipient.addressLocality = this._('#tf-edit-recipient-al-dialog').value;
                                                 this.currentRecipient.streetAddress = this._('#tf-edit-recipient-sa-dialog').value;
                                                 this.currentRecipient.buildingNumber = this._('#tf-edit-recipient-bn-dialog').value;
-                                                this.currentRecipient.birthDate = this._('#tf-edit-recipient-birthdate').value;
+                                                this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
+                                                this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
+                                                this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
                                                 this.updateRecipient();
                                                 MicroModal.close(this._('#edit-recipient-modal'));
                                             } else {

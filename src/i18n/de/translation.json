@@ -182,7 +182,10 @@
         "edit-subject-success-text": "Der Betreff wurde erfolgreich geändert.",
         "download-button-text": "Datei herunterladen",
         "no-files-attached": "(Noch) keine Dateien angehängt.",
-        "no-recipients-added": "(Noch) keine Empfänger angegeben."
+        "no-recipients-added": "(Noch) keine Empfänger angegeben.",
+        "add-recipient-birthdate-dialog-placeholder-day": "TT",
+        "add-recipient-birthdate-dialog-placeholder-month": "MM",
+        "add-recipient-birthdate-dialog-placeholder-year": "JJJJ"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",

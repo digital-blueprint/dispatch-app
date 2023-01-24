@@ -525,7 +525,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  try {
                                                                      this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
                                                                          this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                         this._('#tf-edit-recipient-birthdate').value = this.currentRecipient.birthDate;
+                                                                         this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
+                                                                         this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
+                                                                         this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
                                                                          MicroModal.show(this._('#edit-recipient-modal'), {
                                                                              disableScroll: true,
                                                                              onClose: (modal) => {

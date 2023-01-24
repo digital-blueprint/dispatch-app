@@ -533,8 +533,8 @@ export function getDispatchRequestStyles() {
             }
 
             #add-recipient-modal-box {
-                max-height: 630px;
-                min-height: 630px;
+                max-height: 670px;
+                min-height: 670px;
                 max-width: 736px;
             }
             
@@ -545,6 +545,7 @@ export function getDispatchRequestStyles() {
             .modal-content-right {
                 display: flex;
                 flex-direction: column;
+                gap: 0.4em;
                 padding-left: 20px;
             }
 
@@ -651,6 +652,25 @@ export function getDispatchRequestStyles() {
             #edit-subject-modal-title {
                 margin: 0;
                 padding: 0.25em 0 0 0;
+            }
+            
+            #tf-add-recipient-birthdate-day, #tf-add-recipient-birthdate-month {
+                flex: 1;
+            }
+
+            #tf-add-recipient-birthdate-year {
+                flex: 2;
+            }
+
+            .birthdate-input {
+                display: flex;
+                flex-direction: row;
+                gap: 0.5em;
+                width: 331px;
+            }
+            
+            #edit-recipient-modal-content .birthdate-input {
+                width: 360px;
             }
 
             .line {
