@@ -67,7 +67,7 @@ jobs:
           curl -X POST --fail \
               -F "token=${DEPLOY_TRIGGER_TOKEN}" \
               -F "ref=main" \
-              -F "variables[UPSTREAM_PROJECT_PATH]=dbp/greenlight/greenlight" \
+              -F "variables[UPSTREAM_PROJECT_PATH]=dbp/dispatch/dispatch" \
               -F "variables[UPSTREAM_COMMIT_BRANCH]=${{ github.ref_name }}" \
               -F "variables[UPSTREAM_COMMIT_SHA]=${{ github.ref_name }}" \
               https://gitlab.tugraz.at/api/v4/projects/21238/trigger/pipeline
