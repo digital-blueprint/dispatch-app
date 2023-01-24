@@ -3,24 +3,24 @@
     "name": "TU Graz Dispatch",
     "icons": [
         {
-            "src": "local/@dbp-topics/dispatch/icon/android-chrome-192x192.png",
+            "src": "local/@digital-blueprint/dispatch-app/icon/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "local/@dbp-topics/dispatch/icon/android-chrome-512x512.png",
+            "src": "local/@digital-blueprint/dispatch-app/icon/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "local/@dbp-topics/dispatch/icon/maskable-icon-512x512.png",
+            "src": "local/@digital-blueprint/dispatch-app/icon/maskable-icon-512x512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
         },
         {
-            "src": "local/@dbp-topics/dispatch/icon/maskable-icon.png",
+            "src": "local/@digital-blueprint/dispatch-app/icon/maskable-icon.png",
             "sizes": "640x640",
             "type": "image/png",
             "purpose": "maskable"

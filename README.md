@@ -1,11 +1,11 @@
 # Dispatch Application
 
-[GitHub Repository](https://github.com/digital-blueprint/dispatch-frontend) |
-[npmjs package](https://www.npmjs.com/package/@dbp-topics/dispatch) |
-[Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/) |
+[GitHub Repository](https://github.com/digital-blueprint/dispatch-app) |
+[npmjs package](https://www.npmjs.com/package/@digital-blueprint/dispatch-app) |
+[Unpkg CDN](https://unpkg.com/browse/@digital-blueprint/dispatch-app/) |
 [Dispatch Bundle](https://github.com/digital-blueprint/dbp-relay-dispatch-bundle)
 
-[![Build and Test](https://github.com/digital-blueprint/dispatch-frontend/actions/workflows/build-test-publish.yml/badge.svg)](https://github.com/digital-blueprint/dispatch-frontend/actions/workflows/build-test-publish.yml)
+[![Build and Test](https://github.com/digital-blueprint/dispatch-app/actions/workflows/build-test-publish.yml/badge.svg)](https://github.com/digital-blueprint/dispatch-app/actions/workflows/build-test-publish.yml)
 
 This is an application for managing postal/electronic deliveries which get forwarded to an external "Dual Delivery" service provider.
 
@@ -18,7 +18,7 @@ This is an application for managing postal/electronic deliveries which get forwa
 
 ```bash
 # get the source
-git clone git@github.com:digital-blueprint/dispatch-frontend.git
+git clone git@github.com:digital-blueprint/dispatch-app.git
 cd dispatch
 git submodule update --init
 
@@ -55,8 +55,8 @@ Make sure you are allowing `.htaccess` files in your Apache configuration.
 Also make sure to add all of your resources you are using (like your API and Keycloak servers) to the
 `Content-Security-Policy` in your `dispatch-app/public/.htaccess`, so the browser allows access to those sites.
 
-You can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/)
-for example like this: [dbp-dispatch/index.html](https://github.com/digital-blueprint/dispatch-frontend/tree/main/examples/dbp-dispatch/index.html)
+You can also use this app directly from the [Unpkg CDN](https://unpkg.com/browse/@digital-blueprint/dispatch-app/)
+for example like this: [dbp-dispatch/index.html](https://github.com/digital-blueprint/dispatch-app/tree/main/examples/dbp-dispatch/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
@@ -70,9 +70,9 @@ npx @digital-blueprint/cli@latest update-app dispatch
 
 ## Using a single activity as pre-built package
 
-You can also use a single activity directly from the [Unpkg CDN](https://unpkg.com/browse/@dbp-topics/dispatch/)
+You can also use a single activity directly from the [Unpkg CDN](https://unpkg.com/browse/@digital-blueprint/dispatch-app/)
 for example the `dbp-qualified-dispatch-pdf-upload` activity to qualifiedly sign PDF documents like this:
-[dbp-qualified-dispatch-pdf-upload/index.html](https://github.com/digital-blueprint/dispatch-frontend/tree/main/examples/dbp-qualified-dispatch-pdf-upload/index.html)
+[dbp-qualified-dispatch-pdf-upload/index.html](https://github.com/digital-blueprint/dispatch-app/tree/main/examples/dbp-qualified-dispatch-pdf-upload/index.html)
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
@@ -83,7 +83,7 @@ This app has the following activities:
 - `dbp-qualified-signature-pdf-upload`
 - `dbp-official-signature-pdf-upload`
 
-You can find the documentation of these activities in the [qualified dispatch activities documentation](https://github.com/digital-blueprint/dispatch-frontend/tree/main/src).
+You can find the documentation of these activities in the [qualified dispatch activities documentation](https://github.com/digital-blueprint/dispatch-app/tree/main/src).
 
 ## Adapt app
 
@@ -126,4 +126,4 @@ For frontend design customizations, such as logo, colors, font, favicon, and mor
 ## "dbp-dispatch" slots
 
 These are common slots for the app-shell. You can find the documentation of these slots in the [app-shell documentation](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell).
-For the app specific slots take a look at the [greenlight activities](https://github.com/digital-blueprint/dispatch-frontend/tree/main/src).
+For the app specific slots take a look at the [greenlight activities](https://github.com/digital-blueprint/dispatch-app/tree/main/src).
