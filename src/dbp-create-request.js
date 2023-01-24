@@ -137,8 +137,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     "timeout": 5,
                 });
                 this.currentItem = responseBody;
-                // console.log(this.currentItem);
                 this.requestCreated = true;
+                // console.log(this.currentItem);
+
             } else if (response.status === 403) {
                 send({
                     "summary": i18n.t('create-request.error-requested-title'),
@@ -161,15 +162,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
     }
 
-    _onCreateRequestButtonClicked(event) {
+    async _onCreateRequestButtonClicked(event) {
         this._('#create-btn').start();
 
-        MicroModal.show(this._('#add-subject-modal'), {
-            disableScroll: true,
-            onClose: (modal) => {
-                this.loading = false;
-            },
-        });
+       this.openFileSource();
     }
 
     getCurrentTime() {

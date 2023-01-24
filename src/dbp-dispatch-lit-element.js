@@ -455,10 +455,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (fileSource) {
             this._('#file-source').openDialog();
         }
+
+        this.processCreateDispatchRequest().then(() => {
+            this.showDetailsView = true;
+            this.hasSubject = true;
+            this.hasSender = true;
+        });
     }
 
     async onFileSelected(event) {
-        await this.addFile(event.detail.file);
+       await this.addFile(event.detail.file);
+
     }
 
     async addFile(file) {
@@ -1095,7 +1102,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
             this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
             this.currentRecipient.appDeliveryId = responseBody['appDeliveryID'] ? responseBody['appDeliveryID'] : '';
-            // console.log('rec: ', this.currentRecipient);
+            this.currentRecipient.postalDeliverable = responseBody['postalDeliverable'] ? responseBody['postalDeliverable'] : '';
+            this.currentRecipient.electronicallyDeliverable = responseBody['electronicallyDeliverable'] ? responseBody['electronicallyDeliverable'] : '';
+            console.log('rec: ', this.currentRecipient);
         } else {
             // TODO error handling
         }
@@ -1435,7 +1444,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             year: year,
             month: month,
             day: date
-        }
+        };
         return dateTuple;
     }
 
