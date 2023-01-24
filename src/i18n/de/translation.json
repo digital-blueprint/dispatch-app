@@ -185,7 +185,10 @@
         "no-recipients-added": "(Noch) keine Empfänger angegeben.",
         "add-recipient-birthdate-dialog-placeholder-day": "TT",
         "add-recipient-birthdate-dialog-placeholder-month": "MM",
-        "add-recipient-birthdate-dialog-placeholder-year": "JJJJ"
+        "add-recipient-birthdate-dialog-placeholder-year": "JJJJ",
+        "only-postal-deliverable": "Nur postalische Zustellung möglich",
+        "electronically-deliverable": "Elektronische Zustellung möglich",
+        "delivery-service-dialog-label": "Zustellkanal"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",

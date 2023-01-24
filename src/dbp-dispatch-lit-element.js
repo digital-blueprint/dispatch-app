@@ -1104,7 +1104,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.appDeliveryId = responseBody['appDeliveryID'] ? responseBody['appDeliveryID'] : '';
             this.currentRecipient.postalDeliverable = responseBody['postalDeliverable'] ? responseBody['postalDeliverable'] : '';
             this.currentRecipient.electronicallyDeliverable = responseBody['electronicallyDeliverable'] ? responseBody['electronicallyDeliverable'] : '';
-            console.log('rec: ', this.currentRecipient);
         } else {
             // TODO error handling
         }
@@ -1570,22 +1569,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async preloadSelectedRecipient() {
         this.currentRecipient = {};
 
-        if (this._('#recipient-selector') && this._('#recipient-selector').getAttribute('data-object') !== null) {
+        if (this._('#recipient-selector') && this._('#recipient-selector').getAttribute('data-object') !== null && this._('#recipient-selector').getAttribute('data-object') !== '') {
+            console.log(this._('#recipient-selector').getAttribute('data-object'));
             const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
             const personId = person['@id'];
 
-            let value = this._('#recipient-selector').getAttribute('data-object');
-
-            console.log('selector', this._('#recipient-selector'));
-            console.log('value: ', value);
-            console.log('persId', personId);
+            // let value = this._('#recipient-selector').getAttribute('data-object');
+            // console.log('selector', this._('#recipient-selector'));
+            // console.log('value: ', value);
+            // console.log('persId', personId);
 
             let response = await this.sendGetPersonDetailsRequest(personId);
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
 
-                console.log(responseBody);
+                // console.log(responseBody);
                 this.currentRecipient.familyName = responseBody.familyName;
                 this.currentRecipient.givenName = responseBody.givenName;
                 let birthDate = responseBody.birthDate ? responseBody.birthDate : '';
@@ -2530,6 +2529,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     </div>
                                     <div class="element-right">
                                         ${this.currentRecipient.addressCountry}
+                                    </div>
+                                ` : ``}
+                                ${this.currentRecipient && !this.currentRecipient.electronicallyDeliverable && this.currentRecipient.postalDeliverable ? html`
+                                    <div class="element-left">
+                                        ${i18n.t('show-requests.delivery-service-dialog-label')}:
+                                    </div>
+                                    <div class="element-right">
+                                        ${i18n.t('show-requests.only-postal-deliverable')}
                                     </div>
                                 ` : ``}
                                 ${this.currentRecipient && this.currentRecipient.deliveryEndDate ? html`

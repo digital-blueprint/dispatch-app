@@ -185,7 +185,10 @@
         "no-recipients-added": "No recipients specified (yet).",
         "add-recipient-birthdate-dialog-placeholder-day": "dd",
         "add-recipient-birthdate-dialog-placeholder-month": "mm",
-        "add-recipient-birthdate-dialog-placeholder-year": "yyyy"
+        "add-recipient-birthdate-dialog-placeholder-year": "yyyy",
+        "only-postal-deliverable": "Only postal deliverable",
+        "electronically-deliverable": "Electronically deliverable",
+        "delivery-service-dialog-label": "Delivery channel"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading...",
