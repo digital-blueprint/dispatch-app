@@ -3,4 +3,4 @@
 	url = https://gitlab.tugraz.at/dbp/web-components/toolkit.git
 [submodule "vendor/signature"]
 	path = vendor/signature
-	url = https://gitlab.tugraz.at/dbp/topics/signature.git
+	url = https://github.com/digital-blueprint/esign-app.git
