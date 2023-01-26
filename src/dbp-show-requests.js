@@ -1269,8 +1269,40 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
                                     <div class="line"></div>
                                     <div>
+                                        <div class="section-titles">
+                                            ${i18n.t('show-requests.reference-number')}
+                                            ${!this.currentItem.dateSubmitted ? html`
+                                                <dbp-icon-button id="edit-reference-number-btn"
+                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                                             @click="${(event) => {
+                                                MicroModal.show(this._('#edit-reference-number-modal'), {
+                                                    disableScroll: true,
+                                                    onClose: (modal) => {
+                                                        this.loading = false;
+                                                    },
+                                                });
+                                            }}"
+                                                             title="${i18n.t('show-requests.edit-reference-number-button-text')}"
+                                                             icon-name="pencil"></dbp-icon-button>` : ``}
+                                        </div>
+                                        <div>${this.currentItem.referenceNumber ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.no-reference-number-found')}`}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="details header sub">
+                                    <div>
                                         <div class="section-titles">${i18n.t('show-requests.date-created')}</div>
                                         <div>${this.convertToReadableDate(this.currentItem.dateCreated)}</div>
+                                    </div>
+                                    <div class="line"></div>
+                                    <div>
+                                        <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
+                                        <div></div>
+                                    </div>
+                                    <div class="line"></div>
+                                    <div>
+                                        <div class="section-titles">${i18n.t('show-requests.table-header-id')}</div>
+                                        <div>${this.currentItem.identifier}</div>
                                     </div>
                                 </div>
                                 
@@ -1306,65 +1338,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
                                         ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
                                     </div>
-    
                                     <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFamilyName})}">${i18n.t('show-requests.empty-sender-text')}</div>
-    
                                 </div>
                                 
-                                <div class="details files">
-                                    <div class="header-btn">
-                                        <div class="section-titles">${i18n.t('show-requests.files')} <span class="section-title-counts">
-                                                ${this.currentItem.files.length !== 0 ? `(` + this.currentItem.files.length + `)` : ``}</span>
-                                        </div>
-                                        ${!this.currentItem.dateSubmitted ? html`
-                                             <dbp-loading-button id="add-files-btn"
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                            value="${i18n.t('show-requests.add-files-button-text')}" 
-                                                            @click="${(event) => {
-                                                                this.openFileSource();
-                                                            }}"
-                                                            title="${i18n.t('show-requests.add-files-button-text')}"
-                                            >
-                                                ${i18n.t('show-requests.add-files-button-text')}
-                                            </dbp-loading-button>` : ``
-                                        }
-                                    </div>
-                                    <div class="files-data">
-                                        ${this.currentItem.files.map(file => html`
-                                            <div class="file card">
-                                                <div class="left-side">
-                                                    <div>${file.name}</div>
-                                                    <div>${humanFileSize(file.contentSize)}</div>
-                                                    <div>${file.fileFormat}</div>
-                                                    <div>${this.convertToReadableDate(file.dateCreated)}</div>
-                                                </div>
-                                                <div class="right-side">
-                                                    <dbp-icon-button id="show-file-btn"
-                                                                @click="${(event) => {
-                                                                    console.log("on show file clicked");
-                                                                    //TODO show file viewer with pdf
-                                                                }}"
-                                                                class="hidden" <!-- TODO -->
-                                                                title="${i18n.t('show-requests.show-file-button-text')}"
-                                                                icon-name="keyword-research"></dbp-icon-button>
-                                                    ${!this.currentItem.dateSubmitted ? html`
-                                                        <dbp-icon-button id="delete-file-btn"
-                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                                    @click="${(event) => {
-                                                                        console.log("on delete file clicked");
-                                                                        this.deleteFile(file);
-                                                                    }}"
-                                                                    title="${i18n.t('show-requests.delete-file-button-text')}" 
-                                                                    icon-name="trash"></dbp-icon-button>` : ``
-                                                    }
-                                                </div>
-                                            </div>
-                                        `)}
-                                        <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
-                                       
-                                    </div>
-                                </div>
-    
                                 <div class="details recipients">
                                     <div class="header-btn">
                                         <div class="section-titles">${i18n.t('show-requests.recipients')} <span class="section-title-counts">
@@ -1388,10 +1364,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             </dbp-loading-button>` : ``
                                         }
                                     </div>
-                                </div>
-                                
-                                <div class="recipients-data">
-                                    ${this.currentItem.recipients.map(recipient => html`
+
+                                    <div class="recipients-data">
+                                        ${this.currentItem.recipients.map(recipient => html`
     
                                         <div class="recipient card">
                                             <div class="left-side">
@@ -1426,46 +1401,48 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         <dbp-icon-button id="edit-recipient-btn"
                                                                      ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                                      @click="${(event) => {
-                                                                         // let button = event.target;
-                                                                         this.currentRecipient = recipient;
-                                                                         this._('#edit-recipient-btn').start();
-                                                                         // button.start();
-                                                                         try {
-                                                                            this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                                this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                                this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
-                                                                                this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
-                                                                                this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
-
-                                                                                MicroModal.show(this._('#edit-recipient-modal'), {
-                                                                                    disableScroll: true,
-                                                                                    onClose: (modal) => {
-                                                                                        this.loading = false;
-                                                                                        this.currentRecipient = {};
-                                                                                    }
-                                                                                });
+                                                                    // let button = event.target;
+                                                                    this.currentRecipient = recipient;
+                                                                    this._('#edit-recipient-btn').start();
+                                                                    // button.start();
+                                                                    try {
+                                                                        this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                            this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                                                                            this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
+                                                                            this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
+                                                                            this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
+                        
+                                                                            MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                                disableScroll: true,
+                                                                                onClose: (modal) => {
+                                                                                    this.loading = false;
+                                                                                    this.currentRecipient = {};
+                                                                                }
                                                                             });
-                                                                         } catch {
-                                                                             this._('#edit-recipient-btn').stop();
-                                                                             // button.stop();
-                                                                         }
-                                                                     }}"
+                                                                        });
+                                                                    } catch {
+                                                                        this._('#edit-recipient-btn').stop();
+                                                                        // button.stop();
+                                                                    }
+                                                                }}"
                                                                      title="${i18n.t('show-requests.edit-recipients-button-text')}"
                                                                      icon-name="pencil"></dbp-icon-button>
                                                         <dbp-icon-button id="delete-recipient-btn"
                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                                     @click="${(event) => {
-                                                                        this.deleteRecipient(event, recipient);
-                                                                    }}"
+                                            this.deleteRecipient(event, recipient);
+                                        }}"
                                                                     title="${i18n.t('show-requests.delete-recipient-button-text')}"
-                                                                    icon-name="trash"></dbp-icon-button>` : ``
-                                                    }
+                                                                    icon-name="trash"></dbp-icon-button>` : `` }
                                             </div>
-                                        </div>
-                                    `)}
-                                    <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
-                                  
+                                        </div>  `)}
+                                        <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
+
+                                    </div>
                                 </div>
+                                
+                               ${this.addDetailedFilesView()}
+    
                             </div>
                         ` : ``}
                     ` : ``}
@@ -1483,7 +1460,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${this.addShowRecipientModal()}
 
             ${this.addEditSubjectModal()}
-        `;
+            
+            ${this.addEditReferenceNumberModal()}
+            `;
     }
 }
 

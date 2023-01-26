@@ -7,6 +7,8 @@ import * as dispatchHelper from './utils';
 import {PersonSelect} from "@dbp-toolkit/person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {IconButton} from "@dbp-toolkit/common";
+import {humanFileSize} from "@dbp-toolkit/common/i18next";
+import {classMap} from "lit/directives/class-map.js";
 
 
 export default class DBPDispatchLitElement extends DBPLitElement {
@@ -435,6 +437,23 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
     }
 
+    async sendChangeReferenceNumberRequest(identifier, referenceNumber) {
+        let body = {
+            "referenceNumber": referenceNumber,
+        };
+
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+            body: JSON.stringify(body),
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+    }
+
     async sendGetStatusChangeRequest(identifier) {
         const options = {
             method: 'GET',
@@ -447,7 +466,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     /*
-    * Open  file source
+    * Open file source
     *
     */
     openFileSource() {
@@ -615,8 +634,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let addressLocality = this.currentRecipient.addressLocality;
             let streetAddress = this.currentRecipient.streetAddress;
             let buildingNumber = this.currentRecipient.buildingNumber;
-            let birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
             let personIdentifier = this.currentRecipient.personIdentifier ? this.currentRecipient.personIdentifier : null;
+
+            let birthDate = '';
+            if (this.currentRecipient.birthDateDay !== '' && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '') {
+                birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
+            } else if (!personIdentifier) {
+                send({
+                    "summary": 'Error!',
+                    "body": 'Please enter a valid birthdate.',
+                    "type": "danger",
+                    "timeout": 5,
+                });
+                return;
+            }
 
             let response = await this.sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress, buildingNumber);
 
@@ -994,6 +1025,44 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    async changeReferenceNumberRequest(id, referenceNumber) {
+        this._('#edit-reference-number-btn').start();
+        const i18n = this._i18n;
+        try {
+            let response = await this.sendChangeReferenceNumberRequest(id, referenceNumber);
+            let responseBody = await response.json();
+
+            if (responseBody !== undefined && response.status === 200) {
+                this.currentItem = responseBody;
+
+                send({
+                    "summary": i18n.t('show-requests.edit-reference-number-success-title'),
+                    "body": i18n.t('show-requests.edit-reference-number-success-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
+
+            } else if (response.status === 403) {
+                send({
+                    "summary": i18n.t('create-request.error-requested-title'),
+                    "body": i18n.t('error-not-permitted'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            } else {
+                // TODO show error code specific notification
+                send({
+                    "summary": i18n.t('create-request.error-changed-reference-number-title'),
+                    "body": i18n.t('create-request.error-changed-reference-number-text'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            }
+        } finally {
+            this._('#edit-reference-number-btn').stop();
+        }
+    }
+
     async confirmEditSender() {
         const i18n = this._i18n;
 
@@ -1056,6 +1125,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let subject = this._('#tf-edit-subject-fn-dialog').value;
         let id = this.currentItem.identifier;
         await this.changeSubjectRequest(id, subject);
+    }
+
+    async confirmEditReferenceNumber() {
+        let referenceNumber = this._('#tf-edit-reference-number-fn-dialog').value;
+        let id = this.currentItem.identifier;
+        await this.changeReferenceNumberRequest(id, referenceNumber);
     }
 
     async confirmAddSubject() {
@@ -2668,6 +2743,139 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                         </footer>
                     </div>
+                </div>
+            </div>
+        `;
+    }
+
+    addEditReferenceNumberModal() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="modal micromodal-slide" id="edit-reference-number-modal" aria-hidden="true">
+                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
+                    <div
+                            class="modal-container"
+                            id="edit-reference-number-modal-box"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="edit-reference-number-modal-title">
+                        <header class="modal-header">
+                            <h3 id="edit-reference-number-modal-title">
+                                ${i18n.t('show-requests.edit-subject-modal-title')}
+                            </h3>
+                            <button
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    class="modal-close"
+                                    aria-label="Close modal"
+                                    @click="${() => {
+                                        MicroModal.close(this._('#edit-reference-number-modal'));
+                                    }}">
+                                <dbp-icon
+                                        title="${i18n.t('show-requests.modal-close')}"
+                                        name="close"
+                                        class="close-icon"></dbp-icon>
+                            </button>
+                        </header>
+                        <main class="modal-content" id="edit-reference-number-modal-content">
+                            <div class="modal-content-item">
+                                <div>
+                                    <input
+                                            type="text"
+                                            class="input"
+                                            name="tf-edit-reference-number-fn-dialog"
+                                            id="tf-edit-reference-number-fn-dialog"
+                                            value="${this.currentItem.referenceNumber ? this.currentItem.referenceNumber : ``}"
+                                    />
+                                </div>
+                            </div>
+                            <div class="modal-content-item">
+                                <div>
+                                    ${i18n.t('show-requests.edit-reference-number-description')}
+                                </div>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <div class="modal-footer-btn">
+                                <button
+                                        class="button"
+                                        data-micromodal-close
+                                        aria-label="Close this dialog window"
+                                        @click="${() => {
+                                            MicroModal.close(this._('#edit-reference-number-modal'));
+                                        }}">
+                                    ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
+                                </button>
+                                <button
+                                        class="button select-button is-primary"
+                                        id="edit-reference-number-confirm-btn"
+                                        @click="${() => {
+                                            this.confirmEditReferenceNumber().then(r => {
+                                                MicroModal.close(this._('#edit-reference-number-modal'));
+                                            });
+                                        }}">
+                                    ${i18n.t('show-requests.edit-reference-number-dialog-button-ok')}
+                                </button>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    addDetailedFilesView() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="details files">
+                <div class="header-btn">
+                    <div class="section-titles">${i18n.t('show-requests.files')} <span class="section-title-counts">
+                            ${this.currentItem.files.length !== 0 ? `(` + this.currentItem.files.length + `)` : ``}</span>
+                    </div>
+                    ${!this.currentItem.dateSubmitted ? html`
+                         <dbp-loading-button id="add-files-btn"
+                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                        value="${i18n.t('show-requests.add-files-button-text')}" 
+                                        @click="${(event) => {
+                                            this.openFileSource();
+                                        }}" 
+                                        title="${i18n.t('show-requests.add-files-button-text')}"
+                                        >${i18n.t('show-requests.add-files-button-text')}
+                         </dbp-loading-button>` : `` }
+                </div>
+                <div class="files-data">
+                    ${this.currentItem.files.map(file => html`
+                                            <div class="file card">
+                                                <div class="left-side">
+                                                    <div>${file.name}</div>
+                                                    <div>${humanFileSize(file.contentSize)}</div>
+                                                    <div>${file.fileFormat}</div>
+                                                    <div>${this.convertToReadableDate(file.dateCreated)}</div>
+                                                </div>
+                                                <div class="right-side">
+                                                    <dbp-icon-button id="show-file-btn"
+                                                                @click="${(event) => {
+            console.log("on show file clicked");
+            //TODO show file viewer with pdf
+        }}"
+                                                                class="hidden" <!-- TODO -->
+                                                                title="${i18n.t('show-requests.show-file-button-text')}"
+                                                                icon-name="keyword-research"></dbp-icon-button>
+                                                    ${!this.currentItem.dateSubmitted ? html`
+                                                        <dbp-icon-button id="delete-file-btn"
+                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                                                    @click="${(event) => {
+            console.log("on delete file clicked");
+            this.deleteFile(file);
+        }}"
+                                                                    title="${i18n.t('show-requests.delete-file-button-text')}" 
+                                                                    icon-name="trash"></dbp-icon-button>` : ``
+        }
+                                                </div>
+                                            </div>
+                                        `)}
+                    <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
                 </div>
             </div>
         `;

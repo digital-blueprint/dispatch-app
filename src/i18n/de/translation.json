@@ -188,7 +188,22 @@
         "add-recipient-birthdate-dialog-placeholder-year": "JJJJ",
         "only-postal-deliverable": "Nur postalische Zustellung möglich",
         "electronically-deliverable": "Elektronische Zustellung möglich",
-        "delivery-service-dialog-label": "Zustellkanal"
+        "delivery-service-dialog-label": "Zustellkanal",
+        "reference-number": "Geschäftszahl",
+        "no-reference-number-found": "Keine Geschäftszahl angegeben",
+        "reference-number-placeholder": "Geschäftszahl",
+        "reference-number-description": "Geben Sie hier die Geschäftszahl ein, die Sie für diesen Versandauftrag verwenden möchten.",
+        "reference-number-dialog-title": "Geschäftszahl bearbeiten",
+        "reference-number-dialog-button-ok": "Übernehmen",
+        "reference-number-dialog-button-cancel": "Abbrechen",
+        "reference-number-dialog-label": "Geschäftszahl",
+        "reference-number-dialog-placeholder": "Geschäftszahl",
+        "modified-from": "Zuletzt bearbeitet von",
+        "edit-reference-number-description": "",
+        "edit-reference-number-dialog-button-ok": "Übernehmen",
+        "edit-reference-number-success-title": "Erfolgreich geändert!",
+        "edit-reference-number-success-text": "Die Geschäftszahl wurde erfolgreich geändert."
+
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",
