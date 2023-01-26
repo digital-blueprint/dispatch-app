@@ -93,7 +93,7 @@ jobs:
           yarn install
           yarn run build
           # yarn always reports "https://registry.yarnpkg.com/@dbp-topics%2fsignature - Not found", so we are using npm directly
-          npm run do-publish
+          npm run publish
 
       - name: Deploy
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.ref == 'refs/heads/production'
