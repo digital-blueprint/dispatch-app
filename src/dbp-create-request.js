@@ -15,7 +15,6 @@ import * as dispatchStyles from './styles';
 import * as dispatchHelper from './utils';
 import {FileSource} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
-import {humanFileSize} from '@dbp-toolkit/common/i18next';
 
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {

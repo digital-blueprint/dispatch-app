@@ -13,7 +13,6 @@ import {FileSource} from '@dbp-toolkit/file-handling';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import * as dispatchStyles from './styles';
 import {name as pkgName} from './../package.json';
-import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import * as dispatchHelper from "./utils";
 import {PersonSelect} from "@dbp-toolkit/person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
