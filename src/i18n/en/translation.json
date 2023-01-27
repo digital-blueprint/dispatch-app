@@ -188,6 +188,8 @@
         "add-recipient-birthdate-dialog-placeholder-year": "yyyy",
         "only-postal-deliverable": "Only postal deliverable",
         "electronically-deliverable": "Electronically deliverable",
+        "not-deliverable-1": "Not deliverable",
+        "not-deliverable-2": "Address data must be inserted manually.",
         "delivery-service-dialog-label": "Delivery channel",
         "reference-number": "Reference number",
         "no-reference-number-found": "No reference number found",

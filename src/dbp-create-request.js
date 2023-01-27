@@ -446,6 +446,21 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
                                             <div>${recipient.postalCode} ${recipient.addressLocality}</div>
                                             <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
+                                            ${recipient.electronicallyDeliverable ? html`
+                                                    <div class="delivery-status"><span class="status-green">●</span> ${i18n.t('show-requests.electronically-deliverable')}</div>
+                                                ` : ``}
+                                            ${!recipient.electronicallyDeliverable && recipient.postalDeliverable ? html`
+                                                    <div class="delivery-status"><span class="status-orange">●</span> ${i18n.t('show-requests.only-postal-deliverable')}</div>
+                                                ` : ``}
+
+                                            ${!recipient.electronicallyDeliverable && !recipient.postalDeliverable ? html`
+                                                    <div class="delivery-status"><span class="status-red">●</span> ${i18n.t('show-requests.not-deliverable-1')}
+                                                    <dbp-tooltip
+                                                        icon-name="warning-high"
+                                                        class="info-tooltip"
+                                                        text-content="${i18n.t('show-requests.not-deliverable-2')}"
+                                                        interactive></dbp-tooltip></div>
+                                                ` : ``}
                                         </div>
                                         <div class="right-side">
                                             <dbp-icon-button id="show-recipient-btn"
@@ -474,30 +489,30 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                              icon-name="keyword-research"></dbp-icon></dbp-icon-button>
                                             ${!this.currentItem.dateSubmitted ? html`
                                                 <dbp-icon-button id="edit-recipient-btn"
-                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || recipient.personIdentifier}"
                                                              @click="${(event) => {
-                                        // let button = event.target;
-                                        // button.start();
-                                        this._('#edit-recipient-btn').start();
-                                        try {
-                                            this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
-                                                this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
-                                                this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
-                                                MicroModal.show(this._('#edit-recipient-modal'), {
-                                                    disableScroll: true,
-                                                    onClose: (modal) => {
-                                                        this.loading = false;
-                                                        this.currentRecipient = {};
-                                                    },
-                                                });
-                                            });
-                                        } catch {
-                                            this._('#edit-recipient-btn').stop();
-                                            // button.stop();
-                                        }
-                                    }}"
+                                                                // let button = event.target;
+                                                                // button.start();
+                                                                this._('#edit-recipient-btn').start();
+                                                                try {
+                                                                    this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                        this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                                                                        this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
+                                                                        this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
+                                                                        this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
+                                                                        MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                            disableScroll: true,
+                                                                            onClose: (modal) => {
+                                                                                this.loading = false;
+                                                                                this.currentRecipient = {};
+                                                                            },
+                                                                        });
+                                                                    });
+                                                                } catch {
+                                                                    this._('#edit-recipient-btn').stop();
+                                                                    // button.stop();
+                                                                }
+                                                             }}"
                                                              title="${i18n.t('show-requests.edit-recipients-button-text')}"
                                                              icon-name="pencil"></dbp-icon-button>
                                                 <dbp-icon-button id="delete-recipient-btn"

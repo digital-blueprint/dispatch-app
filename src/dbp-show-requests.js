@@ -17,7 +17,7 @@ import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import * as dispatchHelper from "./utils";
 import {PersonSelect} from "@dbp-toolkit/person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
-import {InfoTooltip} from "@dbp-toolkit/tooltip";
+import {InfoTooltip, TooltipElement} from "@dbp-toolkit/tooltip";
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -81,7 +81,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-file-source': FileSource,
             'dbp-person-select': PersonSelect,
             'dbp-resource-select': ResourceSelect,
-            'dbp-info-tooltip': InfoTooltip
+            'dbp-info-tooltip': InfoTooltip,
+            'dbp-tooltip': TooltipElement
         };
     }
 
@@ -1374,6 +1375,21 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
                                                 <div>${recipient.postalCode} ${recipient.addressLocality}</div>
                                                 <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
+                                                ${recipient.electronicallyDeliverable ? html`
+                                                    <div class="delivery-status"><span class="status-green">●</span> ${i18n.t('show-requests.electronically-deliverable')}</div>
+                                                ` : ``}
+                                                ${!recipient.electronicallyDeliverable && recipient.postalDeliverable ? html`
+                                                    <div class="delivery-status"><span class="status-orange">●</span> ${i18n.t('show-requests.only-postal-deliverable')}</div>
+                                                ` : ``}
+                                                
+                                                ${!recipient.electronicallyDeliverable && !recipient.postalDeliverable ? html`
+                                                    <div class="delivery-status"><span class="status-red">●</span> ${i18n.t('show-requests.not-deliverable-1')}
+                                                    <dbp-tooltip
+                                                        icon-name="warning-high"
+                                                        class="info-tooltip"
+                                                        text-content="${i18n.t('show-requests.not-deliverable-2')}"
+                                                        interactive></dbp-tooltip></div>
+                                                ` : ``}
                                             </div>
                                             <div class="right-side">
                                                     <dbp-icon-button id="show-recipient-btn"

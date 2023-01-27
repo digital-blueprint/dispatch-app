@@ -774,6 +774,14 @@ export function getDispatchRequestStyles() {
                 color: var(--dbp-override-warning-surface);
             }
 
+            .status-red {
+                color: var(--dbp-override-danger);
+            }
+            
+            .delivery-status {
+                padding-top: 0.5em;
+            }
+
             .back-container {
                 padding-top: 1em;
                 /*padding-bottom: 0.5em;*/

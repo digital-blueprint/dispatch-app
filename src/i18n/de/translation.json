@@ -188,6 +188,8 @@
         "add-recipient-birthdate-dialog-placeholder-year": "JJJJ",
         "only-postal-deliverable": "Nur postalische Zustellung möglich",
         "electronically-deliverable": "Elektronische Zustellung möglich",
+        "not-deliverable-1": "Keine Zustellung möglich",
+        "not-deliverable-2": "Adressdaten müssen händisch eingegeben werden.",
         "delivery-service-dialog-label": "Zustellkanal",
         "reference-number": "Geschäftszahl",
         "no-reference-number-found": "Keine Geschäftszahl angegeben",
