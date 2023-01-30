@@ -1297,7 +1297,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <div class="line"></div>
                                     <div>
                                         <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
-                                        <div></div>
+                                        <div>${this.currentItem.personIdentifier}</div>
                                     </div>
                                     <div class="line"></div>
                                     <div>
@@ -1414,7 +1414,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 icon-name="keyword-research"></dbp-icon></dbp-icon-button>
                                                     ${!this.currentItem.dateSubmitted ? html`
                                                         <dbp-icon-button id="edit-recipient-btn"
-                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite || (recipient.personIdentifier && recipient.electronicallyDeliverable)}"
                                                                      @click="${(event) => {
                                                                     // let button = event.target;
                                                                     this.currentRecipient = recipient;
