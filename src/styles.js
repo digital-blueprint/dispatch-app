@@ -528,14 +528,14 @@ export function getDispatchRequestStyles() {
             }
             
             #edit-recipient-modal-box {
-                max-height: 680px;
-                min-height: 680px;
+                max-height: 640px;
+                min-height: 640px;
                 max-width: 400px;
             }
 
             #add-recipient-modal-box {
-                max-height: 670px;
-                min-height: 670px;
+                max-height: 645px;
+                min-height: 645px;
                 max-width: 736px;
             }
             

@@ -1371,7 +1371,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         <div class="recipient card">
                                             <div class="left-side">
                                                 <div>${recipient.givenName} ${recipient.familyName}</div>
-                                                <div>${recipient.streetAddress} ${recipient.buildingNumber}</div>
+                                                <div>${recipient.streetAddress}</div>
                                                 <div>${recipient.postalCode} ${recipient.addressLocality}</div>
                                                 <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
                                                 ${recipient.electronicallyDeliverable ? html`
