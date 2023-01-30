@@ -2606,14 +2606,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.currentRecipient.addressCountry}
                                     </div>
                                 ` : ``}
-                                ${this.currentRecipient && !this.currentRecipient.electronicallyDeliverable && this.currentRecipient.postalDeliverable ? html`
-                                    <div class="element-left">
-                                        ${i18n.t('show-requests.delivery-service-dialog-label')}:
-                                    </div>
-                                    <div class="element-right">
-                                        ${i18n.t('show-requests.only-postal-deliverable')}
-                                    </div>
-                                ` : ``}
+                                <div class="element-left">
+                                    ${i18n.t('show-requests.delivery-service-dialog-label')}:
+                                </div>
+                                <div class="element-right">
+                                    ${this.currentRecipient.electronicallyDeliverable ? i18n.t('show-requests.electronically-deliverable') :
+                                            (this.currentRecipient.postalDeliverable ? i18n.t('show-requests.only-postal-deliverable') : 
+                                                    i18n.t('show-requests.not-deliverable-1') + '. ' + i18n.t('show-requests.not-deliverable-2'))}
+                                </div>
                                 ${this.currentRecipient && this.currentRecipient.deliveryEndDate ? html`
                                     <div class="element-left">
                                         ${i18n.t('show-requests.delivery-end-date')}:
