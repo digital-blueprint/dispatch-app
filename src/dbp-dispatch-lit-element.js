@@ -420,6 +420,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + identifier + '?includeLocal=streetAddress%2CaddressLocality%2CpostalCode%2CaddressCountry', options);
     }
 
+    async sendGetPersonRequest(identifier) {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: "Bearer " + this.auth.token
+            },
+        };
+        return await this.httpGetAsync(this.entryPointUrl + '/base/people/' + identifier, options);
+    }
+
     async sendChangeSubjectRequest(identifier, subject) {
         let body = {
             "name": subject,
@@ -861,6 +872,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     //TODO
                 });
             });
+
+            await this.loadLastModifiedName(this.currentItem.personIdentifier);
 
             this.showListView = false;
             this.showDetailsView = true;
@@ -1678,6 +1691,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
             console.log('rec', this.currentRecipient);
             this.requestUpdate();
+        }
+    }
+
+    async loadLastModifiedName(personIdentifier) {
+        if (personIdentifier !== undefined) {
+            let response = await this.sendGetPersonRequest(personIdentifier);
+
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
+                this.currentItem.lastModifiedName = responseBody.givenName + ' ' + responseBody.familyName;
+            } else {
+                this.currentItem.lastModifiedName = '';
+            }
         }
     }
 

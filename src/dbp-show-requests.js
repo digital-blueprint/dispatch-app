@@ -1297,7 +1297,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <div class="line"></div>
                                     <div>
                                         <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
-                                        <div>${this.currentItem.personIdentifier}</div>
+                                        <div>${this.currentItem.lastModifiedName ? this.currentItem.lastModifiedName : this.currentItem.personIdentifier}</div>
                                     </div>
                                     <div class="line"></div>
                                     <div>
