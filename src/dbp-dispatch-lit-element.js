@@ -1732,7 +1732,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this.showListView = true;
         this.showDetailsView = false;
-        this.currentRecipient = null;
 
         this.hasEmptyFields = false;
         this.hasSender = false;
