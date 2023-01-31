@@ -14,9 +14,9 @@ import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import * as dispatchStyles from './styles';
 import {name as pkgName} from './../package.json';
 import * as dispatchHelper from "./utils";
-import {PersonSelect} from "@dbp-toolkit/person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {InfoTooltip, TooltipElement} from "@dbp-toolkit/tooltip";
+import {CustomPersonSelect} from "./person-select.js";
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -80,7 +80,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-icon-button': IconButton,
             'dbp-inline-notification': InlineNotification,
             'dbp-file-source': FileSource,
-            'dbp-person-select': PersonSelect,
+            'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-info-tooltip': InfoTooltip,
             'dbp-tooltip': TooltipElement
