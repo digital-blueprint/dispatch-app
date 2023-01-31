@@ -1208,10 +1208,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier }) 
                                : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })
                         }:
-                        <dbp-info-tooltip
-                                class="info-tooltip"
-                                text-content="${i18n.t('show-requests.table-header-id')}: ${this.currentItem.identifier}"
-                                interactive></dbp-info-tooltip>
                     </h3>
     
                     <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
