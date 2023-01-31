@@ -50,6 +50,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderStreetAddress = "";
         this.currentItem.senderBuildingNumber = "";
 
+        this.lastModifiedName = '';
+
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
         this.nextcloudWebDavURL = "";
@@ -103,6 +105,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             mayWrite: { type: Boolean, attribute: false },
             mayRead: { type: Boolean, attribute: false },
             rowsSelected: { type: Boolean, attribute: false },
+            lastModifiedName: { type: String, attribute: false },
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -1297,7 +1300,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <div class="line"></div>
                                     <div>
                                         <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
-                                        <div>${this.currentItem.lastModifiedName ? this.currentItem.lastModifiedName : this.currentItem.personIdentifier}</div>
+                                        <div>${this.lastModifiedName ? this.lastModifiedName : this.currentItem.personIdentifier}</div>
                                     </div>
                                     <div class="line"></div>
                                     <div>
@@ -1392,22 +1395,24 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             </div>
                                             <div class="right-side">
                                                     <dbp-icon-button id="show-recipient-btn"
-                                                                @click="${() => {
+                                                                @click="${(event) => {
+                                                                    let button = event.target;
+                                                                    button.start();
                                                                     this.currentRecipient = recipient;
-                                                                    this._('#show-recipient-btn').start();
                                                                     try {
                                                                         this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
                                                                             MicroModal.show(this._('#show-recipient-modal'), {
                                                                                 disableScroll: true,
+                                                                                onShow: modal => { this.button = button; },
                                                                                 onClose: (modal) => {
                                                                                     this.loading = false;
                                                                                     this.currentRecipient = {};
-                                                                                    this._('#show-recipient-btn').stop();
+                                                                                    button.stop();
                                                                                 },
                                                                             });
                                                                         });
                                                                     } catch {
-                                                                        this._('#show-recipient-btn').stop();
+                                                                        button.stop();
                                                                     }
                                                                 }}"
                                                                 title="${i18n.t('show-requests.show-recipient-button-text')}"
@@ -1416,37 +1421,41 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         <dbp-icon-button id="edit-recipient-btn"
                                                                      ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite || (recipient.personIdentifier && recipient.electronicallyDeliverable)}"
                                                                      @click="${(event) => {
-                                                                    // let button = event.target;
-                                                                    this.currentRecipient = recipient;
-                                                                    this._('#edit-recipient-btn').start();
-                                                                    // button.start();
-                                                                    try {
-                                                                        this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                            this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                            this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
-                                                                            this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
-                                                                            this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
-                        
-                                                                            MicroModal.show(this._('#edit-recipient-modal'), {
-                                                                                disableScroll: true,
-                                                                                onClose: (modal) => {
-                                                                                    this.loading = false;
-                                                                                    this.currentRecipient = {};
-                                                                                }
-                                                                            });
-                                                                        });
-                                                                    } catch {
-                                                                        this._('#edit-recipient-btn').stop();
-                                                                        // button.stop();
-                                                                    }
-                                                                }}"
+                                                                            let button = event.target;
+                                                                            button.start();
+                                                                            this.currentRecipient = recipient;
+                                                                            try {
+                                                                                this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                                    this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                                                                                    this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
+                                                                                    this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
+                                                                                    this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
+                                                                                    this._('#tf-edit-recipient-gn-dialog').value = this.currentRecipient.givenName;
+                                                                                    this._('#tf-edit-recipient-fn-dialog').value = this.currentRecipient.familyName;
+                                                                                    this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode;
+                                                                                    this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality;
+                                                                                    this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
+                                
+                                                                                    MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                                        disableScroll: true,
+                                                                                        onShow: modal => { this.button = button; },
+                                                                                        onClose: (modal) => {
+                                                                                            this.loading = false;
+                                                                                            this.currentRecipient = {};
+                                                                                        }
+                                                                                    });
+                                                                                });
+                                                                            } catch {
+                                                                                button.stop();
+                                                                            }
+                                                                        }}"
                                                                      title="${i18n.t('show-requests.edit-recipients-button-text')}"
                                                                      icon-name="pencil"></dbp-icon-button>
                                                         <dbp-icon-button id="delete-recipient-btn"
                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                                     @click="${(event) => {
-                                            this.deleteRecipient(event, recipient);
-                                        }}"
+                                                                        this.deleteRecipient(event, recipient);
+                                                                    }}"
                                                                     title="${i18n.t('show-requests.delete-recipient-button-text')}"
                                                                     icon-name="trash"></dbp-icon-button>` : `` }
                                             </div>

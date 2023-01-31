@@ -540,10 +540,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    async deleteFile(file) {
+    async deleteFile(event, file) {
         const i18n = this._i18n;
-
-        this._('#delete-file-btn').start();
+        let button = event.target;
+        button.start();
 
         try {
             let response = await this.sendDeleteFileRequest(file.identifier, file);
@@ -572,7 +572,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } finally {
-            this._('#delete-file-btn').stop();
+            button.stop();
         }
     }
 
@@ -685,9 +685,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateMonth = '';
                 this.currentRecipient.birthDateYear = '';
 
-                this.currentRecipient.addressLocality = '';
-                this.currentRecipient.postalCode = '';
-                this.currentRecipient.streetAddress = '';
                 this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping('AT');
 
                 this._('#tf-add-recipient-gn-dialog').value = this.currentRecipient.givenName;
@@ -725,10 +722,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    async updateRecipient(event, item) {
-        // let button = event.target;
-        // button.start();
-        this._('#edit-recipient-btn').start();
+    async updateRecipient(button) {
+        button.start();
 
         try {
             const i18n = this._i18n;
@@ -761,6 +756,26 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 let responseBody2 = await resp.json();
                 if (responseBody2 !== undefined && responseBody2.status !== 403) {
                     this.currentItem = responseBody2;
+
+                    this.currentRecipient.givenName = '';
+                    this.currentRecipient.familyName = '';
+                    this.currentRecipient.postalCode = '';
+                    this.currentRecipient.addressLocality = '';
+                    this.currentRecipient.streetAddress = '';
+                    this.currentRecipient.birthDateDay = '';
+                    this.currentRecipient.birthDateMonth = '';
+                    this.currentRecipient.birthDateYear = '';
+                    this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping('AT');
+
+                    this._('#tf-edit-recipient-gn-dialog').value = this.currentRecipient.givenName;
+                    this._('#tf-edit-recipient-fn-dialog').value = this.currentRecipient.familyName;
+                    this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode;
+                    this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality;
+                    this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
+                    this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
+                    this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
+                    this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
+                    this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
                 }
             } else {
                 // TODO error handling
@@ -775,17 +790,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } catch (e) {
             //TODO
         } finally {
-            this._('#edit-recipient-btn').stop();
-            // button.stop();
+            this.requestUpdate();
+            button.stop();
         }
     }
 
     async deleteRecipient(event, recipient) {
         const i18n = this._i18n;
-        // console.log(recipient);
         let button = event.target;
         button.start();
-        // this._('#delete-recipient-btn').start();
 
         try {
             let response = await this.sendDeleteRecipientRequest(recipient.identifier);
@@ -815,7 +828,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } finally {
-            // this._('#delete-recipient-btn').stop();
             button.stop();
         }
     }
@@ -1693,9 +1705,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
-                this.currentItem.lastModifiedName = responseBody.givenName + ' ' + responseBody.familyName;
+                this.lastModifiedName = responseBody.givenName + ' ' + responseBody.familyName;
             } else {
-                this.currentItem.lastModifiedName = '';
+                this.lastModifiedName = '';
             }
         }
     }
@@ -2298,7 +2310,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     class="modal-close"
                                     aria-label="Close modal"
                                     @click="${() => {
-                                        this._('#edit-recipient-btn').stop();
+                                        let button = this.button;
+                                        button.stop();
                                         MicroModal.close(this._('#edit-recipient-modal'));
                                     }}">
                                 <dbp-icon
@@ -2448,7 +2461,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="button"
                                         aria-label="Close this dialog window"
                                         @click="${() => {
-                                            this._('#edit-recipient-btn').stop();
+                                            let button = this.button;
+                                            button.stop();
                                             MicroModal.close(this._('#edit-recipient-modal'));
                                         }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
@@ -2457,6 +2471,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="button select-button is-primary"
                                         id="edit-recipient-confirm-btn"
                                         @click="${() => {
+                                            let button = this.button;
+                                            
                                             let validcountry = this.checkValidity(this._('#edit-recipient-country-select'));
                                             let validal = this.checkValidity(this._('#tf-edit-recipient-al-dialog'));
                                             let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'));
@@ -2477,10 +2493,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
                                                 this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
                                                 this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
-                                                this.updateRecipient();
+                                                this.updateRecipient(button);
                                                 MicroModal.close(this._('#edit-recipient-modal'));
                                             } else {
-                                                this._('#edit-recipient-btn').stop();
+                                                button.stop();
                                             }
                                         }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-ok')}
@@ -2513,8 +2529,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     class="modal-close"
                                     aria-label="Close modal"
                                     @click="${() => {
-            MicroModal.close(this._('#show-recipient-modal'));
-        }}">
+                                        MicroModal.close(this._('#show-recipient-modal'));
+                                    }}">
                                 <dbp-icon
                                         title="${i18n.t('show-requests.modal-close')}"
                                         name="close"
@@ -2836,9 +2852,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                         <dbp-icon-button id="delete-file-btn"
                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                                     @click="${(event) => {
-            console.log("on delete file clicked");
-            this.deleteFile(file);
-        }}"
+                                                                        this.deleteFile(event, file);
+                                                                    }}"
                                                                     title="${i18n.t('show-requests.delete-file-button-text')}" 
                                                                     icon-name="trash"></dbp-icon-button>` : ``
         }
