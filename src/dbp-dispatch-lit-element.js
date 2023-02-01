@@ -1366,6 +1366,45 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    expandAll(event) {
+        this.dispatchRequestsTable.getRows('visible').forEach(row => {
+            const item = row.getElement().lastChild;
+
+            if (item.classList.contains('tabulator-responsive-collapse')) {
+                item.style.display = 'block';
+            }
+            row.getElement().getElementsByClassName('tabulator-responsive-collapse-toggle')[0].classList.add('open');
+        });
+
+        const that = this;
+
+        setTimeout(function () {
+            that.dispatchRequestsTable.redraw();
+        }, 0);
+
+        this.expanded = true;
+    }
+
+    collapseAll(event) {
+        this.dispatchRequestsTable.getRows('visible').forEach(row => {
+            const item = row.getElement().lastChild;
+
+            if (item.classList.contains('tabulator-responsive-collapse')) {
+                item.style.display = 'none';
+            }
+            row.getElement().getElementsByClassName('tabulator-responsive-collapse-toggle')[0].classList.remove('open');
+        });
+
+        const that = this;
+
+        setTimeout(function () {
+            that.dispatchRequestsTable.redraw();
+        }, 0);
+
+        this.expanded = false;
+    }
+
+
     createFormattedFilesList(list) {
         const i18n = this._i18n;
         let output = '';

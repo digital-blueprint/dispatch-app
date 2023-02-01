@@ -51,6 +51,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderBuildingNumber = "";
 
         this.lastModifiedName = '';
+        this.expanded = false;
 
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
@@ -106,6 +107,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             mayRead: { type: Boolean, attribute: false },
             rowsSelected: { type: Boolean, attribute: false },
             lastModifiedName: { type: String, attribute: false },
+            expanded: { type: Boolean, attribute: false },
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -405,6 +407,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     toggleCollapse(e) {
+        console.log('toggleCollapse');
         const table = this.dispatchRequestsTable;
         // give a chance to draw the table
         // this is for getting more height in tabulator table, when toggle is called
@@ -1075,85 +1078,107 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
                     ${i18n.t('show-requests.dispatch-orders')}
                 </h3>
+                    
                 
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet || !this.mayRead})}">
                     <div class="table-wrapper">
                         <div class="selected-buttons">
-                            <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}"
-                                <div class="search-wrapper ">
-                                    <div id="extendable-searchbar">
-                                        <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
-                                            this.toggleSearchMenu();
-                                        }}'>
-                                        <dbp-icon-button id="search-button" title="Suchen" icon-name="search" 
-                                            @click='${() => {
-                                                this.filterTable();
-                                            }}'></dbp-icon-button>
-                                        <ul class='extended-menu hidden' id='searchbar-menu'>
-                                            <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
-                                            <select id='search-select' class='button dropdown-menu'
-                                                    title='${i18n.t('show-requests.search-in-column')}:'>
-                                                ${this.getTableHeaderOptions()}
-                                            </select>
-                                            
-                                            <label for='search-operator'>${i18n.t('show-requests.search-operator')}
-                                                :</label>
-                                            <select id='search-operator' class='button dropdown-menu'>
-                                                <option value='like'>${i18n.t('show-requests.search-operator-like')}
-                                                </option>
-                                                <option value='='>${i18n.t('show-requests.search-operator-equal')}</option>
-                                                <option value='!='>${i18n.t('show-requests.search-operator-notequal')}
-                                                </option>
-                                                <option value='starts'>${i18n.t('show-requests.search-operator-starts')}
-                                                </option>
-                                                <option value='ends'>${i18n.t('show-requests.search-operator-ends')}
-                                                </option>
-                                                <option value='<'>${i18n.t('show-requests.search-operator-less')}</option>
-                                                <option value='<='>
-                                                    ${i18n.t('show-requests.search-operator-lessthanorequal')}
-                                                </option>
-                                                <option value='>'>${i18n.t('show-requests.search-operator-greater')}
-                                                </option>
-                                                <option value='>='>
-                                                    ${i18n.t('show-requests.search-operator-greaterorequal')}
-                                                </option>
-                                                <option value='regex'>${i18n.t('show-requests.search-operator-regex')}
-                                                </option>
-                                                <option value='keywords'>
-                                                    ${i18n.t('show-requests.search-operator-keywords')}
-                                                </option>
-                                            </select>
-                                        </ul>
+                                <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}"
+                                    <div class="search-wrapper ">
+                                        <div id="extendable-searchbar">
+                                            <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
+                                                this.toggleSearchMenu();
+                                            }}'>
+                                            <dbp-icon-button id="search-button" title="Suchen" icon-name="search" 
+                                                @click='${() => {
+                                                    this.filterTable();
+                                                }}'></dbp-icon-button>
+                                            <ul class='extended-menu hidden' id='searchbar-menu'>
+                                                <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
+                                                <select id='search-select' class='button dropdown-menu'
+                                                        title='${i18n.t('show-requests.search-in-column')}:'>
+                                                    ${this.getTableHeaderOptions()}
+                                                </select>
+                                                
+                                                <label for='search-operator'>${i18n.t('show-requests.search-operator')}
+                                                    :</label>
+                                                <select id='search-operator' class='button dropdown-menu'>
+                                                    <option value='like'>${i18n.t('show-requests.search-operator-like')}
+                                                    </option>
+                                                    <option value='='>${i18n.t('show-requests.search-operator-equal')}</option>
+                                                    <option value='!='>${i18n.t('show-requests.search-operator-notequal')}
+                                                    </option>
+                                                    <option value='starts'>${i18n.t('show-requests.search-operator-starts')}
+                                                    </option>
+                                                    <option value='ends'>${i18n.t('show-requests.search-operator-ends')}
+                                                    </option>
+                                                    <option value='<'>${i18n.t('show-requests.search-operator-less')}</option>
+                                                    <option value='<='>
+                                                        ${i18n.t('show-requests.search-operator-lessthanorequal')}
+                                                    </option>
+                                                    <option value='>'>${i18n.t('show-requests.search-operator-greater')}
+                                                    </option>
+                                                    <option value='>='>
+                                                        ${i18n.t('show-requests.search-operator-greaterorequal')}
+                                                    </option>
+                                                    <option value='regex'>${i18n.t('show-requests.search-operator-regex')}
+                                                    </option>
+                                                    <option value='keywords'>
+                                                        ${i18n.t('show-requests.search-operator-keywords')}
+                                                    </option>
+                                                </select>
+                                            </ul>
+                                        </div>
                                     </div>
+                                
+                                    <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
+                                                     ?disabled="${this.loading}"
+                                                     @click="${() => { console.log('open settings'); }}"
+                                                     title="TODO"
+                                                     icon-name="iconoir_settings"></dbp-icon-button>
+                                
+                                    
                                 </div>
-                                <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
-                                            ?disabled="${this.loading}"
-                                            @click="${() => { console.log('open settings'); }}"
-                                            title="TODO"
-                                            icon-name="iconoir_settings"></dbp-icon-button>
-                            </div>
-                        
-                            ${ this.mayWrite ? html`
+
                                 <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
-                                    <dbp-loading-button id="delete-all-btn"
-                                                        ?disabled="${this.loading || !this.rowsSelected}"
-                                                        value="${i18n.t('show-requests.delete-button-text')}"
-                                                        @click="${(event) => { this.deleteSelected(event); }}"
-                                                        title="${i18n.t('show-requests.delete-button-text')}"
-                                    >
-                                        ${i18n.t('show-requests.delete-button-text')}
-                                    </dbp-loading-button>
-                                    <dbp-loading-button id="submit-all-btn"
-                                                        type="is-primary"
-                                                        ?disabled="${this.loading || !this.rowsSelected}"
-                                                        value="${i18n.t('show-requests.submit-button-text')}"
-                                                        @click="${(event) => { this.submitSelected(event); }}"
-                                                        title="${i18n.t('show-requests.submit-button-text')}"
-                                    >
-                                        ${i18n.t('show-requests.submit-button-text')}
-                                    </dbp-loading-button>
-                                </div>
-                            ` : `` }
+                                     <dbp-loading-button id="expand-all-btn"
+                                                         class="${classMap({ hidden: this.expanded })}"
+                                                         ?disabled="${this.loading}"
+                                                         value="${i18n.t('show-requests.expand-all')}"
+                                                         @click="${(event) => { this.expandAll(event); }}"
+                                                         title="${i18n.t('show-requests.expand-all')}"
+                                    >${i18n.t('show-requests.expand-all')}</dbp-loading-button>
+                                
+                                    <dbp-loading-button id="collapse-all-btn"
+                                                        class="${classMap({ hidden: !this.expanded })}"
+                                                        ?disabled="${this.loading}"
+                                                        value="${i18n.t('show-requests.collapse-all')}"
+                                                        @click="${(event) => { this.collapseAll(event); }}"
+                                                        title="${i18n.t('show-requests.collapse-all')}"
+                                >${i18n.t('show-requests.collapse-all')}</dbp-loading-button>
+
+                                ${ this.mayWrite ? html`
+                                  
+                                        <dbp-loading-button id="delete-all-btn"
+                                                            ?disabled="${this.loading || !this.rowsSelected}"
+                                                            value="${i18n.t('show-requests.delete-button-text')}"
+                                                            @click="${(event) => { this.deleteSelected(event); }}"
+                                                            title="${i18n.t('show-requests.delete-button-text')}"
+                                        >
+                                            ${i18n.t('show-requests.delete-button-text')}
+                                        </dbp-loading-button>
+                                        <dbp-loading-button id="submit-all-btn"
+                                                            type="is-primary"
+                                                            ?disabled="${this.loading || !this.rowsSelected}"
+                                                            value="${i18n.t('show-requests.submit-button-text')}"
+                                                            @click="${(event) => { this.submitSelected(event); }}"
+                                                            title="${i18n.t('show-requests.submit-button-text')}"
+                                        >
+                                            ${i18n.t('show-requests.submit-button-text')}
+                                        </dbp-loading-button>
+                                ` : `` }
+
+                            </div>
                         </div>
                         
                         

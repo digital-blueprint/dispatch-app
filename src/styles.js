@@ -719,6 +719,16 @@ export function getDispatchRequestStyles() {
                 flex-direction: row;
                 justify-content: space-between;
             }
+            
+            .button-row {
+                display: flex;
+                flex-direction: row;
+                
+            }
+            
+            #expand-all-btn, #collapse-all-btn {
+                padding: 0.25em 0 0 0.5em;
+            }
 
             .card {
                 display: grid;

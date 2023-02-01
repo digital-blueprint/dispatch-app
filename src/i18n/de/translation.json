@@ -204,7 +204,9 @@
         "edit-reference-number-description": "",
         "edit-reference-number-dialog-button-ok": "Übernehmen",
         "edit-reference-number-success-title": "Erfolgreich geändert!",
-        "edit-reference-number-success-text": "Die Geschäftszahl wurde erfolgreich geändert."
+        "edit-reference-number-success-text": "Die Geschäftszahl wurde erfolgreich geändert.",
+        "expand-all": "Alles aufklappen",
+        "collapse-all": "Alles zuklappen"
 
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",

@@ -204,7 +204,9 @@
         "edit-reference-number-description": "",
         "edit-reference-number-dialog-button-ok": "OK",
         "edit-reference-number-success-title": "Successfully changed!",
-        "edit-reference-number-success-text": "The reference number was successfully changed."
+        "edit-reference-number-success-text": "The reference number was successfully changed.",
+        "expand-all": "Expand all",
+        "collapse-all": "Collapse all"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading...",
