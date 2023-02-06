@@ -125,6 +125,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     this._i18n.changeLanguage(this.lang);
                     if (this.dispatchRequestsTable) {
                         this.dispatchRequestsTable.setLocale(this.lang);
+                        this.expanded = false;
                     }
                     break;
             }

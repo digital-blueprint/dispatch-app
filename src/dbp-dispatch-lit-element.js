@@ -882,6 +882,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             this.showListView = false;
             this.showDetailsView = true;
+            this.expanded = false;
         } finally {
             button.stop();
         }
@@ -1778,6 +1779,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         // this.organizationLoaded = false;
         this.requestCreated = false;
+        this.expanded = false;
     }
 
     addFilePicker() {
