@@ -648,8 +648,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
             } else if (!personIdentifier) {
                 send({
-                    "summary": 'Error!',
-                    "body": 'Please enter a valid birthdate.',
+                    "summary": i18n.t('show-requests.error-invalid-birthdate-title'),
+                    "body": i18n.t('show-requests.error-invalid-birthdate-text'),
                     "type": "danger",
                     "timeout": 5,
                 });
@@ -2528,9 +2528,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 this.currentRecipient.postalCode = this._('#tf-edit-recipient-pc-dialog').value;
                                                 this.currentRecipient.addressLocality = this._('#tf-edit-recipient-al-dialog').value;
                                                 this.currentRecipient.streetAddress = this._('#tf-edit-recipient-sa-dialog').value;
-                                                this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
-                                                this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
-                                                this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
+                                                this.currentRecipient.birthDateDay = this._('#tf-edit-recipient-birthdate-day').value;
+                                                this.currentRecipient.birthDateMonth = this._('#tf-edit-recipient-birthdate-month').value;
+                                                this.currentRecipient.birthDateYear = this._('#tf-edit-recipient-birthdate-year').value;
+
                                                 this.updateRecipient(button);
                                                 MicroModal.close(this._('#edit-recipient-modal'));
                                             } else {
