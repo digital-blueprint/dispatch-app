@@ -188,8 +188,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async sendCreateDispatchRequest() {
         let body = {
             "name": this.subject,
-            "senderGivenName": this.currentItem.senderGivenName,
-            "senderFamilyName": this.currentItem.senderFamilyName,
+            "senderOrganizationName": this.currentItem.senderOrganizationName,
+            "senderFullName": this.currentItem.senderOrganizationName, // '', // this.currentItem.senderFullName,
             "senderAddressCountry": this.currentItem.senderAddressCountry,
             "senderPostalCode": this.currentItem.senderPostalCode,
             "senderAddressLocality": this.currentItem.senderAddressLocality,
@@ -232,8 +232,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * Sends a put dispatch request
      *
      * @param identifier
-     * @param senderGivenName
-     * @param senderFamilyName
+     * @param senderOrganizationName
+     * @param senderFullName
      * @param senderAddressCountry
      * @param senderPostalCode
      * @param senderAddressLocality
@@ -242,10 +242,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param groupId
      * @returns {object} response
      */
-    async sendEditDispatchRequest(identifier, senderGivenName, senderFamilyName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId) {
+    async sendEditDispatchRequest(identifier, senderOrganizationName, senderFullName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId) {
         let body = {
-            "senderGivenName": senderGivenName,
-            "senderFamilyName": senderFamilyName,
+            "senderOrganizationName": senderOrganizationName,
+            "senderFullName": senderOrganizationName, //'', //senderFullName,
             "senderAddressCountry": senderAddressCountry,
             "senderPostalCode": senderPostalCode,
             "senderAddressLocality": senderAddressLocality,
@@ -351,8 +351,29 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } else {
             body = {
                 "dispatchRequestIdentifier": id,
-                "personIdentifier": personIdentifier
+                "personIdentifier": personIdentifier,
             };
+            if (givenName) {
+                body["givenName"] = givenName;
+            }
+            if (familyName) {
+                body["familyName"] = familyName;
+            }
+            if (birthDate) {
+                body["birthDate"] = birthDate;
+            }
+            if (addressCountry) {
+                body["addressCountry"] = addressCountry;
+            }
+            if (postalCode) {
+                body["postalCode"] = postalCode;
+            }
+            if (addressLocality) {
+                body["addressLocality"] = addressLocality;
+            }
+            if (streetAddress) {
+                body["streetAddress"] = streetAddress;
+            }
         }
 
         const options = {
@@ -736,7 +757,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let postalCode = this.currentRecipient.postalCode;
             let addressLocality = this.currentRecipient.addressLocality;
             let streetAddress = this.currentRecipient.streetAddress;
-            let birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
+            let birthDate = '';
+            if (this.currentRecipient.birthDateDay !== '' && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '') {
+                birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
+            }
             let personIdentifier = this.currentRecipient.personIdentifier;
 
             let response = await this.sendUpdateRecipientRequest(recipientId, id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress);
@@ -1088,8 +1112,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         try {
             this._('#edit-sender-btn').start();
             let id = this.currentItem.identifier;
-            let senderGivenName = this._('#tf-edit-sender-gn-dialog').value;
-            let senderFamilyName = this._('#tf-edit-sender-fn-dialog').value;
+            let senderOrganizationName = this._('#tf-edit-sender-gn-dialog').value;
+            let senderFullName = this._('#tf-edit-sender-fn-dialog').value;
             let senderPostalCode = this._('#tf-edit-sender-pc-dialog').value;
             let senderAddressLocality = this._('#tf-edit-sender-al-dialog').value;
             let senderStreetAddress = this._('#tf-edit-sender-sa-dialog').value;
@@ -1103,7 +1127,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let text = e.options[e.selectedIndex].text;
             let senderAddressCountry = [value, text];
 
-            let response = await this.sendEditDispatchRequest(id, senderGivenName, senderFamilyName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId);
+            let response = await this.sendEditDispatchRequest(id, senderOrganizationName, senderFullName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId);
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
@@ -1490,7 +1514,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 status: item.dateSubmitted ? i18n.t('show-requests.status-completed') : i18n.t('show-requests.empty-date-submitted'),
                 dateCreated: item.dateCreated,
                 details: "Details",
-                // sender: item.senderFamilyName ? item.senderFamilyName + " " + item.senderGivenName + "<br>"
+                // sender: item.senderFullName ? item.senderFullName + " " + item.senderOrganizationName + "<br>"
                 //     + item.senderStreetAddress + " " + item.senderBuildingNumber + "<br>"
                 //     + item.senderPostalCode + " " + item.senderAddressLocality + "<br>"
                 //     + item.senderAddressCountry : i18n.t('show-requests.empty-sender-text'),
@@ -1620,13 +1644,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         } else if (mayWrite && this.requestCreated && !this.tempChange) {
             // console.log('case3 curr', this.currentItem);
-            let senderFamilyName = event.target.valueObject.identifier;
+            let senderFullName = event.target.valueObject.identifier;
 
-            if (senderFamilyName === this.currentItem.senderFamilyName) {
+            if (senderFullName === this.currentItem.senderFullName) {
                 return;
             }
 
-            let senderGivenName = event.target.valueObject.name;
+            let senderOrganizationName = event.target.valueObject.name;
             let senderAddressCountry = event.target.valueObject.country;
             let senderStreetAddress = event.target.valueObject.street;
             let senderAddressLocality = event.target.valueObject.locality;
@@ -1634,7 +1658,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let groupId = event.target.valueObject.identifier;
             let mayRead = event.target.valueObject.mayRead;
 
-            let response = await this.sendEditDispatchRequest(this.currentItem.identifier, senderGivenName, senderFamilyName,
+            let response = await this.sendEditDispatchRequest(this.currentItem.identifier, senderOrganizationName, senderFullName,
                 senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, groupId);
 
             let responseBody = await response.json();
@@ -1648,8 +1672,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 this.currentItem = responseBody;
                 // console.log(event.target.valueObject);
-                this.currentItem.senderFamilyName = senderFamilyName;
-                this.currentItem.senderGivenName = senderGivenName;
+                this.currentItem.senderFullName = senderFullName;
+                this.currentItem.senderOrganizationName = senderOrganizationName;
                 this.currentItem.senderAddressCountry = senderAddressCountry;
                 this.currentItem.senderStreetAddress = senderStreetAddress;
                 this.currentItem.senderAddressLocality = senderAddressLocality;
@@ -1681,8 +1705,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         } else {
             // console.log(event.target.valueObject);
-            this.currentItem.senderFamilyName = event.target.valueObject.identifier;
-            this.currentItem.senderGivenName = event.target.valueObject.name;
+            this.currentItem.senderFullName = event.target.valueObject.identifier;
+            this.currentItem.senderOrganizationName = event.target.valueObject.name;
             this.currentItem.senderAddressCountry = event.target.valueObject.country;
             this.currentItem.senderStreetAddress = event.target.valueObject.street;
             this.currentItem.senderAddressLocality = event.target.valueObject.locality;
@@ -1755,8 +1779,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     clearAll() {
         this.currentItem = {};
 
-        this.currentItem.senderGivenName = "";
-        this.currentItem.senderFamilyName = "";
+        this.currentItem.senderOrganizationName = "";
+        this.currentItem.senderFullName = "";
         this.currentItem.senderAddressCountry = "";
         this.currentItem.senderPostalCode = "";
         this.currentItem.senderAddressLocality = "";
@@ -1819,21 +1843,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         `;
     }
 
-    processSenderGivenNameInput(event) {
-        this.currentItem.senderGivenName = "";
+    processsenderOrganizationNameInput(event) {
+        this.currentItem.senderOrganizationName = "";
         if (this._('#sender-given-name').value !== '') {
-            this.currentItem.senderGivenName = this._('#sender-given-name').value;
+            this.currentItem.senderOrganizationName = this._('#sender-given-name').value;
         } else {
-            this.currentItem.senderGivenName = '';
+            this.currentItem.senderOrganizationName = '';
         }
     }
 
-    processSenderFamilyNameInput(event) {
-        this.currentItem.senderFamilyName = "";
+    processsenderFullNameInput(event) {
+        this.currentItem.senderFullName = "";
         if (this._('#sender-family-name').value !== '') {
-            this.currentItem.senderFamilyName = this._('#sender-family-name').value;
+            this.currentItem.senderFullName = this._('#sender-family-name').value;
         } else {
-            this.currentItem.senderFamilyName = '';
+            this.currentItem.senderFullName = '';
         }
     }
 
@@ -1930,7 +1954,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             class="input"
                                             name="tf-edit-sender-fn-dialog"
                                             id="tf-edit-sender-fn-dialog"
-                                            value="${this.currentItem && this.currentItem.senderFamilyName}"
+                                            value="${this.currentItem && this.currentItem.senderFullName}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -1948,7 +1972,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             class="input"
                                             name="tf-edit-sender-gn-dialog"
                                             id="tf-edit-sender-gn-dialog"
-                                            value="${this.currentItem && this.currentItem.senderGivenName}"
+                                            value="${this.currentItem && this.currentItem.senderOrganizationName}"
                                             @input="${() => {
                                                 // TODO
                                             }}"
