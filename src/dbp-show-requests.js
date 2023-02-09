@@ -1310,7 +1310,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                              title="${i18n.t('show-requests.edit-reference-number-button-text')}"
                                                              icon-name="pencil"></dbp-icon-button>` : ``}
                                         </div>
-                                        <div>${this.currentItem.referenceNumber ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.no-reference-number-found')}`}</div>
+                                        <div>${this.currentItem.referenceNumber && this.currentItem.referenceNumber !== '-' ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.no-reference-number-found')}`}</div>
                                     </div>
                                 </div>
                                 
