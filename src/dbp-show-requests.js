@@ -42,8 +42,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.mayRead = false;
         this.organizationSet = false;
 
-        this.currentItem.senderGivenName = "";
-        this.currentItem.senderFamilyName = "";
+        this.currentItem.senderOrganizationName = "";
+        this.currentItem.senderFullName = "";
         this.currentItem.senderAddressCountry = "";
         this.currentItem.senderPostalCode = "";
         this.currentItem.senderAddressLocality = "";
@@ -1214,8 +1214,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                    this.currentItem.files = [];
                                    this.currentItem.recipients = [];
                                    this.currentRecipient = {};
-                                   this.currentItem.senderGivenName = "";
-                                   this.currentItem.senderFamilyName = "";
+                                   this.currentItem.senderOrganizationName = "";
+                                   this.currentItem.senderFullName = "";
                                    this.currentItem.senderAddressCountry = "";
                                    this.currentItem.senderPostalCode = "";
                                    this.currentItem.senderAddressLocality = "";
@@ -1352,10 +1352,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         icon-name="pencil"></dbp-icon-button>` : ``}
                                     </div>
                                     <div class="sender-data">
-                                        ${this.currentItem.senderGivenName ? html`${this.currentItem.senderGivenName}` : ``}
-                                        ${this.currentItem.senderFamilyName && this.currentItem.senderGivenName
-                                                ? html` ${this.currentItem.senderFamilyName}` :
-                                                html`${this.currentItem.senderFamilyName ? html`${this.currentItem.senderFamilyName}` : ``}
+                                        ${this.currentItem.senderOrganizationName ? html`${this.currentItem.senderOrganizationName}` : ``}
+                                        ${this.currentItem.senderFullName && this.currentItem.senderOrganizationName
+                                                ? html` ${this.currentItem.senderFullName}` :
+                                                html`${this.currentItem.senderFullName ? html`${this.currentItem.senderFullName}` : ``}
                                         `}
                                         ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
                                         ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
@@ -1363,7 +1363,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
                                         ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
                                     </div>
-                                    <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFamilyName})}">${i18n.t('show-requests.empty-sender-text')}</div>
+                                    <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFullName})}">${i18n.t('show-requests.empty-sender-text')}</div>
                                 </div>
                                 
                                 <div class="details recipients">
