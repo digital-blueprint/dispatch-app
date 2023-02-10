@@ -194,7 +194,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "senderPostalCode": this.currentItem.senderPostalCode,
             "senderAddressLocality": this.currentItem.senderAddressLocality,
             "senderStreetAddress": this.currentItem.senderStreetAddress,
-            "senderBuildingNumber": this.currentItem.senderBuildingNumber,
+            "senderBuildingNumber": '', //this.currentItem.senderBuildingNumber,
             "groupId": this.groupId,
         };
 
@@ -313,12 +313,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 "postalCode": postalCode,
                 "addressLocality": addressLocality,
                 "streetAddress": streetAddress,
+                "buildingNumber": '',
                 "birthDate": birthDate
             };
         } else {
             body = {
                 "dispatchRequestIdentifier": id,
-                "personIdentifier": personIdentifier
+                "personIdentifier": personIdentifier,
+                "buildingNumber": ''
             };
         }
 
