@@ -195,7 +195,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "senderAddressLocality": this.currentItem.senderAddressLocality,
             "senderStreetAddress": this.currentItem.senderStreetAddress,
             "senderBuildingNumber": '', //this.currentItem.senderBuildingNumber,
-            "groupId": this.groupId,
+            "groupId": this.groupId
         };
 
         const options = {
@@ -470,7 +470,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async sendChangeReferenceNumberRequest(identifier, referenceNumber) {
         let body = {
-            "referenceNumber": referenceNumber,
+            "referenceNumber": referenceNumber
         };
 
         const options = {
@@ -496,6 +496,53 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + identifier, options);
     }
 
+    async getCreatedDispatchRequests() {
+        // const i18n = this._i18n;
+        this.createRequestsLoading = !this._initialFetchDone;
+
+        this.createdRequestsList = [];
+        let createdRequestsIds = this.createdRequestsIds;
+
+        if (createdRequestsIds !== null) {
+            for (let i = 0; i < createdRequestsIds.length; i++) {
+                try {
+                    let response = await this.getDispatchRequest(createdRequestsIds[i]);
+                    let responseBody = await response.json();
+                    if (responseBody !== undefined && responseBody.status !== 403) {
+                        this.createdRequestsList.push(responseBody);
+                    } else {
+                        if (response.status === 500) {
+                            send({
+                                "summary": 'Error!',
+                                "body": 'Could not fetch dispatch requests. Response code: 500',
+                                "type": "danger",
+                                "timeout": 5,
+                            });
+                        }  else if (response.status === 403) {
+                            //TODO
+                        }
+                    }
+                } catch (e) {
+                    send({
+                        "summary": 'Error!',
+                        "body": 'Could not fetch dispatch requests.',
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
+            }
+        }
+        let tableObject = this.createTableObject(this.createdRequestsList);
+        this.dispatchRequestsTable.setData(tableObject);
+        this.dispatchRequestsTable.setLocale(this.lang);
+        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+
+        this.createRequestsLoading = false;
+        this._initialFetchDone = true;
+
+        this.showListView = true;
+    }
+
     /*
     * Open file source
     *
@@ -506,50 +553,42 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this._('#file-source').openDialog();
         }
 
-        this.processCreateDispatchRequest().then(() => {
-            this.showDetailsView = true;
-            this.hasSubject = true;
-            this.hasSender = true;
-        });
+        if (this.singleFileProcessing) {
+            this.processCreateDispatchRequest().then(() => {
+                this.showDetailsView = true;
+                this.hasSubject = true;
+                this.hasSender = true;
+            });
+        }
     }
 
     async onFileSelected(event) {
-       await this.addFile(event.detail.file);
+        if (!this.singleFileProcessing) {
+            this.processCreateDispatchRequest().then(async () => {
+                this.showDetailsView = false;
+                this.showListView = true;
+                this.hasSubject = true;
+                this.hasSender = true;
 
+                this.createdRequestsIds.push(this.currentItem.identifier);
+                this.totalNumberOfCreatedRequestItems++;
+
+                await this.addFile(event.detail.file);
+                this.filesAdded = true;
+                console.log('filesAdded: ', this.filesAdded);
+            });
+        } else {
+            await this.addFile(event.detail.file);
+        }
     }
 
     async addFile(file) {
         this._('#add-files-btn').start();
+
         try {
-            const i18n = this._i18n;
             let id = this.currentItem.identifier;
+            await this.addFileToRequest(id, file);
 
-            let response = await this.sendAddFileToRequest(id, file);
-
-            let responseBody = await response.json();
-            if (responseBody !== undefined && response.status === 201) {
-                send({
-                    "summary": i18n.t('show-requests.successfully-added-file-title'),
-                    "body": i18n.t('show-requests.successfully-added-file-text'),
-                    "type": "success",
-                    "timeout": 5,
-                });
-
-                let resp = await this.getDispatchRequest(id);
-                let responseBody = await resp.json();
-                if (responseBody !== undefined && responseBody.status !== 403) {
-                    this.currentItem = responseBody;
-                }
-            } else {
-                // TODO error handling
-
-                send({
-                    "summary": 'Error!',
-                    "body": 'File could not be added.',
-                    "type": "danger",
-                    "timeout": 5,
-                });
-            }
         } catch (e) {
             //TODO
             send({
@@ -560,6 +599,37 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             });
         } finally {
             this._('#add-files-btn').stop();
+        }
+    }
+
+    async addFileToRequest(id, file) {
+        const i18n = this._i18n;
+
+        let response = await this.sendAddFileToRequest(id, file);
+
+        let responseBody = await response.json();
+        if (responseBody !== undefined && response.status === 201) {
+            send({
+                "summary": i18n.t('show-requests.successfully-added-file-title'),
+                "body": i18n.t('show-requests.successfully-added-file-text'),
+                "type": "success",
+                "timeout": 5,
+            });
+
+            let resp = await this.getDispatchRequest(id);
+            let responseBody = await resp.json();
+            if (responseBody !== undefined && responseBody.status !== 403) {
+                this.currentItem = responseBody;
+            }
+        } else {
+            // TODO error handling
+
+            send({
+                "summary": 'Error!',
+                "body": 'File could not be added.',
+                "type": "danger",
+                "timeout": 5,
+            });
         }
     }
 
@@ -652,6 +722,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         return list;
     }
+
+    // parseListOfCreatedRequests(inputList) {
+    //     let list = [];
+    //
+    //     let numTypes = parseInt(response['hydra:totalItems']);
+    //     if (isNaN(numTypes)) {
+    //         numTypes = 0;
+    //     }
+    //     for (let i = 0; i < numTypes; i++ ) {
+    //         list[i] = response['hydra:member'][i];
+    //     }
+    //     list.sort(this.compareListItems);
+    //
+    //     return list;
+    // }
 
     async addRecipientToRequest(event, item) {
         this._('#add-recipient-btn').start();
@@ -1042,6 +1127,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentItem = responseBody;
                 this.subject = this.currentItem.name;
 
+                console.log('responsebody AFTER changeSubjectRequest: ', responseBody);
+
+
                 send({
                     "summary": i18n.t('show-requests.edit-subject-success-title'),
                     "body": i18n.t('show-requests.edit-subject-success-text'),
@@ -1077,8 +1165,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let response = await this.sendChangeReferenceNumberRequest(id, referenceNumber);
             let responseBody = await response.json();
 
+
             if (responseBody !== undefined && response.status === 200) {
                 this.currentItem = responseBody;
+
+                console.log('responsebody AFTER changeReferenceNumberRequest: ', responseBody);
+
 
                 send({
                     "summary": i18n.t('show-requests.edit-reference-number-success-title'),
@@ -1431,6 +1523,104 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.expanded = false;
     }
 
+    pageLoadedFunction(currentPageNumber) {
+        this._('#select_all').checked = false;
+    }
+
+    dataLoadedFunction(data) {
+        if (this.dispatchRequestsTable !== null) {
+            const that = this;
+            setTimeout(function () {
+                if (that._('.tabulator-responsive-collapse-toggle-open')) {
+                    that._a('.tabulator-responsive-collapse-toggle-open').forEach(
+                        (element) =>
+                            element.addEventListener('click', that.toggleCollapse.bind(that))
+                    );
+                }
+
+                if (that._('.tabulator-responsive-collapse-toggle-close')) {
+                    that._a('.tabulator-responsive-collapse-toggle-close').forEach(
+                        (element) =>
+                            element.addEventListener('click', that.toggleCollapse.bind(that))
+                    );
+                }
+
+            }, 0);
+        }
+    }
+
+    toggleCollapse(e) {
+        console.log('toggleCollapse');
+        const table = this.dispatchRequestsTable;
+        // give a chance to draw the table
+        // this is for getting more height in tabulator table, when toggle is called
+
+        console.log(e);
+
+        // const that = this;
+
+        setTimeout(function () {
+            // table.toggleColumn('sender');
+            // table.toggleColumn('files');
+            // table.toggleColumn('recipients');
+
+            // if (table && that._('.tabulator-responsive-collapse-toggle')) {
+            //     that._a('.tabulator-responsive-collapse-toggle').forEach((element) => {
+            //         element.classList.toggle('dbp-open');
+            //         console.log(e);
+            //     });
+            // }
+
+            table.redraw();
+        }, 0);
+    }
+
+    rowClickFunction(e, row) {
+        if (
+            this.dispatchRequestsTable !== null &&
+            this.dispatchRequestsTable.getSelectedRows().length ===
+            this.dispatchRequestsTable.getRows("visible").length) {
+            this._('#select_all').checked = true;
+        } else {
+            this._('#select_all').checked = false;
+        }
+        if (
+            this.dispatchRequestsTable !== null &&
+            this.dispatchRequestsTable.getSelectedRows().length > 0 ) {
+            this.rowsSelected = true;
+        } else {
+            this.rowsSelected = false;
+        }
+    }
+
+    /**
+     * Select or deselect all files from tabulator table
+     *
+     */
+    selectAllFiles() {
+        let allSelected = this.checkAllSelected();
+
+        if (allSelected) {
+            this.dispatchRequestsTable.getSelectedRows().forEach((row) => row.deselect());
+        } else {
+            this.dispatchRequestsTable.getRows().forEach((row) => row.select());
+            // this.dispatchRequestsTable.selectRow();
+        }
+    }
+
+    checkAllSelected() {
+        if (this.dispatchRequestsTable) {
+            let maxSelected = this.dispatchRequestsTable.getRows("visible").length;
+            let selected = this.dispatchRequestsTable.getSelectedRows().length;
+            // console.log('currently visible: ', this.dispatchRequestsTable.getRows("visible").length);
+            // console.log('currently selected: ', this.dispatchRequestsTable.getSelectedRows().length);
+
+            if (selected === maxSelected) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     createFormattedFilesList(list) {
         const i18n = this._i18n;
@@ -1568,6 +1758,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } finally {
             this.initialRequestsLoading = false;
             this._initialFetchDone = true;
+        }
+    }
+
+    async getCreatedRequests() {
+        if (this.createdRequestsList.length > 0) {
+            this.requestList = this.parseListOfRequests(this.createdRequestsList);
+            let tableObject = this.createTableObject(this.requestList);
+            this.dispatchRequestsTable.setData(tableObject);
+            this.dispatchRequestsTable.setLocale(this.lang);
+            this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
         }
     }
 
@@ -2929,6 +3129,98 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         `)}
                     <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
                 </div>
+            </div>
+        `;
+    }
+
+    addSubHeader() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="details header sub">
+                <div>
+                    <div class="section-titles">${i18n.t('show-requests.date-created')}</div>
+                    <div>${this.convertToReadableDate(this.currentItem.dateCreated)}</div>
+                </div>
+                <div class="line"></div>
+                <div>
+                    <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
+                    <div>${this.lastModifiedName ? this.lastModifiedName : this.currentItem.personIdentifier}</div>
+                </div>
+                <div class="line"></div>
+                <div>
+                    <div class="section-titles">${i18n.t('show-requests.table-header-id')}</div>
+                    <div>${this.currentItem.identifier}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    addSenderDetails() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="details sender hidden">
+                <div class="header-btn">
+                    <div class="section-titles">${i18n.t('show-requests.sender')}</div>
+                    ${!this.currentItem.dateSubmitted ? html`
+                        <dbp-icon-button id="edit-sender-btn"
+                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                    @click="${(event) => {
+                                        if (this.currentItem.senderAddressCountry !== '') {
+                                            this._('#edit-sender-country-select').value = this.currentItem.senderAddressCountry;
+                                        }
+                                        MicroModal.show(this._('#edit-sender-modal'), {
+                                            disableScroll: true,
+                                            onClose: (modal) => {
+                                                this.loading = false;
+                                            },
+                                        });
+                                    }}"
+                                    title="${i18n.t('show-requests.edit-sender-button-text')}" 
+                                    icon-name="pencil"></dbp-icon-button>` : ``}
+                </div>
+                <div class="sender-data">
+                    ${this.currentItem.senderOrganizationName ? html`${this.currentItem.senderOrganizationName}` : ``}
+                    ${this.currentItem.senderFullName && this.currentItem.senderOrganizationName
+                        ? html` ${this.currentItem.senderFullName}` :
+                        html`${this.currentItem.senderFullName ? html`${this.currentItem.senderFullName}` : ``}
+                    `}
+                    ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
+                    ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
+                    ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
+                    ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
+                    ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
+                </div>
+                <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFullName})}">${i18n.t('show-requests.empty-sender-text')}</div>
+            </div>
+        `;
+    }
+
+    addRecipientCardLeftSideContent(recipient) {
+        const i18n = this._i18n;
+
+        return html`
+             <div class="left-side">
+                <div>${recipient.givenName} ${recipient.familyName}</div>
+                <div>${recipient.streetAddress}</div>
+                <div>${recipient.postalCode} ${recipient.addressLocality}</div>
+                <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
+                ${recipient.electronicallyDeliverable ? html`
+                    <div class="delivery-status"><span class="status-green">●</span> ${i18n.t('show-requests.electronically-deliverable')}</div>
+                ` : ``}
+                ${!recipient.electronicallyDeliverable && recipient.postalDeliverable ? html`
+                    <div class="delivery-status"><span class="status-orange">●</span> ${i18n.t('show-requests.only-postal-deliverable')}</div>
+                ` : ``}
+                
+                ${!recipient.electronicallyDeliverable && !recipient.postalDeliverable ? html`
+                    <div class="delivery-status"><span class="status-red">●</span> ${i18n.t('show-requests.not-deliverable-1')}
+                    <dbp-tooltip
+                        icon-name="warning-high"
+                        class="info-tooltip"
+                        text-content="${i18n.t('show-requests.not-deliverable-2')}"
+                        interactive></dbp-tooltip></div>
+                ` : ``}
             </div>
         `;
     }

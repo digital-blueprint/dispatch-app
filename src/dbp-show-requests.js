@@ -381,105 +381,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         });
     }
 
-    pageLoadedFunction(currentPageNumber) {
-        this._('#select_all').checked = false;
-    }
-
-    dataLoadedFunction(data) {
-        if (this.dispatchRequestsTable !== null) {
-            const that = this;
-            setTimeout(function () {
-                if (that._('.tabulator-responsive-collapse-toggle-open')) {
-                    that._a('.tabulator-responsive-collapse-toggle-open').forEach(
-                        (element) =>
-                            element.addEventListener('click', that.toggleCollapse.bind(that))
-                    );
-                }
-
-                if (that._('.tabulator-responsive-collapse-toggle-close')) {
-                    that._a('.tabulator-responsive-collapse-toggle-close').forEach(
-                        (element) =>
-                            element.addEventListener('click', that.toggleCollapse.bind(that))
-                    );
-                }
-
-            }, 0);
-        }
-    }
-
-    toggleCollapse(e) {
-        console.log('toggleCollapse');
-        const table = this.dispatchRequestsTable;
-        // give a chance to draw the table
-        // this is for getting more height in tabulator table, when toggle is called
-
-        console.log(e);
-
-        // const that = this;
-
-        setTimeout(function () {
-            // table.toggleColumn('sender');
-            // table.toggleColumn('files');
-            // table.toggleColumn('recipients');
-
-            // if (table && that._('.tabulator-responsive-collapse-toggle')) {
-            //     that._a('.tabulator-responsive-collapse-toggle').forEach((element) => {
-            //         element.classList.toggle('dbp-open');
-            //         console.log(e);
-            //     });
-            // }
-
-            table.redraw();
-        }, 0);
-    }
-
-    rowClickFunction(e, row) {
-        if (
-            this.dispatchRequestsTable !== null &&
-            this.dispatchRequestsTable.getSelectedRows().length ===
-            this.dispatchRequestsTable.getRows("visible").length) {
-                this._('#select_all').checked = true;
-        } else {
-                this._('#select_all').checked = false;
-        }
-        if (
-            this.dispatchRequestsTable !== null &&
-            this.dispatchRequestsTable.getSelectedRows().length > 0 ) {
-            this.rowsSelected = true;
-        } else {
-            this.rowsSelected = false;
-        }
-    }
-
-    /**
-     * Select or deselect all files from tabulator table
-     *
-     */
-    selectAllFiles() {
-        let allSelected = this.checkAllSelected();
-
-        if (allSelected) {
-            this.dispatchRequestsTable.getSelectedRows().forEach((row) => row.deselect());
-        } else {
-            this.dispatchRequestsTable.getRows().forEach((row) => row.select());
-            // this.dispatchRequestsTable.selectRow();
-        }
-    }
-
-    checkAllSelected() {
-        if (this.dispatchRequestsTable) {
-            let maxSelected = this.dispatchRequestsTable.getRows("visible").length;
-            let selected = this.dispatchRequestsTable.getSelectedRows().length;
-            // console.log('currently visible: ', this.dispatchRequestsTable.getRows("visible").length);
-            // console.log('currently selected: ', this.dispatchRequestsTable.getSelectedRows().length);
-
-            if (selected === maxSelected) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * Keydown Event function if enter pressed, then start filtering the table
      *
@@ -686,7 +587,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getButtonCSS()}
             ${commonStyles.getTabulatorStyles()}
             /*${commonStyles.getRadioAndCheckboxCss()}*/
-            ${dispatchStyles.getShowDispatchRequestsCss()}
+            ${dispatchStyles.getDispatchRequestTableStyles()}
             ${dispatchStyles.getDispatchRequestStyles()}
             
             .tabulator .tabulator-placeholder-contents {
@@ -746,14 +647,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 flex-direction: column;
                 gap: 10px;
             }
-            
-            
-            .tabulator-icon-buttons {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 0.5rem;
-            }
 
             .search-wrapper {
                 display: flex;
@@ -765,10 +658,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-            }
-
-            .tabulator-responsive-collapse table tr td:first-child {
-                width: 4em;
             }
             
             #extendable-searchbar {
@@ -796,16 +685,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             .edit-items {
                 font-size: 1.6rem;
-            }
-            
-            .tabulator-row, .tabulator-row.tabulator-row-even, .tabulator-row.tabulator-row-odd {
-                margin-bottom: 1rem;
-                border: 1px solid var(--dbp-override-muted);
-                min-height: 65px;
-            }
-            
-            .tabulator-cell {
-                height: 65px;
             }
 
             a {
@@ -838,31 +717,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 /*margin: 0.5em 0 0.5em 16px;*/
                 margin: 0 0 0.5em 1px;
                 line-height: 1.5;
-            }
-
-            .tabulator .tabulator-footer .tabulator-paginator .tabulator-page[disabled] {
-                opacity: 0.4;
-            }
-            
-            .tabulator .tabulator-footer .tabulator-page {
-                display: inline-block;
-                margin: 0 2px;
-                padding: 2px 5px;
-                border: 1px solid #aaa;
-                border-radius: 3px;
-                background: hsla(0,0%,100%,.2);
-            }
-
-            .tabulator-cell[tabulator-field=controls] {
-                justify-content: flex-end!important;
-            }
-            
-            .tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-content .tabulator-col-sorter {
-                position: unset;
-            }
-            
-            .tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-content .tabulator-col-title-holder {
-                display: inline-flex;
             }
             
             #search-button dbp-icon {
@@ -1314,57 +1168,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
                                 </div>
                                 
-                                <div class="details header sub">
-                                    <div>
-                                        <div class="section-titles">${i18n.t('show-requests.date-created')}</div>
-                                        <div>${this.convertToReadableDate(this.currentItem.dateCreated)}</div>
-                                    </div>
-                                    <div class="line"></div>
-                                    <div>
-                                        <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
-                                        <div>${this.lastModifiedName ? this.lastModifiedName : this.currentItem.personIdentifier}</div>
-                                    </div>
-                                    <div class="line"></div>
-                                    <div>
-                                        <div class="section-titles">${i18n.t('show-requests.table-header-id')}</div>
-                                        <div>${this.currentItem.identifier}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="details sender hidden">
-                                    <div class="header-btn">
-                                        <div class="section-titles">${i18n.t('show-requests.sender')}</div>
-                                        ${!this.currentItem.dateSubmitted ? html`
-                                            <dbp-icon-button id="edit-sender-btn"
-                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                        @click="${(event) => {
-                                                            if (this.currentItem.senderAddressCountry !== '') {
-                                                                this._('#edit-sender-country-select').value = this.currentItem.senderAddressCountry;
-                                                            }
-                                                            MicroModal.show(this._('#edit-sender-modal'), {
-                                                                disableScroll: true,
-                                                                onClose: (modal) => {
-                                                                    this.loading = false;
-                                                                },
-                                                            });
-                                                        }}"
-                                                        title="${i18n.t('show-requests.edit-sender-button-text')}" 
-                                                        icon-name="pencil"></dbp-icon-button>` : ``}
-                                    </div>
-                                    <div class="sender-data">
-                                        ${this.currentItem.senderOrganizationName ? html`${this.currentItem.senderOrganizationName}` : ``}
-                                        ${this.currentItem.senderFullName && this.currentItem.senderOrganizationName
-                                                ? html` ${this.currentItem.senderFullName}` :
-                                                html`${this.currentItem.senderFullName ? html`${this.currentItem.senderFullName}` : ``}
-                                        `}
-                                        ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
-                                        ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
-                                        ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
-                                        ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
-                                        ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
-                                    </div>
-                                    <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFullName})}">${i18n.t('show-requests.empty-sender-text')}</div>
-                                </div>
+                                ${this.addSubHeader()}
+
+                                ${this.addSenderDetails()}
                                 
                                 <div class="details recipients">
                                     <div class="header-btn">
@@ -1394,27 +1200,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         ${this.currentItem.recipients.map(recipient => html`
     
                                         <div class="recipient card">
-                                            <div class="left-side">
-                                                <div>${recipient.givenName} ${recipient.familyName}</div>
-                                                <div>${recipient.streetAddress}</div>
-                                                <div>${recipient.postalCode} ${recipient.addressLocality}</div>
-                                                <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
-                                                ${recipient.electronicallyDeliverable ? html`
-                                                    <div class="delivery-status"><span class="status-green">●</span> ${i18n.t('show-requests.electronically-deliverable')}</div>
-                                                ` : ``}
-                                                ${!recipient.electronicallyDeliverable && recipient.postalDeliverable ? html`
-                                                    <div class="delivery-status"><span class="status-orange">●</span> ${i18n.t('show-requests.only-postal-deliverable')}</div>
-                                                ` : ``}
-                                                
-                                                ${!recipient.electronicallyDeliverable && !recipient.postalDeliverable ? html`
-                                                    <div class="delivery-status"><span class="status-red">●</span> ${i18n.t('show-requests.not-deliverable-1')}
-                                                    <dbp-tooltip
-                                                        icon-name="warning-high"
-                                                        class="info-tooltip"
-                                                        text-content="${i18n.t('show-requests.not-deliverable-2')}"
-                                                        interactive></dbp-tooltip></div>
-                                                ` : ``}
-                                            </div>
+                                            
+                                            ${this.addRecipientCardLeftSideContent(recipient)}
+
                                             <div class="right-side">
                                                     <dbp-icon-button id="show-recipient-btn"
                                                                 @click="${(event) => {
