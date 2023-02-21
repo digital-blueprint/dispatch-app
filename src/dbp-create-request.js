@@ -15,6 +15,8 @@ import * as dispatchStyles from './styles';
 import * as dispatchHelper from './utils';
 import {FileSource} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
+import {name as pkgName} from './../package.json';
+import {TabulatorFull as Tabulator} from 'tabulator-tables';
 
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
@@ -24,6 +26,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.lang = this._i18n.language;
         this.activity = new Activity(metadata);
         this.entryPointUrl = '';
+
+        this.requestList = [];
 
         this.currentItem = {};
 
@@ -48,12 +52,21 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.organizationLoaded = false;
 
         this.showDetailsView = false;
+        this.showListView = false;
 
         this.hasEmptyFields = false;
         this.hasSender = false;
         this.hasRecipients = false;
 
         this.requestCreated = false;
+        this.singleFileProcessing = false;
+        this.createRequestsLoading = false;
+        this.fileList = [];
+        this.createdRequestsIds = [];
+        this.createdRequestsList = [];
+        this.totalNumberOfCreatedRequestItems = 0;
+        this.filesAdded = false;
+        this.expanded = false;
 
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
@@ -61,6 +74,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.nextcloudName = "";
         this.nextcloudFileURL = "";
         this.nextcloudAuthInfo = "";
+
+        this.dispatchRequestsTable = null;
+        this.totalNumberOfItems = 0;
+        this.rowsSelected = false;
+
+        this.boundSelectHandler = this.selectAllFiles.bind(this);
     }
 
     static get scopedElements() {
@@ -101,6 +120,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             mayRead: { type: Boolean, attribute: false },
             organizationLoaded: { type: Boolean, attribute: false },
 
+            totalNumberOfCreatedRequestItems: {type: Number, attribute: false},
+            filesAdded: {type: Boolean, attribute: false},
+            createRequestsLoading: {type: Boolean, attribute: false},
+            expanded: { type: Boolean, attribute: false },
+
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
             nextcloudWebDavURL: {type: String, attribute: 'nextcloud-webdav-url'},
@@ -115,11 +139,231 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             switch (propName) {
                 case 'lang':
                     this._i18n.changeLanguage(this.lang);
+                    if (this.dispatchRequestsTable) {
+                        this.dispatchRequestsTable.setLocale(this.lang);
+                    }
                     break;
             }
         });
 
         super.update(changedProperties);
+    }
+
+    disconnectedCallback() {
+        this.dispatchRequestsTable.off("rowClick");
+        this.dispatchRequestsTable.off("dataLoaded");
+        this.dispatchRequestsTable.off("pageLoaded");
+
+        super.disconnectedCallback();
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this._loginStatus = '';
+        this._loginState = [];
+        this._loginCalled = false;
+
+        this.updateComplete.then(() => {
+            let paginationElement = this._('.tabulator-paginator');
+
+            const i18n = this._i18n;
+            const that = this;
+
+            // see: http://tabulator.info/docs/5.1
+            this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
+                layout: 'fitColumns',
+                placeholder: i18n.t('show-requests.no-table-data'),
+                selectable: true,
+                selectablePersistence: false, // disable persistent selections
+                responsiveLayout: 'collapse',
+                responsiveLayoutCollapseStartOpen: false,
+                pagination: 'local',
+                paginationSize: 10,
+                paginationSizeSelector: true,
+                paginationElement: paginationElement,
+                columnHeaderVertAlign: 'bottom', // align header contents to bottom of cell
+                columnDefaults: {
+                    vertAlign: 'middle',
+                    hozAlign: 'left',
+                    resizable: false,
+                },
+                columns: [
+                    {
+                        title:
+                            '<label id="select_all_wrapper" class="button-container select-all-icon">' +
+                            '<input type="checkbox" id="select_all" name="select_all" value="select_all">' +
+                            '<span class="checkmark" id="select_all_checkmark"></span>' +
+                            '</label>',
+
+                        field: 'type',
+                        hozAlign: 'center',
+                        width: 40,
+                        headerSort: false,
+                        responsive: 0,
+                        widthGrow: 1,
+                        headerClick: (e) => {
+                            let allSelected = that.checkAllSelected();
+
+                            if (allSelected) {
+                                // that.dispatchRequestsTable.deselectRow("visible"));
+                                this.dispatchRequestsTable.deselectRow();
+                                this._('#select_all').checked = false;
+                                this.rowsSelected = false;
+                            } else {
+                                that.dispatchRequestsTable.selectRow("visible");
+                                this._('#select_all').checked = true;
+                                this.rowsSelected = true;
+                            }
+                            e.preventDefault();
+                        },
+                    },
+                    {
+                        title: i18n.t('show-requests.table-header-details'),
+                        field: 'details',
+                        hozAlign: 'center',
+                        width: 60,
+                        headerSort: false,
+                        responsive: 0,
+                        widthGrow: 1,
+                        formatter: 'responsiveCollapse'
+                    },
+                    {
+                        title: i18n.t('show-requests.table-header-date-created'),
+                        field: 'dateCreated',
+                        responsive: 3,
+                        widthGrow: 1,
+                        minWidth: 160,
+                        sorter: (a, b) => {
+                            const a_timestamp = Date.parse(a);
+                            const b_timestamp = Date.parse(b);
+                            return a_timestamp - b_timestamp;
+                        },
+                        formatter: function (cell) {
+                            const d = Date.parse(cell.getValue());
+                            const timestamp = new Date(d);
+                            const year = timestamp.getFullYear();
+                            const month = ('0' + (timestamp.getMonth() + 1)).slice(-2);
+                            const date = ('0' + timestamp.getDate()).slice(-2);
+                            const hours = ('0' + timestamp.getHours()).slice(-2);
+                            const minutes = ('0' + timestamp.getMinutes()).slice(-2);
+                            return date + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
+                        },
+                    },
+                    {
+                        title: i18n.t('show-requests.table-header-subject'),
+                        field: 'subject',
+                        responsive: 1,
+                        widthGrow: 3,
+                        minWidth: 150,
+                        formatter: 'html'
+                    },
+                    {
+                        title: 'Status',
+                        field: 'status',
+                        responsive: 2,
+                        widthGrow: 1,
+                        minWidth: 120,
+                    },
+                    {
+                        title: i18n.t('show-requests.table-header-files'),
+                        field: 'files',
+                        // visible: false,
+                        responsive: 8,
+                        minWidth: 800,
+                        formatter: function(cell) {
+                            let value = cell.getValue();
+                            return value;
+                        }
+                    },
+                    {
+                        title: i18n.t('show-requests.table-header-recipients'),
+                        field: 'recipients',
+                        // visible: false,
+                        responsive: 8,
+                        minWidth: 800,
+                        formatter: function(cell) {
+                            let value = cell.getValue();
+                            return value;
+                        }
+                    },
+                    {
+                        title: i18n.t('show-requests.table-header-id'),
+                        field: 'requestId',
+                        responsive: 8,
+                        minWidth: 150,
+                        formatter: function(cell) {
+                            let value = cell.getValue();
+                            return value;
+                        }
+                    },
+                    {
+                        title: '',
+                        field: 'controls',
+                        // hozAlign: 'center',
+                        minWidth: 140,
+                        widthGrow: 1,
+                        headerSort: false,
+                        responsive: 0,
+                        formatter: (cell) => {
+                            let value = cell.getValue();
+                            return value;
+                        },
+                    },
+                ],
+                langs: {
+                    'en': {
+                        'columns': {
+                            'dateCreated': 'Date created',
+                            'subject': 'Subject',
+                            'files': 'Files',
+                            'recipients': 'Recipients',
+                            'requestId': 'Request-ID'
+                        },
+                        'pagination': {
+                            'page_size': 'Page size',
+                            'page_size_title': 'Page size',
+                            'first': '<span class="mobile-hidden">First</span>',
+                            'first_title': 'First Page',
+                            'last': '<span class="mobile-hidden">Last</span>',
+                            'last_title': 'Last Page',
+                            'prev': '<span class="mobile-hidden">Prev</span>',
+                            'prev_title': 'Prev Page',
+                            'next': '<span class="mobile-hidden">Next</span>',
+                            'next_title': 'Next Page'
+                        }
+                    },
+                    'de': {
+                        'columns': {
+                            'dateCreated': 'Erstelldatum',
+                            'subject': 'Betreff',
+                            'files': 'Angehängte Dateien',
+                            'recipients': 'Empfänger',
+                            'requestId': 'Auftrags-ID'
+                        },
+                        'pagination': {
+                            'page_size': 'Einträge pro Seite',
+                            'page_size_title': 'Einträge pro Seite',
+                            'first': '<span class="mobile-hidden">Erste</span>',
+                            'first_title': 'Erste Seite',
+                            'last': '<span class="mobile-hidden">Letzte</span>',
+                            'last_title': 'Letzte Seite',
+                            'prev': '<span class="mobile-hidden">Vorherige</span>',
+                            'prev_title': 'Vorherige Seite',
+                            'next': '<span class="mobile-hidden">Nächste</span>',
+                            'next_title': 'Nächste Seite'
+                        }
+                    }
+                },
+                initialSort: [
+                    { column: 'dateCreated', dir: 'desc' },
+                    // { column: 'status', dir: 'desc' },
+                ],
+            });
+
+            this.dispatchRequestsTable.on("rowClick", this.rowClickFunction.bind(this));
+            this.dispatchRequestsTable.on("dataLoaded", this.dataLoadedFunction.bind(this));
+            this.dispatchRequestsTable.on("pageLoaded", this.pageLoadedFunction.bind(this));
+        });
     }
 
     async processCreateDispatchRequest() {
@@ -177,6 +421,23 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     saveRequest() {
         this.clearAll();
+
+        this.getCreatedDispatchRequests();
+        this.showListView = true;
+        this.showDetailsView = false;
+        this.currentItem = {};
+        this.currentItem.files = [];
+        this.currentItem.recipients = [];
+        this.currentRecipient = {};
+        this.currentItem.senderOrganizationName = "";
+        this.currentItem.senderFullName = "";
+        this.currentItem.senderAddressCountry = "";
+        this.currentItem.senderPostalCode = "";
+        this.currentItem.senderAddressLocality = "";
+        this.currentItem.senderStreetAddress = "";
+        this.currentItem.senderBuildingNumber = "";
+
+        //TODO
         this.requestCreated = false;
     }
 
@@ -190,8 +451,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getActivityCSS()}
             ${commonStyles.getModalDialogCSS()}
             ${commonStyles.getButtonCSS()}
+            ${commonStyles.getTabulatorStyles()}
             /*${commonStyles.getRadioAndCheckboxCss()}*/
-            ${dispatchStyles.getShowDispatchRequestsCss()}
+            ${dispatchStyles.getDispatchRequestTableStyles()}
             ${dispatchStyles.getDispatchRequestStyles()}
 
             h2:first-child {
@@ -211,12 +473,77 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 width: 30em;
                 margin-top: 1px;
             }
+
+            .control.table {
+                padding-top: 1.5rem;
+                font-size: 1.5rem;
+                text-align: center;
+            }
+
+            .muted {
+                color: var(--dbp-muted);
+            }
+
+            .table-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .border {
+                border-top: var(--dbp-override-border);
+            }
+
+            .requests {
+                margin-top: 1em;
+            }
+
+            .request-item:first-child {
+                border-top: none;
+                padding-top: 0;
+                margin-top: 0;
+            }
+
+            .sender-data {
+                /*margin: 0.5em 0 0.5em 16px;*/
+                margin: 0 0 0.5em 1px;
+                line-height: 1.5;
+            }
+
+            #search-button dbp-icon {
+                top: -4px;
+            }
+
+            #open-settings-btn dbp-icon,
+            .card .button.is-icon dbp-icon,
+            .header-btn .button.is-icon dbp-icon {
+                font-size: 1.3em;
+            }
+
+            .table-wrapper {
+                display: block;
+            }
+            
+            .selected-buttons {
+                flex-direction: row-reverse;
+            }
         `;
     }
 
     render() {
         const i18n = this._i18n;
+        const tabulatorCss = commonUtils.getAssetURL(
+            pkgName,
+            'tabulator-tables/css/tabulator.min.css'
+        );
+
+        if (this.isLoggedIn() && !this.isLoading() && !this._initialFetchDone && !this.createRequestsLoading && this.filesAdded) {
+            this.getCreatedDispatchRequests();
+        }
+
         return html`
+            <link rel="stylesheet" href="${tabulatorCss}"/>
+            
             <div class="control ${classMap({hidden: this.isLoggedIn() || !this.isLoading()})}">
                 <span class="loading">
                     <dbp-mini-spinner text=${i18n.t('check-out.loading-message')}></dbp-mini-spinner>
@@ -246,7 +573,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                          body="${i18n.t('create-request.empty-fields-given')}">
                 </dbp-inline-notification>
                 
-                <div >
+                <div>
                     ${i18n.t('show-requests.organization-select-description')}
                     <div class="choose-and-create-btns">
                         <dbp-resource-select
@@ -292,6 +619,68 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
                     ${i18n.t('create-request.create-dispatch-order')}:
                 </h3>
+
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.showListView })}">
+                    <div class="table-wrapper">
+                        <div class="selected-buttons">
+                            <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
+                                
+                                <dbp-loading-button id="expand-all-btn"
+                                                         class="${classMap({ hidden: this.expanded })}"
+                                                         ?disabled="${this.loading}"
+                                                         value="${i18n.t('show-requests.expand-all')}"
+                                                         @click="${(event) => { this.expandAll(event); }}"
+                                                         title="${i18n.t('show-requests.expand-all')}"
+                                >${i18n.t('show-requests.expand-all')}</dbp-loading-button>
+                                
+                                <dbp-loading-button id="collapse-all-btn"
+                                                        class="${classMap({ hidden: !this.expanded })}"
+                                                        ?disabled="${this.loading}"
+                                                        value="${i18n.t('show-requests.collapse-all')}"
+                                                        @click="${(event) => { this.collapseAll(event); }}"
+                                                        title="${i18n.t('show-requests.collapse-all')}"
+                                >${i18n.t('show-requests.collapse-all')}</dbp-loading-button>
+                                
+                                
+                                ${ this.mayWrite ? html`
+                                    
+                                    <dbp-loading-button id="delete-all-btn"
+                                                        ?disabled="${this.loading || !this.rowsSelected}"
+                                                        value="${i18n.t('show-requests.delete-button-text')}"
+                                                        @click="${(event) => { this.deleteSelected(event); }}"
+                                                        title="${i18n.t('show-requests.delete-button-text')}"
+                                    >${i18n.t('show-requests.delete-button-text')}</dbp-loading-button>
+                                    
+                                    <dbp-loading-button id="submit-all-btn"
+                                                        type="is-primary"
+                                                        ?disabled="${this.loading || !this.rowsSelected}"
+                                                        value="${i18n.t('show-requests.submit-button-text')}"
+                                                        @click="${(event) => { this.submitSelected(event); }}"
+                                                        title="${i18n.t('show-requests.submit-button-text')}"
+                                    >${i18n.t('show-requests.submit-button-text')}</dbp-loading-button>
+                                    
+                                ` : `` }    
+                            </div>
+                        </div>
+
+                        <div class="control table ${classMap({hidden: !this.createRequestsLoading})}">
+                            <span class="loading">
+                                <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
+                            </span>
+                        </div>
+
+                        <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.showListView || this.createRequestsLoading })}">
+                            <div id="dispatch-requests-table" class=""></div>
+                            <div class='tabulator' id='custom-pagination'>
+                                <div class='tabulator-footer'>
+                                    <div class='tabulator-footer-contents'>
+                                        <span class='tabulator-paginator'></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
 
@@ -369,46 +758,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  title="${i18n.t('show-requests.edit-reference-number-button-text')}"
                                                                  icon-name="pencil"></dbp-icon-button>` : ``}
                                     </div>
-                                    <div>${this.currentItem.referenceNumber ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.no-reference-number-found')}`}</div>
+                                    <div>${this.currentItem.referenceNumber && this.currentItem.referenceNumber !== '-' ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.no-reference-number-found')}`}</div>
                                 </div>
-                            </div>
-                            
-                            <div class="details sender hidden ${classMap({hidden: !this.hasSubject})}">
-                                <div class="header-btn">
-                                    <div class="section-titles">${i18n.t('show-requests.sender')}</div>
-                                    ${!this.currentItem.dateSubmitted && this.hasSender ? html`
-                                        <dbp-icon-button id="edit-sender-btn"
-                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                     @click="${(event) => {
-                                                         console.log("on edit sender clicked");
-                                                         if (this.currentItem.senderAddressCountry !== '') {
-                                                             this._('#edit-sender-country-select').value = this.currentItem.senderAddressCountry;
-                                                         }
-                                                         MicroModal.show(this._('#edit-sender-modal'), {
-                                                             disableScroll: true,
-                                                             onClose: (modal) => {
-                                                                 this.loading = false;
-                                                             },
-                                                         });
-                                                     }}"
-                                                     title="${i18n.t('show-requests.edit-sender-button-text')}"
-                                                     icon-name="pencil"></dbp-icon-button>` : ``}
-                                </div>
-                                <div class="sender-data">
-                                    ${this.currentItem.senderOrganizationName ? html`${this.currentItem.senderOrganizationName}` : ``}
-                                    ${this.currentItem.senderFullName && this.currentItem.senderOrganizationName
-                                            ? html` ${this.currentItem.senderFullName}` :
-                                            html`${this.currentItem.senderFullName ? html`${this.currentItem.senderFullName}` : ``}
-                                    `}
-                                    ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
-                                    ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
-                                    ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
-                                    ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
-                                    ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
-                                </div>
-
-                                <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFullName})}">${i18n.t('show-requests.empty-sender-text')}</div>
-
                             </div>
 
                             <div class="details recipients ${classMap({hidden: !this.hasSender || !this.hasSubject})}">
@@ -440,27 +791,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="recipients-data ${classMap({hidden: !this.hasSender || !this.hasSubject})}">
                                     ${this.currentItem.recipients.map(recipient => html`
                                     <div class="recipient card">
-                                        <div class="left-side">
-                                            <div>${recipient.givenName} ${recipient.familyName}</div>
-                                            <div>${recipient.streetAddress}</div>
-                                            <div>${recipient.postalCode} ${recipient.addressLocality}</div>
-                                            <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
-                                            ${recipient.electronicallyDeliverable ? html`
-                                                    <div class="delivery-status"><span class="status-green">●</span> ${i18n.t('show-requests.electronically-deliverable')}</div>
-                                                ` : ``}
-                                            ${!recipient.electronicallyDeliverable && recipient.postalDeliverable ? html`
-                                                    <div class="delivery-status"><span class="status-orange">●</span> ${i18n.t('show-requests.only-postal-deliverable')}</div>
-                                                ` : ``}
 
-                                            ${!recipient.electronicallyDeliverable && !recipient.postalDeliverable ? html`
-                                                    <div class="delivery-status"><span class="status-red">●</span> ${i18n.t('show-requests.not-deliverable-1')}
-                                                    <dbp-tooltip
-                                                        icon-name="warning-high"
-                                                        class="info-tooltip"
-                                                        text-content="${i18n.t('show-requests.not-deliverable-2')}"
-                                                        interactive></dbp-tooltip></div>
-                                                ` : ``}
-                                        </div>
+                                        ${this.addRecipientCardLeftSideContent(recipient)}
+                                        
                                         <div class="right-side">
                                             <dbp-icon-button id="show-recipient-btn"
                                                              @click="${(event) => {
@@ -534,7 +867,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                                 </div>
                             </div>
-                            
                             
                             ${this.addDetailedFilesView()}
                         </div>
