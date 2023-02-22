@@ -540,6 +540,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.createRequestsLoading = false;
         this._initialFetchDone = true;
 
+        //TODO here
         this.showListView = true;
     }
 
@@ -722,21 +723,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         return list;
     }
-
-    // parseListOfCreatedRequests(inputList) {
-    //     let list = [];
-    //
-    //     let numTypes = parseInt(response['hydra:totalItems']);
-    //     if (isNaN(numTypes)) {
-    //         numTypes = 0;
-    //     }
-    //     for (let i = 0; i < numTypes; i++ ) {
-    //         list[i] = response['hydra:member'][i];
-    //     }
-    //     list.sort(this.compareListItems);
-    //
-    //     return list;
-    // }
 
     async addRecipientToRequest(event, item) {
         this._('#add-recipient-btn').start();
@@ -2043,69 +2029,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 nextcloud-file-url="${this.nextcloudFileURL}"
                 lang="${this.lang}"></dbp-file-sink>
         `;
-    }
-
-    processsenderOrganizationNameInput(event) {
-        this.currentItem.senderOrganizationName = "";
-        if (this._('#sender-given-name').value !== '') {
-            this.currentItem.senderOrganizationName = this._('#sender-given-name').value;
-        } else {
-            this.currentItem.senderOrganizationName = '';
-        }
-    }
-
-    processsenderFullNameInput(event) {
-        this.currentItem.senderFullName = "";
-        if (this._('#sender-family-name').value !== '') {
-            this.currentItem.senderFullName = this._('#sender-family-name').value;
-        } else {
-            this.currentItem.senderFullName = '';
-        }
-    }
-
-    processSenderAddressCountryInput(event) {
-        this.currentItem.senderAddressCountry = "";
-        if (this._('#sender-address-country').value !== '') {
-            this.currentItem.senderAddressCountry = this._('#sender-address-country').value;
-        } else {
-            this.currentItem.senderAddressCountry = '';
-        }
-    }
-
-    processSenderPostalCodeInput(event) {
-        this.currentItem.senderPostalCode = "";
-        if (this._('#sender-postal-code').value !== '') {
-            this.currentItem.senderPostalCode = this._('#sender-postal-code').value;
-        } else {
-            this.currentItem.senderPostalCode = '';
-        }
-    }
-
-    processSenderAddressLocalityInput(event) {
-        this.currentItem.senderAddressLocality = "";
-        if (this._('#sender-address-locality').value !== '') {
-            this.currentItem.senderAddressLocality = this._('#sender-address-locality').value;
-        } else {
-            this.currentItem.senderAddressLocality = '';
-        }
-    }
-
-    processSenderStreetAddressInput(event) {
-        this.currentItem.senderStreetAddress = "";
-        if (this._('#sender-street-address').value !== '') {
-            this.currentItem.senderStreetAddress = this._('#sender-street-address').value;
-        } else {
-            this.currentItem.senderStreetAddress = '';
-        }
-    }
-
-    processSenderBuildingNumberInput(event) {
-        this.currentItem.senderBuildingNumber = "";
-        if (this._('#sender-building-number').value !== '') {
-            this.currentItem.senderBuildingNumber = this._('#sender-building-number').value;
-        } else {
-            this.currentItem.senderBuildingNumber = '';
-        }
     }
 
     checkValidity(input) {

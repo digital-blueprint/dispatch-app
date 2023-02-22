@@ -367,7 +367,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     async processCreateDispatchRequest() {
-        const i18n = this._i18n;
+        this._('#create-btn').start();
+
+        // const i18n = this._i18n;
         try {
             let response = await this.sendCreateDispatchRequest();
             let responseBody = await response.json();
@@ -406,9 +408,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     async _onCreateRequestButtonClicked(event) {
-        this._('#create-btn').start();
-
-       this.openFileSource();
+        this.openFileSource();
     }
 
     getCurrentTime() {
@@ -441,6 +441,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.requestCreated = false;
     }
 
+    checkMultipleRequestsCheckmark() {
+        this.singleFileProcessing = !(this._('#multiple-requests-button') && this._('#multiple-requests-button').checked);
+    }
+
     static get styles() {
         // language=css
         return css`
@@ -452,7 +456,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getModalDialogCSS()}
             ${commonStyles.getButtonCSS()}
             ${commonStyles.getTabulatorStyles()}
-            /*${commonStyles.getRadioAndCheckboxCss()}*/
+            ${commonStyles.getRadioAndCheckboxCss()}
             ${dispatchStyles.getDispatchRequestTableStyles()}
             ${dispatchStyles.getDispatchRequestStyles()}
 
@@ -462,6 +466,23 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             h2 {
                 margin-bottom: 10px;
+            }
+
+            #multiple-requests-checkbox {
+                margin-top: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .multiple-requests {
+                height: 18px;
+                width: 18px;
+                top: 0;
+                left: 0;
+            }
+
+            .button-container input[type='checkbox']:checked ~ .multiple-requests::after {
+                top: 1px;
+                left: 6px;
             }
             
             .choose-and-create-btns {
@@ -527,6 +548,16 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             .selected-buttons {
                 flex-direction: row-reverse;
             }
+
+            #select_all_checkmark {
+                top: 7px;
+            }
+            
+            @media only screen and (orientation: portrait) and (max-width: 768px) {
+                .multiple-requests {
+                    top: 10%;
+                }
+            }
         `;
     }
 
@@ -573,7 +604,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                          body="${i18n.t('create-request.empty-fields-given')}">
                 </dbp-inline-notification>
                 
-                <div>
+                <div class="${classMap({hidden: this.showDetailsView || this.requestCreated})}">
                     ${i18n.t('show-requests.organization-select-description')}
                     <div class="choose-and-create-btns">
                         <dbp-resource-select
@@ -594,6 +625,17 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             class="${classMap({hidden: this.showDetailsView})}"
                         ></dbp-loading-button>
                     </div>
+                    <label id="multiple-requests-checkbox" class="button-container">
+                        ${i18n.t('create-request.multiple-requests-text')}
+                        <input
+                                type="checkbox"
+                                id="multiple-requests-button"
+                                name="multiple-requests-button"
+                                value="multiple-requests-button"
+                                @click="${this.checkMultipleRequestsCheckmark}" 
+                                checked />
+                        <span class="multiple-requests checkmark" id="multiple-requests-button-checkmark"></span>
+                    </label>
                 </div>
 
                 <div class="no-access-notification">
@@ -604,10 +646,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
 
                 <div class="back-container">
-                    <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
+                    <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.requestCreated })}">
                         <a href="#" title="${i18n.t('create-request.back-to-create')}"
                            @click="${(e) => {
                                this.saveRequest(e, this.currentItem);
+                               this.showListView = false;
                            }}"
                         >
                             <dbp-icon name="chevron-left"></dbp-icon>
