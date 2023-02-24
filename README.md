@@ -12,7 +12,7 @@ This is an application for managing postal/electronic deliveries which get forwa
 ## Prerequisites
 
 - You need the [API server](https://gitlab.tugraz.at/dbp/relay/dbp-relay-server-template) running
-- You need the [DBP Dispatch Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/dbp-relay-dispatch-bundle)
+- You need the [DBP Dispatch Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/relay-dispatch-bundle)
 
 ## Local development
 
