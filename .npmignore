@@ -6,3 +6,4 @@ rollup.config.js
 _cypress_cache
 scripts
 docker
+.github
