@@ -3,7 +3,7 @@
 [GitHub Repository](https://github.com/digital-blueprint/dispatch-app) |
 [npmjs package](https://www.npmjs.com/package/@digital-blueprint/dispatch-app) |
 [Unpkg CDN](https://unpkg.com/browse/@digital-blueprint/dispatch-app/) |
-[Dispatch Bundle](https://github.com/digital-blueprint/dbp-relay-dispatch-bundle)
+[Dispatch Bundle](https://github.com/digital-blueprint/relay-dispatch-bundle)
 
 [![Build and Test](https://github.com/digital-blueprint/dispatch-app/actions/workflows/build-test-publish.yml/badge.svg)](https://github.com/digital-blueprint/dispatch-app/actions/workflows/build-test-publish.yml)
 
