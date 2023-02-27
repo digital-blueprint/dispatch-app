@@ -2271,6 +2271,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                         subscribe="auth"
                                                         lang="${this.lang}"
                                                         entry-point-url="${this.entryPointUrl}"
+                                                        show-reload-button
                                                         @change="${(event) => {this.processSelectedRecipient(event);}}"
                                                 ></dbp-person-select>
                                             </div>
