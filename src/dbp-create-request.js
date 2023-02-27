@@ -12,7 +12,6 @@ import { send } from '@dbp-toolkit/common/notification';
 import {Activity} from './activity.js';
 import metadata from './dbp-create-request.metadata.json';
 import * as dispatchStyles from './styles';
-import * as dispatchHelper from './utils';
 import {FileSource} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
 import {name as pkgName} from './../package.json';
@@ -369,7 +368,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     async processCreateDispatchRequest() {
         this._('#create-btn').start();
 
-        // const i18n = this._i18n;
+        const i18n = this._i18n;
         try {
             let response = await this.sendCreateDispatchRequest();
             let responseBody = await response.json();
@@ -502,7 +501,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
 
             .muted {
-                color: var(--dbp-muted);
+                color: var(--dbp-override-muted);
             }
 
             .table-wrapper {
