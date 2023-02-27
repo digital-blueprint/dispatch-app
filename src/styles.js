@@ -336,6 +336,10 @@ export function getDispatchRequestStyles() {
                 height: 33px;
                 width: 100%;
             }
+
+            select:disabled {
+                cursor: not-allowed;
+            }
             
             .modal-overlay {
                 z-index: 9000;

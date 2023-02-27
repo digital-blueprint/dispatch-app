@@ -2230,7 +2230,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     addAddRecipientModal() {
         const i18n = this._i18n;
 
-
         return html`
             <div class="modal micromodal-slide" id="add-recipient-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
@@ -2280,7 +2279,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div class="modal-content-right">
                                     <div>
-                                        <h4>${i18n.t('show-requests.add-recipient-or-text')}</h4>
+                                        <h4 class="${classMap({ muted: this.currentRecipient && this.currentRecipient.personIdentifier})}">${i18n.t('show-requests.add-recipient-or-text')}</h4>
                                     </div>
                                     <div class="modal-content-item">
                                         <div class="nf-label no-selector">
