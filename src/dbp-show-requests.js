@@ -250,17 +250,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         widthGrow: 1,
                         minWidth: 120,
                     },
-                    // {
-                    //     title: i18n.t('show-requests.table-header-sender'),
-                    //     field: 'sender',
-                    //     // visible: false,
-                    //     responsive: 8,
-                    //     minWidth: 800,
-                    //     formatter: function(cell) {
-                    //         let value = cell.getValue();
-                    //         return value;
-                    //     }
-                    // },
                     {
                         title: i18n.t('show-requests.table-header-files'),
                         field: 'files',
