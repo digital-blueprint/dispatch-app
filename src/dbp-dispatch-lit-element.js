@@ -712,13 +712,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     parseListOfRequests(response) {
         let list = [];
 
-        let numTypes = parseInt(response['hydra:totalItems']);
-        if (isNaN(numTypes)) {
-            numTypes = 0;
-        }
-        for (let i = 0; i < numTypes; i++ ) {
-            list[i] = response['hydra:member'][i];
-        }
+        response['hydra:member'].forEach((item) => {
+            list.push(item);
+        });
         list.sort(this.compareListItems);
 
         return list;
