@@ -745,6 +745,8 @@ export function getDispatchRequestStyles() {
             
             .delivery-status {
                 padding-top: 0.5em;
+                align-self: baseline;
+                margin-top: auto;
             }
 
             .back-container {
