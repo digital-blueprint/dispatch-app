@@ -1,10 +1,10 @@
 import {createInstance} from './i18n.js';
-import {css, unsafeCSS, html} from 'lit';
+import {css, html} from 'lit';
 import {ScopedElementsMixin} from '@open-wc/scoped-elements';
 import DBPDispatchLitElement from "./dbp-dispatch-lit-element";
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
-import {LoadingButton, IconButton, Icon, MiniSpinner, InlineNotification, getIconSVGURL} from "@dbp-toolkit/common";
+import {LoadingButton, IconButton, Icon, MiniSpinner, InlineNotification} from "@dbp-toolkit/common";
 import {classMap} from "lit/directives/class-map.js";
 import {Activity} from './activity.js';
 import metadata from './dbp-show-requests.metadata.json';
