@@ -24,7 +24,7 @@
         "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine neuen Aufträge erstellen.",
         "create-not-allowed-title": "Keine Rechte!",
         "create-not-allowed-text": "Sie besitzen in der gewählten Organisation nur Leserechte für Versandaufträge und können den Absender deshalb nicht ändern.",
-        "multiple-requests-text": "Pro Datei einen eigenen Versandauftrag erstellen"
+        "multiple-requests-text": "Pro Dokument einen eigenen Versandauftrag erstellen"
     },
     "show-requests": {
         "description-text": "Hier können Sie die Liste aller Ihrer bisher angelegten Versandaufträge einsehen und diese bearbeiten, löschen oder abschließen. Alternativ können Sie auch einen ",
