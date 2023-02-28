@@ -1,4 +1,5 @@
-import {css} from 'lit';
+import {css, unsafeCSS } from 'lit';
+import {getIconSVGURL} from "@dbp-toolkit/common";
 
 export function getDispatchRequestTableStyles() {
     // language=css
@@ -310,7 +311,89 @@ export function getDispatchRequestTableStyles() {
         \\**************************/
 
         @media only screen and (orientation: portrait) and (max-width: 768px) {
-        }
+                
+                button[data-page="prev"], button[data-page="next"], button[data-page="first"], button[data-page="last"] {
+                    display: block;
+                    white-space: nowrap !important;
+                    overflow: hidden;
+                    line-height: 0;
+                }
+
+                button[data-page="prev"]:after, button[data-page="next"]:after, button[data-page="first"]:after, button[data-page="last"]:after {
+                    content: '\\00a0\\00a0\\00a0\\00a0';
+                    background-color: var(--dbp-content);
+                    -webkit-mask-repeat: no-repeat;
+                    mask-repeat: no-repeat;
+                    -webkit-mask-position: center center;
+                    mask-position: center center;
+                    padding: 0 0 0.25% 0;
+                    -webkit-mask-size: 1.5rem !important;
+                    mask-size: 1.4rem !important;
+                }
+
+                .tabulator .tabulator-footer .tabulator-paginator .tabulator-page {
+                    border: none;
+                }
+                
+                button[data-page="prev"]:after {
+                    -webkit-mask-image: url("${unsafeCSS(getIconSVGURL('chevron-left'))}");
+                    mask-image: url("${unsafeCSS(getIconSVGURL('chevron-left'))}");
+                }
+
+                button[data-page="next"]:after {
+                    -webkit-mask-image: url("${unsafeCSS(getIconSVGURL('chevron-right'))}");
+                    mask-image: url("${unsafeCSS(getIconSVGURL('chevron-right'))}");
+                }
+
+                button[data-page="first"]:after {
+                    content: '\\00a0\\00a0\\00a0\\00a0\\00a0\\00a0\\00a0';
+                    -webkit-mask-image: url("${unsafeCSS(getIconSVGURL('angle-double-left'))}");
+                    mask-image: url("${unsafeCSS(getIconSVGURL('angle-double-left'))}");
+                }
+
+                button[data-page="last"]:after {
+                    content: '\\00a0\\00a0\\00a0\\00a0\\00a0\\00a0\\00a0';
+                    -webkit-mask-image: url("${unsafeCSS(getIconSVGURL('angle-double-right'))}");
+                    mask-image: url("${unsafeCSS(getIconSVGURL('angle-double-right'))}");
+                }
+
+                .tabulator .tabulator-footer .tabulator-footer-contents .tabulator-paginator .tabulator-pages {
+                    display: none;
+                }
+                
+                .tabulator .tabulator-footer .tabulator-paginator {
+                    text-align: center;
+                }
+                
+                .tabulator .tabulator-footer .tabulator-paginator label {
+                    display: none;
+                }
+                
+                .tabulator .tabulator-footer .tabulator-paginator .tabulator-page {
+                    border: none;
+                }
+                
+                .tabulator .tabulator-footer .tabulator-paginator .tabulator-page-size {
+                    padding-right: 0;
+                    background-size: auto 40%;
+                }
+                
+                #custom-pagination {
+                    position: sticky;
+                    bottom: 0px;
+                    z-index: 10;
+                }
+                
+                .tabulator-footer {
+                    position: sticky;
+                    bottom: 0px;
+                    z-index: 10;
+                }
+                                
+                .tabulator {
+                    overflow: visible;
+                }
+            }
     `;
 }
 

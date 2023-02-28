@@ -229,7 +229,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     {
                         title: i18n.t('show-requests.table-header-date-created'),
                         field: 'dateCreated',
-                        responsive: 3,
+                        responsive: 1,
                         widthGrow: 1,
                         minWidth: 160,
                         sorter: (a, b) => {
@@ -251,7 +251,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     {
                         title: i18n.t('show-requests.table-header-subject'),
                         field: 'subject',
-                        responsive: 1,
+                        responsive: 2,
                         widthGrow: 3,
                         minWidth: 150,
                         formatter: 'html'
@@ -286,6 +286,16 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         }
                     },
                     {
+                        title: i18n.t('show-requests.date-submitted'),
+                        field: 'dateSubmitted',
+                        responsive: 8,
+                        minWidth: 150,
+                        formatter: function(cell) {
+                            let value = cell.getValue();
+                            return value;
+                        }
+                    },
+                    {
                         title: i18n.t('show-requests.table-header-id'),
                         field: 'requestId',
                         responsive: 8,
@@ -302,7 +312,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         minWidth: 140,
                         widthGrow: 1,
                         headerSort: false,
-                        responsive: 0,
+                        responsive: 1,
                         formatter: (cell) => {
                             let value = cell.getValue();
                             return value;
@@ -561,6 +571,35 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             @media only screen and (orientation: portrait) and (max-width: 768px) {
                 .multiple-requests {
                     top: 10%;
+                }
+
+                .choose-and-create-btns {
+                    display: flex;
+                    flex-direction: column;
+                }
+                
+                .choose-and-create-btns dbp-resource-select {
+                    width: unset;
+                }
+
+                .selected-buttons {
+                    flex-direction: column;
+                }
+                
+                .edit-selection-buttons {
+                    gap: 5px;
+                }
+
+                #expand-all-btn, #collapse-all-btn {
+                    padding: 0;
+                }
+                
+                .table-wrapper {
+                    padding-top: 1em;
+                }
+                
+                .tabulator-header {
+                    padding-top: 0;
                 }
             }
         `;
