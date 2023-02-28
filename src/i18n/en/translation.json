@@ -24,7 +24,7 @@
         "error-no-writes": "You only have read rights for shipping orders in this organization, and therefore cannot create new orders.",
         "create-not-allowed-title": "No access rights!",
         "create-not-allowed-text": "You only have read rights for dispatch orders in the selected organization and therefore cannot change the sender.",
-        "multiple-requests-text": "Create a new dispatch orders for each file"
+        "multiple-requests-text": "Create a new dispatch orders for each document"
     },
     "show-requests": {
         "description-text": "Here you can view the list of all your created dispatch orders and edit, delete or submit. You can also ",
