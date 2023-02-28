@@ -209,7 +209,8 @@
         "expand-all": "Expand all",
         "collapse-all": "Collapse all",
         "error-invalid-birthdate-text": "Please enter a valid birth date.",
-        "error-invalid-birthdate-title": "Invalid birth date"
+        "error-invalid-birthdate-title": "Invalid birth date",
+        "reset-select-button-text": "Reset selection"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading...",

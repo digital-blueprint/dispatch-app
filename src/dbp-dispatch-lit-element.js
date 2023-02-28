@@ -1967,6 +1967,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    resetPersonSelect(event) {
+        this._('#recipient-selector').clear();
+    }
+
     clearAll() {
         this.currentItem = {};
 
@@ -2277,6 +2281,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                         @change="${(event) => {this.processSelectedRecipient(event);}}"
                                                 ></dbp-person-select>
                                             </div>
+                                            <button
+                                                    class="button ${classMap({ hidden: this._('#recipient-selector') && this._('#recipient-selector').value === '' })}"
+                                                    @click="${(event) => {this.resetPersonSelect(event);}}"
+                                            >${i18n.t('show-requests.reset-select-button-text')}</button>
                                         </div>
                                     </div>
                                 </div>

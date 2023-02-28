@@ -209,8 +209,8 @@
         "expand-all": "Alles aufklappen",
         "collapse-all": "Alles zuklappen",
         "error-invalid-birthdate-text": "Bitte geben Sie ein gültiges Geburtsdatum ein.",
-        "error-invalid-birthdate-title": "Ungültiges Geburtsdatum"
-
+        "error-invalid-birthdate-title": "Ungültiges Geburtsdatum",
+        "reset-select-button-text": "Auswahl zurücksetzen"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",
