@@ -374,31 +374,37 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let responseBody = await response.json();
 
             if (responseBody !== undefined && response.status === 201) {
-                send({
-                    "summary": i18n.t('create-request.successfully-requested-title'),
-                    "body": i18n.t('create-request.successfully-requested-text'),
-                    "type": "success",
-                    "timeout": 5,
-                });
+                if (this.singleFileProcessing) {
+                    send({
+                        "summary": i18n.t('create-request.successfully-requested-title'),
+                        "body": i18n.t('create-request.successfully-requested-text'),
+                        "type": "success",
+                        "timeout": 5,
+                    });
+                }
                 this.currentItem = responseBody;
                 this.requestCreated = true;
                 // console.log(this.currentItem);
 
             } else if (response.status === 403) {
-                send({
-                    "summary": i18n.t('create-request.error-requested-title'),
-                    "body": i18n.t('error-not-permitted'),
-                    "type": "danger",
-                    "timeout": 5,
-                });
+                if (this.singleFileProcessing) {
+                    send({
+                        "summary": i18n.t('create-request.error-requested-title'),
+                        "body": i18n.t('error-not-permitted'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
             } else {
                 // TODO show error code specific notification
-                send({
-                    "summary": i18n.t('create-request.error-requested-title'),
-                    "body": i18n.t('create-request.error-requested-text'),
-                    "type": "danger",
-                    "timeout": 5,
-                });
+                if (this.singleFileProcessing) {
+                    send({
+                        "summary": i18n.t('create-request.error-requested-title'),
+                        "body": i18n.t('create-request.error-requested-text'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
             }
         } finally {
             // TODO
@@ -875,9 +881,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                         this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
                                                                         this._('#tf-edit-recipient-gn-dialog').value = this.currentRecipient.givenName;
                                                                         this._('#tf-edit-recipient-fn-dialog').value = this.currentRecipient.familyName;
-                                                                        this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode;
-                                                                        this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality;
-                                                                        this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
+                                                                        this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode ? this.currentRecipient.postalCode : '';
+                                                                        this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : '';
+                                                                        this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : '';
                                                                         
                                                                         MicroModal.show(this._('#edit-recipient-modal'), {
                                                                             disableScroll: true,

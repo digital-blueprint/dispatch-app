@@ -576,7 +576,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 await this.addFile(event.detail.file);
                 this.filesAdded = true;
-                console.log('filesAdded: ', this.filesAdded);
             });
         } else {
             await this.addFile(event.detail.file);
@@ -610,12 +609,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 201) {
-            send({
-                "summary": i18n.t('show-requests.successfully-added-file-title'),
-                "body": i18n.t('show-requests.successfully-added-file-text'),
-                "type": "success",
-                "timeout": 5,
-            });
+            if (this.singleFileProcessing) {
+                send({
+                    "summary": i18n.t('show-requests.successfully-added-file-title'),
+                    "body": i18n.t('show-requests.successfully-added-file-text'),
+                    "type": "success",
+                    "timeout": 5,
+                });
+            }
 
             let resp = await this.getDispatchRequest(id);
             let responseBody = await resp.json();
@@ -624,13 +625,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         } else {
             // TODO error handling
-
-            send({
-                "summary": 'Error!',
-                "body": 'File could not be added.',
-                "type": "danger",
-                "timeout": 5,
-            });
+            if (this.singleFileProcessing) {
+                send({
+                    "summary": 'Error!',
+                    "body": 'File could not be added.',
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            }
         }
     }
 
@@ -1305,6 +1307,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.appDeliveryId = responseBody['appDeliveryID'] ? responseBody['appDeliveryID'] : '';
             this.currentRecipient.postalDeliverable = responseBody['postalDeliverable'] ? responseBody['postalDeliverable'] : '';
             this.currentRecipient.electronicallyDeliverable = responseBody['electronicallyDeliverable'] ? responseBody['electronicallyDeliverable'] : '';
+
+            // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
         } else {
             // TODO error handling
         }

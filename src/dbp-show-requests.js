@@ -1230,9 +1230,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                                     this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
                                                                                     this._('#tf-edit-recipient-gn-dialog').value = this.currentRecipient.givenName;
                                                                                     this._('#tf-edit-recipient-fn-dialog').value = this.currentRecipient.familyName;
-                                                                                    this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode;
-                                                                                    this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality;
-                                                                                    this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
+                                                                                    this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode ? this.currentRecipient.postalCode : '';
+                                                                                    this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : '';
+                                                                                    this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : '';
                                 
                                                                                     MicroModal.show(this._('#edit-recipient-modal'), {
                                                                                         disableScroll: true,
