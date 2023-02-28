@@ -768,7 +768,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     // console.log(this.currentItem);
                     this.currentRecipient = {};
                 }
-                this._('#recipient-selector').clear();
                 this.currentRecipient.personIdentifier = '';
                 this.currentRecipient.givenName = '';
                 this.currentRecipient.familyName = '';
@@ -812,6 +811,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 "timeout": 5,
             });
         } finally {
+            this._('#recipient-selector').clear();
             this._('#add-recipient-btn').stop();
         }
     }
