@@ -1064,6 +1064,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         });
                         this.clearAll();
                         this.requestCreated = false;
+                    } else if (response.status === 400) {
+                        send({
+                            "summary": i18n.t('error-delivery-channel-title'),
+                            "body": i18n.t('error-delivery-channel-text'),
+                            "type": "danger",
+                            "timeout": 5,
+                        });
                     } else if (response.status === 403) {
                         send({
                             "summary": i18n.t('create-request.error-requested-title'),
