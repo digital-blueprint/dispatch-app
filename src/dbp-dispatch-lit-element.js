@@ -2453,7 +2453,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <button
                                         class="button select-button is-primary"
                                         id="add-recipient-confirm-btn"
-                                        @click="${() => {
+                                        @click="${(event) => {
+                                            let button = event.target;
+                                            button.disabled = true;
+                                            
                                             let validcountry = this.checkValidity(this._('#add-recipient-country-select'));
                                             let validal = this.checkValidity(this._('#tf-add-recipient-al-dialog'));
                                             let validpc = this.checkValidity(this._('#tf-add-recipient-pc-dialog'));
@@ -2476,6 +2479,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
                                                 
                                                 this.addRecipientToRequest().then(r => {
+                                                    button.disabled = false;
                                                     MicroModal.close(this._('#add-recipient-modal'));
                                                     this._('#recipient-selector').value = "";
                                                     
