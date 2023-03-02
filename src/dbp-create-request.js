@@ -690,7 +690,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
 
                 <div class="back-container">
-                    <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.requestCreated })}">
+                    <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.requestCreated || (!this.singleFileProcessing && this.showDetailsView) })}">
                         <a href="#" title="${i18n.t('create-request.back-to-create')}"
                            @click="${(e) => {
                                this.saveRequest(e, this.currentItem);
@@ -699,6 +699,18 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         >
                             <dbp-icon name="chevron-left"></dbp-icon>
                             ${i18n.t('create-request.back-to-create')}
+                        </a>
+                    </span>
+                    <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.requestCreated || this.singleFileProcessing || this.showListView })}">
+                        <a href="#" title="${i18n.t('show-requests.back-to-list')}"
+                           @click="${(e) => {
+                               this.getCreatedDispatchRequests();
+                               this.showDetailsView = false;
+                               this.showListView = true;
+                           }}"
+                        >
+                            <dbp-icon name="chevron-left"></dbp-icon>
+                            ${i18n.t('show-requests.back-to-list')}
                         </a>
                     </span>
                 </div>
@@ -770,7 +782,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
 
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView })}">
-
+                    
                     ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
                                 <div class="request-buttons">
                                     <div class="edit-buttons">
