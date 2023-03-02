@@ -1,6 +1,6 @@
 [submodule "vendor/toolkit"]
 	path = vendor/toolkit
-	url = https://gitlab.tugraz.at/dbp/web-components/toolkit.git
+	url = https://github.com/digital-blueprint/toolkit
 [submodule "vendor/signature"]
 	path = vendor/signature
 	url = https://github.com/digital-blueprint/esign-app.git
