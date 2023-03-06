@@ -722,7 +722,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return list;
     }
 
-    async addRecipientToRequest(event, item) {
+    async addRecipientToRequest(button) {
         this._('#add-recipient-btn').start();
         try {
             const i18n = this._i18n;
@@ -811,6 +811,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } finally {
             this._('#recipient-selector').clear();
             this._('#add-recipient-btn').stop();
+            button.disabled = false;
         }
     }
 
@@ -2457,42 +2458,38 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             let button = event.target;
                                             button.disabled = true;
                                             
-                                            try {
-                                                let validcountry = this.checkValidity(this._('#add-recipient-country-select'));
-                                                let validal = this.checkValidity(this._('#tf-add-recipient-al-dialog'));
-                                                let validpc = this.checkValidity(this._('#tf-add-recipient-pc-dialog'));
-                                                let validsa = this.checkValidity(this._('#tf-add-recipient-sa-dialog'));
-                                                let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
-                                                let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
-                                                let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
-                                                let validfn = this.checkValidity(this._('#tf-add-recipient-fn-dialog'));
-                                                let validgn = this.checkValidity(this._('#tf-add-recipient-gn-dialog'));
+                                            let validcountry = this.checkValidity(this._('#add-recipient-country-select'));
+                                            let validal = this.checkValidity(this._('#tf-add-recipient-al-dialog'));
+                                            let validpc = this.checkValidity(this._('#tf-add-recipient-pc-dialog'));
+                                            let validsa = this.checkValidity(this._('#tf-add-recipient-sa-dialog'));
+                                            let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
+                                            let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
+                                            let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
+                                            let validfn = this.checkValidity(this._('#tf-add-recipient-fn-dialog'));
+                                            let validgn = this.checkValidity(this._('#tf-add-recipient-gn-dialog'));
 
-                                                if (validgn && validfn && validcountry && validpc && validal && validsa && validbirthday && validbirthmonth && validbirthyear) {
-                                                    this.currentRecipient.givenName = this._('#tf-add-recipient-gn-dialog').value;
-                                                    this.currentRecipient.familyName = this._('#tf-add-recipient-fn-dialog').value;
-                                                    this.currentRecipient.addressCountry = this._('#add-recipient-country-select').value;
-                                                    this.currentRecipient.postalCode = this._('#tf-add-recipient-pc-dialog').value;
-                                                    this.currentRecipient.addressLocality = this._('#tf-add-recipient-al-dialog').value;
-                                                    this.currentRecipient.streetAddress = this._('#tf-add-recipient-sa-dialog').value;
-                                                    this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
-                                                    this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
-                                                    this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
+                                            if (validgn && validfn && validcountry && validpc && validal && validsa && validbirthday && validbirthmonth && validbirthyear) {
+                                                this.currentRecipient.givenName = this._('#tf-add-recipient-gn-dialog').value;
+                                                this.currentRecipient.familyName = this._('#tf-add-recipient-fn-dialog').value;
+                                                this.currentRecipient.addressCountry = this._('#add-recipient-country-select').value;
+                                                this.currentRecipient.postalCode = this._('#tf-add-recipient-pc-dialog').value;
+                                                this.currentRecipient.addressLocality = this._('#tf-add-recipient-al-dialog').value;
+                                                this.currentRecipient.streetAddress = this._('#tf-add-recipient-sa-dialog').value;
+                                                this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
+                                                this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
+                                                this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
 
-                                                    this.addRecipientToRequest().then(r => {
-                                                        button.disabled = false;
-                                                        MicroModal.close(this._('#add-recipient-modal'));
-                                                        this._('#recipient-selector').value = "";
+                                                this.addRecipientToRequest(button).then(r => {
+                                                    button.disabled = false;
+                                                    MicroModal.close(this._('#add-recipient-modal'));
+                                                    this._('#recipient-selector').value = "";
 
-                                                        const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
-                                                        elements.forEach((element) => {
-                                                            element.classList.remove('muted');
-                                                        });                                                  // console.log(this._('#recipient-selector'));
+                                                    const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
+                                                    elements.forEach((element) => {
+                                                        element.classList.remove('muted');
                                                     });
-                                                }
-                                            } catch (e) {
-                                                // console.error(e);
-                                            } finally {
+                                                });
+                                            } else {
                                                 button.disabled = false;
                                             }
                                         }}">
