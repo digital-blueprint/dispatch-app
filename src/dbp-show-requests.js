@@ -1143,7 +1143,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 icon-name="keyword-research"></dbp-icon></dbp-icon-button>
                                                     ${!this.currentItem.dateSubmitted ? html`
                                                         <dbp-icon-button id="edit-recipient-btn"
-                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite || (recipient.personIdentifier && recipient.electronicallyDeliverable)}"
+                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite || recipient.personIdentifier}"
                                                                      @click="${(event) => {
                                                                             let button = event.target;
                                                                             button.start();

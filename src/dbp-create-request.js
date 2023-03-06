@@ -919,7 +919,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                              icon-name="keyword-research"></dbp-icon></dbp-icon-button>
                                             ${!this.currentItem.dateSubmitted ? html`
                                                 <dbp-icon-button id="edit-recipient-btn"
-                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || (recipient.personIdentifier && recipient.electronicallyDeliverable)}"
+                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || recipient.personIdentifier}"
                                                              @click="${(event) => {
                                                                  let button = event.target;
                                                                  button.start();
