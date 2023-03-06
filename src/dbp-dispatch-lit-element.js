@@ -1290,11 +1290,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient = responseBody;
 
             this.currentRecipient.personIdentifier = responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
-            let birthDate = responseBody['birthDate'] !== '' ?  this.convertToBirthDateTuple(responseBody['birthDate']) : '';
+            let birthDate = responseBody['birthDate'] && responseBody['birthDate'] !== '' ?  this.convertToBirthDateTuple(responseBody['birthDate']) : '';
 
-            this.currentRecipient.birthDateDay = birthDate.day;
-            this.currentRecipient.birthDateMonth = birthDate.month;
-            this.currentRecipient.birthDateYear = birthDate.year;
+            if (birthDate !== '') {
+                this.currentRecipient.birthDateDay = birthDate.day;
+                this.currentRecipient.birthDateMonth = birthDate.month;
+                this.currentRecipient.birthDateYear = birthDate.year;
+            }
+            else {
+                this.currentRecipient.birthDateDay = '';
+                this.currentRecipient.birthDateMonth = '';
+                this.currentRecipient.birthDateYear = '';
+            }
 
             this.currentRecipient.statusChanges = responseBody['statusChanges'];
             if (this.currentRecipient.statusChanges.length > 0) {
@@ -1619,6 +1626,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     createFormattedFilesList(list) {
         const i18n = this._i18n;
         let output = '';
+        if (!list) {
+            return i18n.t('show-requests.no-files-attached');
+        }
         list.forEach((file) => {
             output += file.name + "<br>";
         });
@@ -2766,12 +2776,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
                                 </div>
                                 
-                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                ${this.currentRecipient && !this.currentRecipient.personIdentifier && this.currentRecipient.birthDateDay !== ''
+                                && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '' ? html`
                                     <div class="element-left">
                                         ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}:
                                     </div>
                                     <div class="element-right">
-                                        ${this.convertToBirthDate(this.currentRecipient.birthDate)}
+                                        ${this.currentRecipient.birthDateYear + '-' + this.currentRecipient.birthDateMonth + '-' + this.currentRecipient.birthDateDay}
                                     </div>
                                 ` : ``}
                                 ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
@@ -3031,7 +3042,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             <div class="details files">
                 <div class="header-btn">
                     <div class="section-titles">${i18n.t('show-requests.files')} <span class="section-title-counts">
-                            ${this.currentItem.files.length !== 0 ? `(` + this.currentItem.files.length + `)` : ``}</span>
+                            ${this.currentItem.files && this.currentItem.files.length !== 0 ? `(` + this.currentItem.files.length + `)` : ``}</span>
                     </div>
                     ${!this.currentItem.dateSubmitted ? html`
                          <dbp-loading-button id="add-files-btn"
@@ -3045,36 +3056,36 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                          </dbp-loading-button>` : `` }
                 </div>
                 <div class="files-data">
-                    ${this.currentItem.files.map(file => html`
-                                            <div class="file card">
-                                                <div class="left-side">
-                                                    <div>${file.name}</div>
-                                                    <div>${humanFileSize(file.contentSize)}</div>
-                                                    <div>${file.fileFormat}</div>
-                                                    <div>${this.convertToReadableDate(file.dateCreated)}</div>
-                                                </div>
-                                                <div class="right-side">
-                                                    <dbp-icon-button id="show-file-btn"
-                                                                @click="${(event) => {
-            console.log("on show file clicked");
-            //TODO show file viewer with pdf
-        }}"
-                                                                class="hidden" <!-- TODO -->
-                                                                title="${i18n.t('show-requests.show-file-button-text')}"
-                                                                icon-name="keyword-research"></dbp-icon-button>
-                                                    ${!this.currentItem.dateSubmitted ? html`
-                                                        <dbp-icon-button id="delete-file-btn"
-                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                                    @click="${(event) => {
-                                                                        this.deleteFile(event, file);
-                                                                    }}"
-                                                                    title="${i18n.t('show-requests.delete-file-button-text')}" 
-                                                                    icon-name="trash"></dbp-icon-button>` : ``
-        }
-                                                </div>
-                                            </div>
-                                        `)}
-                    <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
+                    ${this.currentItem.files ? this.currentItem.files.map(file => html`
+                        <div class="file card">
+                            <div class="left-side">
+                                <div>${file.name}</div>
+                                <div>${humanFileSize(file.contentSize)}</div>
+                                <div>${file.fileFormat}</div>
+                                <div>${this.convertToReadableDate(file.dateCreated)}</div>
+                            </div>
+                            <div class="right-side">
+                                <dbp-icon-button id="show-file-btn"
+                                            @click="${(event) => {
+console.log("on show file clicked");
+//TODO show file viewer with pdf
+}}"
+                                            class="hidden" <!-- TODO -->
+                                            title="${i18n.t('show-requests.show-file-button-text')}"
+                                            icon-name="keyword-research"></dbp-icon-button>
+                                ${!this.currentItem.dateSubmitted ? html`
+                                    <dbp-icon-button id="delete-file-btn"
+                                                ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                                @click="${(event) => {
+                                                    this.deleteFile(event, file);
+                                                }}"
+                                                title="${i18n.t('show-requests.delete-file-button-text')}" 
+                                                icon-name="trash"></dbp-icon-button>` : ``
+}
+                            </div>
+                        </div>
+                    `) : ``}
+                    <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files && this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
                 </div>
             </div>
         `;
