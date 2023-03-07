@@ -2973,7 +2973,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             aria-labelledby="edit-reference-number-modal-title">
                         <header class="modal-header">
                             <h3 id="edit-reference-number-modal-title">
-                                ${i18n.t('show-requests.edit-subject-modal-title')}
+                                ${i18n.t('show-requests.reference-number-dialog-title')}
                             </h3>
                             <button
                                     title="${i18n.t('show-requests.modal-close')}"
