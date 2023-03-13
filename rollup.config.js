@@ -1,6 +1,6 @@
 import path from 'path';
 import url from 'url';
-import glob from 'glob';
+import {globSync} from 'glob';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import copy from 'rollup-plugin-copy';
@@ -93,7 +93,7 @@ export default (async () => {
                       'vendor/signature/src/dbp-qualified-signature-pdf-upload.js',
                       'vendor/signature/src/dbp-official-signature-pdf-upload.js',
                   ]
-                : glob.sync('test/**/*.js'),
+                : globSync('test/**/*.js'),
         output: {
             dir: 'dist',
             entryFileNames: '[name].js',
