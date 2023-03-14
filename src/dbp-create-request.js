@@ -78,6 +78,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.totalNumberOfItems = 0;
         this.rowsSelected = false;
 
+        this.fileUploadFinished = true;
+
         this.boundSelectHandler = this.selectAllFiles.bind(this);
     }
 
@@ -123,6 +125,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             filesAdded: {type: Boolean, attribute: false},
             createRequestsLoading: {type: Boolean, attribute: false},
             expanded: { type: Boolean, attribute: false },
+
+            fileUploadFinished: {type: Boolean, attribute: false},
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -762,7 +766,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                         </div>
 
-                        <div class="control table ${classMap({hidden: !this.createRequestsLoading})}">
+                        <div class="control table ${classMap({hidden: !this.createRequestsLoading || this.fileUploadFinished})}">
                             <span class="loading">
                                 <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
                             </span>

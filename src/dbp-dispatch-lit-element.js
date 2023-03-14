@@ -188,8 +188,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async sendCreateDispatchRequest() {
         let body = {
             "name": this.subject,
-            "senderOrganizationName": this.currentItem.senderOrganizationName,
-            "senderFullName": this.currentItem.senderOrganizationName, // '', // this.currentItem.senderFullName,
+            "senderOrganizationName": this.currentItem.senderOrganizationName, //we set the same for both since senderOrganizationName will be ignored but we need have the organization somewhere
+            "senderFullName": this.currentItem.senderOrganizationName, // this.currentItem.senderFullName,
             "senderAddressCountry": this.currentItem.senderAddressCountry,
             "senderPostalCode": this.currentItem.senderPostalCode,
             "senderAddressLocality": this.currentItem.senderAddressLocality,
@@ -563,7 +563,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    onFileUploadFinished(event) {
+        this.fileUploadFinished = true;
+    }
+
     async onFileSelected(event) {
+        this.fileUploadFinished = false;
+
         if (!this.singleFileProcessing) {
             this.processCreateDispatchRequest().then(async () => {
                 this.showDetailsView = false;
@@ -2034,7 +2040,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                   lang="${this.lang}"
                   text="${i18n.t('show-requests.filepicker-context')}"
                   button-label="${i18n.t('show-requests.filepicker-button-title')}"
-                  @dbp-file-source-file-selected="${this.onFileSelected}">
+                  @dbp-file-source-file-selected="${this.onFileSelected}"
+                  @dbp-file-source-file-upload-finished="${this.onFileUploadFinished}">
              </dbp-file-source>
             
             <dbp-file-sink
