@@ -4570,10 +4570,10 @@ karma@^6.0.0:
     ua-parser-js "^0.7.30"
     yargs "^16.1.1"
 
-keycloak-js@^20.0.1:
-  version "20.0.1"
-  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-20.0.1.tgz#3f73499a6b071d096f82ab74257b1b7429f53c8c"
-  integrity sha512-YNj0X0mmdLpqjB9W5DTAVDI14CzZs7RFn9T/t/g8Uq80OjaW2zZUis/g73aWwz04S3B6U6Vrg8h1wAMGbx2NQQ==
+keycloak-js@^21.0.0:
+  version "21.0.1"
+  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-21.0.1.tgz#4893d43597b5b6e36b80dc4f7ef4119e64967221"
+  integrity sha512-ot0KW4qyDHl5AyDZNV0CkEkuvIZi+37y3BReNvqqfag7wqJeV13R/PcgECvbbd05+0NSOQjhBL8S+a4A++vNQw==
   dependencies:
     base64-js "^1.5.1"
     js-sha256 "^0.9.0"
