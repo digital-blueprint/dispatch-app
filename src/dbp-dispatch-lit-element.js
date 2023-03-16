@@ -188,7 +188,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async sendCreateDispatchRequest() {
         let body = {
             "name": this.subject,
-            "senderOrganizationName": this.currentItem.senderOrganizationName, //we set the same for both since senderOrganizationName will be ignored but we need have the organization somewhere
+            "senderOrganizationName": this.currentItem.senderOrganizationName, //we set the same for both since senderOrganizationName will be ignored but we need to have the organization somewhere
             "senderFullName": this.currentItem.senderOrganizationName, // this.currentItem.senderFullName,
             "senderAddressCountry": this.currentItem.senderAddressCountry,
             "senderPostalCode": this.currentItem.senderPostalCode,
@@ -823,12 +823,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async updateRecipient(button) {
         button.start();
+        const i18n = this._i18n;
+        let hasError = false;
 
         try {
-            const i18n = this._i18n;
             let id = this.currentItem.identifier;
-            let recipientId = this.currentRecipient.identifier;
-
             let givenName = this.currentRecipient.givenName;
             let familyName = this.currentRecipient.familyName;
             let addressCountry = this.currentRecipient.addressCountry;
@@ -841,24 +840,31 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
             let personIdentifier = this.currentRecipient.personIdentifier;
 
-            let response = await this.sendUpdateRecipientRequest(recipientId, id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress);
+            let recipientId = this.currentRecipient.identifier;
 
-            let responseBody = await response.json();
-            if (responseBody !== undefined && response.status === 200) {
-                send({
-                    "summary": i18n.t('show-requests.successfully-edited-recipient-title'),
-                    "body": i18n.t('show-requests.successfully-edited-recipient-text'),
-                    "type": "success",
-                    "timeout": 5,
-                });
+            // First, send a delete requests to remove the old recipient
+            let response = await this.sendDeleteRecipientRequest(recipientId);
+            if (response.status === 204) {
+                // Then, send a new add request to add the updated recipient
+                let innerResponse = await this.sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress);
 
-                this.currentRecipient = responseBody;
+                let innerResponseBody = await innerResponse.json();
+                if (innerResponseBody !== undefined && innerResponse.status === 201) {
+                    send({
+                        "summary": i18n.t('show-requests.successfully-edited-recipient-title'),
+                        "body": i18n.t('show-requests.successfully-edited-recipient-text'),
+                        "type": "success",
+                        "timeout": 5,
+                    });
+                    this.currentRecipient = innerResponseBody;
 
-                let resp = await this.getDispatchRequest(id);
-                let responseBody2 = await resp.json();
-                if (responseBody2 !== undefined && responseBody2.status !== 403) {
-                    this.currentItem = responseBody2;
-
+                    let resp = await this.getDispatchRequest(id);
+                    let responseBody = await resp.json();
+                    if (responseBody !== undefined && responseBody.status !== 403) {
+                        this.currentItem = responseBody;
+                        this.currentRecipient = {};
+                    }
+                    this.currentRecipient.personIdentifier = '';
                     this.currentRecipient.givenName = '';
                     this.currentRecipient.familyName = '';
                     this.currentRecipient.postalCode = '';
@@ -877,21 +883,30 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
                     this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
                     this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
-                    this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                    this._('#edit-recipient-country-select').value = 'AT';
+                } else {
+                    hasError = true;
                 }
             } else {
-                // TODO error handling
-
+                hasError = true;
+            }
+        } catch (e) {
+            //TODO
+            send({
+                "summary": 'Error!',
+                "body": 'Could not add recipient.',
+                "type": "danger",
+                "timeout": 5,
+            });
+        } finally {
+            if (hasError) {
                 send({
                     "summary": 'Error!',
-                    "body": 'Could not update recipient. Response code: ' + response.status,
+                    "body": 'Could not add recipient.',
                     "type": "danger",
                     "timeout": 5,
                 });
             }
-        } catch (e) {
-            //TODO
-        } finally {
             this.requestUpdate();
             button.stop();
         }
