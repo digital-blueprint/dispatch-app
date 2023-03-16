@@ -1111,7 +1111,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
 
                                     <div class="recipients-data">
-                                        ${this.currentItem.recipients.map(recipient => html`
+                                        ${this.sortRecipients(this.currentItem.recipients).map(recipient => html`
     
                                         <div class="recipient card">
                                             

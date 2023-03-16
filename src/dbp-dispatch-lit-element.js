@@ -2003,6 +2003,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    sortRecipients(unsortedRecipients) {
+        let sortedRecipients = unsortedRecipients.sort((a, b) => {
+            let nameA = a.familyName.toUpperCase();
+            let nameB = b.familyName.toUpperCase();
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        });
+        return sortedRecipients;
+    }
+
     resetPersonSelect(event) {
         this._('#recipient-selector').clear();
     }

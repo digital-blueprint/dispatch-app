@@ -892,7 +892,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     }
                                 </div>
                                 <div class="recipients-data ${classMap({hidden: !this.hasSender || !this.hasSubject})}">
-                                    ${this.currentItem.recipients.map(recipient => html`
+                                    ${this.sortRecipients(this.currentItem.recipients).map(recipient => html`
                                     <div class="recipient card">
 
                                         ${this.addRecipientCardLeftSideContent(recipient)}
