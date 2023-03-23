@@ -7,3 +7,10 @@ services:
     restart: always
     ports:
       - "8081:80"
+
+#  web:
+#    image: ghcr.io/digital-blueprint/dispatch-app:latest
+#    container_name: dispatch-app
+#    restart: always
+#    ports:
+#      - "8081:80"
