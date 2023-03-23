@@ -1,0 +1,9 @@
+version: '3'
+services:
+  web:
+    image: dispatch-app
+    build: .
+    container_name: dispatch-app
+    restart: always
+    ports:
+      - "8081:80"
