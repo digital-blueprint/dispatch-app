@@ -38,6 +38,20 @@ To use the Nextcloud functionality you need a running Nextcloud server with the
 [webapppassword](https://gitlab.tugraz.at/dbp/nextcloud/webapppassword) Nextcloud app like this
 [Nextcloud Development Environment](https://gitlab.tugraz.at/dbp/nextcloud/webapppassword/-/tree/master/docker).
 
+## Use app via Docker
+
+### docker-compose.yml
+
+```yaml
+version: '3'
+services:
+  web:
+    image: ghcr.io/digital-blueprint/dispatch-app:latest
+    restart: always
+    ports:
+      - "8000:80"
+```
+
 ## Using this app as pre-built package
 
 ### Install app
