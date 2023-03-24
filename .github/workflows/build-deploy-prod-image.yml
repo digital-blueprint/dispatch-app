@@ -1,6 +1,8 @@
 name: 📦 Create and publish Production Docker image
 
 on:
+  schedule:
+    - cron: "0 10 * * *"
   workflow_dispatch:
   push:
     branches:
