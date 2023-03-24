@@ -2,12 +2,12 @@ name: 📦 Create and publish Production Docker image
 
 on:
   workflow_dispatch:
-  tags:
   push:
     branches:
 #      - release
       - main
-
+    tags:
+      - "v*.*.*"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
