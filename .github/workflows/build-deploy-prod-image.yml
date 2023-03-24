@@ -45,8 +45,8 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
-      - name: Print metadata
-        run: echo ${{ steps.meta.outputs.tags }}
+#      - name: Print metadata
+#        run: echo ${{ steps.meta.outputs.tags }}
 
       - name: Log in to the Container registry
         uses: docker/login-action@v2
