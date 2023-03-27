@@ -6,6 +6,7 @@ services:
     container_name: dispatch-app
     restart: always
     ports:
+      # http://localhost:8081
       - "8081:80"
 
 #  web:
