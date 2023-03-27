@@ -9,6 +9,7 @@ import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {IconButton} from "@dbp-toolkit/common";
 import {humanFileSize} from "@dbp-toolkit/common/i18next";
 import {classMap} from "lit/directives/class-map.js";
+import {PdfViewer} from "@dbp-toolkit/pdf-viewer";
 
 
 export default class DBPDispatchLitElement extends DBPLitElement {
@@ -34,7 +35,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             'dbp-file-sink': FileSink,
             'dbp-person-select': PersonSelect,
             'dbp-resource-select': ResourceSelect,
-            'dbp-icon-button': IconButton
+            'dbp-icon-button': IconButton,
+            'dbp-pdf-viewer': PdfViewer,
         };
     }
 
@@ -3104,10 +3106,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <div class="right-side">
                                 <dbp-icon-button id="show-file-btn"
                                             @click="${(event) => {
-console.log("on show file clicked");
-//TODO show file viewer with pdf
-}}"
-                                            class="hidden" <!-- TODO -->
+                                                console.log("on show file clicked");
+                                                //TODO show file viewer with pdf
+                                                this._('#file-viewer').showFile(file);
+                                            }}"
                                             title="${i18n.t('show-requests.show-file-button-text')}"
                                             icon-name="keyword-research"></dbp-icon-button>
                                 ${!this.currentItem.dateSubmitted ? html`
@@ -3122,6 +3124,7 @@ console.log("on show file clicked");
                             </div>
                         </div>
                     `) : ``}
+                    <dbp-pdf-viewer id="file-viewer" lang="${this.lang}"></dbp-pdf-viewer>
                     <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files && this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
                 </div>
             </div>
