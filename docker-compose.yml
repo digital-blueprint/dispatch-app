@@ -4,7 +4,7 @@ services:
     image: dispatch-app
     build: .
     container_name: dispatch-app
-    restart: always
+    restart: unless-stopped
     ports:
       # http://localhost:8081
       - "8081:80"
