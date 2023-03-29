@@ -1,0 +1,8 @@
+version: '3'
+services:
+  web:
+    image: ghcr.io/digital-blueprint/dispatch-app:latest
+    container_name: dispatch-app
+    restart: unless-stopped
+    ports:
+      - "8081:80"
