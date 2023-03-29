@@ -1,0 +1,20 @@
+{
+  "id": "master",
+  "realm": "master",
+  "enabled": true,
+  "registrationAllowed": false,
+  "registrationEmailAsUsername": false,
+  "rememberMe": true,
+  "verifyEmail": false,
+  "resetPasswordAllowed": true,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "accessCodeLifespan": 60,
+  "accessCodeLifespanUserAction": 300,
+  "enabledEventTypes": [
+    "LOGIN",
+    "LOGOUT",
+    "REGISTER"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+    "name": {
+        "de": "Example Dispatch",
+        "en": "Example Dispatch"
+    },
+    "short_name": {
+        "de": "Example Dispatch",
+        "en": "Example Dispatch"
+    },
+    "description": {
+        "de": "Mit dieser Applikation können Sie ......",
+        "en": "With this application you can ......"
+    },
+    "routing_name": "dispatch",
+    "activities": [
+        {"path": "/app/dbp-dd-activity.metadata.json"},
+        {"path": "/app/dbp-qualified-signature-pdf-upload.metadata.json"},
+        {"path": "/app/dbp-official-signature-pdf-upload.metadata.json"}
+    ],
+    "attributes": []
+}
