@@ -2,13 +2,13 @@ FROM node:18-alpine as node
 RUN apk add --no-cache git
 WORKDIR /app
 COPY . /app
-#RUN yarn install && APP_ENV=production yarn run build
+#COPY ./dist /app/dist
+#COPY ./app-template /app/app-template
+
+RUN yarn install && APP_ENV=production yarn run build
 #RUN cp /app/dist/dbp-dispatch.html /app/dist/index.html
 
-RUN yarn install && yarn run build
-
-RUN export path=/; cp ./app-template public -R
-#RUN export path=/; cp ./app-template public -R && cd public && \
+#RUN export path=; cp ./app-template public -R && cd public && \
 #    sed -i 's|="/|="'"$path"'/|g' index.html && \
 #    sed -i "s|from '/|from '$path/|g" index.html && \
 #    sed -i 's|@import "/|@import "'"$path"'/|g' index.html && \
@@ -19,5 +19,5 @@ RUN export path=/; cp ./app-template public -R
 
 FROM httpd:latest
 #COPY --from=node /app/dist /usr/local/apache2/htdocs
-COPY --from=node /app/public /usr/local/apache2/htdocs
+COPY --from=node /app/app-template /usr/local/apache2/htdocs
 COPY --from=node /app/dist /usr/local/apache2/htdocs/app
