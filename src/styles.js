@@ -907,6 +907,14 @@ export function getDispatchRequestStyles() {
                 overflow-y: auto;
             }
             
+            .dispatch-status {
+                padding-top: 0.5em;
+            }
+            
+            .dispatch-status .status-title {
+                font-weight: 400;
+            }
+            
             @media only screen and (orientation: portrait) and (max-width: 768px) {
 
                 .edit-selection-buttons {

@@ -211,7 +211,12 @@
         "error-invalid-birthdate-text": "Please enter a valid birth date.",
         "error-invalid-birthdate-title": "Invalid birth date",
         "reset-select-button-text": "Reset selection",
-        "file-viewer-dialog-title": "Show file"
+        "file-viewer-dialog-title": "Show file",
+        "failure": "Failure",
+        "success": "Delivered",
+        "pending": "Pending / In-transit",
+        "unknown": "Unknown",
+        "dispatch-status": "Delivery status:"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading...",

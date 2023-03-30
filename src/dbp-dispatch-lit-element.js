@@ -1353,6 +1353,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.appDeliveryId = responseBody['appDeliveryID'] ? responseBody['appDeliveryID'] : '';
             this.currentRecipient.postalDeliverable = responseBody['postalDeliverable'] ? responseBody['postalDeliverable'] : '';
             this.currentRecipient.electronicallyDeliverable = responseBody['electronicallyDeliverable'] ? responseBody['electronicallyDeliverable'] : '';
+            this.currentRecipient.lastStatusChange = responseBody['lastStatusChange'] ? responseBody['lastStatusChange'] : '';
+
 
             // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
         } else {
@@ -3348,6 +3350,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         class="info-tooltip"
                         text-content="${i18n.t('show-requests.not-deliverable-2')}"
                         interactive></dbp-tooltip></div>
+                ` : ``}
+
+                 ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'failure' ? html`
+                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-red">${i18n.t('show-requests.failure')}</span></div>
+                ` : ``}
+                 ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'success'  ? html`
+                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-green">${i18n.t('show-requests.success')}</span></div>
+                ` : ``}
+                 ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'pending'  ? html`
+                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> ${i18n.t('show-requests.pending')}</div>
+                ` : ``}
+                 ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'unknown'  ? html`
+                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> ${i18n.t('show-requests.unknown')}</div>
                 ` : ``}
             </div>
         `;

@@ -211,7 +211,12 @@
         "error-invalid-birthdate-text": "Bitte geben Sie ein gültiges Geburtsdatum ein.",
         "error-invalid-birthdate-title": "Ungültiges Geburtsdatum",
         "reset-select-button-text": "Auswahl zurücksetzen",
-        "file-viewer-dialog-title": "Datei ansehen"
+        "file-viewer-dialog-title": "Datei ansehen",
+        "failure": "Fehler",
+        "success": "Zugestellt",
+        "pending": "In Zustellung",
+        "unknown": "Unbekannt",
+        "dispatch-status": "Sendungsstatus:"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",
