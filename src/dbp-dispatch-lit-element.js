@@ -1535,9 +1535,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
-                let file = new File(responseBody['contentUrl'], responseBody['fileName']);
-                // let fileContentUrl = responseBody['contentUrl'];
-                this._('#file-viewer').showPDF(file);
+                let fileContentUrl = responseBody['contentUrl'];
+                let fileName = responseBody['name'];
+                const arr = dispatchHelper.convertDataURIToBinary(fileContentUrl);
+                const binaryFile = new File([arr], fileName, {
+                    type: dispatchHelper.getDataURIContentType(fileContentUrl),
+                });
+                this._('#file-viewer').showPDF(binaryFile);
                 MicroModal.show(this._('#file-viewer-modal'), {
                     disableScroll: true,
                     onClose: (modal) => {
@@ -3171,8 +3175,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return html`
             <div class="modal micromodal-slide" id="file-viewer-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                            class="modal-container"
+                    <div class="modal-container"
                             id="file-viewer-modal-box"
                             role="dialog"
                             aria-modal="true"
@@ -3235,7 +3238,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                             <div class="right-side">
                                 <dbp-icon-button id="show-file-btn"
-                                                 class="hidden"
                                                  @click="${(event) => {
                                                     console.log("on show file clicked");
                                                     console.log( this._('#file-viewer'));

@@ -210,7 +210,8 @@
         "collapse-all": "Alles zuklappen",
         "error-invalid-birthdate-text": "Bitte geben Sie ein gültiges Geburtsdatum ein.",
         "error-invalid-birthdate-title": "Ungültiges Geburtsdatum",
-        "reset-select-button-text": "Auswahl zurücksetzen"
+        "reset-select-button-text": "Auswahl zurücksetzen",
+        "file-viewer-dialog-title": "Datei ansehen"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",

@@ -552,7 +552,8 @@ export function getDispatchRequestStyles() {
             #add-subject-modal-box,
             #edit-subject-modal-box,
             #edit-reference-number-modal-box,
-            #show-recipient-modal-box {
+            #show-recipient-modal-box, 
+            #file-viewer-modal-box {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -617,7 +618,8 @@ export function getDispatchRequestStyles() {
             #show-recipient-modal-box header.modal-header,
             #add-subject-modal-box header.modal-header,
             #edit-subject-modal-box header.modal-header,
-            #edit-reference-number-modal-box header.modal-header {
+            #edit-reference-number-modal-box header.modal-header,
+            #file-viewer-modal-box header.modal-header {
                 padding: 0px;
                 display: flex;
                 justify-content: space-between;
@@ -650,7 +652,8 @@ export function getDispatchRequestStyles() {
             #edit-recipient-modal-content,
             #add-subject-modal-content,
             #edit-subject-modal-content,
-            #edit-reference-number-modal-content {
+            #edit-reference-number-modal-content,
+            #file-viewer-modal-modal-content {
                 display: flex;
                 padding-left: 0px;
                 padding-right: 0px;
@@ -694,7 +697,8 @@ export function getDispatchRequestStyles() {
             #show-recipient-modal-title,
             #add-subject-modal-title,
             #edit-subject-modal-title,
-            #edit-reference-number-modal-title {
+            #edit-reference-number-modal-title,
+            #file-viewer-modal-title {
                 margin: 0;
                 padding: 0.25em 0 0 0;
             }
@@ -714,9 +718,15 @@ export function getDispatchRequestStyles() {
                 width: 331px;
             }
             
-            
             #edit-recipient-modal-content .birthdate-input {
                 width: 360px;
+            }
+            
+            #file-viewer-modal-box {
+                justify-content: unset;
+                gap: 1em;
+                height: 100%;
+                width: 100%;
             }
 
             .line {
