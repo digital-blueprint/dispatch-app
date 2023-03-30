@@ -8,7 +8,6 @@ import {LoadingButton, IconButton, Icon, MiniSpinner, InlineNotification} from "
 import {PersonSelect} from "@dbp-toolkit/person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {classMap} from "lit/directives/class-map.js";
-import { send } from '@dbp-toolkit/common/notification';
 import {Activity} from './activity.js';
 import metadata from './dbp-create-request.metadata.json';
 import * as dispatchStyles from './styles';
