@@ -625,10 +625,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async addFileToRequest(id, file) {
         const i18n = this._i18n;
 
-        console.log("file", file);
-        getBusinessNumberFromPDF(file).then((businessNumber) => {
-
-        });
+        const businessNumber = await getBusinessNumberFromPDF(file);
+        console.log("businessNumber after", businessNumber);
 
         let response = await this.sendAddFileToRequest(id, file);
 
