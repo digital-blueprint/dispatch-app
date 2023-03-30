@@ -253,14 +253,6 @@ Dependencies:
                         dest:
                             'dist/' + (await getDistPath('@dbp-toolkit/file-handling', 'tabulator-tables')),
                     },
-                    {
-                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
-                        dest: 'dist/' + (await getDistPath(pkg.name, 'pdfjs')),
-                    },
-                    {
-                        src: await getPackagePath('pdfjs-dist', 'cmaps/*'),
-                        dest: 'dist/' + (await getDistPath(pkg.name, 'pdfjs')),
-                    }, // do we want all map files?
                 ],
             }),
 
