@@ -7,12 +7,10 @@ export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
     // otherwise the name
     buildUrlData(select, params) {
         let term = params.term.trim();
-    
-        const isMat = term.match(/^[0-9]{8}$/g);
         let data = {
             includeLocal: 'matriculationNumber'
         };
-        if (isMat) {
+        if (this.isValidMatriculationNumber(term)) {
             data['queryLocal'] = 'matriculationNumber:'+term;
         } else {
             data['search'] = term;
@@ -26,12 +24,16 @@ export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
         if (person['familyName']) {
             text += ` ${person['familyName']}`;
         }
-    
+
         let mat = person?.localData?.matriculationNumber;
-        if (mat !== undefined && mat.length) {
-             text += ` (${mat[0]})`;
+        if (mat !== undefined && this.isValidMatriculationNumber(mat)) {
+             text += ` (${mat})`;
         }
-    
+
         return text;
+    }
+
+    isValidMatriculationNumber(mat) {
+        return mat.match(/^[0-9]{8}$/g);
     }
 }
