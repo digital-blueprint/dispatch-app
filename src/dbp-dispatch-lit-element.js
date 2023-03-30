@@ -36,7 +36,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             'dbp-person-select': PersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-icon-button': IconButton,
-            'dbp-pdf-viewer': PdfViewer,
+            'dbp-pdf-viewer': PdfViewer
         };
     }
 
@@ -498,6 +498,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + identifier, options);
     }
 
+    async sendGetFileRequest(identifier) {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: "Bearer " + this.auth.token
+            },
+        };
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-files/' + identifier, options);
+    }
+
     async getCreatedDispatchRequests() {
         // const i18n = this._i18n;
         this.createRequestsLoading = !this._initialFetchDone;
@@ -556,7 +567,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this._('#file-source').openDialog();
         }
 
-        if (this.singleFileProcessing) {
+        if (this.singleFileProcessing && !this.requestCreated) {
             this.processCreateDispatchRequest().then(() => {
                 this.showDetailsView = true;
                 this.hasSubject = true;
@@ -572,7 +583,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async onFileSelected(event) {
         this.fileUploadFinished = false;
 
-        if (!this.singleFileProcessing) {
+        if (!this.singleFileProcessing && !this.requestCreated) {
             this.processCreateDispatchRequest().then(async () => {
                 this.showDetailsView = false;
                 this.showListView = true;
@@ -1506,6 +1517,80 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         } finally {
             this._('#delete-all-btn').stop();
+        }
+    }
+
+    async _onShowFileClicked(event, fileId) {
+        let button = event.target;
+        button.start();
+
+        try {
+            let response = await this.sendGetFileRequest(fileId);
+
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
+                let file = new File(responseBody['contentUrl'], responseBody['fileName']);
+                // let fileContentUrl = responseBody['contentUrl'];
+                this._('#file-viewer').showPDF(file);
+                MicroModal.show(this._('#file-viewer-modal'), {
+                    disableScroll: true,
+                    onClose: (modal) => {
+                        this.loading = false;
+                    },
+                });
+
+            } else {
+                //TODO
+            }
+        } finally {
+            button.stop();
+        }
+    }
+
+    async processCreateDispatchRequest() {
+        this._('#create-btn').start();
+
+        const i18n = this._i18n;
+        try {
+            let response = await this.sendCreateDispatchRequest();
+            let responseBody = await response.json();
+
+            if (responseBody !== undefined && response.status === 201) {
+                if (this.singleFileProcessing) {
+                    send({
+                        "summary": i18n.t('create-request.successfully-requested-title'),
+                        "body": i18n.t('create-request.successfully-requested-text'),
+                        "type": "success",
+                        "timeout": 5,
+                    });
+                }
+                this.currentItem = responseBody;
+                this.requestCreated = true;
+                // console.log(this.currentItem);
+
+            } else if (response.status === 403) {
+                if (this.singleFileProcessing) {
+                    send({
+                        "summary": i18n.t('create-request.error-requested-title'),
+                        "body": i18n.t('error-not-permitted'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
+            } else {
+                // TODO show error code specific notification
+                if (this.singleFileProcessing) {
+                    send({
+                        "summary": i18n.t('create-request.error-requested-title'),
+                        "body": i18n.t('create-request.error-requested-text'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
+            }
+        } finally {
+            // TODO
+            this._('#create-btn').stop();
         }
     }
 
@@ -3074,6 +3159,44 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         `;
     }
 
+    addFileViewerModal() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="modal micromodal-slide" id="file-viewer-modal" aria-hidden="true">
+                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
+                    <div
+                            class="modal-container"
+                            id="file-viewer-modal-box"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="file-viewer-modal-title">
+                        <header class="modal-header">
+                            <h3 id="file-viewer-modal-title">
+                                ${i18n.t('show-requests.file-viewer-dialog-title')}
+                            </h3>
+                            <button
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    class="modal-close"
+                                    aria-label="Close modal"
+                                    @click="${() => {
+                                        MicroModal.close(this._('#file-viewer-modal'));
+                                    }}">
+                                <dbp-icon
+                                        title="${i18n.t('show-requests.modal-close')}"
+                                        name="close"
+                                        class="close-icon"></dbp-icon>
+                            </button>
+                        </header>
+                        <main class="modal-content" id="file-viewer-modal-content">
+                            <dbp-pdf-viewer lang="${this.lang}" id="file-viewer"></dbp-pdf-viewer>
+                        </main>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     addDetailedFilesView() {
         const i18n = this._i18n;
 
@@ -3088,6 +3211,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                         value="${i18n.t('show-requests.add-files-button-text')}" 
                                         @click="${(event) => {
+                                            this.requestCreated = true;
                                             this.openFileSource();
                                         }}" 
                                         title="${i18n.t('show-requests.add-files-button-text')}"
@@ -3105,13 +3229,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                             <div class="right-side">
                                 <dbp-icon-button id="show-file-btn"
-                                            @click="${(event) => {
-                                                console.log("on show file clicked");
-                                                //TODO show file viewer with pdf
-                                                this._('#file-viewer').showFile(file);
-                                            }}"
-                                            title="${i18n.t('show-requests.show-file-button-text')}"
-                                            icon-name="keyword-research"></dbp-icon-button>
+                                                 class="hidden"
+                                                 @click="${(event) => {
+                                                    console.log("on show file clicked");
+                                                    console.log( this._('#file-viewer'));
+                                                    this._onShowFileClicked(event, file.identifier);
+                                                }}"
+                                                 title="${i18n.t('show-requests.show-file-button-text')}"
+                                                 icon-name="keyword-research"></dbp-icon-button>
                                 ${!this.currentItem.dateSubmitted ? html`
                                     <dbp-icon-button id="delete-file-btn"
                                                 ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
@@ -3124,7 +3249,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                         </div>
                     `) : ``}
-                    <dbp-pdf-viewer id="file-viewer" lang="${this.lang}"></dbp-pdf-viewer>
                     <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files && this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
                 </div>
             </div>

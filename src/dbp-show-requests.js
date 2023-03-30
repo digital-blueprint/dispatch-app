@@ -16,6 +16,7 @@ import {name as pkgName} from './../package.json';
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {InfoTooltip, TooltipElement} from "@dbp-toolkit/tooltip";
 import {CustomPersonSelect} from "./person-select.js";
+import {PdfViewer} from "@dbp-toolkit/pdf-viewer";
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -83,7 +84,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-info-tooltip': InfoTooltip,
-            'dbp-tooltip': TooltipElement
+            'dbp-tooltip': TooltipElement,
+            'dbp-pdf-viewer': PdfViewer
         };
     }
 
@@ -1210,6 +1212,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${this.addEditSubjectModal()}
             
             ${this.addEditReferenceNumberModal()}
+            
+            ${this.addFileViewerModal()}
             `;
     }
 }
