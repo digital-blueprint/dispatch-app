@@ -1,7 +1,46 @@
 import {html} from 'lit';
+import pdfjs from 'pdfjs-dist/legacy/build/pdf.js';
 
 export const getPDFFileBase64Content = (file) => {
     return file.contentUrl.replace(/data:\s*application\/pdf;\s*base64,/, '');
+};
+
+/**
+ * Returns the content of the file
+ *
+ * @param {File} file The file to read
+ * @returns {string} The content
+ */
+export const readBinaryFileContent = async (file) => {
+    return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+        reader.onerror = () => {
+            reject(reader.error);
+        };
+        reader.readAsBinaryString(file);
+    });
+};
+
+export const getBusinessNumberFromPDF = async (file) => {
+    console.log("file", file);
+    const data = await readBinaryFileContent(file);
+
+    const loadingTask = pdfjs.getDocument({data: data});
+    loadingTask.promise.then(function(pdf) {
+        // Get the first page of the PDF document
+        pdf.getPage(1).then(function(page) {
+            // Get the annotations for the page
+            page.getAnnotations().then(function(annotations) {
+                // Loop through the annotations
+                annotations.forEach(function(annotation) {
+                    console.log(annotation);
+                });
+            });
+        });
+    });
 };
 
 export const convertDataURIToBinary = (dataURI) => {

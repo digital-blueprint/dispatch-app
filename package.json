@@ -57,7 +57,8 @@
         "@tugraz/font-source-sans-pro": "^0.2.4",
         "@tugraz/web-components": "^0.3.6",
         "@webcomponents/scoped-custom-element-registry": "^0.0.8",
-        "lit": "^2.0.0"
+        "lit": "^2.0.0",
+        "pdfjs-dist": "^2.12.313"
     },
     "scripts": {
         "build": "rollup --bundleConfigAsCjs -c",

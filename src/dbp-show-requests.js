@@ -16,6 +16,8 @@ import {name as pkgName} from './../package.json';
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {InfoTooltip, TooltipElement} from "@dbp-toolkit/tooltip";
 import {CustomPersonSelect} from "./person-select.js";
+
+// NOTE: pdf-viewer is loading the pdfjs worker also for getBusinessNumberFromPDF!
 import {PdfViewer} from "@dbp-toolkit/pdf-viewer";
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {

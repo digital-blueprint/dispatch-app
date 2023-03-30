@@ -10,6 +10,7 @@ import {IconButton} from "@dbp-toolkit/common";
 import {humanFileSize} from "@dbp-toolkit/common/i18next";
 import {classMap} from "lit/directives/class-map.js";
 import {PdfViewer} from "@dbp-toolkit/pdf-viewer";
+import {getBusinessNumberFromPDF} from "./utils";
 
 
 export default class DBPDispatchLitElement extends DBPLitElement {
@@ -623,6 +624,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async addFileToRequest(id, file) {
         const i18n = this._i18n;
+
+        console.log("file", file);
+        getBusinessNumberFromPDF(file).then((businessNumber) => {
+
+        });
 
         let response = await this.sendAddFileToRequest(id, file);
 

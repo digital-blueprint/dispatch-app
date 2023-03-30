@@ -215,6 +215,7 @@ Dependencies:
                     {src: 'assets/icon/*', dest: 'dist/' + (await getDistPath(pkg.name, 'icon'))},
                     {src: 'assets/site.webmanifest', dest: 'dist', rename: pkg.internalName + '.webmanifest'},
                     {src: 'assets/silent-check-sso.html', dest: 'dist'},
+                    // the pdfjs worker is needed for signature, pdf-viewer and the annotation loading in dispatch!
                     {
                         src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
                         dest: 'dist/local/@dbp-topics/signature/pdfjs',
@@ -222,6 +223,14 @@ Dependencies:
                     {
                         src: await getPackagePath('pdfjs-dist', 'cmaps/*'),
                         dest: 'dist/local/@dbp-topics/signature/pdfjs',
+                    }, // do we want all map files?
+                    {
+                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
+                        dest: 'dist/local/@dbp-toolkit/pdf-viewer/pdfjs',
+                    },
+                    {
+                        src: await getPackagePath('pdfjs-dist', 'cmaps/*'),
+                        dest: 'dist/local/@dbp-toolkit/pdf-viewer/pdfjs',
                     }, // do we want all map files?
                     {
                         src: await getPackagePath('@tugraz/font-source-sans-pro', 'files/*'),
