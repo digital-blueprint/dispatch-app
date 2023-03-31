@@ -631,8 +631,33 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async addFileToRequest(id, file) {
         const i18n = this._i18n;
 
+        // Get the reference number from the PDF
         const referenceNumber = await getReferenceNumberFromPDF(file);
-        console.log("referenceNumber after", referenceNumber);
+
+        // Set the reference number if it is not set yet, and we have a valid one
+        if (referenceNumber !== null && [undefined, null, '-'].includes(this.currentItem.referenceNumber)) {
+            const response = await this.sendChangeReferenceNumberRequest(id, referenceNumber);
+            if (response.status !== 200) {
+                console.error('Could not set reference number!');
+
+                send({
+                    "summary": i18n.t('show-requests.error-reference-number-auto-update-failed-title'),
+                    "body": i18n.t('show-requests.error-reference-number-auto-update-failed-text'),
+                    "type": "danger",
+                    "timeout": 5,
+                });
+            } else {
+                console.log("referenceNumber was updated", referenceNumber);
+                this.currentItem.referenceNumber = referenceNumber;
+
+                send({
+                    "summary": i18n.t('show-requests.error-reference-number-auto-update-success-title'),
+                    "body": i18n.t('show-requests.error-reference-number-auto-update-success-text'),
+                    "type": "info",
+                    "timeout": 5,
+                });
+            }
+        }
 
         let response = await this.sendAddFileToRequest(id, file);
 

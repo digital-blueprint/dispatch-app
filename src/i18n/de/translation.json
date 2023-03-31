@@ -216,7 +216,11 @@
         "success": "Zugestellt",
         "pending": "In Zustellung",
         "unknown": "Unbekannt",
-        "dispatch-status": "Sendungsstatus:"
+        "dispatch-status": "Sendungsstatus:",
+        "error-reference-number-auto-update-failed-title": "Fehler beim Speichern der Geschäftszahl",
+        "error-reference-number-auto-update-failed-text": "Die Geschäftszahl wurde erfolgreich aus dem PDF gelesen, konnte aber nicht gespeichert werden!",
+        "error-reference-number-auto-update-success-title": "Geschäftszahl erfolgreich gespeichert",
+        "error-reference-number-auto-update-success-text": "Die Geschäftszahl wurde erfolgreich aus dem PDF gelesen und gespeichert!"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",
