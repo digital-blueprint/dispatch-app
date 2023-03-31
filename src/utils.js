@@ -1,5 +1,6 @@
 import {html} from 'lit';
 import pdfjs from 'pdfjs-dist/legacy/build/pdf.js';
+import * as commonUtils from "@dbp-toolkit/common/utils";
 
 export const getPDFFileBase64Content = (file) => {
     return file.contentUrl.replace(/data:\s*application\/pdf;\s*base64,/, '');
@@ -32,23 +33,21 @@ export const getBusinessNumberFromPDF = async (file) => {
     let businessNumber = null;
 
     // Get first page of the PDF
-    await pdf.getPage(1).then((page) => {
+    await pdf.getPage(1).then(async (page) => {
         // Get the annotations for the page
-        page.getAnnotations().then((annotations) => {
+        await page.getAnnotations().then(async (annotations) => {
             // Loop through the annotations
-            annotations.forEach((annotation) => {
-                // Check if the annotation is a business number
-                if (annotation.contents.startsWith('dbp_annotation_bbe3a371')) {
+            await commonUtils.asyncArrayForEach(annotations, async (annotation) => {
+                // Check if the annotation is a business number, and we haven't found one yet
+                if (businessNumber === null && annotation.contents.startsWith('dbp_annotation_bbe3a371')) {
                     const parts = annotation.contents.split('=');
 
                     businessNumber = parts[1];
-                    console.log("businessNumber", businessNumber);
                 }
             });
         });
     });
 
-    // TODO: does not work yet
     return businessNumber;
 };
 
