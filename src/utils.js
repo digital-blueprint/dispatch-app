@@ -25,12 +25,12 @@ export const readBinaryFileContent = async (file) => {
     });
 };
 
-export const getBusinessNumberFromPDF = async (file) => {
+export const getReferenceNumberFromPDF = async (file) => {
     const data = await readBinaryFileContent(file);
 
     // Load PDF
     const pdf = await pdfjs.getDocument({data: data}).promise;
-    let businessNumber = null;
+    let referenceNumber = null;
 
     // Get first page of the PDF
     await pdf.getPage(1).then(async (page) => {
@@ -39,16 +39,16 @@ export const getBusinessNumberFromPDF = async (file) => {
             // Loop through the annotations
             await commonUtils.asyncArrayForEach(annotations, async (annotation) => {
                 // Check if the annotation is a business number, and we haven't found one yet
-                if (businessNumber === null && annotation.contents.startsWith('dbp_annotation_bbe3a371')) {
+                if (referenceNumber === null && annotation.contents.startsWith('dbp_annotation_bbe3a371')) {
                     const parts = annotation.contents.split('=');
 
-                    businessNumber = parts[1];
+                    referenceNumber = parts[1];
                 }
             });
         });
     });
 
-    return businessNumber;
+    return referenceNumber;
 };
 
 export const convertDataURIToBinary = (dataURI) => {
