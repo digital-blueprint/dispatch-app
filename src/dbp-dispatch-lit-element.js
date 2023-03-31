@@ -471,6 +471,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
     }
 
+    /**
+     * Send a PUT request to the API to change the reference number of a request
+     *
+     * @param identifier The identifier of the dispatch request
+     * @param referenceNumber The new reference number
+     */
     async sendChangeReferenceNumberRequest(identifier, referenceNumber) {
         let body = {
             "referenceNumber": referenceNumber
@@ -546,6 +552,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
             }
         }
+
         let tableObject = this.createTableObject(this.createdRequestsList);
         this.dispatchRequestsTable.setData(tableObject);
         this.dispatchRequestsTable.setLocale(this.lang);
@@ -608,7 +615,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         try {
             let id = this.currentItem.identifier;
             await this.addFileToRequest(id, file);
-
         } catch (e) {
             //TODO
             send({
@@ -812,7 +818,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this._('#add-recipient-country-select').value = 'AT';
 
                 this.requestUpdate();
-
             } else {
                 // TODO error handling
 
@@ -1036,7 +1041,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
 
-        if(confirm(i18n.t('show-requests.delete-dialog-text'))) {
+        if (confirm(i18n.t('show-requests.delete-dialog-text'))) {
             this._('#delete-btn').start(); //TODO check if code below works
             button.start();
 
@@ -1166,7 +1171,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     "type": "success",
                     "timeout": 5,
                 });
-
             } else if (response.status === 403) {
                 send({
                     "summary": i18n.t('create-request.error-requested-title'),
@@ -1195,12 +1199,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let response = await this.sendChangeReferenceNumberRequest(id, referenceNumber);
             let responseBody = await response.json();
 
-
             if (responseBody !== undefined && response.status === 200) {
                 this.currentItem = responseBody;
 
                 console.log('responsebody AFTER changeReferenceNumberRequest: ', responseBody);
-
 
                 send({
                     "summary": i18n.t('show-requests.edit-reference-number-success-title'),
@@ -1208,7 +1210,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     "type": "success",
                     "timeout": 5,
                 });
-
             } else if (response.status === 403) {
                 send({
                     "summary": i18n.t('create-request.error-requested-title'),
