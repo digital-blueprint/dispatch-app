@@ -5,5 +5,11 @@
     "composer": {
         "enabled": false
     },
-    "cloneSubmodules": true
+    "cloneSubmodules": true,
+    "packageRules": [
+        {
+          "matchPackageNames": ["pdfjs-dist"],
+          "allowedVersions": "<3"
+        }
+    ]
 }
