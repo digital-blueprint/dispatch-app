@@ -58,7 +58,7 @@
         "@tugraz/web-components": "^0.3.6",
         "@webcomponents/scoped-custom-element-registry": "^0.0.8",
         "lit": "^2.0.0",
-        "pdfjs-dist": "^2.12.313"
+        "pdfjs-dist": "^3.0.0"
     },
     "scripts": {
         "build": "rollup --bundleConfigAsCjs -c",
