@@ -8,10 +8,40 @@
         "matomoUrl": "",
         "matomoSiteId": 0,
         "nextcloudBaseURL": "http://localhost:8081",
-        "nextcloudName": "",
+        "nextcloudName": "cloud",
         "pdfAsQualifiedlySigningServer": "",
         "hiddenActivities": [],
         "shortName": "dbp",
         "appDomain": ""
+    },
+    "localCustom": {
+        "basePath": "/dist/",
+        "entryPointURL": "http://127.0.0.1:8000",
+        "keyCloakBaseURL": "",
+        "keyCloakRealm": "",
+        "keyCloakClientId": "",
+        "matomoUrl": "",
+        "matomoSiteId": 0,
+        "nextcloudBaseURL": "http://localhost:8081",
+        "nextcloudName": "cloud",
+        "pdfAsQualifiedlySigningServer": "",
+        "hiddenActivities": [],
+        "shortName": "dbp",
+        "appDomain": ""
+    },
+    "development": {
+        "basePath": "/apps/dispatch/",
+        "entryPointURL": "https://api-dev.tugraz.at",
+        "keyCloakBaseURL": "https://auth-dev.tugraz.at/auth",
+        "keyCloakRealm": "tugraz-vpu",
+        "keyCloakClientId": "dbp-dual-delivery",
+        "matomoUrl": "https://analytics.tugraz.at/",
+        "matomoSiteId": 131,
+        "nextcloudBaseURL": "https://cloud-dev.tugraz.at",
+        "nextcloudName": "cloud",
+        "pdfAsQualifiedlySigningServer": "https://sig-dev.tugraz.at",
+        "hiddenActivities": [],
+        "shortName": "dbp",
+        "appDomain": "https://dbp-demo.tugraz.at/apps/dispatch/"
     }
 }
