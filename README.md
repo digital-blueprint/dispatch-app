@@ -19,7 +19,7 @@ This is an application for managing postal/electronic deliveries which get forwa
 ```bash
 # get the source
 git clone git@github.com:digital-blueprint/dispatch-app.git
-cd dispatch
+cd dispatch-app
 git submodule update --init
 
 # install dependencies
@@ -28,11 +28,16 @@ yarn install
 # constantly build dist/bundle.js and run a local web-server on port 8001 
 yarn run watch
 
+# constantly build dist/bundle.js and run a local web-server on port 8001 using a custom assets directory assets_custom/
+yarn run watch-custom
+
 # run tests
 yarn test
 ```
 
 Jump to <http://localhost:8001> and you should get a Single Sign On login page.
+
+By default, the application is built using the assets in `assets/`. However, custom assets can also be used to build the application. The custom assets can be added to the directory `assets_custom/dbp-dispatch/assets/`. This allows developers to easily develop and build the application for different environments.
 
 To use the Nextcloud functionality you need a running Nextcloud server with the
 [webapppassword](https://gitlab.tugraz.at/dbp/nextcloud/webapppassword) Nextcloud app like this
