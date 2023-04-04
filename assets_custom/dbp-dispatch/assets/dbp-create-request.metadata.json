@@ -1,0 +1,18 @@
+{
+    "element": "dbp-create-request",
+    "module_src": "dbp-create-request.js",
+    "routing_name": "create-request",
+    "name": {
+        "de": "Versandauftrag erstellen",
+        "en": "Create dispatch order"
+    },
+    "short_name": {
+        "de": "Versandauftrag erstellen",
+        "en": "Create dispatch order"
+    },
+    "description": {
+        "de": "Erlaubt das Erstellen neuer Versandaufträge.",
+        "en": "Allows the creation of new dispatch orders."
+    },
+    "subscribe": "lang,entry-point-url,auth,html-overrides,nextcloud-web-app-password-url,nextcloud-webdav-url,nextcloud-name,nextcloud-file-url,file-handling-enabled-targets"
+}

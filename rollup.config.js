@@ -13,7 +13,6 @@ import license from 'rollup-plugin-license';
 import del from 'rollup-plugin-delete';
 import emitEJS from 'rollup-plugin-emit-ejs';
 import {getBabelOutputPlugin} from '@rollup/plugin-babel';
-import appConfig from './app.config.js';
 import {
     getPackagePath,
     getBuildInfo,
@@ -28,13 +27,60 @@ const buildFull = (!watch && appEnv !== 'test') || process.env.FORCE_FULL !== un
 let useTerser = buildFull;
 let useBabel = buildFull;
 let checkLicenses = buildFull;
+
+// if true, app assets and configs are whitelabel
+let whitelabel;
+// path to non whitelabel assets and configs
+let customAssetsPath;
+// development path
+let devPath = 'assets_custom/dbp-dispatch/assets/';
+// deployment path
+let deploymentPath = '../assets/';
+
 let useHTTPS = false;
+
+// set whitelabel bool according to used environment
+if ((appEnv.length > 6 && appEnv.substring(appEnv.length - 6) == "Custom") || appEnv == "production") {
+    whitelabel = false;
+} else {
+    whitelabel = true;
+}
+
+// load devconfig for local development if present
+let devConfig = require("./app.config.json");
+try {
+    console.log("Loading " + "./" + devPath + "app.config.json ...");
+    devConfig = require("./" + devPath + "app.config.json");
+    customAssetsPath = devPath;
+} catch(e) {
+    if (e.code == "MODULE_NOT_FOUND") {
+        console.warn("no dev-config found, try deployment config instead ...");
+
+        // load devconfig for deployment if present
+        try {
+            console.log("Loading " + "./" + deploymentPath + "app.config.json ...");
+            devConfig = require("./" + deploymentPath + "app.config.json");
+            customAssetsPath = deploymentPath;
+        } catch(e) {
+            if (e.code == "MODULE_NOT_FOUND") {
+                console.warn("no dev-config found, use default whitelabel config instead ...");
+                devConfig = require("./app.config.json");
+                customAssetsPath = devPath;
+            } else {
+                throw e;
+            }
+        }
+    } else {
+        throw e;
+    }
+}
 
 console.log('APP_ENV: ' + appEnv);
 
 let config;
-if (appEnv in appConfig) {
-    config = appConfig[appEnv];
+if ((devConfig != undefined && appEnv in devConfig)) {
+    // choose devConfig if available
+    config = devConfig[appEnv];
 } else if (appEnv === 'test') {
     config = {
         basePath: '/',
@@ -86,13 +132,23 @@ export default (async () => {
     return {
         input:
             appEnv != 'test'
-                ? [
-                      'src/' + pkg.internalName + '.js',
-                      'src/dbp-show-requests.js',
-                      'src/dbp-create-request.js',
-                      'vendor/signature/src/dbp-qualified-signature-pdf-upload.js',
-                      'vendor/signature/src/dbp-official-signature-pdf-upload.js',
-                  ]
+                ? !whitelabel ?
+                    [
+                        'src/' + pkg.internalName + '.js',
+                        'src/dbp-show-requests.js',
+                        'src/dbp-create-request.js',
+                        'vendor/signature/src/dbp-qualified-signature-pdf-upload.js',
+                        'vendor/signature/src/dbp-official-signature-pdf-upload.js',
+                        await getPackagePath('@tugraz/web-components', 'src/logo.js'),
+                    ]
+                    :
+                    [
+                        'src/' + pkg.internalName + '.js',
+                        'src/dbp-show-requests.js',
+                        'src/dbp-create-request.js',
+                        'vendor/signature/src/dbp-qualified-signature-pdf-upload.js',
+                        'vendor/signature/src/dbp-official-signature-pdf-upload.js',
+                    ]
                 : globSync('test/**/*.js'),
         output: {
             dir: 'dist',
@@ -101,7 +157,7 @@ export default (async () => {
             format: 'esm',
             sourcemap: true,
         },
-        preserveEntrySignatures: false,
+        //preserveEntrySignatures: false,
         // external: ['zlib', 'http', 'fs', 'https', 'url'],
         onwarn: function (warning, warn) {
             // ignore chai warnings
@@ -125,6 +181,7 @@ export default (async () => {
             del({
                 targets: 'dist/*',
             }),
+            whitelabel &&
             emitEJS({
                 src: 'assets',
                 include: ['**/*.ejs', '**/.*.ejs'],
@@ -152,6 +209,40 @@ export default (async () => {
                     matomoUrl: config.matomoUrl,
                     matomoSiteId: config.matomoSiteId,
                     buildInfo: getBuildInfo(appEnv),
+                    shortName: config.shortName,
+                    appDomain: config.appDomain,
+                },
+            }),
+            !whitelabel &&
+            emitEJS({
+                src: customAssetsPath,
+                include: ['**/*.ejs', '**/.*.ejs'],
+                data: {
+                    getUrl: (p) => {
+                        return url.resolve(config.basePath, p);
+                    },
+                    getPrivateUrl: (p) => {
+                        return url.resolve(`${config.basePath}${privatePath}/`, p);
+                    },
+                    isVisible: (name) => {
+                        return !config.hiddenActivities.includes(name);
+                    },
+                    name: pkg.internalName,
+                    entryPointURL: config.entryPointURL,
+                    nextcloudWebAppPasswordURL: config.nextcloudWebAppPasswordURL,
+                    nextcloudWebDavURL: config.nextcloudWebDavURL,
+                    nextcloudBaseURL: config.nextcloudBaseURL,
+                    nextcloudFileURL: config.nextcloudFileURL,
+                    nextcloudName: config.nextcloudName,
+                    keyCloakBaseURL: config.keyCloakBaseURL,
+                    keyCloakRealm: config.keyCloakRealm,
+                    keyCloakClientId: config.keyCloakClientId,
+                    CSP: config.CSP,
+                    matomoUrl: config.matomoUrl,
+                    matomoSiteId: config.matomoSiteId,
+                    buildInfo: getBuildInfo(appEnv),
+                    shortName: config.shortName,
+                    appDomain: config.appDomain,
                 },
             }),
             replace({
@@ -195,6 +286,7 @@ Dependencies:
                 emitFiles: true,
                 fileName: 'shared/[name].[hash][extname]',
             }),
+            whitelabel &&
             copy({
                 targets: [
                     {
@@ -215,6 +307,75 @@ Dependencies:
                     {src: 'assets/icon/*', dest: 'dist/' + (await getDistPath(pkg.name, 'icon'))},
                     {src: 'assets/site.webmanifest', dest: 'dist', rename: pkg.internalName + '.webmanifest'},
                     {src: 'assets/silent-check-sso.html', dest: 'dist'},
+                    // the pdfjs worker is needed for signature, pdf-viewer and the annotation loading in dispatch!
+                    {
+                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
+                        dest: 'dist/local/@dbp-topics/signature/pdfjs',
+                    },
+                    {
+                        src: await getPackagePath('pdfjs-dist', 'cmaps/*'),
+                        dest: 'dist/local/@dbp-topics/signature/pdfjs',
+                    }, // do we want all map files?
+                    {
+                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
+                        dest: 'dist/local/@dbp-toolkit/pdf-viewer/pdfjs',
+                    },
+                    {
+                        src: await getPackagePath('pdfjs-dist', 'cmaps/*'),
+                        dest: 'dist/local/@dbp-toolkit/pdf-viewer/pdfjs',
+                    }, // do we want all map files?
+                    {
+                        src: await getPackagePath('@fontsource/nunito-sans', '*'),
+                        dest: 'dist/' + (await getDistPath(pkg.name, 'fonts/nunito-sans')),
+                    },
+                    {
+                        src: await getPackagePath('@dbp-toolkit/common', 'src/spinner.js'),
+                        dest: 'dist/' + (await getDistPath(pkg.name)), rename: 'org_spinner.js'
+                    },
+                    {
+                        src: await getPackagePath('@dbp-toolkit/common', 'src/spinner.js'),
+                        dest: 'dist/' + (await getDistPath(pkg.name)),
+                    },
+                    {
+                        src: await getPackagePath('@dbp-toolkit/common', 'misc/browser-check.js'),
+                        dest: 'dist/' + (await getDistPath(pkg.name)),
+                    },
+                    {
+                        src: await getPackagePath('@dbp-toolkit/common', 'assets/icons/*.svg'),
+                        dest: 'dist/' + (await getDistPath('@dbp-toolkit/common', 'icons')),
+                    },
+                    {
+                        src: await getPackagePath('tabulator-tables', 'dist/css'),
+                        dest:
+                            'dist/' + (await getDistPath(pkg.name, 'tabulator-tables')),
+                    },
+                    {
+                        src: await getPackagePath('tabulator-tables', 'dist/css'),
+                        dest:
+                            'dist/' + (await getDistPath('@dbp-toolkit/file-handling', 'tabulator-tables')),
+                    },
+                ],
+            }),
+            !whitelabel &&
+            copy({
+                targets: [
+                    {
+                        src: 'vendor/signature/assets/*-placeholder.png',
+                        dest: 'dist/local/@dbp-topics/signature',
+                    },
+                    {src: customAssetsPath + '*.css', dest: 'dist/' + (await getDistPath(pkg.name))},
+                    {src: customAssetsPath + '*.ico', dest: 'dist/' + (await getDistPath(pkg.name))},
+                    {src: customAssetsPath + '*.metadata.json', dest: 'dist'},
+                    {src: 'vendor/signature/src/*.metadata.json', dest: 'dist'},
+                    {src: customAssetsPath + '*.svg', dest: 'dist/' + (await getDistPath(pkg.name))},
+                    {src: customAssetsPath + 'htaccess-shared', dest: 'dist/shared/', rename: '.htaccess'},
+                    {src: customAssetsPath + 'icon-*.png', dest: 'dist/' + (await getDistPath(pkg.name))},
+                    {src: customAssetsPath + 'apple-*.png', dest: 'dist/' + (await getDistPath(pkg.name))},
+                    {src: customAssetsPath + 'safari-*.svg', dest: 'dist/' + (await getDistPath(pkg.name))},
+                    {src: customAssetsPath + 'images/*', dest: 'dist/images'},
+                    {src: customAssetsPath + 'icon/*', dest: 'dist/' + (await getDistPath(pkg.name, 'icon'))},
+                    {src: customAssetsPath + 'site.webmanifest', dest: 'dist', rename: pkg.internalName + '.webmanifest'},
+                    {src: customAssetsPath + 'silent-check-sso.html', dest: 'dist'},
                     // the pdfjs worker is needed for signature, pdf-viewer and the annotation loading in dispatch!
                     {
                         src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
