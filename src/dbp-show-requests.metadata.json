@@ -14,6 +14,6 @@
     "de": "Zeigt eine Liste aller Versandaufträge.",
     "en": "Shows a list of all dispatch orders."
   },
-  "subscribe": "lang,entry-point-url,auth,html-overrides,nextcloud-web-app-password-url,nextcloud-webdav-url,nextcloud-name,nextcloud-file-url,file-handling-enabled-targets"
+  "subscribe": "lang,lang-dir,entry-point-url,auth,html-overrides,nextcloud-web-app-password-url,nextcloud-webdav-url,nextcloud-name,nextcloud-file-url,file-handling-enabled-targets"
 
 }

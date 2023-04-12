@@ -1,4 +1,4 @@
-import {createInstance} from './i18n.js';
+import {createInstance, setOverridesByGlobalCache} from './i18n.js';
 import {css, html} from 'lit';
 import {ScopedElementsMixin} from '@open-wc/scoped-elements';
 import DBPDispatchLitElement from "./dbp-dispatch-lit-element";
@@ -80,6 +80,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.fileUploadFinished = true;
 
         this.boundSelectHandler = this.selectAllFiles.bind(this);
+
+        this.langDir = undefined;
     }
 
     static get scopedElements() {
@@ -134,6 +136,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             nextcloudName: {type: String, attribute: 'nextcloud-name'},
             nextcloudFileURL: {type: String, attribute: 'nextcloud-file-url'},
             nextcloudAuthInfo: {type: String, attribute: 'nextcloud-auth-info'},
+
+            langDir: {type: String, attribute: "lang-dir"},
         };
     }
 
@@ -165,6 +169,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this._loginStatus = '';
         this._loginState = [];
         this._loginCalled = false;
+
+        if (this.langDir) {
+            setOverridesByGlobalCache(this._i18n, this);
+        }
+
 
         this.updateComplete.then(() => {
             let paginationElement = this._('.tabulator-paginator');
