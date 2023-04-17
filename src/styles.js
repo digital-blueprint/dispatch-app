@@ -725,8 +725,9 @@ export function getDispatchRequestStyles() {
             #file-viewer-modal-box {
                 justify-content: unset;
                 gap: 1em;
-                height: 100%;
-                width: 100%;
+                height: 90%;
+                width: 90%;
+                max-width: 90%;
             }
 
             .line {
