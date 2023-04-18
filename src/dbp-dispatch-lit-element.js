@@ -4,7 +4,7 @@ import MicroModal from "./micromodal.es";
 import {FileSource, FileSink} from "@dbp-toolkit/file-handling";
 import {html} from "lit";
 import * as dispatchHelper from './utils';
-import {PersonSelect} from "@dbp-toolkit/person-select";
+import {CustomPersonSelect} from "./person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {IconButton} from "@dbp-toolkit/common";
 import {humanFileSize} from "@dbp-toolkit/common/i18next";
@@ -34,7 +34,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return {
             'dbp-file-source': FileSource,
             'dbp-file-sink': FileSink,
-            'dbp-person-select': PersonSelect,
+            'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-icon-button': IconButton,
             'dbp-pdf-viewer': PdfViewer

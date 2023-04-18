@@ -5,7 +5,7 @@ import DBPDispatchLitElement from "./dbp-dispatch-lit-element";
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
 import {LoadingButton, IconButton, Icon, MiniSpinner, InlineNotification} from "@dbp-toolkit/common";
-import {PersonSelect} from "@dbp-toolkit/person-select";
+import {CustomPersonSelect} from "./person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {classMap} from "lit/directives/class-map.js";
 import {Activity} from './activity.js';
@@ -90,7 +90,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-icon-button': IconButton,
             'dbp-inline-notification': InlineNotification,
             'dbp-file-source': FileSource,
-            'dbp-person-select': PersonSelect,
+            'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-pdf-viewer': PdfViewer
         };
