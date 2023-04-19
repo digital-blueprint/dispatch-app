@@ -82,6 +82,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.boundSelectHandler = this.selectAllFiles.bind(this);
 
         this.langDir = undefined;
+        this.loadingTranslations = false;
     }
 
     static get scopedElements() {
@@ -171,9 +172,15 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this._loginCalled = false;
 
         if (this.langDir) {
-            setOverridesByGlobalCache(this._i18n, this);
+            this.loadingTranslations = true;
+            const that = this;
+            setOverridesByGlobalCache(that._i18n, that).then(() => {
+                that.loadingTranslations = false;
+                that.requestUpdate();
+            });
+        } else {
+            this.loadingTranslations = false;
         }
-
 
         this.updateComplete.then(() => {
             let paginationElement = this._('.tabulator-paginator');
@@ -585,18 +592,18 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         return html`
             <link rel="stylesheet" href="${tabulatorCss}"/>
             
-            <div class="control ${classMap({hidden: this.isLoggedIn() || !this.isLoading()})}">
+            <div class="control ${classMap({hidden: this.isLoggedIn() || !this.isLoading() || !this.loadingTranslations })}">
                 <span class="loading">
                     <dbp-mini-spinner text=${i18n.t('check-out.loading-message')}></dbp-mini-spinner>
                 </span>
             </div>
             
-            <dbp-inline-notification class="${classMap({ hidden: this.isLoggedIn() || this.isLoading()})}" 
+            <dbp-inline-notification class="${classMap({ hidden: this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}" 
                             type="warning"
                             body="${i18n.t('error-login-message')}">
             </dbp-inline-notification>
 
-            <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading()})}">
+            <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}">
                 
                 <h2>${this.activity.getName(this.lang)}</h2>
                 <p class="subheadline">

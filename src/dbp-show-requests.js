@@ -75,6 +75,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.boundPressEnterAndSubmitSearchHandler = this.pressEnterAndSubmitSearch.bind(this);
 
         this.langDir = undefined;
+        this.loadingTranslations = false;
     }
 
     static get scopedElements() {
@@ -157,8 +158,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this._loginCalled = false;
 
         if (this.langDir) {
-            console.log(this.langDir);
-            setOverridesByGlobalCache(this._i18n, this);
+            this.loadingTranslations = true;
+            const that = this;
+            setOverridesByGlobalCache(this._i18n, this).then(() => {
+                that.loadingTranslations = false;
+                that.requestUpdate();
+            });;
+        } else {
+            this.loadingTranslations = false;
         }
 
         this.updateComplete.then(() => {
@@ -793,18 +800,18 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         return html`
             <link rel="stylesheet" href="${tabulatorCss}"/>
             
-            <div class="control ${classMap({hidden: this.isLoggedIn() || !this.isLoading()})}">
+            <div class="control ${classMap({hidden: this.isLoggedIn() || !this.isLoading() || !this.loadingTranslations})}">
                 <span class="loading">
                     <dbp-mini-spinner text=${i18n.t('loading-message')}></dbp-mini-spinner>
                 </span>
             </div>
             
-            <dbp-inline-notification class=" ${classMap({ hidden: this.isLoggedIn() || this.isLoading() })}" 
+            <dbp-inline-notification class=" ${classMap({ hidden: this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}" 
                             type="warning"
                             body="${i18n.t('error-login-message')}">
             </dbp-inline-notification>
 
-            <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading()})}">
+            <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}">
                 
                 <h2>${this.activity.getName(this.lang)}</h2>
                 
@@ -850,21 +857,21 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
                 
                 <div class="no-access-notification">
-                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.mayWrite || !this.organizationSet })}"
+                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.mayWrite || !this.organizationSet })}"
                                              type="${this.mayRead ? 'warning' : 'danger'}"
                                              body="${this.mayRead ? i18n.t('error-no-writes') : i18n.t('error-no-read')}">
                     </dbp-inline-notification>
                 </div>
                 
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}">
+                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet || this.loadingTranslations})}">
                     ${i18n.t('show-requests.dispatch-orders')}
                 </h3>
                     
                 
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet || !this.mayRead})}">
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations|| this.showDetailsView || !this.organizationSet || !this.mayRead})}">
                     <div class="table-wrapper">
                         <div class="selected-buttons">
-                                <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet })}"
+                                <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet })}"
                                     <div class="search-wrapper ">
                                         <div id="extendable-searchbar">
                                             <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
@@ -912,7 +919,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         </div>
                                     </div>
                                 
-                                    <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}" id="open-settings-btn"
+                                    <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView })}" id="open-settings-btn"
                                                      ?disabled="${this.loading}"
                                                      @click="${() => { console.log('open settings'); }}"
                                                      title="TODO"
@@ -921,7 +928,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     
                                 </div>
 
-                                <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView })}">
+                                <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView })}">
                                      <dbp-loading-button id="expand-all-btn"
                                                          class="${classMap({ hidden: this.expanded })}"
                                                          ?disabled="${this.loading}"
@@ -970,7 +977,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                             
                         
-                            <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || this.initialRequestsLoading })}">
+                            <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading })}">
                                 <div id="dispatch-requests-table" class=""></div>
                                 <div class='tabulator' id='custom-pagination'>
                                     <div class='tabulator-footer'>
@@ -984,7 +991,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     </div>
                 ${ this.mayRead ? html`
                     <div class="back-container">
-                        <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
+                        <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
                             <a href="#" title="${i18n.t('show-requests.back-to-list')}"
                                @click="${() => {
                                    this.getListOfRequests();
@@ -1009,14 +1016,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         </span>
                     </div>
                     
-                    <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
+                    <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
                         ${(this.currentItem && this.currentItem.dateSubmitted) || !this.mayWrite ? 
                                i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier }) 
                                : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })
                         }:
                     </h3>
     
-                    <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showListView || !this.organizationSet })}">
+                    <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
     
                         ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
                                 <div class="request-buttons">
