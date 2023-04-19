@@ -163,7 +163,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             setOverridesByGlobalCache(this._i18n, this).then(() => {
                 that.loadingTranslations = false;
                 that.requestUpdate();
-            });;
+            });
         } else {
             this.loadingTranslations = false;
         }
