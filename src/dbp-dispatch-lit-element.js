@@ -554,7 +554,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         let tableObject = this.createTableObject(this.createdRequestsList);
-        this.dispatchRequestsTable.setData(tableObject);
+        this.dispatchRequestsTable.replaceData(tableObject);
         this.dispatchRequestsTable.setLocale(this.lang);
         this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
         console.log('totalNumberOfItems: ' + this.totalNumberOfItems);
@@ -1078,14 +1078,41 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         if (confirm(i18n.t('show-requests.delete-dialog-text'))) {
-            this._('#delete-btn').start(); //TODO check if code below works
             button.start();
 
             try {
                 let response = await this.sendDeleteDispatchRequest(item.identifier);
                 if (response.status === 204) {
-                    if (this.dispatchRequestsTable) {
-                        this.getListOfRequests();
+                    if (this.dispatchRequestsTable ) {
+                        if (this.createdRequestsList && this.createdRequestsList.length > 0) {
+                            this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== item.identifier);
+                            this.getCreatedDispatchRequests();
+                            this.currentItem = {};
+
+                            this.currentItem.senderOrganizationName = "";
+                            this.currentItem.senderFullName = "";
+                            this.currentItem.senderAddressCountry = "";
+                            this.currentItem.senderPostalCode = "";
+                            this.currentItem.senderAddressLocality = "";
+                            this.currentItem.senderStreetAddress = "";
+                            this.currentItem.senderBuildingNumber = "";
+
+                            this.currentItem.files = [];
+                            this.currentItem.recipients = [];
+
+                            this.currentRecipient = {};
+
+                            this.subject = '';
+
+                            this.showListView = true;
+                            this.showDetailsView = false;
+
+                            this.hasSubject = true;
+                            this.hasSender = true;
+                        } else {
+                            this.getListOfRequests();
+                            this.clearAll();
+                        }
                     }
                     send({
                         "summary": i18n.t('show-requests.successfully-deleted-title'),
@@ -1093,7 +1120,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         "type": "success",
                         "timeout": 5,
                     });
-                    this.clearAll();
                 } else {
                     // TODO error handling
 
@@ -1107,7 +1133,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             } catch (e) {
                 //TODO
             } finally {
-                this._('#delete-btn').stop();
                 button.stop();
             }
         }
@@ -1136,7 +1161,35 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let response = await this.sendSubmitDispatchRequest(item.identifier);
                     if (response.status === 201) {
                         if (this.dispatchRequestsTable) {
-                            this.getListOfRequests();
+                            if (this.createdRequestsList && this.createdRequestsList.length > 0) {
+                                this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== item.identifier);
+                                this.getCreatedDispatchRequests();
+                                this.currentItem = {};
+
+                                this.currentItem.senderOrganizationName = "";
+                                this.currentItem.senderFullName = "";
+                                this.currentItem.senderAddressCountry = "";
+                                this.currentItem.senderPostalCode = "";
+                                this.currentItem.senderAddressLocality = "";
+                                this.currentItem.senderStreetAddress = "";
+                                this.currentItem.senderBuildingNumber = "";
+
+                                this.currentItem.files = [];
+                                this.currentItem.recipients = [];
+
+                                this.currentRecipient = {};
+
+                                this.subject = '';
+
+                                this.showListView = true;
+                                this.showDetailsView = false;
+
+                                this.hasSubject = true;
+                                this.hasSender = true;
+                            } else {
+                                this.getListOfRequests();
+                                this.clearAll();
+                            }
                         }
                         send({
                             "summary": i18n.t('show-requests.successfully-submitted-title'),
@@ -1144,7 +1197,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             "type": "success",
                             "timeout": 5,
                         });
-                        this.clearAll();
                         this.requestCreated = false;
                     } else if (response.status === 400) {
                         send({
