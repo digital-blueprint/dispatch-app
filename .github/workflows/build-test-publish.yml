@@ -4,13 +4,8 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   test:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/${{ github.repository }}-ci:latest
-      options: --user root
 
     env:
-      # for firefox
-      HOME: /root
       PLAYWRIGHT_BROWSERS_PATH: /tmp/_playwright_cache
       YARN_CACHE_PATH: /tmp/_yarn_cache
 
@@ -47,6 +42,10 @@ jobs:
 
       - name: Run build
         run: APP_ENV=development yarn run build
+
+      - name: Install test dependencies
+        run: |
+          ./node_modules/.bin/playwright install-deps chromium firefox
 
       - name: Run tests
         run: yarn run test-full
