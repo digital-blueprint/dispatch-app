@@ -557,6 +557,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.dispatchRequestsTable.setData(tableObject);
         this.dispatchRequestsTable.setLocale(this.lang);
         this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+        console.log('totalNumberOfItems: ' + this.totalNumberOfItems);
 
         this.createRequestsLoading = false;
         this._initialFetchDone = true;
@@ -586,6 +587,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     onFileUploadFinished(event) {
         this.fileUploadFinished = true;
+        this.uploadedNumberOfFiles = event.detail.count;
+        console.log(this.uploadedNumberOfFiles);
+        this.currentFileIndex = 0;
     }
 
     async onFileSelected(event) {
@@ -677,6 +681,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.currentItem = responseBody;
             }
+
+            this.currentFileIndex++;
+
+            if (this.uploadedNumberOfFiles === this.currentFileIndex) {
+                await this.getCreatedDispatchRequests();
+            }
+            //TODO
         } else {
             // TODO error handling
             if (this.singleFileProcessing) {
@@ -3385,10 +3396,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-green">${i18n.t('show-requests.success')}</span></div>
                 ` : ``}
                  ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'pending'  ? html`
-                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> ${i18n.t('show-requests.pending')}</div>
+                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-orange">${i18n.t('show-requests.pending')}</span></div>
                 ` : ``}
                  ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'unknown'  ? html`
-                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> ${i18n.t('show-requests.unknown')}</div>
+                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-orange">${i18n.t('show-requests.unknown')}</span></div>
                 ` : ``}
             </div>
         `;

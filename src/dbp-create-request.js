@@ -78,6 +78,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.rowsSelected = false;
 
         this.fileUploadFinished = true;
+        this.uploadedNumberOfFiles = 0;
 
         this.boundSelectHandler = this.selectAllFiles.bind(this);
 
@@ -130,6 +131,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             expanded: { type: Boolean, attribute: false },
 
             fileUploadFinished: {type: Boolean, attribute: false},
+            uploadedNumberOfFiles: {type: Number, attribute: false},
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -584,10 +586,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             pkgName,
             'tabulator-tables/css/tabulator.min.css'
         );
-
-        if (this.isLoggedIn() && !this.isLoading() && !this._initialFetchDone && !this.createRequestsLoading && this.filesAdded) {
-            this.getCreatedDispatchRequests();
-        }
 
         return html`
             <link rel="stylesheet" href="${tabulatorCss}"/>
