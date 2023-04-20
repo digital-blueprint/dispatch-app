@@ -729,6 +729,12 @@ export function getDispatchRequestStyles() {
                 width: 90%;
                 max-width: 90%;
             }
+            
+            #file-viewer-modal-box .viewer-container {
+                width: 90%;
+                height: 90%; 
+                position: relative;
+            }
 
             .line {
                 border-right: 1px solid var(--dbp-override-muted);
