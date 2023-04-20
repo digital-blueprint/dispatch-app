@@ -3287,7 +3287,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </button>
                         </header>
                         <main class="modal-content" id="file-viewer-modal-content">
-                            <dbp-pdf-viewer lang="${this.lang}" id="file-viewer"></dbp-pdf-viewer>
+                            <!-- TODO: Put styles in CSS -->
+                            <div style="width: 80%; height: 80%; position: relative;">
+                                <dbp-pdf-viewer lang="${this.lang}" auto-resize="cover" id="file-viewer"></dbp-pdf-viewer>
+                            </div>
                         </main>
                     </div>
                 </div>

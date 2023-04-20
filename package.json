@@ -55,7 +55,7 @@
         "@dbp-toolkit/file-handling": "^0.3.0",
         "@dbp-toolkit/language-select": "^0.3.0",
         "@dbp-toolkit/notification": "^0.3.0",
-        "@dbp-toolkit/pdf-viewer": "^0.0.3",
+        "@dbp-toolkit/pdf-viewer": "^0.0.6",
         "@dbp-toolkit/person-profile": "^0.2.0",
         "@dbp-topics/signature": "^2.1.0",
         "@fontsource/nunito-sans": "^4.5.10",
