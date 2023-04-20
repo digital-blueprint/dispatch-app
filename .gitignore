@@ -4,4 +4,4 @@ node_modules
 npm-debug.log
 .vscode
 .cert
-package-lock.json
+yarn.lock

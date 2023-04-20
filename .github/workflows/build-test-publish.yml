@@ -7,7 +7,6 @@ jobs:
 
     env:
       PLAYWRIGHT_BROWSERS_PATH: /tmp/_playwright_cache
-      YARN_CACHE_PATH: /tmp/_yarn_cache
 
     steps:
       - name: Checkout repository
@@ -15,43 +14,35 @@ jobs:
         with:
           submodules: true
 
-      - name: Set yarn cache path
-        run: |
-          yarn config set cache-folder "$YARN_CACHE_PATH"
-
-      - name: Restore yarn cache
-        uses: actions/cache@v3
+      - uses: actions/setup-node@v3
         with:
-          path: |
-            ${{ env.YARN_CACHE_PATH }}
-          key: yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            yarn-
+          node-version: 16
+          cache: 'npm'
 
       - name: Restore playwright cache
         uses: actions/cache@v3
         with:
           path: |
             ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-          key: playwright-${{ hashFiles('**/yarn.lock') }}
+          key: playwright-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             playwright-
 
       - name: Install dependencies
-        run: yarn install
+        run: npm ci
 
       - name: Run build
-        run: APP_ENV=development yarn run build
+        run: APP_ENV=development npm run build
 
       - name: Install test dependencies
         run: |
           ./node_modules/.bin/playwright install-deps chromium firefox
 
       - name: Run tests
-        run: yarn run test-full
+        run: npm run test-full
 
       - name: Run lint
-        run: yarn run lint
+        run: npm run lint
 
   deploy:
     runs-on: ubuntu-latest
@@ -59,27 +50,16 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.ref == 'refs/heads/production'
     environment: ${{ github.ref_name }}
 
-    env:
-      YARN_CACHE_PATH: /tmp/_yarn_cache
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           submodules: true
 
-      - name: Set yarn cache path
-        run: |
-          yarn config set cache-folder "$YARN_CACHE_PATH"
-
-      - name: Restore yarn cache
-        uses: actions/cache@v3
+      - uses: actions/setup-node@v3
         with:
-          path: |
-            ${{ env.YARN_CACHE_PATH }}
-          key: yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            yarn-
+          node-version: 16
+          cache: 'npm'
 
       - name: Publish to NPM
         if: github.ref == 'refs/heads/main'
@@ -89,9 +69,8 @@ jobs:
           # https://www.npmjs.com/settings/dbp-deploy/tokens
           # NPM_TOKEN needs to be a "Publish" token with 2FA disabled!
           echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
-          yarn install
-          yarn run build
-          # yarn always reports "https://registry.yarnpkg.com/@dbp-topics%2fsignature - Not found", so we are using npm directly
+          npm ci
+          npm run build
           npm run publish
 
       - name: Deploy and wait for completion

@@ -13,6 +13,10 @@
         "vendor/toolkit/packages/*",
         "vendor/signature"
     ],
+    "engines": {
+        "node": ">=16.0.0",
+        "npm": ">=7.0.0"
+    },
     "devDependencies": {
         "@babel/core": "^7.10.3",
         "@babel/preset-env": "^7.10.3",
@@ -65,11 +69,11 @@
     "scripts": {
         "build": "rollup --bundleConfigAsCjs -c",
         "i18next": "i18next",
-        "format": "yarn run format:eslint && yarn run format:prettier",
+        "format": "npm run format:eslint && npm run format:prettier",
         "format:eslint": "eslint \"**/*.{js,ts}\" --fix",
         "format:prettier": "prettier \"**/*.{js,json,ts}\" --write",
         "watch": "rollup --bundleConfigAsCjs -c --watch",
-        "watch-local": "yarn run watch",
+        "watch-local": "npm run watch",
         "watch-full": "rollup --bundleConfigAsCjs -c --watch --environment FORCE_FULL",
         "watch-bs": "rollup --bundleConfigAsCjs -c --watch --environment APP_ENV:bs",
         "watch-custom": "rollup --bundleConfigAsCjs -c --watch --environment APP_ENV:localCustom",

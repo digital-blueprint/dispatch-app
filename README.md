@@ -23,16 +23,16 @@ cd dispatch-app
 git submodule update --init
 
 # install dependencies
-yarn install
+npm install
 
 # constantly build dist/bundle.js and run a local web-server on port 8001 
-yarn run watch
+npm run watch
 
 # constantly build dist/bundle.js and run a local web-server on port 8001 using a custom assets directory assets_custom/
-yarn run watch-custom
+npm run watch-custom
 
 # run tests
-yarn test
+npm test
 ```
 
 Jump to <http://localhost:8001> and you should get a Single Sign On login page.

@@ -5,7 +5,7 @@ COPY . /app
 #COPY ./dist /app/dist
 #COPY ./app-template /app/app-template
 
-RUN yarn install && APP_ENV=production yarn run build
+RUN npm ci && APP_ENV=production npm run build
 #RUN cp /app/dist/dbp-dispatch.html /app/dist/index.html
 
 #RUN export path=; cp ./app-template public -R && cd public && \
