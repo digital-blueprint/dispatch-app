@@ -15,17 +15,14 @@ services:
   web:
     image: ghcr.io/digital-blueprint/dispatch-app:latest
     restart: unless-stopped
-#    ports:
-#      # http://localhost:8081
-#      - "8081:80"
     volumes:
       - ./web/.htaccess:/usr/local/apache2/htdocs/.htaccess:ro
       - ./web/app.webmanifest:/usr/local/apache2/htdocs/app.webmanifest:ro
       - ./web/index.html:/usr/local/apache2/htdocs/index.html:ro
       - ./web/topic.metadata.json:/usr/local/apache2/htdocs/topic.metadata.json:ro
     labels:
-      # http://dispatch-example.localhost:8100
-      - "traefik.http.routers.web-router.rule=Host(`dispatch-example.localhost`, `localhost`, `127.0.0.1`)"
+      # http://dbp-web.localhost:8100
+      - "traefik.http.routers.web-router.rule=Host(`dbp-web.localhost`, `localhost`, `127.0.0.1`)"
       - "traefik.http.routers.web-router.entrypoints=http"
     depends_on:
       - keycloak
@@ -40,23 +37,23 @@ services:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
 
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: unless-stopped
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@example.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-    labels:
-      # http://pgadmin.localhost:8100
-      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.localhost`)"
-      - "traefik.http.routers.pgadmin.entrypoints=http"
-      - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
-    volumes:
-      - pgadmin:/var/lib/pgadmin
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    restart: unless-stopped
+#    environment:
+#      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+#      - PGADMIN_DEFAULT_PASSWORD=admin
+#    labels:
+#      # http://pgadmin.localhost:8100
+#      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.localhost`)"
+#      - "traefik.http.routers.pgadmin.entrypoints=http"
+#      - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
+#    volumes:
+#      - pgadmin:/var/lib/pgadmin
 
   keycloak:
-    image: quay.io/keycloak/keycloak:21.0
-#    image: quay.io/keycloak/keycloak:20.0.3
+#    image: quay.io/keycloak/keycloak:21.0
+    image: quay.io/keycloak/keycloak:20.0.3
     restart: unless-stopped
     environment:
       DB_VENDOR: POSTGRES
@@ -71,7 +68,7 @@ services:
     command:
       - start-dev
 #      - --hostname=keycloak.localhost
-#      - --import-realm
+      - --import-realm
     volumes:
       - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
     labels:
@@ -86,4 +83,4 @@ services:
 
 volumes:
   postgres_data:
-  pgadmin:
+#  pgadmin:
