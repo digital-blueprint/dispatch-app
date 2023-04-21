@@ -1197,7 +1197,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             "type": "success",
                             "timeout": 5,
                         });
-                        this.requestCreated = false;
                     } else if (response.status === 400) {
                         send({
                             "summary": i18n.t('error-delivery-channel-title'),
@@ -3287,9 +3286,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </button>
                         </header>
                         <main class="modal-content" id="file-viewer-modal-content">
-                            <div class="viewer-container">
-                                <dbp-pdf-viewer lang="${this.lang}" auto-resize="cover" id="file-viewer"></dbp-pdf-viewer>
-                            </div>
+                            <!-- TODO: auto-resize="contain"-->
+                            <dbp-pdf-viewer lang="${this.lang}" auto-resize="cover" id="file-viewer"></dbp-pdf-viewer>
                         </main>
                     </div>
                 </div>
