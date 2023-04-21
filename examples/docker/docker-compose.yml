@@ -44,6 +44,7 @@ services:
     image: dpage/pgadmin4
     restart: unless-stopped
     environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
       - PGADMIN_DEFAULT_PASSWORD=admin
     labels:
       # http://pgadmin.localhost:8100
