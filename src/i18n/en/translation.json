@@ -220,7 +220,10 @@
         "error-reference-number-auto-update-failed-title": "Reference number saving error",
         "error-reference-number-auto-update-failed-text": "The reference number was successfully extracted from the PDF but could not be saved!",
         "error-reference-number-auto-update-success-title": "Reference number successfully saved",
-        "error-reference-number-auto-update-success-text": "The reference number was successfully extracted from the PDF und saved."
+        "error-reference-number-auto-update-success-text": "The reference number was successfully extracted from the PDF und saved.",
+        "overall-status-pending": "{{pending}} Pending",
+        "overall-status-failure": "{{failure}} Failure",
+        "overall-status-success": "{{success}} Delivered"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading...",

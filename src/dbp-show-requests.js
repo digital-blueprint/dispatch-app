@@ -1077,7 +1077,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <div class="line"></div>
                                     <div>
                                         <div class="section-titles">${i18n.t('show-requests.submit-status')}</div>
-                                        <div>${this.currentItem.dateSubmitted ? html`<span class="status-green">●</span> ${i18n.t('show-requests.status-completed-date', {date: this.convertToReadableDate(this.currentItem.dateSubmitted)})}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
+                                        <div>${this.currentItem.dateSubmitted ? html`${this.checkRecipientStatus(this.currentItem.recipients)}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
                                     </div>
                                     <div class="line"></div>
                                     <div>

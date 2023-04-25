@@ -220,7 +220,10 @@
         "error-reference-number-auto-update-failed-title": "Fehler beim Speichern der Geschäftszahl",
         "error-reference-number-auto-update-failed-text": "Die Geschäftszahl wurde erfolgreich aus dem PDF gelesen, konnte aber nicht gespeichert werden!",
         "error-reference-number-auto-update-success-title": "Geschäftszahl erfolgreich gespeichert",
-        "error-reference-number-auto-update-success-text": "Die Geschäftszahl wurde erfolgreich aus dem PDF gelesen und gespeichert!"
+        "error-reference-number-auto-update-success-text": "Die Geschäftszahl wurde erfolgreich aus dem PDF gelesen und gespeichert!",
+        "overall-status-pending": "{{pending}} In Zustellung",
+        "overall-status-failure": "{{failure}} Fehler",
+        "overall-status-success": "{{success}} Zugestellt"
     },
     "error-login-message": "Sie müssen eingeloggt sein, um diese Funktion nutzen zu können!",
     "loading-message": "Lädt...",

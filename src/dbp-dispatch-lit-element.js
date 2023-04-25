@@ -1923,6 +1923,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 files: this.createFormattedFilesList(item.files),
                 recipients: this.createFormattedRecipientsList(item.recipients),
                 dateSubmitted: item.dateSubmitted ? this.convertToReadableDate(item.dateSubmitted) : i18n.t('show-requests.date-submitted-not-submitted'),
+                               // item.dateSubmitted ? this.checkRecipientStatus(item.recipients) : i18n.t('show-requests.date-submitted-not-submitted'),
                 controls: this.setControlsHtml(item),
             };
             tableObject.push(content);
@@ -3448,13 +3449,44 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-green">${i18n.t('show-requests.success')}</span></div>
                 ` : ``}
                  ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'pending'  ? html`
-                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-orange">${i18n.t('show-requests.pending')}</span></div>
+                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span>${i18n.t('show-requests.pending')}</span></div>
                 ` : ``}
                  ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'unknown'  ? html`
                     <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-orange">${i18n.t('show-requests.unknown')}</span></div>
                 ` : ``}
             </div>
         `;
+    }
+
+    checkRecipientStatus(recipients) {
+        const i18n = this._i18n;
+
+        let countFailure = 0;
+        let countSuccess = 0;
+        let countPending = 0;
+
+        for (let i = 0; i < recipients.length; i++) {
+            let recipient = recipients[i];
+            let status = recipient.lastStatusChange.dispatchStatus;
+            if (status === 'success') {
+                countSuccess++;
+            } else if (status === 'pending') {
+                countPending++;
+            } else {
+                countFailure++;
+            }
+        }
+
+        let overallStatusText = "";
+        overallStatusText += countSuccess > 0 ? i18n.t('show-requests.overall-status-success', { success: countSuccess }) :  "";
+
+        overallStatusText += countSuccess > 0 && countPending > 0 ? ", " + i18n.t('show-requests.overall-status-pending', { pending: countPending }) :
+                             countPending > 0 ? i18n.t('show-requests.overall-status-pending', { pending: countPending }) : "";
+
+        overallStatusText += (countSuccess > 0 || countPending > 0) && countFailure > 0 ? ", " + i18n.t('show-requests.overall-status-failure', { failure: countFailure }) :
+                            countFailure > 0 ? i18n.t('show-requests.overall-status-failure', { failure: countFailure }) : "";
+
+        return overallStatusText;
     }
 
     storeGroupValue(value) {
