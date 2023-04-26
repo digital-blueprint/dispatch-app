@@ -1913,7 +1913,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let content = {
                 requestId: item.identifier,
                 subject: item.name ? item.name : span,
-                status: item.dateSubmitted ? i18n.t('show-requests.status-completed') : i18n.t('show-requests.empty-date-submitted'),
+                status: item.dateSubmitted ? this.checkRecipientStatus(item.recipients) : i18n.t('show-requests.empty-date-submitted'),
                 dateCreated: item.dateCreated,
                 details: "Details",
                 // sender: item.senderFullName ? item.senderFullName + " " + item.senderOrganizationName + "<br>"
@@ -1923,7 +1923,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 files: this.createFormattedFilesList(item.files),
                 recipients: this.createFormattedRecipientsList(item.recipients),
                 dateSubmitted: item.dateSubmitted ? this.convertToReadableDate(item.dateSubmitted) : i18n.t('show-requests.date-submitted-not-submitted'),
-                               // item.dateSubmitted ? this.checkRecipientStatus(item.recipients) : i18n.t('show-requests.date-submitted-not-submitted'),
                 controls: this.setControlsHtml(item),
             };
             tableObject.push(content);
@@ -3467,7 +3466,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         for (let i = 0; i < recipients.length; i++) {
             let recipient = recipients[i];
-            let status = recipient.lastStatusChange.dispatchStatus;
+
+            let status;
+            if (recipient.lastStatusChange) {
+                status = recipient.lastStatusChange.dispatchStatus;
+            } else {
+                status = 'unknown';
+            }
             if (status === 'success') {
                 countSuccess++;
             } else if (status === 'pending') {

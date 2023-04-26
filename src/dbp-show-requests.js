@@ -42,6 +42,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.subject = '';
         this.mayWrite = false;
         this.mayRead = false;
+        this.mayReadAddress = false;
         this.organizationSet = false;
 
         this.currentItem.senderOrganizationName = "";
@@ -575,8 +576,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.groupId = event.target.valueObject.identifier;
         this.mayWrite = event.target.valueObject.mayWrite;
         this.mayRead = event.target.valueObject.mayRead;
-        // console.log('write: ', this.mayWrite);
-        // console.log('read: ', this.mayRead);
+
+        if (event.target.valueObject.accessRights) {
+            this.mayReadAddress = event.target.valueObject.accessRights.includes('wra');
+            console.log(this.mayReadAddress);
+        }
         this.organizationSet = true;
         this.getListOfRequests();
     }
