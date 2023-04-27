@@ -1408,45 +1408,46 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async fetchDetailedRecipientInformation(identifier) {
-        let response = await this.getDispatchRecipient(identifier);
+        if (this.mayReadAddress) {
+            let response = await this.getDispatchRecipient(identifier);
 
-        let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 200) {
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
 
-            this.currentRecipient = responseBody;
+                this.currentRecipient = responseBody;
 
-            this.currentRecipient.personIdentifier = responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
-            let birthDate = responseBody['birthDate'] && responseBody['birthDate'] !== '' ?  this.convertToBirthDateTuple(responseBody['birthDate']) : '';
+                this.currentRecipient.personIdentifier = responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
+                let birthDate = responseBody['birthDate'] && responseBody['birthDate'] !== '' ? this.convertToBirthDateTuple(responseBody['birthDate']) : '';
 
-            if (birthDate !== '') {
-                this.currentRecipient.birthDateDay = birthDate.day;
-                this.currentRecipient.birthDateMonth = birthDate.month;
-                this.currentRecipient.birthDateYear = birthDate.year;
-            }
-            else {
-                this.currentRecipient.birthDateDay = '';
-                this.currentRecipient.birthDateMonth = '';
-                this.currentRecipient.birthDateYear = '';
-            }
+                if (birthDate !== '') {
+                    this.currentRecipient.birthDateDay = birthDate.day;
+                    this.currentRecipient.birthDateMonth = birthDate.month;
+                    this.currentRecipient.birthDateYear = birthDate.year;
+                } else {
+                    this.currentRecipient.birthDateDay = '';
+                    this.currentRecipient.birthDateMonth = '';
+                    this.currentRecipient.birthDateYear = '';
+                }
 
-            this.currentRecipient.statusChanges = responseBody['statusChanges'];
-            if (this.currentRecipient.statusChanges.length > 0) {
-                this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
-                this.currentRecipient.statusType = this.currentRecipient.statusChanges[0].statusType;
+                this.currentRecipient.statusChanges = responseBody['statusChanges'];
+                if (this.currentRecipient.statusChanges.length > 0) {
+                    this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
+                    this.currentRecipient.statusType = this.currentRecipient.statusChanges[0].statusType;
+                } else {
+                    this.currentRecipient.statusDescription = null;
+                    this.currentRecipient.statusType = null;
+                }
+                this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
+                this.currentRecipient.appDeliveryId = responseBody['appDeliveryID'] ? responseBody['appDeliveryID'] : '';
+                this.currentRecipient.postalDeliverable = responseBody['postalDeliverable'] ? responseBody['postalDeliverable'] : '';
+                this.currentRecipient.electronicallyDeliverable = responseBody['electronicallyDeliverable'] ? responseBody['electronicallyDeliverable'] : '';
+                this.currentRecipient.lastStatusChange = responseBody['lastStatusChange'] ? responseBody['lastStatusChange'] : '';
+
+
+                // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
             } else {
-                this.currentRecipient.statusDescription = null;
-                this.currentRecipient.statusType = null;
+                // TODO error handling
             }
-            this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
-            this.currentRecipient.appDeliveryId = responseBody['appDeliveryID'] ? responseBody['appDeliveryID'] : '';
-            this.currentRecipient.postalDeliverable = responseBody['postalDeliverable'] ? responseBody['postalDeliverable'] : '';
-            this.currentRecipient.electronicallyDeliverable = responseBody['electronicallyDeliverable'] ? responseBody['electronicallyDeliverable'] : '';
-            this.currentRecipient.lastStatusChange = responseBody['lastStatusChange'] ? responseBody['lastStatusChange'] : '';
-
-
-            // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
-        } else {
-            // TODO error handling
         }
     }
 
@@ -2998,7 +2999,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
                                 </div>
                                 
-                                ${this.currentRecipient && !this.currentRecipient.personIdentifier && this.currentRecipient.birthDateDay !== ''
+                                ${this.currentRecipient && this.currentRecipient.birthDateDay && this.currentRecipient.birthDateMonth 
+                                && this.currentRecipient.birthDateYear && this.currentRecipient.birthDateDay !== ''
                                 && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '' ? html`
                                     <div class="element-left">
                                         ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}:
@@ -3007,7 +3009,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.currentRecipient.birthDateYear + '-' + this.currentRecipient.birthDateMonth + '-' + this.currentRecipient.birthDateDay}
                                     </div>
                                 ` : ``}
-                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                ${this.currentRecipient && this.currentRecipient.streetAddress ? html`
                                     <div class="element-left">
                                         ${i18n.t('show-requests.edit-recipient-sa-dialog-label')}:
                                     </div>
@@ -3015,7 +3017,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.currentRecipient.streetAddress}
                                     </div>
                                 ` : ``}
-                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                ${this.currentRecipient && this.currentRecipient.postalCode ? html`
                                     <div class="element-left">
                                         ${i18n.t('show-requests.edit-recipient-pc-dialog-label')}:
                                     </div>
@@ -3023,7 +3025,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.currentRecipient.postalCode}
                                     </div>
                                 ` : ``}
-                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                ${this.currentRecipient && this.currentRecipient.addressLocality ? html`
                                     <div class="element-left">
                                         ${i18n.t('show-requests.edit-recipient-al-dialog-label')}:
                                     </div>
@@ -3031,7 +3033,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.currentRecipient.addressLocality}
                                     </div>
                                 ` : ``}
-                                ${this.currentRecipient && !this.currentRecipient.personIdentifier ? html`
+                                ${this.currentRecipient && this.currentRecipient.addressCountry ? html`
                                     <div class="element-left">
                                         ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}:
                                     </div>
@@ -3061,12 +3063,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="element-right">
                                     ${this.currentRecipient && this.currentRecipient.identifier ? this.currentRecipient.identifier : ``}
                                 </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.app-delivery-id')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.appDeliveryId ? this.currentRecipient.appDeliveryId : ``}
-                                </div>
+                                ${this.currentRecipient && this.currentRecipient.appDeliveryId ? html`
+                                    <div class="element-left">
+                                        ${i18n.t('show-requests.app-delivery-id')}:
+                                    </div>
+                                    <div class="element-right">
+                                        ${this.currentRecipient && this.currentRecipient.appDeliveryId ? this.currentRecipient.appDeliveryId : ``}
+                                    </div>
+                                ` : ``}
                             </div>
                             ${this.currentRecipient && this.currentRecipient.statusChanges && this.currentRecipient.statusChanges.length > 0 ? html`
                             <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
