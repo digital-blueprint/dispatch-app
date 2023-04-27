@@ -78,8 +78,13 @@ services:
     depends_on:
       - postgres
 
-
-  # TODO: Add services for the API, ...
+  api:
+    image: ghcr.io/digital-blueprint/relay-server-template:main
+    restart: unless-stopped
+    labels:
+      # http://api.localhost:8100
+      - "traefik.http.routers.api.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.api.entrypoints=http"
 
 volumes:
   postgres_data:
