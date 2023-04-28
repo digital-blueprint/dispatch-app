@@ -43,6 +43,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.mayWrite = false;
         this.mayRead = false;
         this.mayReadAddress = false;
+        this.mayReadMedata = false;
         this.organizationSet = false;
 
         this.currentItem.senderOrganizationName = "";
@@ -579,7 +580,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         if (event.target.valueObject.accessRights) {
             this.mayReadAddress = event.target.valueObject.accessRights.includes('wra');
-            console.log(this.mayReadAddress);
+            this.mayReadMedata = event.target.valueObject.accessRights.includes('rm');
+            console.log(event.target.valueObject.accessRights);
         }
         this.organizationSet = true;
         this.getListOfRequests();
@@ -862,8 +864,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 
                 <div class="no-access-notification">
                     <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.mayWrite || !this.organizationSet })}"
-                                             type="${this.mayRead ? 'warning' : 'danger'}"
-                                             body="${this.mayRead ? i18n.t('error-no-writes') : i18n.t('error-no-read')}">
+                                             type="${this.mayRead || this.mayReadMedata ? 'warning' : 'danger'}"
+                                             body="${this.mayRead || this.mayReadMedata ? i18n.t('error-no-writes') : i18n.t('error-no-read')}">
                     </dbp-inline-notification>
                 </div>
                 
@@ -872,7 +874,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </h3>
                     
                 
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations|| this.showDetailsView || !this.organizationSet || !this.mayRead})}">
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations|| this.showDetailsView || !this.organizationSet || !this.mayRead || !this.mayReadMedata})}">
                     <div class="table-wrapper">
                         <div class="selected-buttons">
                                 <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet })}"
@@ -993,7 +995,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                         </div>
                     </div>
-                ${ this.mayRead ? html`
+                ${ this.mayRead || this.mayReadMedata ? html`
                     <div class="back-container">
                         <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
                             <a href="#" title="${i18n.t('show-requests.back-to-list')}"
