@@ -79,12 +79,23 @@ services:
       - postgres
 
   api:
-    image: ghcr.io/digital-blueprint/relay-server-template:main
+    image: ghcr.io/digital-blueprint/relay-demo-api:main
     restart: unless-stopped
+    environment:
+      AUTH_SERVER_URL: http://keycloak.localhost:8100/realms/dbp
+      AUTH_FRONTEND_CLIENT_ID: dbp-api-frontend
+      DATABASE_URL: "mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=8&charset=utf8mb4"
+      DISPATCH_DATABASE_URL: mysql://user:secret@mariadb:3306/db
+      DISPATCH_SERVICE_URL: https://dualtest.vendo.at
+      DISPATCH_SENDER_PROFILE: enter-sender-profile-here
+      DISPATCH_SENDER_PROFILE_VERSION: 1.0
+      DISPATCH_CERT: base64-cert-here
+      DISPATCH_CERT_PASSWORD: enter-password-here
     labels:
-      # http://api.localhost:8100
-      - "traefik.http.routers.api.rule=Host(`api.localhost`)"
+      # http://api-demo.localhost:8100
+      - "traefik.http.routers.api.rule=Host(`api-demo.localhost`)"
       - "traefik.http.routers.api.entrypoints=http"
+      - "traefik.http.services.api.loadbalancer.server.port=80"
 
 volumes:
   postgres_data:

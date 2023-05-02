@@ -5,6 +5,9 @@ keycloak-reset:
 web-bash:
 	docker compose exec web bash
 
+api-bash:
+	docker compose exec api bash
+
 postgres-bash:
 	docker compose exec postgres bash
 
