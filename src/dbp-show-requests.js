@@ -43,7 +43,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.mayWrite = false;
         this.mayRead = false;
         this.mayReadAddress = false;
-        this.mayReadMedata = false;
+        this.mayReadMetadata = false;
         this.organizationSet = false;
 
         this.currentItem.senderOrganizationName = "";
@@ -575,12 +575,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     processSelectedOrganization(event) {
         this.storeGroupValue(event.detail.value);
         this.groupId = event.target.valueObject.identifier;
-        this.mayWrite = event.target.valueObject.mayWrite;
-        this.mayRead = event.target.valueObject.mayRead;
+        // this.mayWrite = event.target.valueObject.mayWrite;
+        // this.mayRead = event.target.valueObject.mayRead;
 
         if (event.target.valueObject.accessRights) {
             this.mayReadAddress = event.target.valueObject.accessRights.includes('wra');
-            this.mayReadMedata = event.target.valueObject.accessRights.includes('rm');
+            this.mayReadMetadata = event.target.valueObject.accessRights.includes('rm');
+            this.mayRead = event.target.valueObject.accessRights.includes('rc');
+            this.mayWrite = event.target.valueObject.accessRights.includes('w');
             console.log(event.target.valueObject.accessRights);
         }
         this.organizationSet = true;
@@ -864,8 +866,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 
                 <div class="no-access-notification">
                     <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.mayWrite || !this.organizationSet })}"
-                                             type="${this.mayRead || this.mayReadMedata ? 'warning' : 'danger'}"
-                                             body="${this.mayRead || this.mayReadMedata ? i18n.t('error-no-writes') : i18n.t('error-no-read')}">
+                                             type="${this.mayRead || this.mayReadMetadata ? 'warning' : 'danger'}"
+                                             body="${this.mayRead || this.mayReadMetadata ? i18n.t('error-no-writes') : i18n.t('error-no-read')}">
                     </dbp-inline-notification>
                 </div>
                 
@@ -874,7 +876,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </h3>
                     
                 
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations|| this.showDetailsView || !this.organizationSet || !this.mayRead || !this.mayReadMedata})}">
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations|| this.showDetailsView || !this.organizationSet || (!this.mayRead && !this.mayReadMetadata)})}">
                     <div class="table-wrapper">
                         <div class="selected-buttons">
                                 <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet })}"
@@ -995,7 +997,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                         </div>
                     </div>
-                ${ this.mayRead || this.mayReadMedata ? html`
+                ${ this.mayRead || this.mayReadMetadata ? html`
                     <div class="back-container">
                         <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
                             <a href="#" title="${i18n.t('show-requests.back-to-list')}"
@@ -1078,7 +1080,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                              title="${i18n.t('show-requests.edit-subject-button-text')}"
                                                              icon-name="pencil"></dbp-icon-button>` : ``}
                                         </div>
-                                        <div>${this.currentItem.name ? html`${this.currentItem.name}` : html`${i18n.t('show-requests.no-subject-found')}`}</div>
+                                        <div>${this.currentItem.name ? html`${this.currentItem.name}` : html`${this.mayReadMetadata && !this.mayRead && !this.mayWrite ? i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found')}`}</div>
                                     </div>
                                     <div class="line"></div>
                                     <div>
@@ -1209,7 +1211,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                     icon-name="trash"></dbp-icon-button>` : `` }
                                             </div>
                                         </div>  `)}
-                                        <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">${i18n.t('show-requests.no-recipients-text')}</div>
+                                        <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">
+                                            ${i18n.t('show-requests.no-recipients-text')}
+                                        </div>
 
                                     </div>
                                 </div>

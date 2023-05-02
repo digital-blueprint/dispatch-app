@@ -1834,7 +1834,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
         let output = '';
         if (!list) {
-            return i18n.t('show-requests.no-files-attached');
+            return this.mayReadMetadata && !this.mayRead && !this.mayWrite ? i18n.t('show-requests.metadata-files-text') : i18n.t('show-requests.no-files-attached');
         }
         list.forEach((file) => {
             output += file.name + "<br>";
@@ -1842,7 +1842,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (output !== '') {
             return output;
         } else {
-            return i18n.t('show-requests.no-files-attached');
+            return this.mayReadMetadata && !this.mayRead && !this.mayWrite ? i18n.t('show-requests.metadata-files-text') : i18n.t('show-requests.no-files-attached');
         }
     }
 
@@ -1909,7 +1909,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         list.forEach((item) => {
             let span = this.createScopedElement('span');
             span.classList.add('muted');
-            span.textContent = i18n.t('show-requests.no-subject-found');
+            span.textContent = this.mayReadMetadata && !this.mayRead && !this.mayWrite ?
+                i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found');
 
             let content = {
                 requestId: item.identifier,
@@ -3350,7 +3351,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </div>
                         </div>
                     `) : ``}
-                    <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files && this.currentItem.files.length !== 0})}">${i18n.t('show-requests.empty-files-text')}</div>
+                    <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files && this.currentItem.files.length !== 0})}">${this.mayReadMetadata && !this.mayRead && !this.mayWrite ? i18n.t('show-requests.metadata-files-text') : i18n.t('show-requests.empty-files-text')}</div>
                 </div>
             </div>
         `;

@@ -223,7 +223,9 @@
         "error-reference-number-auto-update-success-text": "The reference number was successfully extracted from the PDF und saved.",
         "overall-status-pending": "{{pending}} Pending",
         "overall-status-failure": "{{failure}} Failure",
-        "overall-status-success": "{{success}} Delivered"
+        "overall-status-success": "{{success}} Delivered",
+        "metadata-files-text": "You do not have the necessary permissions to view the attached files.",
+        "metadata-subject-text": "Not visible"
     },
     "error-login-message": "You need to be logged in to use this function!",
     "loading-message": "Loading...",
