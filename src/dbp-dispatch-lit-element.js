@@ -2204,7 +2204,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     resetPersonSelect(event) {
         this._('#recipient-selector').clear();
-        this.currentRecipient = null;
+        this.currentRecipient = {};
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
         elements.forEach((element) => {
             element.classList.remove('muted');
