@@ -1546,7 +1546,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         try {
 
             let selectedItems = this.dispatchRequestsTable.getSelectedRows();
-            console.log('selectedItems: ', selectedItems);
+            // console.log('selectedItems: ', selectedItems);
 
             let somethingWentWrong = false;
 
@@ -1918,10 +1918,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 status: item.dateSubmitted ? this.checkRecipientStatus(item.recipients) : i18n.t('show-requests.empty-date-submitted'),
                 dateCreated: item.dateCreated,
                 details: "Details",
-                // sender: item.senderFullName ? item.senderFullName + " " + item.senderOrganizationName + "<br>"
-                //     + item.senderStreetAddress + " " + item.senderBuildingNumber + "<br>"
-                //     + item.senderPostalCode + " " + item.senderAddressLocality + "<br>"
-                //     + item.senderAddressCountry : i18n.t('show-requests.empty-sender-text'),
                 files: this.createFormattedFilesList(item.files),
                 recipients: this.createFormattedRecipientsList(item.recipients),
                 dateSubmitted: item.dateSubmitted ? this.convertToReadableDate(item.dateSubmitted) : i18n.t('show-requests.date-submitted-not-submitted'),
@@ -2207,6 +2203,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     resetPersonSelect(event) {
         this._('#recipient-selector').clear();
+        const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
+        elements.forEach((element) => {
+            element.classList.remove('muted');
+        });
     }
 
     clearAll() {
