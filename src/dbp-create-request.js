@@ -47,6 +47,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.mayRead = false;
         this.mayWrite = false;
+        this.mayReadMetadata = false;
         this.organizationLoaded = false;
 
         this.showDetailsView = false;
@@ -123,6 +124,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             mayWrite: { type: Boolean, attribute: false },
             mayRead: { type: Boolean, attribute: false },
+            mayReadMetadata: { type: Boolean, attribute: false },
+
             organizationLoaded: { type: Boolean, attribute: false },
             rowsSelected: { type: Boolean, attribute: false },
 
@@ -293,6 +296,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         responsive: 2,
                         widthGrow: 1,
                         minWidth: 120,
+                        formatter: 'html'
                     },
                     {
                         title: i18n.t('show-requests.table-header-files'),
@@ -422,8 +426,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     saveRequest() {
         this.clearAll();
-
-        this.getCreatedDispatchRequests();
+        let currentPage = this.dispatchRequestsTable ? this.dispatchRequestsTable.getPage() : 1;
+        this.getListOfRequests()
+        this.getCreatedDispatchRequests().then(() => {
+            this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
+        });
         this.showListView = true;
         this.showDetailsView = false;
         this.currentItem = {};

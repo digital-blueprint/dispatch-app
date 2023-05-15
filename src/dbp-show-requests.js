@@ -113,6 +113,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             organizationSet: { type: Boolean, attribute: false },
             mayWrite: { type: Boolean, attribute: false },
             mayRead: { type: Boolean, attribute: false },
+            mayReadMetadata: { type: Boolean, attribute: false },
             rowsSelected: { type: Boolean, attribute: false },
             lastModifiedName: { type: String, attribute: false },
             expanded: { type: Boolean, attribute: false },
@@ -278,6 +279,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         responsive: 2,
                         widthGrow: 1,
                         minWidth: 120,
+                        formatter: 'html'
                     },
                     {
                         title: i18n.t('show-requests.table-header-files'),
@@ -583,15 +585,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     processSelectedOrganization(event) {
         this.storeGroupValue(event.detail.value);
         this.groupId = event.target.valueObject.identifier;
-        // this.mayWrite = event.target.valueObject.mayWrite;
-        // this.mayRead = event.target.valueObject.mayRead;
 
         if (event.target.valueObject.accessRights) {
             this.mayReadAddress = event.target.valueObject.accessRights.includes('wra');
             this.mayReadMetadata = event.target.valueObject.accessRights.includes('rm');
             this.mayRead = event.target.valueObject.accessRights.includes('rc');
             this.mayWrite = event.target.valueObject.accessRights.includes('w');
-            console.log(event.target.valueObject.accessRights);
         }
         this.organizationSet = true;
         this.getListOfRequests();
@@ -1010,7 +1009,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
                             <a href="#" title="${i18n.t('show-requests.back-to-list')}"
                                @click="${() => {
-                                   this.getListOfRequests();
+                                   let currentPage = this.dispatchRequestsTable ? this.dispatchRequestsTable.getPage() : 1;
+                                   this.getListOfRequests().then(() => {
+                                       this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
+                                   });
                                    this.showListView = true;
                                    this.showDetailsView = false;
                                    this.currentItem = {};

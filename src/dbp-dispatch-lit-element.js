@@ -1907,15 +1907,27 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let tableObject = [];
 
         list.forEach((item) => {
-            let span = this.createScopedElement('span');
-            span.classList.add('muted');
-            span.textContent = this.mayReadMetadata && !this.mayRead && !this.mayWrite ?
-                i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found');
+            // let span = this.createScopedElement('span');
+            // span.classList.add('muted');
+            // span.textContent = this.mayReadMetadata && !this.mayRead && !this.mayWrite ?
+            //     i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found');
+
+            let recipientStatus = this.checkRecipientStatus(item.recipients);
+
+            // let tooltip = this.createScopedElement('dbp-tooltip');
+            // tooltip.classList.add('info-tooltip');
+            // tooltip.setAttribute('icon-name', 'info-icon');
+            // tooltip.setAttribute('text-content', recipientStatus[0]);
+            // tooltip.setAttribute('interactive');
+            // let spanStatus = this.createScopedElement('span');
+            // spanStatus.textContent = recipientStatus[1];
+            // spanStatus.appendChild(tooltip);
 
             let content = {
                 requestId: item.identifier,
-                subject: item.name ? item.name : span,
-                status: item.dateSubmitted ? this.checkRecipientStatus(item.recipients)[0] : i18n.t('show-requests.empty-date-submitted'),
+                subject: item.name && item.name !== '' ? item.name : this.mayReadMetadata && !this.mayRead && !this.mayWrite ?
+                    i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found'), //span
+                status: item.dateSubmitted ? recipientStatus[1] : i18n.t('show-requests.empty-date-submitted'),
                 gz: item.referenceNumber ? item.referenceNumber : i18n.t('show-requests.empty-reference-number'),
                 dateCreated: item.dateCreated,
                 details: "Details",
@@ -2032,103 +2044,108 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
         this.organizationLoaded = true;
 
-        let mayWrite = event.target.valueObject.mayWrite;
-        if (!mayWrite && !this.requestCreated) {
-            this.mayRead = event.target.valueObject.mayRead;
-            this.mayWrite = mayWrite;
-        } else if (!mayWrite && this.requestCreated) {
-            if (Object.keys(this.tempItem).length !== 0) {
-                this.currentItem = this.tempItem;
-                // console.log('case 2 current: ', this.currentItem);
-                this.tempChange = true;
-                this._('#create-resource-select').value = this.tempValue;
+        if (event.target.valueObject.accessRights) {
+            this.mayReadAddress = event.target.valueObject.accessRights.includes('wra');
+            this.mayReadMetadata = event.target.valueObject.accessRights.includes('rm');
 
-                send({
-                    "summary": i18n.t('create-request.create-not-allowed-title'),
-                    "body": i18n.t('create-request.create-not-allowed-text'),
-                    "type": "danger",
-                    "timeout": 5,
-                });
-            }
-            this.mayRead = event.target.valueObject.mayRead;
-            this.mayWrite = mayWrite;
-            return;
-        } else if (mayWrite && this.requestCreated && !this.tempChange) {
-            // console.log('case3 curr', this.currentItem);
-            let senderFullName = event.target.valueObject.identifier;
-
-            if (senderFullName === this.currentItem.senderFullName) {
-                return;
-            }
-
-            let senderOrganizationName = event.target.valueObject.name;
-            let senderAddressCountry = event.target.valueObject.country;
-            let senderStreetAddress = event.target.valueObject.street;
-            let senderAddressLocality = event.target.valueObject.locality;
-            let senderPostalCode = event.target.valueObject.postalCode;
-            let groupId = event.target.valueObject.identifier;
-            let mayRead = event.target.valueObject.mayRead;
-
-            let response = await this.sendEditDispatchRequest(this.currentItem.identifier, senderOrganizationName, senderFullName,
-                senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, groupId);
-
-            let responseBody = await response.json();
-            if (responseBody !== undefined && response.status === 200) {
-                send({
-                    "summary": i18n.t('show-requests.successfully-updated-sender-title'),
-                    "body": i18n.t('show-requests.successfully-updated-sender-text'),
-                    "type": "success",
-                    "timeout": 5,
-                });
-
-                this.currentItem = responseBody;
-                // console.log(event.target.valueObject);
-                this.currentItem.senderFullName = senderFullName;
-                this.currentItem.senderOrganizationName = senderOrganizationName;
-                this.currentItem.senderAddressCountry = senderAddressCountry;
-                this.currentItem.senderStreetAddress = senderStreetAddress;
-                this.currentItem.senderAddressLocality = senderAddressLocality;
-                this.currentItem.senderPostalCode = senderPostalCode;
-
-                this.groupId = groupId;
-
-                this.mayRead = mayRead;
+            let mayWrite = event.target.valueObject.accessRights.includes('w');
+            if (!mayWrite && !this.requestCreated) {
+                this.mayRead = event.target.valueObject.accessRights.includes('rc');
                 this.mayWrite = mayWrite;
+            } else if (!mayWrite && this.requestCreated) {
+                if (Object.keys(this.tempItem).length !== 0) {
+                    this.currentItem = this.tempItem;
+                    // console.log('case 2 current: ', this.currentItem);
+                    this.tempChange = true;
+                    this._('#create-resource-select').value = this.tempValue;
+
+                    send({
+                        "summary": i18n.t('create-request.create-not-allowed-title'),
+                        "body": i18n.t('create-request.create-not-allowed-text'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
+                this.mayRead = event.target.valueObject.accessRights.includes('rc');
+                this.mayWrite = mayWrite;
+                return;
+            } else if (mayWrite && this.requestCreated && !this.tempChange) {
+                // console.log('case3 curr', this.currentItem);
+                let senderFullName = event.target.valueObject.identifier;
+
+                if (senderFullName === this.currentItem.senderFullName) {
+                    return;
+                }
+
+                let senderOrganizationName = event.target.valueObject.name;
+                let senderAddressCountry = event.target.valueObject.country;
+                let senderStreetAddress = event.target.valueObject.street;
+                let senderAddressLocality = event.target.valueObject.locality;
+                let senderPostalCode = event.target.valueObject.postalCode;
+                let groupId = event.target.valueObject.identifier;
+                let mayRead = event.target.valueObject.accessRights.includes('rc');
+
+                let response = await this.sendEditDispatchRequest(this.currentItem.identifier, senderOrganizationName, senderFullName,
+                    senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, groupId);
+
+                let responseBody = await response.json();
+                if (responseBody !== undefined && response.status === 200) {
+                    send({
+                        "summary": i18n.t('show-requests.successfully-updated-sender-title'),
+                        "body": i18n.t('show-requests.successfully-updated-sender-text'),
+                        "type": "success",
+                        "timeout": 5,
+                    });
+
+                    this.currentItem = responseBody;
+                    // console.log(event.target.valueObject);
+                    this.currentItem.senderFullName = senderFullName;
+                    this.currentItem.senderOrganizationName = senderOrganizationName;
+                    this.currentItem.senderAddressCountry = senderAddressCountry;
+                    this.currentItem.senderStreetAddress = senderStreetAddress;
+                    this.currentItem.senderAddressLocality = senderAddressLocality;
+                    this.currentItem.senderPostalCode = senderPostalCode;
+
+                    this.groupId = groupId;
+
+                    this.mayRead = mayRead;
+                    this.mayWrite = mayWrite;
+
+                    this.tempItem = this.currentItem;
+                    this.tempValue = this._('#create-resource-select').value;
+
+                } else if (response.status === 403) {
+                    send({
+                        "summary": i18n.t('create-request.error-requested-title'),
+                        "body": i18n.t('error-not-permitted'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                } else {
+                    // TODO error handling
+                    send({
+                        "summary": 'Error!',
+                        "body": 'Could not edit sender. Response code: ' + response.status,
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                }
+            } else {
+                // console.log(event.target.valueObject);
+                this.currentItem.senderFullName = event.target.valueObject.identifier;
+                this.currentItem.senderOrganizationName = event.target.valueObject.name;
+                this.currentItem.senderAddressCountry = event.target.valueObject.country;
+                this.currentItem.senderStreetAddress = event.target.valueObject.street;
+                this.currentItem.senderAddressLocality = event.target.valueObject.locality;
+                this.currentItem.senderPostalCode = event.target.valueObject.postalCode;
+
+                this.groupId = event.target.valueObject.identifier;
+                this.mayRead = event.target.valueObject.accessRights.includes('rc');
+                this.mayWrite = event.target.valueObject.accessRights.includes('w');
 
                 this.tempItem = this.currentItem;
                 this.tempValue = this._('#create-resource-select').value;
-
-            } else if (response.status === 403) {
-                send({
-                    "summary": i18n.t('create-request.error-requested-title'),
-                    "body": i18n.t('error-not-permitted'),
-                    "type": "danger",
-                    "timeout": 5,
-                });
-            } else {
-                // TODO error handling
-                send({
-                    "summary": 'Error!',
-                    "body": 'Could not edit sender. Response code: ' + response.status,
-                    "type": "danger",
-                    "timeout": 5,
-                });
             }
-        } else {
-            // console.log(event.target.valueObject);
-            this.currentItem.senderFullName = event.target.valueObject.identifier;
-            this.currentItem.senderOrganizationName = event.target.valueObject.name;
-            this.currentItem.senderAddressCountry = event.target.valueObject.country;
-            this.currentItem.senderStreetAddress = event.target.valueObject.street;
-            this.currentItem.senderAddressLocality = event.target.valueObject.locality;
-            this.currentItem.senderPostalCode = event.target.valueObject.postalCode;
-
-            this.groupId = event.target.valueObject.identifier;
-            this.mayRead = event.target.valueObject.mayRead;
-            this.mayWrite = event.target.valueObject.mayWrite;
-
-            this.tempItem = this.currentItem;
-            this.tempValue = this._('#create-resource-select').value;
         }
 
         this.tempChange = false;
