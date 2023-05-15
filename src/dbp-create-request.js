@@ -124,6 +124,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             mayWrite: { type: Boolean, attribute: false },
             mayRead: { type: Boolean, attribute: false },
             organizationLoaded: { type: Boolean, attribute: false },
+            rowsSelected: { type: Boolean, attribute: false },
 
             totalNumberOfCreatedRequestItems: {type: Number, attribute: false},
             filesAdded: {type: Boolean, attribute: false},
