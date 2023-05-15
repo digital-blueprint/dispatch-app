@@ -272,6 +272,14 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         },
                     },
                     {
+                        title: i18n.t('show-requests.table-header-gz'),
+                        field: 'gz',
+                        responsive: 2,
+                        widthGrow: 3,
+                        minWidth: 100,
+                        formatter: 'html'
+                    },
+                    {
                         title: i18n.t('show-requests.table-header-subject'),
                         field: 'subject',
                         responsive: 2,
@@ -347,6 +355,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         'columns': {
                             'dateCreated': 'Date created',
                             'subject': 'Subject',
+                            'gz': 'Reference number',
                             'files': 'Files',
                             'recipients': 'Recipients',
                             'requestId': 'Request-ID'
@@ -368,6 +377,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         'columns': {
                             'dateCreated': 'Erstelldatum',
                             'subject': 'Betreff',
+                            'gz': 'Geschäftszahl',
                             'files': 'Angehängte Dateien',
                             'recipients': 'Empfänger',
                             'requestId': 'Auftrags-ID'

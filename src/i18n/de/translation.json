@@ -165,6 +165,7 @@
         "table-header-files": "Angehängte Dateien",
         "table-header-recipients": "Empfänger",
         "table-header-id": "Auftrags-ID",
+        "table-header-gz": "Geschäftszahl",
         "add-recipient-birthdate-dialog-label": "Geburtsdatum",
         "organization-select-description": "Bitte wählen Sie Ihre Gruppe:",
         "date-submitted": "Freigabedatum",
@@ -224,6 +225,9 @@
         "overall-status-pending": "{{pending}} In Zustellung",
         "overall-status-failure": "{{failure}} Fehler",
         "overall-status-success": "{{success}} Zugestellt",
+        "short-status-pending": "In Zustellung",
+        "short-status-failure": "Fehler",
+        "short-status-success": "Zugestellt",
         "metadata-files-text": "Sie haben keine Berechtigung die angehängten Dateien zu sehen.",
         "metadata-subject-text": "Nicht sichtbar"
     },

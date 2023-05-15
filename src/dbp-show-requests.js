@@ -257,11 +257,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         },
                     },
                     {
-                        title: i18n.t('show-requests.table-header-subject'),
-                        field: 'subject',
+                        title: i18n.t('show-requests.table-header-gz'),
+                        field: 'gz',
                         responsive: 2,
                         widthGrow: 3,
-                        minWidth: 150,
+                        minWidth: 100,
+                        formatter: 'html'
+                    },
+                    {
+                        title: i18n.t('show-requests.table-header-subject'),
+                        field: 'subject',
+                        responsive: 3,
+                        widthGrow: 3,
+                        minWidth: 100,
                         formatter: 'html'
                     },
                     {
@@ -332,7 +340,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         'columns': {
                             'dateCreated': 'Date created',
                             'subject': 'Subject',
-                            // 'sender': 'Sender',
+                            'gz': 'Reference number',
                             'files': 'Files',
                             'recipients': 'Recipients',
                             'dateSubmitted': 'Date submitted',
@@ -355,7 +363,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         'columns': {
                             'dateCreated': 'Erstelldatum',
                             'subject': 'Betreff',
-                            // 'sender': 'Absender',
+                            'gz': 'Geschäftszahl',
                             'files': 'Angehängte Dateien',
                             'recipients': 'Empfänger',
                             'dateSubmitted': 'Freigabedatum',
@@ -1085,7 +1093,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <div class="line"></div>
                                     <div>
                                         <div class="section-titles">${i18n.t('show-requests.submit-status')}</div>
-                                        <div>${this.currentItem.dateSubmitted ? html`${this.checkRecipientStatus(this.currentItem.recipients)}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
+                                        <div>${this.currentItem.dateSubmitted ? html`${this.checkRecipientStatus(this.currentItem.recipients)[0]}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
                                     </div>
                                     <div class="line"></div>
                                     <div>

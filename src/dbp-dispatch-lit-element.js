@@ -557,7 +557,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.dispatchRequestsTable.replaceData(tableObject);
         this.dispatchRequestsTable.setLocale(this.lang);
         this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
-        console.log('totalNumberOfItems: ' + this.totalNumberOfItems);
+        // console.log('totalNumberOfItems: ' + this.totalNumberOfItems);
 
         this.createRequestsLoading = false;
         this._initialFetchDone = true;
@@ -1915,7 +1915,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let content = {
                 requestId: item.identifier,
                 subject: item.name ? item.name : span,
-                status: item.dateSubmitted ? this.checkRecipientStatus(item.recipients) : i18n.t('show-requests.empty-date-submitted'),
+                status: item.dateSubmitted ? this.checkRecipientStatus(item.recipients)[0] : i18n.t('show-requests.empty-date-submitted'),
+                gz: item.referenceNumber ? item.referenceNumber : i18n.t('show-requests.empty-reference-number'),
                 dateCreated: item.dateCreated,
                 details: "Details",
                 files: this.createFormattedFilesList(item.files),
@@ -2203,6 +2204,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     resetPersonSelect(event) {
         this._('#recipient-selector').clear();
+        this.currentRecipient = null;
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
         elements.forEach((element) => {
             element.classList.remove('muted');
@@ -3488,15 +3490,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         let overallStatusText = "";
+
         overallStatusText += countSuccess > 0 ? i18n.t('show-requests.overall-status-success', { success: countSuccess }) :  "";
 
         overallStatusText += countSuccess > 0 && countPending > 0 ? ", " + i18n.t('show-requests.overall-status-pending', { pending: countPending }) :
-                             countPending > 0 ? i18n.t('show-requests.overall-status-pending', { pending: countPending }) : "";
+                                 countPending > 0 ? i18n.t('show-requests.overall-status-pending', { pending: countPending }) : "";
 
         overallStatusText += (countSuccess > 0 || countPending > 0) && countFailure > 0 ? ", " + i18n.t('show-requests.overall-status-failure', { failure: countFailure }) :
-                            countFailure > 0 ? i18n.t('show-requests.overall-status-failure', { failure: countFailure }) : "";
+                                countFailure > 0 ? i18n.t('show-requests.overall-status-failure', { failure: countFailure }) : "";
 
-        return overallStatusText;
+        let shortStatusText = "";
+        shortStatusText += countSuccess > 0 ? i18n.t('show-requests.short-status-success', { success: countSuccess }) :  "";
+
+        shortStatusText += countSuccess > 0 && countPending > 0 ? ", " + i18n.t('show-requests.short-status-pending', { pending: countPending }) :
+                countPending > 0 ? i18n.t('show-requests.short-status-pending', { pending: countPending }) : "";
+
+        shortStatusText += (countSuccess > 0 || countPending > 0) && countFailure > 0 ? ", " + i18n.t('show-requests.short-status-failure', { failure: countFailure }) :
+                countFailure > 0 ? i18n.t('show-requests.short-status-failure', { failure: countFailure }) : "";
+
+        return [ overallStatusText, shortStatusText ];
     }
 
     storeGroupValue(value) {
