@@ -102,8 +102,6 @@
         "edit-subject-success-title": "Successfully changed!",
         "electronically-deliverable": "Electronically deliverable",
         "empty-date-submitted": "Open",
-        "empty-fields-submitted-text": "Not all required fields have been completed or a file has not yet been uploaded for dispatch. Please complete your information and try again.",
-        "empty-fields-submitted-title": "Error!",
         "empty-files-text": "No files attached (yet)",
         "empty-reference-number": "",
         "empty-sender-text": "No sender specified (yet)",
@@ -124,6 +122,22 @@
         "loading-table-message": "Dispatch requests are loading. This may take a while.",
         "metadata-files-text": "You do not have the necessary permissions to view the attached files.",
         "metadata-subject-text": "Not visible",
+        "missing-files": {
+            "text": "At least one file is required to submit a dispatch order.",
+            "title": "Missing files"
+        },
+        "missing-recipients": {
+            "text": "At least one recipient is required to submit a dispatch order.",
+            "title": "Missing recipients"
+        },
+        "missing-reference-number": {
+            "text": "A reference number must be set to submit a dispatch order.",
+            "title": "Missing reference number"
+        },
+        "missing-subject": {
+            "text": "A subject must be set to submit a dispatch order.",
+            "title": "Missing subject"
+        },
         "modal-close": "Close modal",
         "modified-from": "Last modified from",
         "no-files-attached": "No files attached (yet).",

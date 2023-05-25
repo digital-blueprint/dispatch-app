@@ -102,8 +102,6 @@
         "edit-subject-success-title": "Änderung erfolgreich!",
         "electronically-deliverable": "Elektronische Zustellung möglich",
         "empty-date-submitted": "In Bearbeitung",
-        "empty-fields-submitted-text": "Es wurden noch nicht alle benötigten Felder ausgefüllt oder noch keine Datei für den Versand hochgeladen. Bitte vervollständigen Sie Ihre Angaben und versuchen es erneut.",
-        "empty-fields-submitted-title": "Fehler!",
         "empty-files-text": "(Noch) keine Dateien angehängt.",
         "empty-reference-number": "",
         "empty-sender-text": "(Noch) kein Absender angegeben.",
@@ -124,6 +122,22 @@
         "loading-table-message": "Versandaufträge werden geladen. Dies kann eine Weile dauern.",
         "metadata-files-text": "Sie haben keine Berechtigung die angehängten Dateien zu sehen.",
         "metadata-subject-text": "Nicht sichtbar",
+        "missing-files": {
+            "text": "Für den Versand ist mindestens eine Datei erforderlich.",
+            "title": "Fehlende Dateien"
+        },
+        "missing-recipients": {
+            "text": "Für den Versand ist mindestens ein Empfänger erforderlich.",
+            "title": "Fehlender Empfänger"
+        },
+        "missing-reference-number": {
+            "text": "Für den Versand muss eine Geschäftszahl angegeben werden.",
+            "title": "Fehlende Geschäftszahl"
+        },
+        "missing-subject": {
+            "text": "Für den Versand muss ein Betreff angegeben werden.",
+            "title": "Fehlender Betreff"
+        },
         "modal-close": "Modal schließen",
         "modified-from": "Zuletzt bearbeitet von",
         "no-files-attached": "(Noch) keine Dateien angehängt.",

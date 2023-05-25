@@ -1125,6 +1125,61 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    /**
+     * Returns if the request can be submitted or not. And if not, it shows a UI message.
+     * @param {object} request
+     * @returns {boolean} if the request can be submitted or not
+     */
+    checkCanSubmit(request) {
+        const i18n = this._i18n;
+
+        // No files attached
+        if (!request.files || request.files.length == 0) {
+            send({
+                "summary": i18n.t('show-requests.missing-files.title'),
+                "body": i18n.t('show-requests.missing-files.text'),
+                "type": "danger",
+                "timeout": 5,
+            });
+            return false;
+        }
+
+        // No recipients
+        if (!request.recipients || request.recipients.length == 0) {
+            send({
+                "summary": i18n.t('show-requests.missing-recipients.title'),
+                "body": i18n.t('show-requests.missing-recipients.text'),
+                "type": "danger",
+                "timeout": 5,
+            });
+            return false;
+        }
+
+        // Missing or empty referenceNumber
+        if (!request.referenceNumber || !request.referenceNumber.trim()) {
+            send({
+                "summary": i18n.t('show-requests.missing-reference-number.title'),
+                "body": i18n.t('show-requests.missing-reference-number.text'),
+                "type": "danger",
+                "timeout": 5,
+            });
+            return false;
+        }
+
+        // Missing or empty subject
+        if (!request.name || !request.name.trim()) {
+            send({
+                "summary": i18n.t('show-requests.missing-subject.title'),
+                "body": i18n.t('show-requests.missing-subject.text'),
+                "type": "danger",
+                "timeout": 5,
+            });
+            return false;
+        }
+
+        return true;
+    }
+
     async submitRequest(event, item) {
         const i18n = this._i18n;
         let button = event.target;
@@ -1139,89 +1194,84 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
 
-        if (item.files && item.files.length > 0 && item.recipients && item.recipients.length > 0) {
-            if(confirm(i18n.t('show-requests.submit-dialog-text'))) {
-                try {
-                    this._('#submit-btn').start(); //TODO
-                    button.start();
+        if (!this.checkCanSubmit(item)) {
+            return;
+        }
 
-                    let response = await this.sendSubmitDispatchRequest(item.identifier);
-                    if (response.status === 201) {
-                        if (this.dispatchRequestsTable) {
-                            if (this.createdRequestsList && this.createdRequestsList.length > 0) {
-                                this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== item.identifier);
-                                this.getCreatedDispatchRequests();
-                                this.currentItem = {};
+        if(confirm(i18n.t('show-requests.submit-dialog-text'))) {
+            try {
+                this._('#submit-btn').start(); //TODO
+                button.start();
 
-                                this.currentItem.senderOrganizationName = "";
-                                this.currentItem.senderFullName = "";
-                                this.currentItem.senderAddressCountry = "";
-                                this.currentItem.senderPostalCode = "";
-                                this.currentItem.senderAddressLocality = "";
-                                this.currentItem.senderStreetAddress = "";
-                                this.currentItem.senderBuildingNumber = "";
+                let response = await this.sendSubmitDispatchRequest(item.identifier);
+                if (response.status === 201) {
+                    if (this.dispatchRequestsTable) {
+                        if (this.createdRequestsList && this.createdRequestsList.length > 0) {
+                            this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== item.identifier);
+                            this.getCreatedDispatchRequests();
+                            this.currentItem = {};
 
-                                this.currentItem.files = [];
-                                this.currentItem.recipients = [];
+                            this.currentItem.senderOrganizationName = "";
+                            this.currentItem.senderFullName = "";
+                            this.currentItem.senderAddressCountry = "";
+                            this.currentItem.senderPostalCode = "";
+                            this.currentItem.senderAddressLocality = "";
+                            this.currentItem.senderStreetAddress = "";
+                            this.currentItem.senderBuildingNumber = "";
 
-                                this.currentRecipient = {};
+                            this.currentItem.files = [];
+                            this.currentItem.recipients = [];
 
-                                this.subject = '';
+                            this.currentRecipient = {};
 
-                                this.showListView = true;
-                                this.showDetailsView = false;
+                            this.subject = '';
 
-                                this.hasSubject = true;
-                                this.hasSender = true;
-                            } else {
-                                this.getListOfRequests();
-                                this.clearAll();
-                            }
+                            this.showListView = true;
+                            this.showDetailsView = false;
+
+                            this.hasSubject = true;
+                            this.hasSender = true;
+                        } else {
+                            this.getListOfRequests();
+                            this.clearAll();
                         }
-                        send({
-                            "summary": i18n.t('show-requests.successfully-submitted-title'),
-                            "body": i18n.t('show-requests.successfully-submitted-text'),
-                            "type": "success",
-                            "timeout": 5,
-                        });
-                    } else if (response.status === 400) {
-                        send({
-                            "summary": i18n.t('error-delivery-channel-title'),
-                            "body": i18n.t('error-delivery-channel-text'),
-                            "type": "danger",
-                            "timeout": 5,
-                        });
-                    } else if (response.status === 403) {
-                        send({
-                            "summary": i18n.t('create-request.error-requested-title'),
-                            "body": i18n.t('error-not-permitted'),
-                            "type": "danger",
-                            "timeout": 5,
-                        });
-                    } else {
-                        // TODO error handling
-
-                        send({
-                            "summary": 'Error!',
-                            "body": 'Could not submit request. Response code: ' + response.status,
-                            "type": "danger",
-                            "timeout": 5,
-                        });
                     }
-                } catch (e) {
-                    //TODO
-                } finally {
-                    this._('#submit-btn').stop();
-                    button.stop();
+                    send({
+                        "summary": i18n.t('show-requests.successfully-submitted-title'),
+                        "body": i18n.t('show-requests.successfully-submitted-text'),
+                        "type": "success",
+                        "timeout": 5,
+                    });
+                } else if (response.status === 400) {
+                    send({
+                        "summary": i18n.t('error-delivery-channel-title'),
+                        "body": i18n.t('error-delivery-channel-text'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                } else if (response.status === 403) {
+                    send({
+                        "summary": i18n.t('create-request.error-requested-title'),
+                        "body": i18n.t('error-not-permitted'),
+                        "type": "danger",
+                        "timeout": 5,
+                    });
+                } else {
+                    // TODO error handling
+
+                    send({
+                        "summary": 'Error!',
+                        "body": 'Could not submit request. Response code: ' + response.status,
+                        "type": "danger",
+                        "timeout": 5,
+                    });
                 }
+            } catch (e) {
+                //TODO
+            } finally {
+                this._('#submit-btn').stop();
+                button.stop();
             }
-        } else {
-            send({
-                "summary": i18n.t('show-requests.empty-fields-submitted-title'),
-                "body": i18n.t('show-requests.empty-fields-submitted-text'),
-                "type": "danger",
-                "timeout": 5,
-            });
         }
     }
 
@@ -1464,13 +1514,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     somethingWentWrong = true;
                     break;
                 }
-                if (!(result.files && result.files.length > 0 && result.recipients && result.recipients.length > 0)) {
-                    send({
-                        "summary": i18n.t('show-requests.empty-fields-submitted-title'),
-                        "body": i18n.t('show-requests.empty-fields-submitted-text'),
-                        "type": "danger",
-                        "timeout": 5,
-                    });
+                if (!this.checkCanSubmit(result)) {
                     somethingWentWrong = true;
                     break;
                 }
