@@ -1456,8 +1456,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 let result = await response.json();
                 if (result.dateSubmitted) {
                     send({
-                        "summary": i18n.t('show-requests.delete-not-allowed-title'),
-                        "body": i18n.t('show-requests.delete-not-allowed-text'), //TODO add more specific text here
+                        "summary": i18n.t('show-requests.submit-not-allowed-title'),
+                        "body": i18n.t('show-requests.submit-not-allowed-text'),
                         "type": "danger",
                         "timeout": 5,
                     });
@@ -2258,9 +2258,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             
             <dbp-file-sink
                 id="file-sink"
-                context="${i18n.t('show-requests.save-field-label', {
-                    count: 1,
-                })}"
+                context="${i18n.t('show-requests.save-field-label')}"
                 filename="download.pdf"
                 subscribe="initial-file-handling-state,nextcloud-store-session"
                 enabled-targets="${this.fileHandlingEnabledTargets}"
@@ -3145,11 +3143,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     />
                                 </div>
                             </div>
-                            <div class="modal-content-item">
-                                <div>
-                                    ${i18n.t('show-requests.edit-subject-description')}
-                                </div>
-                            </div>
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
@@ -3220,11 +3213,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             id="tf-edit-reference-number-fn-dialog"
                                             value="${this.currentItem.referenceNumber ? this.currentItem.referenceNumber : ``}"
                                     />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div>
-                                    ${i18n.t('show-requests.edit-reference-number-description')}
                                 </div>
                             </div>
                         </main>
