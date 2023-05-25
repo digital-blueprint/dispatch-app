@@ -137,7 +137,6 @@ var MicroModal = (function () {
         }
         /**
          * Loops through all openTriggers and binds click event
-         *
          * @param  {Array} triggers [Array of node elements]
          * @returns {void}
          */
@@ -375,7 +374,6 @@ var MicroModal = (function () {
     /**
      * Generates an associative array of modals and it's
      * respective triggers
-     *
      * @param  {Array} triggers     An array of all triggers
      * @param  {string} triggerAttr The data-attribute which triggers the module
      * @returns {Array}
@@ -393,7 +391,6 @@ var MicroModal = (function () {
     /**
      * Validates whether a modal of the given id exists
      * in the DOM
-     *
      * @param  {number} id  The id of the modal
      * @returns {boolean}
      */
@@ -416,7 +413,6 @@ var MicroModal = (function () {
     /**
      * Validates if there are modal triggers present
      * in the DOM
-     *
      * @param  {Array} triggers An array of data-triggers
      * @returns {boolean}
      */
@@ -439,7 +435,6 @@ var MicroModal = (function () {
     /**
      * Checks if triggers and their corresponding modals
      * are present in the DOM
-     *
      * @param  {Array} triggers   Array of DOM nodes which have data-triggers
      * @param  {Array} triggerMap Associative array of modals and their triggers
      * @returns {boolean}
@@ -457,7 +452,6 @@ var MicroModal = (function () {
     };
     /**
      * Binds click handlers to all modal triggers
-     *
      * @param  {object} config [description]
      * @returns void
      */
@@ -489,7 +483,6 @@ var MicroModal = (function () {
     };
     /**
      * Shows a particular modal
-     *
      * @param  {string} targetModal [The id of the modal to display]
      * @param  {object} config [The configuration object to pass]
      * @returns {void}
@@ -509,7 +502,6 @@ var MicroModal = (function () {
     };
     /**
      * Closes the active modal
-     *
      * @param  {string} targetModal [The id of the modal to close]
      * @returns {void}
      */

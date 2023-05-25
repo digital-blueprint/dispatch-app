@@ -402,7 +402,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     /**
      * Keydown Event function if enter pressed, then start filtering the table
-     *
      * @param event
      */
     pressEnterAndSubmitSearch(event) {
@@ -531,7 +530,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     /**
      * hide search menu
-     *
      * @param e
      */
     hideAdditionalSearchMenu(e) {
@@ -560,7 +558,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     /**
      * Creates options for a select box of the t
      * this.submissionColumns Array (all possible cols of active table)
-     *
      * @returns {Array<html>} options
      */
     getTableHeaderOptions() {
