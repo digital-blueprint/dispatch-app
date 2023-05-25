@@ -610,7 +610,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             
             <div class="control ${classMap({hidden: this.isLoggedIn() || !this.isLoading() || !this.loadingTranslations })}">
                 <span class="loading">
-                    <dbp-mini-spinner text=${i18n.t('check-out.loading-message')}></dbp-mini-spinner>
+                    <dbp-mini-spinner text=${i18n.t('loading-message')}></dbp-mini-spinner>
                 </span>
             </div>
             
