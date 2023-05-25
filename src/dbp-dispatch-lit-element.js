@@ -1480,12 +1480,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 return;
             }
 
-            let dialogText;
-            if (this.dispatchRequestsTable.getSelectedRows().length > 1) {
-                dialogText = i18n.t('show-requests.submit-more-dialog-text', {count: this.dispatchRequestsTable.getSelectedRows().length});
-            } else {
-                dialogText = i18n.t('show-requests.submit-dialog-text');
-            }
+            let dialogText = i18n.t('show-requests.submit-dialog-text', {count: this.dispatchRequestsTable.getSelectedRows().length});
 
             if (confirm(dialogText)) {
                 for (let i = 0; i < selectedItems.length; i++) {
