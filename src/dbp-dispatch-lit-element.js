@@ -576,13 +576,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     onFileUploadFinished(event) {
         this.fileUploadFinished = true;
         this.uploadedNumberOfFiles = event.detail.count;
-        console.log(this.uploadedNumberOfFiles);
         this.currentFileIndex = 0;
     }
 
     async onFileSelected(event) {
         this.fileUploadFinished = false;
-
         if (!this.singleFileProcessing && !this.requestCreated) {
             this.processCreateDispatchRequest().then(async () => {
                 this.showDetailsView = false;
@@ -995,30 +993,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async fetchStatusOfRecipient(recipient) {
-        const i18n = this._i18n;
-        console.log(recipient);
-
         let response = await this.getDispatchRecipient(recipient.identifier);
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 200) {
-            // send({
-            //     "summary": i18n.t('show-requests.successfully-updated-sender-title'), //TODO
-            //     "body": i18n.t('show-requests.successfully-updated-sender-text'),
-            //     "type": "success",
-            //     "timeout": 5,
-            // });
-
             this.currentRecipient.statusType = responseBody['statusType'];
             this.currentRecipient.statusDescription = responseBody['description'];
         } else {
             // TODO error handling
-
-            // send({
-            //     "summary": 'Error!',
-            //     "body": 'Could not fetch status of recipient with ID: ' + recipient.identifier + '. Response code: ' + response.status,
-            //     "type": "danger",
-            //     "timeout": 5,
-            // });
         }
     }
 
