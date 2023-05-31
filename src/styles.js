@@ -808,8 +808,8 @@ export function getDispatchRequestStyles() {
 
             .right-side {
                 padding: 10px;
-                color: #FFFFFF;
-                background-color: #245b78;
+                color: var(--dbp-on-primary-surface);
+                background-color: var(--dbp-primary-surface);
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
