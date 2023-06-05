@@ -66,6 +66,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.totalNumberOfCreatedRequestItems = 0;
         this.filesAdded = false;
         this.expanded = false;
+        this.addFileViaButton = false;
 
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
@@ -684,6 +685,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                            @click="${(e) => {
                                this.saveRequest(e, this.currentItem);
                                this.showListView = false;
+                               this.addFileViaButton = false;
                            }}"
                         >
                             <dbp-icon name="chevron-left"></dbp-icon>

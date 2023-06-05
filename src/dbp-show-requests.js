@@ -45,6 +45,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.mayReadAddress = false;
         this.mayReadMetadata = false;
         this.organizationSet = false;
+        this.addFileViaButton = false;
 
         this.currentItem.senderOrganizationName = "";
         this.currentItem.senderFullName = "";

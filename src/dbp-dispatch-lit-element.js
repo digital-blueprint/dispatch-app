@@ -511,7 +511,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.createdRequestsList = [];
         let createdRequestsIds = this.createdRequestsIds;
 
-        if (createdRequestsIds !== null) {
+        if (createdRequestsIds !== undefined) {
             for (let i = 0; i < createdRequestsIds.length; i++) {
                 try {
                     let response = await this.getDispatchRequest(createdRequestsIds[i]);
@@ -559,6 +559,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     *
     */
     openFileSource() {
+        this.fileUploadFinished = false;
         const fileSource = this._('#file-source');
         if (fileSource) {
             this._('#file-source').openDialog();
@@ -653,6 +654,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 201) {
+
             if (this.singleFileProcessing) {
                 send({
                     "summary": i18n.t('show-requests.successfully-added-file-title'),
@@ -667,13 +669,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.currentItem = responseBody;
             }
-
             this.currentFileIndex++;
 
-            if (this.uploadedNumberOfFiles === this.currentFileIndex) {
+            if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
                 await this.getCreatedDispatchRequests();
             }
-            //TODO
         } else {
             // TODO error handling
             if (this.singleFileProcessing) {
@@ -3339,6 +3339,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         value="${i18n.t('show-requests.add-files-button-text')}" 
                                         @click="${(event) => {
                                             this.requestCreated = true;
+                                            this.addFileViaButton = true;
                                             this.openFileSource();
                                         }}" 
                                         title="${i18n.t('show-requests.add-files-button-text')}"
