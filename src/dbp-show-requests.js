@@ -79,6 +79,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.langDir = undefined;
         this.loadingTranslations = false;
+        this.tableLoading = false;
     }
 
     static get scopedElements() {
@@ -104,6 +105,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             entryPointUrl: { type: String, attribute: 'entry-point-url' },
             loading: { type: Boolean, attribute: false },
             initialRequestsLoading: { type: Boolean, attribute: false },
+            tableLoading: { type: Boolean, attribute: false },
             requestList: { type: Array, attribute: false },
             showListView: { type: Boolean, attribute: false },
             showDetailsView: { type: Boolean, attribute: false },
@@ -940,7 +942,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 
                                     
                                 </div>
-
                                 <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView })}">
                                      <dbp-loading-button id="expand-all-btn"
                                                          class="${classMap({ hidden: this.expanded })}"
@@ -983,14 +984,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         </div>
                         
                         
-                            <div class="control table ${classMap({hidden: !this.initialRequestsLoading})}">
+                            <div class="control table ${classMap({hidden: !this.initialRequestsLoading && !this.tableLoading})}">
                                 <span class="loading">
                                     <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
                                 </span>
                             </div>
                             
                         
-                            <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading })}">
+                            <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading || this.tableLoading })}">
                                 <div id="dispatch-requests-table" class=""></div>
                                 <div class='tabulator' id='custom-pagination'>
                                     <div class='tabulator-footer'>

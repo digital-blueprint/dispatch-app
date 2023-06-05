@@ -86,6 +86,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.langDir = undefined;
         this.loadingTranslations = false;
+        this.tableLoading = false;
     }
 
     static get scopedElements() {
@@ -146,6 +147,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             nextcloudAuthInfo: {type: String, attribute: 'nextcloud-auth-info'},
 
             langDir: {type: String, attribute: "lang-dir"},
+            tableLoading: {type: Boolean, attribute: false}
         };
     }
 
@@ -757,13 +759,13 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                         </div>
 
-                        <div class="control table ${classMap({hidden: !this.createRequestsLoading || this.fileUploadFinished})}">
+                        <div class="control table ${classMap({hidden: !this.createRequestsLoading && this.fileUploadFinished && !this.tableLoading})}">
                             <span class="loading">
                                 <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
                             </span>
                         </div>
 
-                        <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.showListView || this.createRequestsLoading })}">
+                        <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.showListView || this.createRequestsLoading || this.tableLoading })}">
                             <div id="dispatch-requests-table" class=""></div>
                             <div class='tabulator' id='custom-pagination'>
                                 <div class='tabulator-footer'>

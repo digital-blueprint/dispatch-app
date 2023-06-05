@@ -507,6 +507,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async getCreatedDispatchRequests() {
         // const i18n = this._i18n;
         this.createRequestsLoading = !this._initialFetchDone;
+        this.tableLoading = true;
 
         this.createdRequestsList = [];
         let createdRequestsIds = this.createdRequestsIds;
@@ -546,6 +547,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.dispatchRequestsTable.setLocale(this.lang);
         this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
         // console.log('totalNumberOfItems: ' + this.totalNumberOfItems);
+        this.tableLoading = false;
 
         this.createRequestsLoading = false;
         this._initialFetchDone = true;
@@ -581,6 +583,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async onFileSelected(event) {
+        this.tableLoading = true;
         this.fileUploadFinished = false;
         if (!this.singleFileProcessing && !this.requestCreated) {
             this.processCreateDispatchRequest().then(async () => {
@@ -615,6 +618,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 "timeout": 5,
             });
         } finally {
+            this.tableLoading = false;
             this._('#add-files-btn').stop();
         }
     }
@@ -2014,11 +2018,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async getCreatedRequests() {
         if (this.createdRequestsList.length > 0) {
+            this.tableLoading = true;
             this.requestList = this.parseListOfRequests(this.createdRequestsList);
             let tableObject = this.createTableObject(this.requestList);
             this.dispatchRequestsTable.setData(tableObject);
             this.dispatchRequestsTable.setLocale(this.lang);
             this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+            this.tableLoading = false;
         }
     }
 
