@@ -2156,12 +2156,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                 } else {
                     // TODO error handling
-                    send({
-                        "summary": 'Error!',
-                        "body": 'Could not edit sender. Response code: ' + response.status,
-                        "type": "danger",
-                        "timeout": 5,
-                    });
+                    // send({
+                    //     "summary": 'Error!',
+                    //     "body": 'Could not edit sender. Response code: ' + response.status,
+                    //     "type": "danger",
+                    //     "timeout": 5,
+                    // });
                 }
             } else {
                 // console.log(event.target.valueObject);

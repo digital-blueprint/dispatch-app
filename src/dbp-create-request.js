@@ -431,6 +431,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.getListOfRequests();
         this.getCreatedDispatchRequests().then(() => {
             this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
+            this.showDetailsView = false;
+            this.showListView = false;
+            this.requestCreated = false;
         });
         this.showListView = true;
         this.showDetailsView = false;
@@ -446,7 +449,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderStreetAddress = "";
         this.currentItem.senderBuildingNumber = "";
 
-        //TODO
         this.requestCreated = false;
     }
 
@@ -685,6 +687,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                            @click="${(e) => {
                                this.saveRequest(e, this.currentItem);
                                this.showListView = false;
+                               this.showDetailsView = false;
                                this.addFileViaButton = false;
                            }}"
                         >
