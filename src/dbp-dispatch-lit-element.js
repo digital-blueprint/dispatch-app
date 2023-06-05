@@ -96,6 +96,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Returns if a person is set in or not
+     *
      * @returns {boolean} true or false
      */
     isLoggedIn() {
@@ -104,6 +105,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Returns true if a person has successfully logged in
+     *
      * @returns {boolean} true or false
      */
     isLoading() {
@@ -114,6 +116,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Send a fetch to given url with given options
+     *
      * @param url
      * @param options
      * @returns {object} response (error or result)
@@ -131,6 +134,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Gets the list of all dispatch requests of the current logged-in user
+     *
      * @param groupId
      * @returns {object} response
      */
@@ -147,6 +151,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Gets the dispatch request of the current logged-in user with the given identifier
+     *
      * @param identifier
      * @returns {object} response
      */
@@ -163,6 +168,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Gets the dispatch recipient of the given ID
+     *
      * @param identifier
      * @returns {object} response
      */
@@ -179,6 +185,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a dispatch post request
+     *
      * @returns {object} response
      */
     async sendCreateDispatchRequest() {
@@ -208,6 +215,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a delete dispatch request
+     *
      * @param identifier
      * @returns {object} response
      */
@@ -225,6 +233,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a put dispatch request
+     *
      * @param identifier
      * @param senderOrganizationName
      * @param senderFullName
@@ -262,6 +271,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a submit dispatch request
+     *
      * @param identifier
      * @returns {object} response
      */
@@ -282,6 +292,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a dispatch request-recipients post request
+     *
      * @param id
      * @param personIdentifier
      * @param givenName
@@ -462,6 +473,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Send a PUT request to the API to change the reference number of a request
+     *
      * @param identifier The identifier of the dispatch request
      * @param referenceNumber The new reference number
      */
@@ -729,6 +741,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Open Filesink for a single File
+     *
      * @param fileContentUrl
      * @param fileName
      */
@@ -1112,6 +1125,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Returns if the request can be submitted or not. And if not, it shows a UI message.
+     *
      * @param {object} request
      * @returns {boolean} if the request can be submitted or not
      */
@@ -1979,6 +1993,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Get a list of all requests
+     *
      * @returns {Array} list
      */
     async getListOfRequests() {
