@@ -1078,6 +1078,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                              ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                              @click="${(event) => {
                                                                  this.subject = this.currentItem.name ? this.currentItem.name : '';
+                                                                 this._('#tf-edit-subject-fn-dialog').value = this.currentItem.name ? this.currentItem.name : ``;
                                                                  MicroModal.show(this._('#edit-subject-modal'), {
                                                                      disableScroll: true,
                                                                      onClose: (modal) => {
@@ -1103,13 +1104,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <dbp-icon-button id="edit-reference-number-btn"
                                                              ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                              @click="${(event) => {
-                                                MicroModal.show(this._('#edit-reference-number-modal'), {
-                                                    disableScroll: true,
-                                                    onClose: (modal) => {
-                                                        this.loading = false;
-                                                    },
-                                                });
-                                            }}"
+                                                                 this._('#tf-edit-reference-number-fn-dialog').value = this.currentItem.referenceNumber && this.currentItem.referenceNumber !== '-' ? this.currentItem.referenceNumber : ``;
+                                                                 MicroModal.show(this._('#edit-reference-number-modal'), {
+                                                                    disableScroll: true,
+                                                                    onClose: (modal) => {
+                                                                        this.loading = false;
+                                                                    },
+                                                                });
+                                                            }}"
                                                              title="${i18n.t('show-requests.edit-reference-number-button-text')}"
                                                              icon-name="pencil"></dbp-icon-button>` : ``}
                                         </div>

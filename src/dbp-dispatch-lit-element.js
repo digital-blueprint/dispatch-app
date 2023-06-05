@@ -1267,9 +1267,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentItem = responseBody;
                 this.subject = this.currentItem.name;
 
-                console.log('responsebody AFTER changeSubjectRequest: ', responseBody);
-
-
                 send({
                     "summary": i18n.t('show-requests.edit-subject-success-title'),
                     "body": i18n.t('show-requests.edit-subject-success-text'),

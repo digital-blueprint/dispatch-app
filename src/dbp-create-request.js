@@ -701,6 +701,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                this.getCreatedDispatchRequests();
                                this.showDetailsView = false;
                                this.showListView = true;
+                               this.subject = '';
                            }}"
                         >
                             <dbp-icon name="chevron-left"></dbp-icon>
@@ -813,18 +814,20 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <dbp-icon-button id="edit-subject-btn"
                                                          ?disabled="${this.loading || this.currentItem.dateSubmitted}"
                                                          @click="${(event) => {
-                                                                MicroModal.show(this._('#edit-subject-modal'), {
-                                                                    disableScroll: true,
-                                                                    onClose: (modal) => {
-                                                                        this.loading = false;
-                                                                    },
-                                                                });
-                                                            }}"
+                                                             this.subject = this.currentItem.name ? this.currentItem.name : '';
+                                                             this._('#tf-edit-subject-fn-dialog').value = this.currentItem.name ? this.currentItem.name : ``;
+                                                             MicroModal.show(this._('#edit-subject-modal'), {
+                                                                disableScroll: true,
+                                                                onClose: (modal) => {
+                                                                    this.loading = false;
+                                                                },
+                                                             });
+                                                         }}"
                                                          title="${i18n.t('show-requests.edit-subject-button-text')}"
                                                          icon-name="pencil"></dbp-icon-button>` : ``}
                                     </div>
                                     <div>${this.currentItem.name}</div>
-                                    <div class="no-subject ${classMap({hidden: !this.isLoggedIn() || this.subject.length !== 0})}">${i18n.t('show-requests.empty-subject-text')}</div>
+                                    <div class="no-subject ${classMap({hidden: !this.isLoggedIn() || this.currentItem.name || this.currentItem.name !== ''})}">${i18n.t('show-requests.empty-subject-text')}</div>
                                 </div>
 
                                 <div class="line"></div>
@@ -841,6 +844,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <dbp-icon-button id="edit-reference-number-btn"
                                                                  ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                                  @click="${(event) => {
+                                                                    this._('#tf-edit-reference-number-fn-dialog').value = this.currentItem.referenceNumber && this.currentItem.referenceNumber !== '-' ? this.currentItem.referenceNumber : ``;
                                                                     MicroModal.show(this._('#edit-reference-number-modal'), {
                                                                         disableScroll: true,
                                                                         onClose: (modal) => {
