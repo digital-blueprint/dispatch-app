@@ -1507,9 +1507,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let dialogText = i18n.t('show-requests.submit-dialog-text', {count: this.dispatchRequestsTable.getSelectedRows().length});
 
+            let ids = [];
+
             if (confirm(dialogText)) {
                 for (let i = 0; i < selectedItems.length; i++) {
                     let id = selectedItems[i].getData()['requestId'];
+                    ids.push(id);
                     let response = await this.getDispatchRequest(id);
                     let result = await response.json();
 
@@ -1522,14 +1525,27 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
 
                 if (!somethingWentWrong) {
-                    this.getListOfRequests();
+
+                    if (this.dispatchRequestsTable ) {
+                        if (this.createdRequestsList && this.createdRequestsList.length > 0) {
+                            for (let i = 0; i < ids.length; i++) {
+                                this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== ids[i]); //TODO maybe there is a better way to do this
+                            }
+                            this.getCreatedDispatchRequests();
+                            this.showDetailsView = false;
+                            this.requestCreated = true;
+
+                        } else {
+                            this.getListOfRequests();
+                            this.clearAll();
+                        }
+                    }
                     send({
                         "summary": i18n.t('show-requests.successfully-submitted-title'),
                         "body": i18n.t('show-requests.successfully-submitted-text'),
                         "type": "success",
                         "timeout": 5,
                     });
-                    this.clearAll();
                 } else {
                     // TODO error handling
                     send({
