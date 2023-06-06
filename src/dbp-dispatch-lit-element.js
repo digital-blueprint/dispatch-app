@@ -308,17 +308,30 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let body;
 
         if (personIdentifier === null) {
-            body = {
-                "dispatchRequestIdentifier": id,
-                "givenName": givenName,
-                "familyName": familyName,
-                "addressCountry": addressCountry,
-                "postalCode": postalCode,
-                "addressLocality": addressLocality,
-                "streetAddress": streetAddress,
-                "buildingNumber": '',
-                "birthDate": birthDate
-            };
+            if (birthDate !== '') {
+                body = {
+                    "dispatchRequestIdentifier": id,
+                    "givenName": givenName,
+                    "familyName": familyName,
+                    "addressCountry": addressCountry,
+                    "postalCode": postalCode,
+                    "addressLocality": addressLocality,
+                    "streetAddress": streetAddress,
+                    "buildingNumber": '',
+                    "birthDate": birthDate
+                };
+            } else {
+                body = {
+                    "dispatchRequestIdentifier": id,
+                    "givenName": givenName,
+                    "familyName": familyName,
+                    "addressCountry": addressCountry,
+                    "postalCode": postalCode,
+                    "addressLocality": addressLocality,
+                    "streetAddress": streetAddress,
+                    "buildingNumber": ''
+                };
+            }
         } else {
             body = {
                 "dispatchRequestIdentifier": id,
@@ -820,9 +833,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let personIdentifier = this.currentRecipient.personIdentifier ? this.currentRecipient.personIdentifier : null;
 
             let birthDate = '';
-            if (this.currentRecipient.birthDateDay !== '' && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '') {
+            if (this.currentRecipient.birthDateDay && this.currentRecipient.birthDateMonth && this.currentRecipient.birthDateYear && this.currentRecipient.birthDateDay !== '' && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '') {
                 birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
-            } else if (!personIdentifier) {
+            } /*else if (!personIdentifier) {
                 send({
                     "summary": i18n.t('show-requests.error-invalid-birthdate-title'),
                     "body": i18n.t('show-requests.error-invalid-birthdate-text'),
@@ -830,7 +843,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     "timeout": 5,
                 });
                 return;
-            }
+            }*/
 
             let response = await this.sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress);
 
@@ -911,10 +924,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let postalCode = this.currentRecipient.postalCode;
             let addressLocality = this.currentRecipient.addressLocality;
             let streetAddress = this.currentRecipient.streetAddress;
+
             let birthDate = '';
-            if (this.currentRecipient.birthDateDay !== '' && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '') {
+            if (this.currentRecipient.birthDateDay && this.currentRecipient.birthDateMonth && this.currentRecipient.birthDateYear && this.currentRecipient.birthDateDay !== '' && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '') {
                 birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
             }
+
             let personIdentifier = this.currentRecipient.personIdentifier;
 
             let recipientId = this.currentRecipient.identifier;
@@ -2753,22 +2768,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             let validal = this.checkValidity(this._('#tf-add-recipient-al-dialog'));
                                             let validpc = this.checkValidity(this._('#tf-add-recipient-pc-dialog'));
                                             let validsa = this.checkValidity(this._('#tf-add-recipient-sa-dialog'));
-                                            let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
-                                            let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
-                                            let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
+                                            // let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
+                                            // let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
+                                            // let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
                                             let validfn = this.checkValidity(this._('#tf-add-recipient-fn-dialog'));
                                             let validgn = this.checkValidity(this._('#tf-add-recipient-gn-dialog'));
 
-                                            if (validgn && validfn && validcountry && validpc && validal && validsa && validbirthday && validbirthmonth && validbirthyear) {
+                                            if (validgn && validfn && validcountry && validpc && validal && validsa) { // && validbirthday && validbirthmonth && validbirthyear
                                                 this.currentRecipient.givenName = this._('#tf-add-recipient-gn-dialog').value;
                                                 this.currentRecipient.familyName = this._('#tf-add-recipient-fn-dialog').value;
                                                 this.currentRecipient.addressCountry = this._('#add-recipient-country-select').value;
                                                 this.currentRecipient.postalCode = this._('#tf-add-recipient-pc-dialog').value;
                                                 this.currentRecipient.addressLocality = this._('#tf-add-recipient-al-dialog').value;
                                                 this.currentRecipient.streetAddress = this._('#tf-add-recipient-sa-dialog').value;
-                                                this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
-                                                this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
-                                                this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
+                                                // this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
+                                                // this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
+                                                // this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
 
                                                 this.addRecipientToRequest(button).then(r => {
                                                     button.disabled = false;
@@ -2981,22 +2996,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             let validal = this.checkValidity(this._('#tf-edit-recipient-al-dialog'));
                                             let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'));
                                             let validsa = this.checkValidity(this._('#tf-edit-recipient-sa-dialog'));
-                                            let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
-                                            let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
-                                            let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
+                                            // let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
+                                            // let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
+                                            // let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
                                             let validfn = this.checkValidity(this._('#tf-edit-recipient-fn-dialog'));
                                             let validgn = this.checkValidity(this._('#tf-edit-recipient-gn-dialog'));
                                             
-                                            if (validgn && validfn && validcountry && validpc && validal && validsa && validbirthday && validbirthmonth && validbirthyear) {
+                                            if (validgn && validfn && validcountry && validpc && validal && validsa) { // && validbirthday && validbirthmonth && validbirthyear
                                                 this.currentRecipient.givenName = this._('#tf-edit-recipient-gn-dialog').value;
                                                 this.currentRecipient.familyName = this._('#tf-edit-recipient-fn-dialog').value;
                                                 this.currentRecipient.addressCountry = this._('#edit-recipient-country-select').value;
                                                 this.currentRecipient.postalCode = this._('#tf-edit-recipient-pc-dialog').value;
                                                 this.currentRecipient.addressLocality = this._('#tf-edit-recipient-al-dialog').value;
                                                 this.currentRecipient.streetAddress = this._('#tf-edit-recipient-sa-dialog').value;
-                                                this.currentRecipient.birthDateDay = this._('#tf-edit-recipient-birthdate-day').value;
-                                                this.currentRecipient.birthDateMonth = this._('#tf-edit-recipient-birthdate-month').value;
-                                                this.currentRecipient.birthDateYear = this._('#tf-edit-recipient-birthdate-year').value;
+                                                // this.currentRecipient.birthDateDay = this._('#tf-edit-recipient-birthdate-day').value;
+                                                // this.currentRecipient.birthDateMonth = this._('#tf-edit-recipient-birthdate-month').value;
+                                                // this.currentRecipient.birthDateYear = this._('#tf-edit-recipient-birthdate-year').value;
 
                                                 this.updateRecipient(button);
                                                 MicroModal.close(this._('#edit-recipient-modal'));
