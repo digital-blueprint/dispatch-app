@@ -1715,48 +1715,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async processCreateDispatchRequest() {
         this._('#create-btn').start();
 
-        const i18n = this._i18n;
         try {
             let response = await this.sendCreateDispatchRequest();
             let responseBody = await response.json();
 
             if (responseBody !== undefined && response.status === 201) {
-                // if (this.singleFileProcessing) {
-                //     send({
-                //         "summary": i18n.t('create-request.successfully-requested-title'),
-                //         "body": i18n.t('create-request.successfully-requested-text'),
-                //         "type": "success",
-                //         "timeout": 5,
-                //     });
-                // }
                 this.currentItem = responseBody;
                 this.requestCreated = true;
-                // console.log(this.currentItem);
 
-            } else if (response.status === 403) {
-                // if (this.singleFileProcessing) {
-                //     send({
-                //         "summary": i18n.t('create-request.error-requested-title'),
-                //         "body": i18n.t('error-not-permitted'),
-                //         "type": "danger",
-                //         "timeout": 5,
-                //     });
-                // }
-                true;
             } else {
-                // TODO show error code specific notification
-                // if (this.singleFileProcessing) {
-                //     send({
-                //         "summary": i18n.t('create-request.error-requested-title'),
-                //         "body": i18n.t('create-request.error-requested-text'),
-                //         "type": "danger",
-                //         "timeout": 5,
-                //     });
-                // }
                 this.errorCreatingRequest = true;
             }
         } finally {
-            // TODO
             this._('#create-btn').stop();
         }
     }

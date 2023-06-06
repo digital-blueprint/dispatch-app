@@ -456,7 +456,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.requestCreated = false;
 
         let currentPage = this.dispatchRequestsTable ? this.dispatchRequestsTable.getPage() : 1;
-        this.getListOfRequests();
+        // this.getListOfRequests();
         this.getCreatedDispatchRequests().then(() => {
             this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
             this.showDetailsView = false;
