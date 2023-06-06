@@ -292,7 +292,7 @@ Dependencies:
                 targets: [
                     {
                         src: 'vendor/signature/assets/*-placeholder.png',
-                        dest: 'dist/local/@dbp-topics/signature',
+                        dest: 'dist/' + (await getDistPath('@digital-blueprint/esign-app')),
                     },
                     {src: 'assets/*.css', dest: 'dist/' + (await getDistPath(pkg.name))},
                     {src: 'assets/*.ico', dest: 'dist/' + (await getDistPath(pkg.name))},
@@ -363,7 +363,7 @@ Dependencies:
                 targets: [
                     {
                         src: 'vendor/signature/assets/*-placeholder.png',
-                        dest: 'dist/local/@dbp-topics/signature',
+                        dest: 'dist/' + (await getDistPath('@digital-blueprint/esign-app')),
                     },
                     {src: customAssetsPath + '*.css', dest: 'dist/' + (await getDistPath(pkg.name))},
                     {src: customAssetsPath + '*.ico', dest: 'dist/' + (await getDistPath(pkg.name))},
