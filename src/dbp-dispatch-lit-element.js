@@ -564,8 +564,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.createRequestsLoading = false;
         this._initialFetchDone = true;
 
-        //TODO here
-        this.showListView = true;
+        this.requestCreated ? this.showListView = true : this.showListView = false;
     }
 
     /*
@@ -592,6 +591,24 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.fileUploadFinished = true;
         this.uploadedNumberOfFiles = event.detail.count;
         this.currentFileIndex = 0;
+
+        const i18n = this._i18n;
+        if (!this.errorCreatingRequest) {
+            send({
+                "summary": i18n.t('create-request.successfully-requested-title'),
+                "body": this.singleFileProcessing ? i18n.t('create-request.successfully-requested-text') : i18n.t('create-request.successfully-requested-text-multiple'),
+                "type": "success",
+                "timeout": 5,
+            });
+        } else {
+            send({
+                "summary": i18n.t('create-request.error-requested-title'),
+                "body": i18n.t('create-request.error-requested-text'),
+                "type": "danger",
+                "timeout": 5,
+            });
+        }
+        this.errorCreatingRequest = false;
     }
 
     async onFileSelected(event) {
@@ -671,7 +688,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 201) {
 
-            if (this.singleFileProcessing) {
+            if (this.singleFileProcessing) { //TODO
                 send({
                     "summary": i18n.t('show-requests.successfully-added-file-title'),
                     "body": i18n.t('show-requests.successfully-added-file-text'),
@@ -1704,37 +1721,39 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let responseBody = await response.json();
 
             if (responseBody !== undefined && response.status === 201) {
-                if (this.singleFileProcessing) {
-                    send({
-                        "summary": i18n.t('create-request.successfully-requested-title'),
-                        "body": i18n.t('create-request.successfully-requested-text'),
-                        "type": "success",
-                        "timeout": 5,
-                    });
-                }
+                // if (this.singleFileProcessing) {
+                //     send({
+                //         "summary": i18n.t('create-request.successfully-requested-title'),
+                //         "body": i18n.t('create-request.successfully-requested-text'),
+                //         "type": "success",
+                //         "timeout": 5,
+                //     });
+                // }
                 this.currentItem = responseBody;
                 this.requestCreated = true;
                 // console.log(this.currentItem);
 
             } else if (response.status === 403) {
-                if (this.singleFileProcessing) {
-                    send({
-                        "summary": i18n.t('create-request.error-requested-title'),
-                        "body": i18n.t('error-not-permitted'),
-                        "type": "danger",
-                        "timeout": 5,
-                    });
-                }
+                // if (this.singleFileProcessing) {
+                //     send({
+                //         "summary": i18n.t('create-request.error-requested-title'),
+                //         "body": i18n.t('error-not-permitted'),
+                //         "type": "danger",
+                //         "timeout": 5,
+                //     });
+                // }
+                true;
             } else {
                 // TODO show error code specific notification
-                if (this.singleFileProcessing) {
-                    send({
-                        "summary": i18n.t('create-request.error-requested-title'),
-                        "body": i18n.t('create-request.error-requested-text'),
-                        "type": "danger",
-                        "timeout": 5,
-                    });
-                }
+                // if (this.singleFileProcessing) {
+                //     send({
+                //         "summary": i18n.t('create-request.error-requested-title'),
+                //         "body": i18n.t('create-request.error-requested-text'),
+                //         "type": "danger",
+                //         "timeout": 5,
+                //     });
+                // }
+                this.errorCreatingRequest = true;
             }
         } finally {
             // TODO

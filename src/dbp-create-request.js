@@ -67,6 +67,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.filesAdded = false;
         this.expanded = false;
         this.addFileViaButton = false;
+        this.errorCreatingRequest = false;
 
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
@@ -428,7 +429,32 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     saveRequest() {
-        this.clearAll();
+        this.currentItem = {};
+        this.currentItem.senderOrganizationName = "";
+        this.currentItem.senderFullName = "";
+        this.currentItem.senderAddressCountry = "";
+        this.currentItem.senderPostalCode = "";
+        this.currentItem.senderAddressLocality = "";
+        this.currentItem.senderStreetAddress = "";
+        this.currentItem.senderBuildingNumber = "";
+        this.currentItem.files = [];
+        this.currentItem.recipients = [];
+
+        this.currentRecipient = {};
+
+        this.subject = '';
+
+        this.hasEmptyFields = false;
+        this.hasSender = false;
+        this.hasRecipients = false;
+
+        this.expanded = false;
+
+        this.showListView = false;
+        this.showDetailsView = false;
+
+        this.requestCreated = false;
+
         let currentPage = this.dispatchRequestsTable ? this.dispatchRequestsTable.getPage() : 1;
         this.getListOfRequests();
         this.getCreatedDispatchRequests().then(() => {
@@ -437,21 +463,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.showListView = false;
             this.requestCreated = false;
         });
-        this.showListView = true;
-        this.showDetailsView = false;
-        this.currentItem = {};
-        this.currentItem.files = [];
-        this.currentItem.recipients = [];
-        this.currentRecipient = {};
-        this.currentItem.senderOrganizationName = "";
-        this.currentItem.senderFullName = "";
-        this.currentItem.senderAddressCountry = "";
-        this.currentItem.senderPostalCode = "";
-        this.currentItem.senderAddressLocality = "";
-        this.currentItem.senderStreetAddress = "";
-        this.currentItem.senderBuildingNumber = "";
 
-        this.requestCreated = false;
     }
 
     checkMultipleRequestsCheckmark() {
@@ -688,8 +700,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <a href="#" title="${i18n.t('create-request.back-to-create')}"
                            @click="${(e) => {
                                this.saveRequest(e, this.currentItem);
-                               this.showListView = false;
-                               this.showDetailsView = false;
                                this.addFileViaButton = false;
                            }}"
                         >

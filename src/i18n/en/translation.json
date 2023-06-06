@@ -18,6 +18,7 @@
         "multiple-requests-text": "Create a new dispatch orders for each document",
         "request-subject": "Subject",
         "successfully-requested-text": "The dispatch order has been created successfully. You can edit it further now or save it for later.",
+        "successfully-requested-text-multiple": "The dispatch orders have been created successfully. You can edit them further now or save them for later.",
         "successfully-requested-title": "Successfully created"
     },
     "error-delivery-channel-text": "One or more of the selected recipients has an invalid delivery channel. Additional address data must be entered manually.",
@@ -105,7 +106,7 @@
         "empty-files-text": "No files attached (yet)",
         "empty-reference-number": "",
         "empty-sender-text": "No sender specified (yet)",
-        "empty-subject-text": "No subject specified.",
+        "empty-subject-text": "No subject specified",
         "error-invalid-birthdate-text": "Please enter a valid birth date.",
         "error-invalid-birthdate-title": "Invalid birth date",
         "error-reference-number-auto-update-failed-text": "The reference number was successfully extracted from the PDF but could not be saved!",

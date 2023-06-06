@@ -18,6 +18,7 @@
         "multiple-requests-text": "Pro Dokument einen eigenen Versandauftrag erstellen",
         "request-subject": "Betreff",
         "successfully-requested-text": "Der Versandauftrag wurde erfolgreich angelegt. Sie können diesen jetzt weiter bearbeiten, sowie löschen oder freigeben, oder einen weiteren Versandauftrag anlegen.",
+        "successfully-requested-text-multiple": "Die Versandaufträge wurden erfolgreich angelegt. Sie können diese jetzt weiter bearbeiten, sowie löschen oder freigeben, oder weitere Versandaufträge anlegen.",
         "successfully-requested-title": "Erfolgreich erstellt!"
     },
     "error-delivery-channel-text": "Einer oder mehrere der gewählten Empfänger hat einen ungültigen Zustellkanal. Adressdaten müssen händisch eingegeben werden.",
@@ -105,7 +106,7 @@
         "empty-files-text": "(Noch) keine Dateien angehängt.",
         "empty-reference-number": "",
         "empty-sender-text": "(Noch) kein Absender angegeben.",
-        "empty-subject-text": "Kein Betreff angegeben.",
+        "empty-subject-text": "Kein Betreff angegeben",
         "error-invalid-birthdate-text": "Bitte geben Sie ein gültiges Geburtsdatum ein.",
         "error-invalid-birthdate-title": "Ungültiges Geburtsdatum",
         "error-reference-number-auto-update-failed-text": "Die Geschäftszahl wurde erfolgreich aus dem PDF gelesen, konnte aber nicht gespeichert werden!",
