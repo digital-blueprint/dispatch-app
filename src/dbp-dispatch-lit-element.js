@@ -356,16 +356,28 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let body;
 
         if (personIdentifier === null) {
-            body = {
-                "dispatchRequestIdentifier": id,
-                "givenName": givenName,
-                "familyName": familyName,
-                "addressCountry": addressCountry,
-                "postalCode": postalCode,
-                "addressLocality": addressLocality,
-                "streetAddress": streetAddress,
-                "birthDate": birthDate
-            };
+            if (birthDate !== '') {
+                body = {
+                    "dispatchRequestIdentifier": id,
+                    "givenName": givenName,
+                    "familyName": familyName,
+                    "addressCountry": addressCountry,
+                    "postalCode": postalCode,
+                    "addressLocality": addressLocality,
+                    "streetAddress": streetAddress,
+                    "birthDate": birthDate
+                };
+            } else {
+                body = {
+                    "dispatchRequestIdentifier": id,
+                    "givenName": givenName,
+                    "familyName": familyName,
+                    "addressCountry": addressCountry,
+                    "postalCode": postalCode,
+                    "addressLocality": addressLocality,
+                    "streetAddress": streetAddress
+                };
+            }
         } else {
             body = {
                 "dispatchRequestIdentifier": id,
@@ -577,7 +589,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.createRequestsLoading = false;
         this._initialFetchDone = true;
 
-        this.requestCreated ? this.showListView = true : this.showListView = false;
+        // this.requestCreated ? this.showListView = true : this.showListView = false;
+        this.showListView = true;
     }
 
     /*
@@ -835,15 +848,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let birthDate = '';
             if (this.currentRecipient.birthDateDay && this.currentRecipient.birthDateMonth && this.currentRecipient.birthDateYear && this.currentRecipient.birthDateDay !== '' && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '') {
                 birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
-            } /*else if (!personIdentifier) {
-                send({
-                    "summary": i18n.t('show-requests.error-invalid-birthdate-title'),
-                    "body": i18n.t('show-requests.error-invalid-birthdate-text'),
-                    "type": "danger",
-                    "timeout": 5,
-                });
-                return;
-            }*/
+            }
 
             let response = await this.sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress);
 
@@ -1473,7 +1478,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async fetchDetailedRecipientInformation(identifier) {
-        if (this.mayReadAddress) {
+        // if (this.mayReadAddress) {
             let response = await this.getDispatchRecipient(identifier);
 
             let responseBody = await response.json();
@@ -1513,7 +1518,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             } else {
                 // TODO error handling
             }
-        }
+        // }
     }
 
     async submitSelected() {
@@ -2210,7 +2215,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentRecipient = {};
 
         if (this._('#recipient-selector') && this._('#recipient-selector').getAttribute('data-object') !== null && this._('#recipient-selector').getAttribute('data-object') !== '') {
-            console.log(this._('#recipient-selector').getAttribute('data-object'));
+            // console.log(this._('#recipient-selector').getAttribute('data-object'));
             const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
             const personId = person['@id'];
 
@@ -2241,7 +2246,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             } else {
                 // TODO error handling
             }
-            console.log('rec', this.currentRecipient);
+            // console.log('rec', this.currentRecipient);
             this.requestUpdate();
         }
     }
@@ -2781,9 +2786,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 this.currentRecipient.postalCode = this._('#tf-add-recipient-pc-dialog').value;
                                                 this.currentRecipient.addressLocality = this._('#tf-add-recipient-al-dialog').value;
                                                 this.currentRecipient.streetAddress = this._('#tf-add-recipient-sa-dialog').value;
-                                                // this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
-                                                // this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
-                                                // this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
+                                                this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
+                                                this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
+                                                this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
 
                                                 this.addRecipientToRequest(button).then(r => {
                                                     button.disabled = false;
@@ -3009,9 +3014,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 this.currentRecipient.postalCode = this._('#tf-edit-recipient-pc-dialog').value;
                                                 this.currentRecipient.addressLocality = this._('#tf-edit-recipient-al-dialog').value;
                                                 this.currentRecipient.streetAddress = this._('#tf-edit-recipient-sa-dialog').value;
-                                                // this.currentRecipient.birthDateDay = this._('#tf-edit-recipient-birthdate-day').value;
-                                                // this.currentRecipient.birthDateMonth = this._('#tf-edit-recipient-birthdate-month').value;
-                                                // this.currentRecipient.birthDateYear = this._('#tf-edit-recipient-birthdate-year').value;
+                                                this.currentRecipient.birthDateDay = this._('#tf-edit-recipient-birthdate-day').value;
+                                                this.currentRecipient.birthDateMonth = this._('#tf-edit-recipient-birthdate-month').value;
+                                                this.currentRecipient.birthDateYear = this._('#tf-edit-recipient-birthdate-year').value;
 
                                                 this.updateRecipient(button);
                                                 MicroModal.close(this._('#edit-recipient-modal'));
@@ -3396,8 +3401,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <div class="right-side">
                                 <dbp-icon-button id="show-file-btn"
                                                  @click="${(event) => {
-                                                    console.log("on show file clicked");
-                                                    console.log( this._('#file-viewer'));
                                                     this._onShowFileClicked(event, file.identifier);
                                                 }}"
                                                  title="${i18n.t('show-requests.show-file-button-text')}"

@@ -450,7 +450,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.expanded = false;
 
-        this.showListView = false;
+        this.showListView = true;
         this.showDetailsView = false;
 
         this.requestCreated = false;
@@ -460,7 +460,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.getCreatedDispatchRequests().then(() => {
             this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
             this.showDetailsView = false;
-            this.showListView = false;
+            this.showListView = true;
             this.requestCreated = false;
         });
 

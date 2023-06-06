@@ -1195,6 +1195,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                                     this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
                                                                                     this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
                                                                                     this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
+
                                                                                     this._('#tf-edit-recipient-gn-dialog').value = this.currentRecipient.givenName;
                                                                                     this._('#tf-edit-recipient-fn-dialog').value = this.currentRecipient.familyName;
                                                                                     this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode ? this.currentRecipient.postalCode : '';
