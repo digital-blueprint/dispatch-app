@@ -35,7 +35,7 @@ npm run watch-custom
 npm test
 ```
 
-Jump to <http://localhost:8001> and you should get a Single Sign On login page.
+Jump to <http://localhost:8001>, and you should get a Single Sign On login page.
 
 By default, the application is built using the assets in `assets/`. However, custom assets can also be used to build the application. The custom assets can be added to the directory `assets_custom/dbp-dispatch/assets/`. This allows developers to easily develop and build the application for different environments.
 
