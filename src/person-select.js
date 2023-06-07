@@ -25,14 +25,18 @@ export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
             text += ` ${person['familyName']}`;
         }
 
-        let mat = person?.localData?.matriculationNumber;
-        if (mat !== undefined && this.isValidMatriculationNumber(mat)) {
+        let mat = person.localData.matriculationNumber;
+        if (mat !== null && this.isValidMatriculationNumber(mat)) {
              text += ` (${mat})`;
         }
 
         return text;
     }
 
+    /**
+     * @param {string} mat
+     * @returns {boolean}
+     */
     isValidMatriculationNumber(mat) {
         return mat.match(/^[0-9]{8}$/g);
     }
