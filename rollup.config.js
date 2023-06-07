@@ -94,6 +94,7 @@ if ((devConfig != undefined && appEnv in devConfig)) {
         nextcloudName: '',
         pdfAsQualifiedlySigningServer: 'https://test',
         hiddenActivities: [],
+        enableAnnotations: true,
     };
 } else {
     console.error(`Unknown build environment: '${appEnv}', use one of '${Object.keys(appConfig)}'`);
@@ -211,6 +212,7 @@ export default (async () => {
                     buildInfo: getBuildInfo(appEnv),
                     shortName: config.shortName,
                     appDomain: config.appDomain,
+                    enableAnnotations: config.enableAnnotations,
                 },
             }),
             !whitelabel &&
@@ -243,6 +245,7 @@ export default (async () => {
                     buildInfo: getBuildInfo(appEnv),
                     shortName: config.shortName,
                     appDomain: config.appDomain,
+                    enableAnnotations: config.enableAnnotations,
                 },
             }),
             replace({
