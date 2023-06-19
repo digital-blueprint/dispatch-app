@@ -251,7 +251,7 @@ export function getDispatchRequestTableStyles() {
 
         .tabulator-row, .tabulator-row.tabulator-row-even, .tabulator-row.tabulator-row-odd {
             margin-bottom: 1rem;
-            border: 1px solid var(--dbp-override-muted);
+            border: 1px solid var(--dbp-muted);
             min-height: 65px;
         }
 
@@ -401,7 +401,7 @@ export function getDispatchRequestStyles() {
     // language=css
     return css`
             a {
-                color: var(--dbp-override-content);
+                color: var(--dbp-content);
                 cursor: pointer;
                 text-decoration: none;
             }
@@ -422,6 +422,7 @@ export function getDispatchRequestStyles() {
 
             select:disabled {
                 cursor: not-allowed;
+                color: var(--dbp-muted);
             }
             
             .modal-overlay {
@@ -463,7 +464,7 @@ export function getDispatchRequestStyles() {
 
             .request-item.details .request-buttons {
                 padding-top: 1.5em;
-                border-top: 1px solid var(--dbp-override-muted);
+                border-top: 1px solid var(--dbp-muted);
             }
 
             .request-item.details .sender-data-btn {
@@ -590,7 +591,7 @@ export function getDispatchRequestStyles() {
             }
 
             .modal-content-left {
-                border-right: var(--dbp-override-border);
+                border-right: var(--dbp-border);
                 padding-right: 20px;
             }
 
@@ -687,7 +688,7 @@ export function getDispatchRequestStyles() {
             }
 
             .muted {
-                color: var(--dbp-override-muted);
+                color: var(--dbp-muted);
             }
 
             #edit-sender-modal-title,
@@ -731,14 +732,14 @@ export function getDispatchRequestStyles() {
             }
 
             .line {
-                border-right: 1px solid var(--dbp-override-muted);
+                border-right: 1px solid var(--dbp-muted);
             }
 
             .details.header {
                 display: grid;
                 grid-template-columns: 1fr 1px 1fr 1px 1fr;
                 padding-bottom: 2em;
-                border-bottom: 1px solid var(--dbp-override-muted);
+                border-bottom: 1px solid var(--dbp-muted);
                 text-align: center;
             }
 
@@ -749,7 +750,7 @@ export function getDispatchRequestStyles() {
             .details.sender, .details.recipients {
                 padding-top: 1.5em;
                 padding-bottom: 1.5em;
-                border-bottom: 1px solid var(--dbp-override-muted);
+                border-bottom: 1px solid var(--dbp-muted);
             }
 
             .details.files {
@@ -758,7 +759,7 @@ export function getDispatchRequestStyles() {
 
             .section-titles {
                 font-size: 1.3em;
-                color: var(--dbp-override-muted);
+                color: var(--dbp-muted);
                 text-transform: uppercase;
                 padding-bottom: 0.5em;
             }
@@ -782,7 +783,7 @@ export function getDispatchRequestStyles() {
             .card {
                 display: grid;
                 grid-template-columns: 4fr min-content;
-                border: 1px solid var(--dbp-override-muted);
+                border: 1px solid var(--dbp-muted);
                 min-width: 320px;
             }
 
@@ -826,15 +827,15 @@ export function getDispatchRequestStyles() {
             }
 
             .status-green {
-                color: var(--dbp-override-success);
+                color: var(--dbp-success);
             }
 
             .status-orange {
-                color: var(--dbp-override-warning-surface);
+                color: var(--dbp-warning-surface);
             }
 
             .status-red {
-                color: var(--dbp-override-danger);
+                color: var(--dbp-danger);
             }
             
             .delivery-status {
