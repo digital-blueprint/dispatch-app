@@ -96,7 +96,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Returns if a person is set in or not
-     *
      * @returns {boolean} true or false
      */
     isLoggedIn() {
@@ -105,7 +104,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Returns true if a person has successfully logged in
-     *
      * @returns {boolean} true or false
      */
     isLoading() {
@@ -116,7 +114,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Send a fetch to given url with given options
-     *
      * @param url
      * @param options
      * @returns {object} response (error or result)
@@ -134,7 +131,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Gets the list of all dispatch requests of the current logged-in user
-     *
      * @param groupId
      * @returns {object} response
      */
@@ -151,7 +147,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Gets the dispatch request of the current logged-in user with the given identifier
-     *
      * @param identifier
      * @returns {object} response
      */
@@ -168,7 +163,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Gets the dispatch recipient of the given ID
-     *
      * @param identifier
      * @returns {object} response
      */
@@ -185,14 +179,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a dispatch post request
-     *
      * @returns {object} response
      */
     async sendCreateDispatchRequest() {
+        const i18n = this._i18n;
+
         let body = {
-            "name": this.subject,
-            "senderOrganizationName": this.currentItem.senderOrganizationName, //we set the same for both since senderOrganizationName will be ignored but we need to have the organization somewhere
-            "senderFullName": this.currentItem.senderOrganizationName, // this.currentItem.senderFullName,
+            "name": this.subject && this.subject !== '' ? this.subject : i18n.t('create-request.default-subject'),
+            "senderOrganizationName": this.currentItem.senderOrganizationName,
+            "senderFullName": i18n.t('create-request.sender-full-name'), // this.currentItem.senderFullName,
             "senderAddressCountry": this.currentItem.senderAddressCountry,
             "senderPostalCode": this.currentItem.senderPostalCode,
             "senderAddressLocality": this.currentItem.senderAddressLocality,
@@ -215,7 +210,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a delete dispatch request
-     *
      * @param identifier
      * @returns {object} response
      */
@@ -233,7 +227,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a put dispatch request
-     *
      * @param identifier
      * @param senderOrganizationName
      * @param senderFullName
@@ -246,9 +239,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @returns {object} response
      */
     async sendEditDispatchRequest(identifier, senderOrganizationName, senderFullName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId) {
+        const i18n = this._i18n;
+
         let body = {
             "senderOrganizationName": senderOrganizationName,
-            "senderFullName": senderOrganizationName, //'', //senderFullName,
+            "senderFullName": i18n.t('create-request.sender-full-name'), //senderFullName,
             "senderAddressCountry": senderAddressCountry,
             "senderPostalCode": senderPostalCode,
             "senderAddressLocality": senderAddressLocality,
@@ -271,7 +266,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a submit dispatch request
-     *
      * @param identifier
      * @returns {object} response
      */
@@ -292,7 +286,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a dispatch request-recipients post request
-     *
      * @param id
      * @param personIdentifier
      * @param givenName
@@ -498,7 +491,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Send a PUT request to the API to change the reference number of a request
-     *
      * @param identifier The identifier of the dispatch request
      * @param referenceNumber The new reference number
      */
@@ -784,7 +776,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Open Filesink for a single File
-     *
      * @param fileContentUrl
      * @param fileName
      */
@@ -1124,7 +1115,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                             this.currentRecipient = {};
 
-                            this.subject = '';
+                            this.subject = i18n.t('create-request.default-subject');
 
                             this.showListView = true;
                             this.showDetailsView = false;
@@ -1162,7 +1153,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Returns if the request can be submitted or not. And if not, it shows a UI message.
-     *
      * @param {object} request
      * @returns {boolean} if the request can be submitted or not
      */
@@ -1260,7 +1250,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                             this.currentRecipient = {};
 
-                            this.subject = '';
+                            this.subject = i18n.t('create-request.default-subject');
 
                             this.showListView = true;
                             this.showDetailsView = false;
@@ -1462,8 +1452,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this._('#add-subject-confirm-btn').disabled = true;
 
-        //TODO
-        this.subject = this._('#tf-add-subject-fn-dialog').value ? this._('#tf-add-subject-fn-dialog').value : '';
+        this.subject = this._('#tf-add-subject-fn-dialog').value && this._('#tf-add-subject-fn-dialog').value !== '' ? this._('#tf-add-subject-fn-dialog').value : this._i18n.t('create-request.default-subject');
 
         await this.processCreateDispatchRequest();
 
@@ -1986,7 +1975,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 subject: item.name && item.name !== '' ? item.name : this.mayReadMetadata && !this.mayRead && !this.mayWrite ?
                     i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found'), //span
                 status: item.dateSubmitted ? recipientStatus[1] : i18n.t('show-requests.empty-date-submitted'),
-                gz: item.referenceNumber ? item.referenceNumber : i18n.t('show-requests.empty-reference-number'),
+                gz: item.referenceNumber && item.referenceNumber !== '-' ? item.referenceNumber : i18n.t('show-requests.empty-reference-number'),
                 dateCreated: item.dateCreated,
                 details: "Details",
                 files: this.createFormattedFilesList(item.files),
@@ -2002,7 +1991,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Get a list of all requests
-     *
      * @returns {Array} list
      */
     async getListOfRequests() {
@@ -2304,7 +2292,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this.currentRecipient = {};
 
-        this.subject = '';
+        this.subject = this._i18n.t('create-request.default-subject');
 
         this.showListView = true;
         this.showDetailsView = false;
@@ -3220,7 +3208,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             class="input"
                                             name="tf-edit-subject-fn-dialog"
                                             id="tf-edit-subject-fn-dialog"
-                                            value="${this.subject ? this.subject : ``}"
+                                            value="${this.subject ? this.subject : this._i18n.t('create-request.default-subject')}"
                                             @input="${() => {
                                                 // TODO
                                             }}"

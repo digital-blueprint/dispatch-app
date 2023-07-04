@@ -19,7 +19,9 @@
         "request-subject": "Subject",
         "successfully-requested-text": "The dispatch order has been created successfully. You can edit it further now or save it for later.",
         "successfully-requested-text-multiple": "The dispatch orders have been created successfully. You can edit them further now or save them for later.",
-        "successfully-requested-title": "Successfully created"
+        "successfully-requested-title": "Successfully created",
+        "sender-full-name": "",
+        "default-subject": "Message from your University"
     },
     "error-delivery-channel-text": "One or more of the selected recipients has an invalid delivery channel. Additional address data must be entered manually.",
     "error-delivery-channel-title": "Invalid delivery channel!",
@@ -104,7 +106,7 @@
         "electronically-deliverable": "Electronically deliverable",
         "empty-date-submitted": "Open",
         "empty-files-text": "No files attached (yet)",
-        "empty-reference-number": "",
+        "empty-reference-number": "No reference number specified",
         "empty-sender-text": "No sender specified (yet)",
         "empty-subject-text": "No subject specified",
         "error-invalid-birthdate-text": "Please enter a valid birth date.",

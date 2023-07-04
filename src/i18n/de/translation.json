@@ -19,7 +19,9 @@
         "request-subject": "Betreff",
         "successfully-requested-text": "Der Versandauftrag wurde erfolgreich angelegt. Sie können diesen jetzt weiter bearbeiten, sowie löschen oder freigeben, oder einen weiteren Versandauftrag anlegen.",
         "successfully-requested-text-multiple": "Die Versandaufträge wurden erfolgreich angelegt. Sie können diese jetzt weiter bearbeiten, sowie löschen oder freigeben, oder weitere Versandaufträge anlegen.",
-        "successfully-requested-title": "Erfolgreich erstellt!"
+        "successfully-requested-title": "Erfolgreich erstellt!",
+        "sender-full-name": "",
+        "default-subject": "Nachricht von Ihrer Hochschule"
     },
     "error-delivery-channel-text": "Einer oder mehrere der gewählten Empfänger hat einen ungültigen Zustellkanal. Adressdaten müssen händisch eingegeben werden.",
     "error-delivery-channel-title": "Kein gültiger Zustellkanal!",
@@ -104,7 +106,7 @@
         "electronically-deliverable": "Elektronische Zustellung möglich",
         "empty-date-submitted": "In Bearbeitung",
         "empty-files-text": "(Noch) keine Dateien angehängt.",
-        "empty-reference-number": "",
+        "empty-reference-number": "Keine Geschäftszahl vergeben",
         "empty-sender-text": "(Noch) kein Absender angegeben.",
         "empty-subject-text": "Kein Betreff angegeben",
         "error-invalid-birthdate-text": "Bitte geben Sie ein gültiges Geburtsdatum ein.",
@@ -144,7 +146,7 @@
         "no-files-attached": "(Noch) keine Dateien angehängt.",
         "no-recipients-added": "(Noch) keine Empfänger angegeben.",
         "no-recipients-text": "(Noch) keine Empfänger angegeben.",
-        "no-reference-number-found": "Keine Geschäftszahl angegeben",
+        "no-reference-number-found": "Keine Geschäftszahl vergeben",
         "no-subject-found": "Kein Betreff angegeben",
         "no-table-data": "Es konnten keine Versandaufträge gefunden werden.",
         "not-deliverable-1": "Keine Zustellung möglich",
