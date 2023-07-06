@@ -2,7 +2,7 @@
 
 - <http://dbp-web.localhost:8100>
 - <http://keycloak.localhost:8100>
-- <http://pgadmin.localhost:8100>
+- <http://api-demo.localhost:8100>
 
 ## Setup
 
