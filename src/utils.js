@@ -39,10 +39,9 @@ export const getReferenceNumberFromPDF = async (file) => {
             // Loop through the annotations
             await commonUtils.asyncArrayForEach(annotations, async (annotation) => {
                 // Check if the annotation is a business number, and we haven't found one yet
-                if (referenceNumber === null && annotation.contents.startsWith('dbp_annotation_bbe3a371')) {
-                    const parts = annotation.contents.split('=');
-
-                    referenceNumber = parts[1];
+                if (referenceNumber === null && annotation.contents.startsWith('dbp_annotation_bbe3a371=')) {
+                    let contents = annotation.contents;
+                    referenceNumber = contents.substring(contents.indexOf('=') + 1);
                 }
             });
         });
