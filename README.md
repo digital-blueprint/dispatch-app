@@ -67,7 +67,7 @@ If you want to install the dbp dispatch app in a new folder `dispatch-app` with 
 npx @digital-blueprint/cli@latest install-app dispatch dispatch-app /
 ```
 
-Afterwards you can point your Apache web-server to `dispatch-app/public`.
+Afterward you can point your Apache web-server to `dispatch-app/public`.
 
 Make sure you are allowing `.htaccess` files in your Apache configuration.
 
