@@ -677,7 +677,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const referenceNumber = await getReferenceNumberFromPDF(file);
 
         // Set the reference number if it is not set yet, and we have a valid one
-        if (referenceNumber !== null && [undefined, null, '-'].includes(this.currentItem.referenceNumber)) {
+        if (referenceNumber !== null && [undefined, null].includes(this.currentItem.referenceNumber)) {
             const response = await this.sendChangeReferenceNumberRequest(id, referenceNumber);
             if (response.status !== 200) {
                 console.error('Could not set reference number!');
@@ -1975,7 +1975,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 subject: item.name && item.name !== '' ? item.name : this.mayReadMetadata && !this.mayRead && !this.mayWrite ?
                     i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found'), //span
                 status: item.dateSubmitted ? recipientStatus[1] : i18n.t('show-requests.empty-date-submitted'),
-                gz: item.referenceNumber && item.referenceNumber !== '-' ? item.referenceNumber : i18n.t('show-requests.empty-reference-number'),
+                gz: item.referenceNumber ? item.referenceNumber : i18n.t('show-requests.empty-reference-number'),
                 dateCreated: item.dateCreated,
                 details: "Details",
                 files: this.createFormattedFilesList(item.files),
@@ -3283,7 +3283,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             class="input"
                                             name="tf-edit-reference-number-fn-dialog"
                                             id="tf-edit-reference-number-fn-dialog"
-                                            value="${this.currentItem.referenceNumber ? this.currentItem.referenceNumber : ``}"
+                                            value="${this.currentItem.referenceNumber ?? ``}"
                                     />
                                 </div>
                             </div>

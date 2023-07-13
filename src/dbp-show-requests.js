@@ -1108,7 +1108,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <dbp-icon-button id="edit-reference-number-btn"
                                                              ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                              @click="${(event) => {
-                                                                 this._('#tf-edit-reference-number-fn-dialog').value = this.currentItem.referenceNumber && this.currentItem.referenceNumber !== '-' ? this.currentItem.referenceNumber : ``;
+                                                                 this._('#tf-edit-reference-number-fn-dialog').value = this.currentItem.referenceNumber ?? ``;
                                                                  MicroModal.show(this._('#edit-reference-number-modal'), {
                                                                     disableScroll: true,
                                                                     onClose: (modal) => {
@@ -1119,7 +1119,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                              title="${i18n.t('show-requests.edit-reference-number-button-text')}"
                                                              icon-name="pencil"></dbp-icon-button>` : ``}
                                         </div>
-                                        <div>${this.currentItem.referenceNumber && this.currentItem.referenceNumber !== '-' ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.no-reference-number-found')}`}</div>
+                                        <div>${this.currentItem.referenceNumber ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.empty-reference-number')}`}</div>
                                     </div>
                                 </div>
                                 
