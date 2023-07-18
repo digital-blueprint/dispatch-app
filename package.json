@@ -1,7 +1,7 @@
 {
     "name": "@digital-blueprint/dispatch-app",
     "internalName": "dbp-dispatch",
-    "version": "1.2.6",
+    "version": "1.2.7",
     "main": "src/dbp-dispatch.js",
     "license": "LGPL-2.1-or-later",
     "private": true,
