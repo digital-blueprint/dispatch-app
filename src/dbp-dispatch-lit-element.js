@@ -178,6 +178,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     /**
+     * @returns {string}
+     */
+    getDefaultReferenceNumber() {
+        const i18n = this._i18n;
+        return i18n.t('create-request.default-reference-number');
+    }
+
+    /**
      * Sends a dispatch post request
      * @returns {object} response
      */
@@ -193,7 +201,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "senderAddressLocality": this.currentItem.senderAddressLocality,
             "senderStreetAddress": this.currentItem.senderStreetAddress,
             "senderBuildingNumber": '', //this.currentItem.senderBuildingNumber,
-            "groupId": this.groupId
+            "groupId": this.groupId,
+            "referenceNumber": this.getDefaultReferenceNumber(),
         };
 
         const options = {
@@ -676,8 +685,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // Get the reference number from the PDF
         const referenceNumber = await getReferenceNumberFromPDF(file);
 
+        // We override the existing reference number if it isn't set or is equal to the default one
+        let shouldOverrideReferenceNumber = false;
+        if (!this.currentItem.referenceNumber || this.currentItem.referenceNumber === this.getDefaultReferenceNumber()) {
+            shouldOverrideReferenceNumber = true;
+        }
+
         // Set the reference number if it is not set yet, and we have a valid one
-        if (referenceNumber !== null && [undefined, null].includes(this.currentItem.referenceNumber)) {
+        if (referenceNumber !== null && shouldOverrideReferenceNumber) {
             const response = await this.sendChangeReferenceNumberRequest(id, referenceNumber);
             if (response.status !== 200) {
                 console.error('Could not set reference number!');

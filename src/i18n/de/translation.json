@@ -5,6 +5,7 @@
         "create-not-allowed-text": "Sie besitzen in der gewählten Gruppe nur Leserechte für Versandaufträge und können den Absender deshalb nicht ändern.",
         "create-not-allowed-title": "Keine Rechte!",
         "create-request-button-text": "Dokumente auswählen",
+        "default-reference-number": "-",
         "default-subject": "Nachricht von Ihrer Hochschule",
         "description-text": "Hier können Sie einen neuen Versandauftrag anlegen. Nachdem Sie einen Versandauftrag erstellt haben, können Sie diesen in der Liste Ihrer Versandaufträge einsehen, bearbeiten und anschließend für den Versand freigeben.",
         "empty-fields-given": "Bitte füllen Sie alle Felder aus!",

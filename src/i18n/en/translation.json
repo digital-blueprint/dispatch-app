@@ -5,6 +5,7 @@
         "create-not-allowed-text": "You only have read rights for dispatch orders in the selected group and therefore cannot change the sender.",
         "create-not-allowed-title": "No access rights!",
         "create-request-button-text": "Select Documents",
+        "default-reference-number": "-",
         "default-subject": "Message from your University",
         "description-text": "Here you can create a new dispatch order. After you have created a dispatch order, you can view it in the list of your dispatch orders, edit it and then release it for dispatch.",
         "empty-fields-given": "Please fill in all fields!",
