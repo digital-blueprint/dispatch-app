@@ -699,7 +699,30 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || !this.requestCreated || (!this.singleFileProcessing && this.showDetailsView) })}">
                         <a href="#" title="${i18n.t('create-request.back-to-create')}"
                            @click="${(e) => {
-                               this.saveRequest(e, this.currentItem);
+                               this.currentItem = {};
+                               this.currentItem.senderOrganizationName = "";
+                               this.currentItem.senderFullName = "";
+                               this.currentItem.senderAddressCountry = "";
+                               this.currentItem.senderPostalCode = "";
+                               this.currentItem.senderAddressLocality = "";
+                               this.currentItem.senderStreetAddress = "";
+                               this.currentItem.senderBuildingNumber = "";
+                               this.currentItem.files = [];
+                               this.currentItem.recipients = [];
+                               this.currentRecipient = {};
+
+                               this.subject = '';
+
+                               this.hasEmptyFields = false;
+                               this.hasSender = false;
+                               this.hasRecipients = false;
+
+                               this.expanded = false;
+
+                               this.showListView = false;
+                               this.showDetailsView = false;
+                               this.requestCreated = false;
+                               
                                this.addFileViaButton = false;
                            }}"
                         >
