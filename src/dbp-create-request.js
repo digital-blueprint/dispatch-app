@@ -689,7 +689,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
 
                 <div class="no-access-notification">
-                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.mayWrite || this.requestCreated || !this.organizationLoaded })}"
+                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.mayWrite || this.mayRead || this.mayReadMetadata || this.requestCreated || !this.organizationLoaded })}"
                                              type="danger"
                                              body="${this.mayRead ? i18n.t('create-request.error-no-writes') : i18n.t('error-no-read')}">
                     </dbp-inline-notification>
