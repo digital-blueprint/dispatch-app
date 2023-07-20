@@ -1114,7 +1114,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (this.dispatchRequestsTable ) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
                             this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== item.identifier);
-                            this.getCreatedDispatchRequests();
+                            await this.getCreatedDispatchRequests();
                             this.currentItem = {};
 
                             this.currentItem.senderOrganizationName = "";
@@ -1132,11 +1132,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                             this.subject = i18n.t('create-request.default-subject');
 
-                            this.showListView = true;
+                            if (this.createdRequestsList.length !== 0) {
+                                this.showListView = true;
+                                this.hasSubject = true;
+                                this.hasSender = true;
+                            } else {
+                                this.showListView = false;
+                                this.requestCreated = false;
+                                this.hasSubject = false;
+                                this.hasSender = false;
+                            }
+                            this.hasRecipients = false;
                             this.showDetailsView = false;
-
-                            this.hasSubject = true;
-                            this.hasSender = true;
                         } else {
                             this.getListOfRequests();
                             this.clearAll();
@@ -1175,7 +1182,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
 
         // No files attached
-        if (!request.files || request.files.length == 0) {
+        if (!request.files || request.files.length === 0) {
             send({
                 "summary": i18n.t('show-requests.missing-files.title'),
                 "body": i18n.t('show-requests.missing-files.text'),
@@ -1186,7 +1193,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         // No recipients
-        if (!request.recipients || request.recipients.length == 0) {
+        if (!request.recipients || request.recipients.length === 0) {
             send({
                 "summary": i18n.t('show-requests.missing-recipients.title'),
                 "body": i18n.t('show-requests.missing-recipients.text'),
@@ -1272,9 +1279,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             } else {
                                 this.showListView = false;
                                 this.requestCreated = false;
+                                this.hasSubject = false;
+                                this.hasSender = false;
                             }
-                            this.hasSubject = false;
-                            this.hasSender = false;
                             this.hasRecipients = false;
                             this.showDetailsView = false;
 
@@ -1593,10 +1600,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             for (let i = 0; i < ids.length; i++) {
                                 this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== ids[i]); //TODO maybe there is a better way to do this
                             }
-                            this.getCreatedDispatchRequests();
+                            await this.getCreatedDispatchRequests();
+                            if (this.createdRequestsList.length !== 0) {
+                                this.showListView = true;
+                                this.requestCreated = true;
+                            } else {
+                                this.showListView = false;
+                                this.requestCreated = false;
+                                this.hasSubject = false;
+                                this.hasSender = false;
+                            }
+                            this.hasRecipients = false;
                             this.showDetailsView = false;
-                            this.requestCreated = true;
-
                         } else {
                             this.getListOfRequests();
                             this.clearAll();
@@ -1681,10 +1696,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             for (let i = 0; i < ids.length; i++) {
                                 this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== ids[i]); //TODO maybe there is a better way to do this
                             }
-                            this.getCreatedDispatchRequests();
-                            this.showDetailsView = false;
-                            this.requestCreated = true;
+                            await this.getCreatedDispatchRequests();
 
+                            if (this.createdRequestsList.length !== 0) {
+                                this.showListView = true;
+                                this.requestCreated = true;
+                            } else {
+                                this.showListView = false;
+                                this.requestCreated = false;
+                                this.hasSubject = false;
+                                this.hasSender = false;
+                            }
+
+                            this.hasRecipients = false;
+                            this.showDetailsView = false;
                         } else {
                             this.getListOfRequests();
                             this.clearAll();
