@@ -1249,7 +1249,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (this.dispatchRequestsTable) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
                             this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== item.identifier);
-                            this.getCreatedDispatchRequests();
+                            await this.getCreatedDispatchRequests();
                             this.currentItem = {};
 
                             this.currentItem.senderOrganizationName = "";
@@ -1267,11 +1267,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                             this.subject = i18n.t('create-request.default-subject');
 
-                            this.showListView = true;
+                            if (this.createdRequestsList.length !== 0) {
+                                this.showListView = true;
+                            } else {
+                                this.showListView = false;
+                                this.requestCreated = false;
+                            }
+                            this.hasSubject = false;
+                            this.hasSender = false;
+                            this.hasRecipients = false;
                             this.showDetailsView = false;
 
-                            this.hasSubject = true;
-                            this.hasSender = true;
                         } else {
                             this.getListOfRequests();
                             this.clearAll();
