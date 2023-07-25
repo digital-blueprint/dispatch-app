@@ -615,43 +615,27 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     onFileUploadFinished(event) {
-        (async() => {
-            this.tableLoading = true;
+        this.fileUploadFinished = true;
+        this.uploadedNumberOfFiles = event.detail.count;
+        this.currentFileIndex = 0;
 
-            // eslint-disable-next-line no-prototype-builtins
-            while(!this.errorCreatingRequest.hasOwnProperty('error'))
-                await new Promise(resolve => setTimeout(resolve, 200));
-
-        })().then(() => {
-            this.fileUploadFinished = true;
-            this.uploadedNumberOfFiles = event.detail.count;
-            this.currentFileIndex = 0;
-
-            const i18n = this._i18n;
-            if (!this.errorCreatingRequest.error) {
-                send({
-                    "summary": i18n.t('create-request.successfully-requested-title'),
-                    "body": this.singleFileProcessing ? i18n.t('create-request.successfully-requested-text') : i18n.t('create-request.successfully-requested-text-multiple'),
-                    "type": "success",
-                    "timeout": 5,
-                });
-            } else {
-                send({
-                    "summary": i18n.t('create-request.error-requested-title'),
-                    "body": this.singleFileProcessing ? i18n.t('create-request.error-requested-text') : i18n.t('create-request.error-requested-text-multiple'),
-                    "type": "danger",
-                    "timeout": 5,
-                });
-                this.showDetailsView = false;
-                this.hasSubject = false;
-                this.hasSender = false;
-            }
-            this.errorCreatingRequest = {};
-
-            this.tableLoading = false;
-            this.dispatchRequestsTable.redraw();
-            this.requestUpdate();
-        });
+        const i18n = this._i18n;
+        if (!this.errorCreatingRequest) {
+            send({
+                "summary": i18n.t('create-request.successfully-requested-title'),
+                "body": this.singleFileProcessing ? i18n.t('create-request.successfully-requested-text') : i18n.t('create-request.successfully-requested-text-multiple'),
+                "type": "success",
+                "timeout": 5,
+            });
+        } else {
+            send({
+                "summary": i18n.t('create-request.error-requested-title'),
+                "body": i18n.t('create-request.error-requested-text'),
+                "type": "danger",
+                "timeout": 5,
+            });
+        }
+        this.errorCreatingRequest = false;
     }
 
     async onFileSelected(event) {
@@ -659,27 +643,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.fileUploadFinished = false;
         if (!this.singleFileProcessing && !this.requestCreated) {
             this.processCreateDispatchRequest().then(async () => {
-                if (!this.errorCreatingRequest.error) {
-                    this.showDetailsView = false;
-                    this.showListView = true;
-                    this.hasSubject = true;
-                    this.hasSender = true;
+                this.showDetailsView = false;
+                this.showListView = true;
+                this.hasSubject = true;
+                this.hasSender = true;
 
-                    this.createdRequestsIds.push(this.currentItem.identifier);
-                    this.totalNumberOfCreatedRequestItems++;
+                this.createdRequestsIds.push(this.currentItem.identifier);
+                this.totalNumberOfCreatedRequestItems++;
 
-                    await this.addFile(event.detail.file);
-                    this.filesAdded = true;
-                } else {
-                    this.tableLoading = false;
-                }
+                await this.addFile(event.detail.file);
+                this.filesAdded = true;
             });
         } else {
-            if (!this.errorCreatingRequest.error) {
-                await this.addFile(event.detail.file);
-            } else {
-                this.tableLoading = false;
-            }
+            await this.addFile(event.detail.file);
         }
     }
 
@@ -1796,18 +1772,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         try {
             let response = await this.sendCreateDispatchRequest();
-            if (response.status === 201) {
-                let responseBody = await response.json();
+            let responseBody = await response.json();
 
-                if (responseBody !== undefined) {
-                    this.currentItem = responseBody;
-                    this.requestCreated = true;
-                    this.errorCreatingRequest.error = false;
-                } else {
-                    this.errorCreatingRequest.error = true;
-                }
+            if (responseBody !== undefined && response.status === 201) {
+                this.currentItem = responseBody;
+                this.requestCreated = true;
+
             } else {
-                this.errorCreatingRequest.error = true;
+                this.errorCreatingRequest = true;
             }
         } finally {
             this._('#create-btn').stop();
@@ -2080,7 +2052,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.dispatchRequestsTable.setLocale(this.lang);
                 this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
             } else { //TODO error handling
-                if (response.status === 500) {
+                if (responseBody.status === 500) {
                     send({
                         "summary": 'Error!',
                         "body": 'Could not fetch dispatch requests. Response code: 500',

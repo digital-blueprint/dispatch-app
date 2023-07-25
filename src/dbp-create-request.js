@@ -67,7 +67,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.filesAdded = false;
         this.expanded = false;
         this.addFileViaButton = false;
-        this.errorCreatingRequest = {};
+        this.errorCreatingRequest = false;
 
         this.fileHandlingEnabledTargets = "local";
         this.nextcloudWebAppPasswordURL = "";
