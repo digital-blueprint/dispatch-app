@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "checkJs": true,
+        "resolveJsonModule": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "target": "esnext"
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "vendor"
+    ]
+}
