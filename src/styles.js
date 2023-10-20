@@ -434,8 +434,14 @@ export function getDispatchRequestStyles() {
                 margin-bottom: 1.3em;
             }
             
-            .country-select {
+            .country-select:not(.select) {
                 width: 100%;
+                border-color: var(--dbp-muted);
+            }
+
+            .country-select option {
+                background: var(--dbp-background);
+                color: var(--dbp-content);
             }
 
             .request-buttons {
