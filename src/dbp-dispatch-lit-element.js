@@ -1107,7 +1107,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
 
-        if (confirm(i18n.t('show-requests.delete-dialog-text'))) {
+        if (confirm(i18n.t('show-requests.delete-dialog-text_one'))) {
             button.start();
 
             try {
@@ -1672,7 +1672,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 return;
             }
 
-            let dialogText = i18n.t('show-requests.delete-dialog-text', {count: this.dispatchRequestsTable.getSelectedRows().length});
+            let dialogText = i18n.t('show-requests.delete-dialog-text_other', {count: this.dispatchRequestsTable.getSelectedRows().length});
 
             let ids = [];
 
