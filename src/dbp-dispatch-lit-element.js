@@ -24,6 +24,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.subject = '';
         this.groupId = '';
         this.groupValue = this.loadGroupValue();
+        this.personSelectorIsDisabled = false;
 
         this.tempItem = {};
         this.tempValue = {};
@@ -48,6 +49,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             currentItem: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
+            personSelectorIsDisabled: {type: Boolean, attribute: false},
             subject: {type: String, attribute: false},
             groupId: {type: String, attribute: false},
             tempItem: {type: Object, attribute: false},
@@ -2313,13 +2315,40 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return sortedRecipients;
     }
 
-    resetPersonSelect(event) {
+    disablePersonSelector(event) {
+        this.personSelectorIsDisabled = true;
+    }
+    
+
+    resetRecipientFields(event) {
         this._('#recipient-selector').clear();
         this.currentRecipient = {};
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
         elements.forEach((element) => {
             element.classList.remove('muted');
         });
+
+        // Re-enable Person Selector.
+        this.personSelectorIsDisabled = false;
+
+        // Clear values and re-enable all input fields.
+        const ManualElements = this.shadowRoot.querySelectorAll('.modal-content-right .input');
+        ManualElements.forEach((element) => {
+            element.value = '';
+            element.disabled = false;
+        });
+
+        // Reset country selector.
+        const CountrySelectElement = this.shadowRoot.querySelector('#add-recipient-country-select');
+        console.log(CountrySelectElement.selectedIndex);
+        const options = CountrySelectElement.options;
+
+        for (var i=0, iLen=options.length; i<iLen; i++) {
+            if (options[i].defaultSelected) {
+                CountrySelectElement.selectedIndex = i;
+                return;
+            }
+        }
     }
 
     clearAll() {
@@ -2628,13 +2657,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                         lang="${this.lang}"
                                                         entry-point-url="${this.entryPointUrl}"
                                                         show-reload-button
+                                                        ?disabled=${this.personSelectorIsDisabled}
                                                         @change="${(event) => {this.processSelectedRecipient(event);}}"
                                                 ></dbp-person-select>
                                             </div>
-                                            <button
-                                                    class="button ${classMap({ hidden: this._('#recipient-selector') && this._('#recipient-selector').value === '' })}"
-                                                    @click="${(event) => {this.resetPersonSelect(event);}}"
-                                            >${i18n.t('show-requests.reset-select-button-text')}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -2654,8 +2680,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     name="tf-add-recipient-gn-dialog"
                                                     id="tf-add-recipient-gn-dialog"
                                                     value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
-                                                    @input="${() => {
+                                                    @input="${(event) => {
                                                         // TODO
+                                                        this.disablePersonSelector(event);
                                                     }}"
                                             />
                                         </div>
@@ -2672,8 +2699,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     name="tf-add-recipient-fn-dialog"
                                                     id="tf-add-recipient-fn-dialog"
                                                     value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
-                                                    @input="${() => {
+                                                    @input="${(event) => {
                                                         // TODO
+                                                        this.disablePersonSelector(event);
                                                     }}"
                                             />
                                         </div>
@@ -2692,6 +2720,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 lang="${this.lang}"
                                                 placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-day')}"
                                                 value="${this.currentRecipient ? this.currentRecipient.birthDateDay : ``}"
+                                                @input="${(event) => {
+                                                    // TODO
+                                                    this.disablePersonSelector(event);
+                                                }}"
                                             />
                                             <input
                                                 ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
@@ -2702,6 +2734,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 lang="${this.lang}"
                                                 placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-month')}"
                                                 value="${this.currentRecipient ? this.currentRecipient.birthDateMonth : ``}"
+                                                @input="${(event) => {
+                                                    // TODO
+                                                    this.disablePersonSelector(event);
+                                                }}"
                                             />
                                             <input
                                                 ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
@@ -2712,6 +2748,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 lang="${this.lang}"
                                                 placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-year')}"
                                                 value="${this.currentRecipient ? this.currentRecipient.birthDateYear : ``}"
+                                                @input="${(event) => {
+                                                    // TODO
+                                                    this.disablePersonSelector(event);
+                                                }}"
                                             />
                                         </div>
                                     </div>
@@ -2727,8 +2767,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     name="tf-add-recipient-sa-dialog"
                                                     id="tf-add-recipient-sa-dialog"
                                                     value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
-                                                    @input="${() => {
+                                                    @input="${(event) => {
                                                         // TODO
+                                                        this.disablePersonSelector(event);
                                                     }}"
                                             />
                                         </div>
@@ -2745,8 +2786,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     name="tf-add-recipient-pc-dialog"
                                                     id="tf-add-recipient-pc-dialog"
                                                     value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
-                                                    @input="${() => {
+                                                    @input="${(event) => {
                                                         // TODO
+                                                        this.disablePersonSelector(event);
                                                     }}"
                                             />
                                         </div>
@@ -2763,8 +2805,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     name="tf-add-recipient-al-dialog"
                                                     id="tf-add-recipient-al-dialog"
                                                     value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
-                                                    @input="${() => {
+                                                    @input="${(event) => {
                                                         // TODO
+                                                        this.disablePersonSelector(event);
                                                     }}"
                                             />
                                         </div>
@@ -2777,7 +2820,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             <select
                                                     ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
                                                     id="add-recipient-country-select" 
-                                                    class="country-select">
+                                                    class="country-select"
+                                                    @change="${(event) => {
+                                                        // TODO
+                                                        this.disablePersonSelector(event);
+                                                    }}">
                                                 ${dispatchHelper.getCountryList()}
                                             </select>
                                         </div>
@@ -2795,6 +2842,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             MicroModal.close(this._('#add-recipient-modal'));
                                         }}">
                                     ${i18n.t('show-requests.add-recipient-dialog-button-cancel')}
+                                </button>
+                                <button
+                                        class="button is-warning ${classMap({ nothidden: this._('#recipient-selector') && this._('#recipient-selector').value === '' })}"
+                                        @click="${(event) => {this.resetRecipientFields(event)}}">
+                                        ${i18n.t('show-requests.reset-select-button-text')}
                                 </button>
                                 <button
                                         class="button select-button is-primary"
