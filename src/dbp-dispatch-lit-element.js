@@ -2845,7 +2845,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </button>
                                 <button
                                         class="button is-warning ${classMap({ nothidden: this._('#recipient-selector') && this._('#recipient-selector').value === '' })}"
-                                        @click="${(event) => {this.resetRecipientFields(event)}}">
+                                        @click="${(event) => {
+                                            this.resetRecipientFields(event);
+                                        }}">
                                         ${i18n.t('show-requests.reset-select-button-text')}
                                 </button>
                                 <button
