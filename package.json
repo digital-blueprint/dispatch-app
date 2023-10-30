@@ -57,7 +57,6 @@
         "@dbp-toolkit/language-select": "^0.3.0",
         "@dbp-toolkit/notification": "^0.3.0",
         "@dbp-toolkit/pdf-viewer": "^0.0.7",
-        "@dbp-toolkit/person-profile": "^0.2.0",
         "@dbp-toolkit/person-select": "^0.3.3",
         "@digital-blueprint/esign-app": "^2.1.5",
         "@fontsource/nunito-sans": "^5.0.0",
