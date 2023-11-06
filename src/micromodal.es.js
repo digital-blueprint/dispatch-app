@@ -260,7 +260,7 @@ var MicroModal = (function () {
                 key: 'addEventListeners',
                 value: function addEventListeners() {
                     this.modal.addEventListener('touchstart', this.onClick);
-                    this.modal.addEventListener('click', this.onClick);
+                    this.modal.addEventListener('mousedown', this.onClick);
                     document.addEventListener('keydown', this.onKeydown);
                 },
             },
@@ -268,7 +268,7 @@ var MicroModal = (function () {
                 key: 'removeEventListeners',
                 value: function removeEventListeners() {
                     this.modal.removeEventListener('touchstart', this.onClick);
-                    this.modal.removeEventListener('click', this.onClick);
+                    this.modal.removeEventListener('mousedown', this.onClick);
                     document.removeEventListener('keydown', this.onKeydown);
                 },
             },
