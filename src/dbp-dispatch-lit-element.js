@@ -7,11 +7,11 @@ import * as dispatchHelper from './utils';
 import {CustomPersonSelect} from "./person-select";
 import {ResourceSelect} from "@dbp-toolkit/resource-select";
 import {IconButton} from "@dbp-toolkit/common";
+import {Translated} from "@dbp-toolkit/common";
 import {humanFileSize} from "@dbp-toolkit/common/i18next";
 import {classMap} from "lit/directives/class-map.js";
 import {PdfViewer} from "@dbp-toolkit/pdf-viewer";
 import {getReferenceNumberFromPDF} from "./utils";
-
 
 export default class DBPDispatchLitElement extends DBPLitElement {
     constructor() {
@@ -38,7 +38,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-icon-button': IconButton,
-            'dbp-pdf-viewer': PdfViewer
+            'dbp-translated': Translated,
+            'dbp-pdf-viewer': PdfViewer,
         };
     }
 
@@ -2568,11 +2569,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
-                                <div>
-                                    <select required id="edit-sender-country-select" class="country-select">
-                                        ${dispatchHelper.getCountryList()}
-                                    </select>
-                                </div>
+                                <dbp-translated subscribe="lang">
+                                    <div slot="de">
+                                        <select required id="edit-sender-country-select" class="country-select">
+                                                ${dispatchHelper.getGermanCountryList()}
+
+                                        </select>
+                                    </div>
+                                    <div slot="en">
+                                        <select required id="edit-sender-country-select" class="country-select">
+                                                ${dispatchHelper.getEnglishCountryList()}
+                                        </select>
+                                    </div>
+                                </dbp-translated>                                
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -2816,18 +2825,34 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         <div class="nf-label no-selector">
                                             ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                         </div>
-                                        <div>
-                                            <select
-                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                                    id="add-recipient-country-select" 
-                                                    class="country-select"
-                                                    @change="${(event) => {
-                                                        // TODO
-                                                        this.disablePersonSelector(event);
-                                                    }}">
-                                                ${dispatchHelper.getCountryList()}
-                                            </select>
-                                        </div>
+                                        <dbp-translated subscribe="lang">
+                                            <div slot="de">
+                                                <select
+                                                        ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                        id="add-recipient-country-select"
+                                                        class="country-select"
+                                                        @change="${(event) => {
+                                                            // TODO
+                                                            this.disablePersonSelector(event);
+                                                        }}">
+                                                        ${dispatchHelper.getGermanCountryList()}
+
+                                                </select>
+                                            </div>
+                                            <div slot="en">
+                                                <select
+                                                        ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                        id="add-recipient-country-select"
+                                                        class="country-select"
+                                                        @change="${(event) => {
+                                                            // TODO
+                                                            this.disablePersonSelector(event);
+                                                        }}">
+                                                        ${dispatchHelper.getEnglishCountryList()}
+
+                                                </select>
+                                            </div>
+                                        </dbp-translated>
                                     </div>
                                 </div>
                             </div>
@@ -3056,15 +3081,23 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
-                                <div>
-                                    <div>
-                                        <select 
-                                                id="edit-recipient-country-select" 
+                                <dbp-translated subscribe="lang">
+                                    <div slot="de">
+                                        <select
+                                                id="edit-recipient-country-select"
                                                 class="country-select">
-                                            ${dispatchHelper.getCountryList()}
+                                            ${dispatchHelper.getGermanCountryList()}
+
                                         </select>
                                     </div>
-                                </div>
+                                    <div slot="en">
+                                        <select
+                                                id="edit-recipient-country-select"
+                                                class="country-select">
+                                            ${dispatchHelper.getEnglishCountryList()}
+                                        </select>
+                                    </div>
+                                </dbp-translated>
                             </div>
                         </main>
                         <footer class="modal-footer">
