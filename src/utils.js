@@ -324,8 +324,8 @@ export function getGermanCountryList() {
         <option value="EH">Westsahara</option>
         <option value="CF">die Zentralafrikanische Republik</option>
         <option value="CY">Zypern</option>
-    `
-};
+    `;
+}
 
 export function getEnglishCountryList() {
     return html`
@@ -579,8 +579,8 @@ export function getEnglishCountryList() {
         <option value="YE">Yemen</option>
         <option value="ZM">Zambia</option>
         <option value="ZW">Zimbabwe</option>
-    `
-};
+    `;
+}
 
 
 export function getCountryMapping() {
