@@ -1,7 +1,6 @@
 import {html} from 'lit';
 import pdfjs from 'pdfjs-dist/legacy/build/pdf.js';
 import * as commonUtils from "@dbp-toolkit/common/utils";
-import {createInstance} from './i18n';
 
 export const getPDFFileBase64Content = (file) => {
     return file.contentUrl.replace(/data:\s*application\/pdf;\s*base64,/, '');
