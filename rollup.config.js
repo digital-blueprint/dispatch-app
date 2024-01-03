@@ -124,7 +124,7 @@ config.CSP = `default-src 'self' 'unsafe-eval' 'unsafe-inline' \
 ${getOrigin(config.matomoUrl)} ${getOrigin(config.keyCloakBaseURL)} ${getOrigin(
     config.entryPointURL
 )} \
-httpbin.org ${getOrigin(config.nextcloudBaseURL)} www.handy-signatur.at \
+${getOrigin(config.nextcloudBaseURL)} www.handy-signatur.at \
 ${getOrigin(config.pdfAsQualifiedlySigningServer)}; \
 img-src * blob: data:`;
 
