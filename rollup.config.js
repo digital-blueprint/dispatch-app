@@ -120,11 +120,17 @@ function getOrigin(url) {
     return '';
 }
 
+// these are the hosts that are allowed to be embedded in an iframe
+const atrustHosts = [
+    'https://www.handy-signatur.at', // old one
+    'https://service.a-trust.at',
+];
+
 config.CSP = `default-src 'self' 'unsafe-eval' 'unsafe-inline' \
 ${getOrigin(config.matomoUrl)} ${getOrigin(config.keyCloakBaseURL)} ${getOrigin(
     config.entryPointURL
 )} \
-${getOrigin(config.nextcloudBaseURL)} www.handy-signatur.at \
+${getOrigin(config.nextcloudBaseURL)} ${atrustHosts.map((h) => getOrigin(h)).join(' ')} \
 ${getOrigin(config.pdfAsQualifiedlySigningServer)}; \
 img-src * blob: data:`;
 
