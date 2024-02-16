@@ -145,4 +145,4 @@ For frontend design customizations, such as logo, colors, font, favicon, and mor
 ## "dbp-dispatch" slots
 
 These are common slots for the app-shell. You can find the documentation of these slots in the [app-shell documentation](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell).
-For the app specific slots take a look at the [greenlight activities](https://github.com/digital-blueprint/dispatch-app/tree/main/src).
+For the app specific slots take a look at the [dispatch activities](https://github.com/digital-blueprint/dispatch-app/tree/main/src).
