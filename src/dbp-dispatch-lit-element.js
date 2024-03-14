@@ -238,6 +238,26 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     /**
+     * Updates (PATCHes) a dispatch request
+     *
+     * @param identifier
+     * @param body
+     * @returns {object} response
+     */
+    async sendPatchDispatchRequest(identifier, body) {
+        const options = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/ld+json',
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+            body: JSON.stringify(body),
+        };
+
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + encodeURIComponent(identifier), options);
+    }
+
+    /**
      * Sends a put dispatch request
      * @param identifier
      * @param senderOrganizationName
@@ -264,16 +284,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "groupId": groupId
         };
 
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/ld+json',
-                Authorization: 'Bearer ' + this.auth.token,
-            },
-            body: JSON.stringify(body),
-        };
-
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+        return await this.sendPatchDispatchRequest(identifier, body);
     }
 
     /**
@@ -357,72 +368,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients', options);
     }
 
-    async sendUpdateRecipientRequest(recipientId, id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress) {
-        let body;
-
-        if (personIdentifier === null) {
-            if (birthDate !== '') {
-                body = {
-                    "dispatchRequestIdentifier": id,
-                    "givenName": givenName,
-                    "familyName": familyName,
-                    "addressCountry": addressCountry,
-                    "postalCode": postalCode,
-                    "addressLocality": addressLocality,
-                    "streetAddress": streetAddress,
-                    "birthDate": birthDate
-                };
-            } else {
-                body = {
-                    "dispatchRequestIdentifier": id,
-                    "givenName": givenName,
-                    "familyName": familyName,
-                    "addressCountry": addressCountry,
-                    "postalCode": postalCode,
-                    "addressLocality": addressLocality,
-                    "streetAddress": streetAddress
-                };
-            }
-        } else {
-            body = {
-                "dispatchRequestIdentifier": id,
-                "personIdentifier": personIdentifier,
-            };
-            if (givenName) {
-                body["givenName"] = givenName;
-            }
-            if (familyName) {
-                body["familyName"] = familyName;
-            }
-            if (birthDate) {
-                body["birthDate"] = birthDate;
-            }
-            if (addressCountry) {
-                body["addressCountry"] = addressCountry;
-            }
-            if (postalCode) {
-                body["postalCode"] = postalCode;
-            }
-            if (addressLocality) {
-                body["addressLocality"] = addressLocality;
-            }
-            if (streetAddress) {
-                body["streetAddress"] = streetAddress;
-            }
-        }
-
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/ld+json',
-                Authorization: 'Bearer ' + this.auth.token,
-            },
-            body: JSON.stringify(body),
-        };
-
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients/' + recipientId, options);
-    }
-
     async sendDeleteRecipientRequest(id) {
         const options = {
             method: 'DELETE',
@@ -489,20 +434,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "name": subject,
         };
 
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/ld+json',
-                Authorization: 'Bearer ' + this.auth.token,
-            },
-            body: JSON.stringify(body),
-        };
-
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+        return await this.sendPatchDispatchRequest(identifier, body);
     }
 
     /**
-     * Send a PUT request to the API to change the reference number of a request
+     * Send a PATCH request to the API to change the reference number of a request
      * @param identifier The identifier of the dispatch request
      * @param referenceNumber The new reference number
      */
@@ -511,16 +447,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             "referenceNumber": referenceNumber
         };
 
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/ld+json',
-                Authorization: 'Bearer ' + this.auth.token,
-            },
-            body: JSON.stringify(body),
-        };
-
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+        return await this.sendPatchDispatchRequest(identifier, body);
     }
 
     async sendGetStatusChangeRequest(identifier) {
@@ -2319,7 +2246,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     disablePersonSelector(event) {
         this.personSelectorIsDisabled = true;
     }
-    
+
 
     resetRecipientFields(event) {
         this._('#recipient-selector').clear();
