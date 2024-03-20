@@ -248,7 +248,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const options = {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/ld+json',
+                'Content-Type': 'application/merge-patch+json',
                 Authorization: 'Bearer ' + this.auth.token,
             },
             body: JSON.stringify(body),
