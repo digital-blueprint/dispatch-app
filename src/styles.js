@@ -768,6 +768,11 @@ export function getDispatchRequestStyles() {
                 color: var(--dbp-muted);
                 text-transform: uppercase;
                 padding-bottom: 0.5em;
+                /* to align titles when they are editable */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 30px;
             }
 
             .header-btn {
@@ -1003,6 +1008,11 @@ export function getDispatchRequestStyles() {
                     grid-template-columns: unset;
                     gap: 0.5em;
                     text-align: left;
+                }
+
+                .section-titles {
+                    display: block;
+                    height: initial;
                 }
 
                 .header-btn {
