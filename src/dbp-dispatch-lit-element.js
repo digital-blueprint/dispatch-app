@@ -2328,7 +2328,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                   @dbp-file-source-file-selected="${this.onFileSelected}"
                   @dbp-file-source-file-upload-finished="${this.onFileUploadFinished}">
              </dbp-file-source>
-            
+
             <dbp-file-sink
                 id="file-sink"
                 context="${i18n.t('show-requests.save-field-label')}"
@@ -2379,7 +2379,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             </button>
                         </header>
                         <main class="modal-content" id="edit-sender-modal-content">
-                            
+
                             <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
@@ -2522,7 +2522,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             let validbirthday = this.checkValidity(this._('#tf-edit-sender-sa-dialog'));
                                             let validfn = this.checkValidity(this._('#tf-edit-sender-gn-dialog'));
                                             let validgn = this.checkValidity(this._('#tf-edit-sender-fn-dialog'));
-                                
+
                                             if (validgn && validfn && validpc && validsa && validbn && validbirthday) {
                                                 this.confirmEditSender().then(r => {
                                                     MicroModal.close(this._('#edit-sender-modal'));
@@ -2788,7 +2788,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         @click="${(event) => {
                                             let button = event.target;
                                             button.disabled = true;
-                                            
+
                                             let validcountry = this.checkValidity(this._('#add-recipient-country-select'));
                                             let validal = this.checkValidity(this._('#tf-add-recipient-al-dialog'));
                                             let validpc = this.checkValidity(this._('#tf-add-recipient-pc-dialog'));
@@ -2876,6 +2876,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             name="tf-edit-recipient-gn-dialog"
                                             id="tf-edit-recipient-gn-dialog"
                                             value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
+                                            required
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -2893,6 +2894,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             name="tf-edit-recipient-fn-dialog"
                                             id="tf-edit-recipient-fn-dialog"
                                             value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
+                                            required
                                             @input="${() => {
                                                 // TODO
                                             }}"
@@ -2944,6 +2946,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             name="tf-edit-recipient-sa-dialog"
                                             id="tf-edit-recipient-sa-dialog"
                                             value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
+                                            required
                                             @input="${() => {
             // TODO
         }}"
@@ -2961,6 +2964,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             name="tf-edit-recipient-pc-dialog"
                                             id="tf-edit-recipient-pc-dialog"
                                             value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
+                                            required
                                             @input="${() => {
             // TODO
         }}"
@@ -2978,6 +2982,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             name="tf-edit-recipient-al-dialog"
                                             id="tf-edit-recipient-al-dialog"
                                             value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
+                                            required
                                             @input="${() => {
             // TODO
         }}"
@@ -3014,7 +3019,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         id="edit-recipient-confirm-btn"
                                         @click="${() => {
                                             let button = this.button;
-                                            
+
                                             let validcountry = this.checkValidity(this._('#edit-recipient-country-select'));
                                             let validal = this.checkValidity(this._('#tf-edit-recipient-al-dialog'));
                                             let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'));
@@ -3024,7 +3029,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             // let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
                                             let validfn = this.checkValidity(this._('#tf-edit-recipient-fn-dialog'));
                                             let validgn = this.checkValidity(this._('#tf-edit-recipient-gn-dialog'));
-                                            
+
                                             if (validgn && validfn && validcountry && validpc && validal && validsa) { // && validbirthday && validbirthmonth && validbirthyear
                                                 this.currentRecipient.givenName = this._('#tf-edit-recipient-gn-dialog').value;
                                                 this.currentRecipient.familyName = this._('#tf-edit-recipient-fn-dialog').value;
@@ -3094,8 +3099,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="element-right">
                                     ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
                                 </div>
-                                
-                                ${this.currentRecipient && this.currentRecipient.birthDateDay && this.currentRecipient.birthDateMonth 
+
+                                ${this.currentRecipient && this.currentRecipient.birthDateDay && this.currentRecipient.birthDateMonth
                                 && this.currentRecipient.birthDateYear && this.currentRecipient.birthDateDay !== ''
                                 && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '' ? html`
                                     <div class="element-left">
@@ -3142,7 +3147,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div class="element-right">
                                     ${this.currentRecipient.electronicallyDeliverable ? i18n.t('show-requests.electronically-deliverable') :
-                                            (this.currentRecipient.postalDeliverable ? i18n.t('show-requests.only-postal-deliverable') : 
+                                            (this.currentRecipient.postalDeliverable ? i18n.t('show-requests.only-postal-deliverable') :
                                                     i18n.t('show-requests.not-deliverable-1') + '. ' + i18n.t('show-requests.not-deliverable-2'))}
                                 </div>
                                 ${this.currentRecipient && this.currentRecipient.deliveryEndDate ? html`
@@ -3397,12 +3402,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     ${!this.currentItem.dateSubmitted ? html`
                          <dbp-loading-button id="add-files-btn"
                                         ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                        value="${i18n.t('show-requests.add-files-button-text')}" 
+                                        value="${i18n.t('show-requests.add-files-button-text')}"
                                         @click="${(event) => {
                                             this.requestCreated = true;
                                             this.addFileViaButton = true;
                                             this.openFileSource();
-                                        }}" 
+                                        }}"
                                         title="${i18n.t('show-requests.add-files-button-text')}"
                                         >${i18n.t('show-requests.add-files-button-text')}
                          </dbp-loading-button>` : `` }
@@ -3429,7 +3434,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 @click="${(event) => {
                                                     this.deleteFile(event, file);
                                                 }}"
-                                                title="${i18n.t('show-requests.delete-file-button-text')}" 
+                                                title="${i18n.t('show-requests.delete-file-button-text')}"
                                                 icon-name="trash"></dbp-icon-button>` : ``
 }
                             </div>
@@ -3485,7 +3490,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             },
                                         });
                                     }}"
-                                    title="${i18n.t('show-requests.edit-sender-button-text')}" 
+                                    title="${i18n.t('show-requests.edit-sender-button-text')}"
                                     icon-name="pencil"></dbp-icon-button>` : ``}
                 </div>
                 <div class="sender-data">
@@ -3520,7 +3525,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 ${!recipient.electronicallyDeliverable && recipient.postalDeliverable ? html`
                     <div class="delivery-status"><span class="status-orange">●</span> ${i18n.t('show-requests.only-postal-deliverable')}</div>
                 ` : ``}
-                
+
                 ${!recipient.electronicallyDeliverable && !recipient.postalDeliverable ? html`
                     <div class="delivery-status"><span class="status-red">●</span> ${i18n.t('show-requests.not-deliverable-1')}
                     <dbp-tooltip
