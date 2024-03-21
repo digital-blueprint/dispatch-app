@@ -1175,7 +1175,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
 
-        if(confirm(i18n.t('show-requests.submit-dialog-text'))) {
+        if(confirm(i18n.t('show-requests.submit-dialog-text_one'))) {
             try {
                 this._('#submit-btn').start(); //TODO
                 button.start();
@@ -1503,7 +1503,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 return;
             }
 
-            let dialogText = i18n.t('show-requests.submit-dialog-text', {count: this.dispatchRequestsTable.getSelectedRows().length});
+            let dialogText = i18n.t('show-requests.submit-dialog-text_other', {count: this.dispatchRequestsTable.getSelectedRows().length});
 
             let ids = [];
 
