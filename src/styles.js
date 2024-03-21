@@ -19,21 +19,21 @@ export function getDispatchRequestTableStyles() {
             left: 10px;
             top: 8px;
         }
-        
+
         .button-container .checkmark::after {
             left: 7px;
             top: 2px;
             width: 5px;
             height: 11px;
         }
-        
+
         .force-no-select {
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
         }
-        
+
         .filename {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -47,11 +47,11 @@ export function getDispatchRequestTableStyles() {
             position: absolute;
             top: -27px;
         }
-        
+
         .tabulator {
             overflow: unset;
         }
-        
+
 
         /**************************************************************************************************************/
 
@@ -65,26 +65,26 @@ export function getDispatchRequestTableStyles() {
         .tabulator-responsive-collapse table tr td:first-child {
             width: 4em;
         }
-        
+
         .tabulator .tabulator-placeholder-contents {
             margin-bottom: auto;
         }
-        
+
         .tabulator-row .tabulator-responsive-collapse {
             border: none;
         }
-                
+
         .tabulator-row .tabulator-cell.tabulator-row-handle {
             display: inline-block!important;
         }
-    
+
         /* TODO sets the grey color to white */
         .tabulator-row .tabulator-cell .tabulator-responsive-collapse-toggle {
             height: 100%;
             width: 100%;
             /*background-color: unset;*/
         }
-    
+
         .tabulator-responsive-collapse-toggle-open,
         .tabulator-responsive-collapse-toggle-close {
             content: none;
@@ -106,7 +106,7 @@ export function getDispatchRequestTableStyles() {
             mask-size: 100%;
             visibility: visible;
         }
-    
+
         .tabulator-responsive-collapse-toggle-open::after {
             -webkit-mask-image: url("data:image/svg+xml,%3c%3fxml version='1.0' encoding='utf-8'%3f%3e %3c!-- Generator: Adobe Illustrator 26.1.0%2c SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3e %3csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 24.6 62.4' style='enable-background:new 0 0 24.6 62.4%3b' xml:space='preserve'%3e%3cg transform='translate(-382.21 -336.98)'%3e%3cg%3e%3cpath d='M388%2c380.5c-0.2%2c0-0.4-0.1-0.6-0.3c-0.3-0.3-0.3-0.8%2c0.1-1.1l12.5-10.9l-12.5-10.9c-0.3-0.3-0.4-0.8-0.1-1.1 c0.3-0.3%2c0.8-0.4%2c1.1-0.1l13.1%2c11.5c0.2%2c0.2%2c0.3%2c0.4%2c0.3%2c0.6s-0.1%2c0.5-0.3%2c0.6l-13.1%2c11.5C388.4%2c380.4%2c388.2%2c380.5%2c388%2c380.5z'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e");
             mask-image: url("data:image/svg+xml,%3c%3fxml version='1.0' encoding='utf-8'%3f%3e %3c!-- Generator: Adobe Illustrator 26.1.0%2c SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3e %3csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 24.6 62.4' style='enable-background:new 0 0 24.6 62.4%3b' xml:space='preserve'%3e%3cg transform='translate(-382.21 -336.98)'%3e%3cg%3e%3cpath d='M388%2c380.5c-0.2%2c0-0.4-0.1-0.6-0.3c-0.3-0.3-0.3-0.8%2c0.1-1.1l12.5-10.9l-12.5-10.9c-0.3-0.3-0.4-0.8-0.1-1.1 c0.3-0.3%2c0.8-0.4%2c1.1-0.1l13.1%2c11.5c0.2%2c0.2%2c0.3%2c0.4%2c0.3%2c0.6s-0.1%2c0.5-0.3%2c0.6l-13.1%2c11.5C388.4%2c380.4%2c388.2%2c380.5%2c388%2c380.5z'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e");
@@ -123,7 +123,7 @@ export function getDispatchRequestTableStyles() {
         .tabulator-responsive-collapse-toggle-close:hover::after {
             background-color: var(--dbp-hover-color, var(--dbp-content));
         }
-    
+
         .tabulator-selected .tabulator-responsive-collapse-toggle-open::after,
         .tabulator-selected .tabulator-responsive-collapse-toggle-close::after {
             background-color: var(--dbp-hover-color, var(--dbp-on-content-surface));
@@ -135,17 +135,17 @@ export function getDispatchRequestTableStyles() {
         .tabulator-row.tabulator-selectable.tabulator-selected.no-select-styles:hover .tabulator-responsive-collapse-toggle-open::after {
             background-color: var(--dbp-content);
         }
-            
-            
+
+
         /**************************************************************************************************************/
-        
-     
+
+
         .tabulator .tabulator-header .tabulator-col[tabulator-field="details"] {
             min-height: 37px !important;
             /*display: inline-block !important;*/
             font-weight: 400;
         }
-        
+
         .tabulator-responsive-collapse table {
             border-spacing: 1em;
             width: 100%;
@@ -155,7 +155,7 @@ export function getDispatchRequestTableStyles() {
         /*.tabulator-row .tabulator-responsive-collapse {*/
         /*    border-top: var(--dbp-border);*/
         /*}*/
-        
+
         .tabulator-responsive-collapse table tr td {
             vertical-align: top;
         }
@@ -229,7 +229,7 @@ export function getDispatchRequestTableStyles() {
             background-color: var(--dbp-hover-background-color, var(--dbp-content-surface));
         }
 
-        .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-right, 
+        .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-right,
         .tabulator-row .tabulator-frozen.tabulator-frozen-right {
             border-left: unset;
         }
@@ -244,7 +244,7 @@ export function getDispatchRequestTableStyles() {
             display: flex;
             align-items: center;
         }
-        
+
         .tabulator .tabulator-footer .tabulator-footer-contents {
             flex-direction: column;
         }
@@ -296,13 +296,13 @@ export function getDispatchRequestTableStyles() {
                 max-width: 100%;
             }
         }
-        
+
         /**************************\\
          Tablet Portrait Styles
        \\**************************/
 
         @media only screen and (orientation: portrait) and (max-width: 768px) {
-            
+
 
         }
 
@@ -311,7 +311,7 @@ export function getDispatchRequestTableStyles() {
         \\**************************/
 
         @media only screen and (orientation: portrait) and (max-width: 768px) {
-                
+
                 button[data-page="prev"], button[data-page="next"], button[data-page="first"], button[data-page="last"] {
                     display: block;
                     white-space: nowrap !important;
@@ -334,7 +334,7 @@ export function getDispatchRequestTableStyles() {
                 .tabulator .tabulator-footer .tabulator-paginator .tabulator-page {
                     border: none;
                 }
-                
+
                 button[data-page="prev"]:after {
                     -webkit-mask-image: url("${unsafeCSS(getIconSVGURL('chevron-left'))}");
                     mask-image: url("${unsafeCSS(getIconSVGURL('chevron-left'))}");
@@ -360,36 +360,36 @@ export function getDispatchRequestTableStyles() {
                 .tabulator .tabulator-footer .tabulator-footer-contents .tabulator-paginator .tabulator-pages {
                     display: none;
                 }
-                
+
                 .tabulator .tabulator-footer .tabulator-paginator {
                     text-align: center;
                 }
-                
+
                 .tabulator .tabulator-footer .tabulator-paginator label {
                     display: none;
                 }
-                
+
                 .tabulator .tabulator-footer .tabulator-paginator .tabulator-page {
                     border: none;
                 }
-                
+
                 .tabulator .tabulator-footer .tabulator-paginator .tabulator-page-size {
                     padding-right: 0;
                     background-size: auto 40%;
                 }
-                
+
                 #custom-pagination {
                     position: sticky;
                     bottom: 0px;
                     z-index: 10;
                 }
-                
+
                 .tabulator-footer {
                     position: sticky;
                     bottom: 0px;
                     z-index: 10;
                 }
-                                
+
                 .tabulator {
                     overflow: visible;
                 }
@@ -424,16 +424,16 @@ export function getDispatchRequestStyles() {
                 cursor: not-allowed;
                 color: var(--dbp-muted);
             }
-            
+
             .modal-overlay {
                 z-index: 9000;
             }
-            
+
             .no-access-notification {
                 margin-top: 1.3em;
                 margin-bottom: 1.3em;
             }
-            
+
             .country-select:not(.select) {
                 width: 100%;
                 border-color: var(--dbp-muted);
@@ -559,7 +559,7 @@ export function getDispatchRequestStyles() {
             #add-subject-modal-box,
             #edit-subject-modal-box,
             #edit-reference-number-modal-box,
-            #show-recipient-modal-box, 
+            #show-recipient-modal-box,
             #file-viewer-modal-box {
                 display: flex;
                 flex-direction: column;
@@ -567,12 +567,12 @@ export function getDispatchRequestStyles() {
                 padding: 15px 20px 20px;
                 min-width: 320px;
             }
-            
+
             .modal-content-container {
                 display: flex;
                 flex-direction: row;
             }
-            
+
             #edit-recipient-modal-box {
                 max-height: 640px;
                 min-height: 640px;
@@ -584,7 +584,7 @@ export function getDispatchRequestStyles() {
                 min-height: 645px;
                 max-width: 736px;
             }
-            
+
             #add-recipient-modal-box h4 {
                 margin-top: 0;
             }
@@ -606,7 +606,7 @@ export function getDispatchRequestStyles() {
                 min-height: 185px;
                 max-width: 500px;
             }
-            
+
             #edit-sender-modal-box {
                 max-height: 550px;
                 min-height: 550px;
@@ -668,7 +668,7 @@ export function getDispatchRequestStyles() {
                 gap: 1em;
                 flex-direction: column;
             }
-            
+
             #add-subject-modal-content, #edit-subject-modal-content, #edit-reference-number-modal-content {
                 gap: 0;
             }
@@ -677,7 +677,7 @@ export function getDispatchRequestStyles() {
             #add-sender-modal-content div .input,
             #add-recipient-modal-content div .input,
             #edit-recipient-modal-content div .input,
-            #add-subject-modal-content div .input, 
+            #add-subject-modal-content div .input,
             #edit-subject-modal-content div .input,
             #edit-reference-number-modal-content div .input {
                 width: 100%;
@@ -709,7 +709,7 @@ export function getDispatchRequestStyles() {
                 margin: 0;
                 padding: 0.25em 0 0 0;
             }
-            
+
             #tf-add-recipient-birthdate-day, #tf-add-recipient-birthdate-month {
                 flex: 1;
             }
@@ -724,11 +724,11 @@ export function getDispatchRequestStyles() {
                 gap: 0.5em;
                 width: 331px;
             }
-            
+
             #edit-recipient-modal-content .birthdate-input {
                 width: 360px;
             }
-            
+
             #file-viewer-modal-box {
                 justify-content: unset;
                 gap: 1em;
@@ -775,13 +775,13 @@ export function getDispatchRequestStyles() {
                 flex-direction: row;
                 justify-content: space-between;
             }
-            
+
             .button-row {
                 display: flex;
                 flex-direction: row;
-                
+
             }
-            
+
             #expand-all-btn, #collapse-all-btn {
                 padding: 0.25em 0 0 0.5em;
             }
@@ -843,7 +843,7 @@ export function getDispatchRequestStyles() {
             .status-red {
                 color: var(--dbp-danger);
             }
-            
+
             .delivery-status {
                 padding-top: 0.5em;
                 align-self: baseline;
@@ -887,9 +887,17 @@ export function getDispatchRequestStyles() {
                 overflow-y: auto;
                 width: 100%;
             }
-            
+
             input[type="date"] {
                 width: 100%;
+            }
+
+            .modal-content:not(:has(.scroll)) .notification-container {
+                margin-top: 12px;
+            }
+
+            .notification-container label{
+                font-weight: bold;
             }
 
             .recipient-status {
@@ -906,23 +914,23 @@ export function getDispatchRequestStyles() {
                 margin-top: auto;
                 margin-bottom: auto;
             }
-            
+
             .new-line-content {
                 white-space: pre-line;
             }
-            
+
             .scroll {
                 overflow-y: auto;
             }
-            
+
             .dispatch-status {
                 padding-top: 0.5em;
             }
-            
+
             .dispatch-status .status-title {
                 font-weight: 400;
             }
-            
+
             @media only screen and (orientation: portrait) and (max-width: 768px) {
 
                 .edit-selection-buttons {

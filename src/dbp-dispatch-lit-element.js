@@ -1,4 +1,5 @@
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
+import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {send} from "@dbp-toolkit/common/notification";
 import MicroModal from "./micromodal.es";
 import {FileSource, FileSink} from "@dbp-toolkit/file-handling";
@@ -3173,6 +3174,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     </div>
                                 ` : ``}
                             </div>
+
                             ${this.currentRecipient && this.currentRecipient.statusChanges && this.currentRecipient.statusChanges.length > 0 ? html`
                             <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
                             <div class="scroll">
@@ -3195,6 +3197,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     </div>
                                 `)}
                             </div>` : ``}
+                            ${this.currentRecipient && this.currentRecipient.addressCountry && this.currentRecipient.addressCountry.length > 0 && this.currentRecipient.addressCountry !== 'AT'
+                                ? unsafeHTML('<div class="notification-container"><label>Info: </label>' + i18n.t('create-request.add-recipient-country-warning') + '</div>')
+                                : ``}
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
