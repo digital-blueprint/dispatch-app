@@ -238,7 +238,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Updates (PATCHes) a dispatch request
-     *
      * @param identifier
      * @param body
      * @returns {object} response

@@ -8,7 +8,6 @@ export const getPDFFileBase64Content = (file) => {
 
 /**
  * Returns the content of the file
- *
  * @param {File} file The file to read
  * @returns {string} The content
  */
