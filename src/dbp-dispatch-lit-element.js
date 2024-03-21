@@ -2606,6 +2606,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     name="tf-add-recipient-gn-dialog"
                                                     id="tf-add-recipient-gn-dialog"
                                                     value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
+                                                    required
                                                     @input="${(event) => {
                                                         // TODO
                                                         this.disablePersonSelector(event);
@@ -2625,6 +2626,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     name="tf-add-recipient-fn-dialog"
                                                     id="tf-add-recipient-fn-dialog"
                                                     value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
+                                                    required
                                                     @input="${(event) => {
                                                         // TODO
                                                         this.disablePersonSelector(event);
@@ -2687,16 +2689,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         </div>
                                         <div>
                                             <input
-                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                                    type="text"
-                                                    class="input"
-                                                    name="tf-add-recipient-sa-dialog"
-                                                    id="tf-add-recipient-sa-dialog"
-                                                    value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
-                                                    @input="${(event) => {
-                                                        // TODO
-                                                        this.disablePersonSelector(event);
-                                                    }}"
+                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                type="text"
+                                                class="input"
+                                                name="tf-add-recipient-sa-dialog"
+                                                id="tf-add-recipient-sa-dialog"
+                                                value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
+                                                required
+                                                @input="${(event) => {
+                                                    // TODO
+                                                    this.disablePersonSelector(event);
+                                                }}"
                                             />
                                         </div>
                                     </div>
@@ -2706,16 +2709,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         </div>
                                         <div>
                                             <input
-                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                                    type="number"
-                                                    class="input"
-                                                    name="tf-add-recipient-pc-dialog"
-                                                    id="tf-add-recipient-pc-dialog"
-                                                    value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
-                                                    @input="${(event) => {
-                                                        // TODO
-                                                        this.disablePersonSelector(event);
-                                                    }}"
+                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                type="number"
+                                                class="input"
+                                                name="tf-add-recipient-pc-dialog"
+                                                id="tf-add-recipient-pc-dialog"
+                                                value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
+                                                required
+                                                @input="${(event) => {
+                                                    // TODO
+                                                    this.disablePersonSelector(event);
+                                                }}"
                                             />
                                         </div>
                                     </div>
@@ -2725,16 +2729,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         </div>
                                         <div>
                                             <input
-                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                                    type="text"
-                                                    class="input"
-                                                    name="tf-add-recipient-al-dialog"
-                                                    id="tf-add-recipient-al-dialog"
-                                                    value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
-                                                    @input="${(event) => {
-                                                        // TODO
-                                                        this.disablePersonSelector(event);
-                                                    }}"
+                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                type="text"
+                                                class="input"
+                                                name="tf-add-recipient-al-dialog"
+                                                id="tf-add-recipient-al-dialog"
+                                                value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
+                                                required
+                                                @input="${(event) => {
+                                                    // TODO
+                                                    this.disablePersonSelector(event);
+                                                }}"
                                             />
                                         </div>
                                     </div>
