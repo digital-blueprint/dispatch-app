@@ -1,34 +1,34 @@
 {
-  "dbp-translation": {
-    "organization-select-description": "Bitte wählen Sie Ihre Organisation:"
-  },
-  "dbp-create-request": {
-    "show-requests": {
-      "organization-select-description": "Bitte wählen Sie Ihre Organisation:",
-      "edit-sender-fn-dialog-label": "Organisationsnummer",
-      "edit-sender-gn-dialog-label": "Organisationsname",
-      "edit-sender-organization-title": "Bitte wählen Sie Ihre Organisation",
-      "edit-sender-org-dialog-label": "Organisation"
+    "dbp-translation": {
+        "organization-select-description": "Bitte wählen Sie Ihre Organisation:"
     },
-    "create-request": {
-      "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine neuen Aufträge erstellen.",
-      "create-not-allowed-text": "Sie besitzen in der gewählten Organisation nur Leserechte für Versandaufträge und können den Absender deshalb nicht ändern.",
-      "sender-full-name": "Technische Universität Graz",
-      "default-subject": "Nachricht von der TU Graz",
-      "default-reference-number": "-"
+    "dbp-create-request": {
+        "show-requests": {
+            "organization-select-description": "Bitte wählen Sie Ihre Organisation:",
+            "edit-sender-fn-dialog-label": "Organisationsnummer",
+            "edit-sender-gn-dialog-label": "Organisationsname",
+            "edit-sender-organization-title": "Bitte wählen Sie Ihre Organisation",
+            "edit-sender-org-dialog-label": "Organisation"
+        },
+        "create-request": {
+            "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine neuen Aufträge erstellen.",
+            "create-not-allowed-text": "Sie besitzen in der gewählten Organisation nur Leserechte für Versandaufträge und können den Absender deshalb nicht ändern.",
+            "sender-full-name": "Technische Universität Graz",
+            "default-subject": "Nachricht von der TU Graz",
+            "default-reference-number": "-"
+        },
+        "error-no-read": "Sie sind derzeit keiner Organisation zugeordnet, in der Sie Lese- oder Schreibrechte für Versandaufträge haben.",
+        "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine Aufträge bearbeiten, freigeben oder löschen."
     },
-    "error-no-read": "Sie sind derzeit keiner Organisation zugeordnet, in der Sie Lese- oder Schreibrechte für Versandaufträge haben.",
-    "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine Aufträge bearbeiten, freigeben oder löschen."
-  },
-  "dbp-show-requests": {
-    "show-requests": {
-      "organization-select-description": "Bitte wählen Sie Ihre Organisation:",
-      "edit-sender-fn-dialog-label": "Organisationsnummer",
-      "edit-sender-gn-dialog-label": "Organisationsname",
-      "edit-sender-organization-title": "Bitte wählen Sie Ihre Organisation",
-      "edit-sender-org-dialog-label": "Organisation"
-    },
-    "error-no-read": "Sie sind derzeit keiner Organisation zugeordnet, in der Sie Lese- oder Schreibrechte für Versandaufträge haben.",
-    "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine Aufträge bearbeiten, freigeben oder löschen."
-  }
+    "dbp-show-requests": {
+        "show-requests": {
+            "organization-select-description": "Bitte wählen Sie Ihre Organisation:",
+            "edit-sender-fn-dialog-label": "Organisationsnummer",
+            "edit-sender-gn-dialog-label": "Organisationsname",
+            "edit-sender-organization-title": "Bitte wählen Sie Ihre Organisation",
+            "edit-sender-org-dialog-label": "Organisation"
+        },
+        "error-no-read": "Sie sind derzeit keiner Organisation zugeordnet, in der Sie Lese- oder Schreibrechte für Versandaufträge haben.",
+        "error-no-writes": "Sie besitzen in dieser Organisation nur Leserechte für Versandaufträge und können deshalb keine Aufträge bearbeiten, freigeben oder löschen."
+    }
 }

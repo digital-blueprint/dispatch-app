@@ -1,17 +1,16 @@
-import {PersonSelect} from "@dbp-toolkit/person-select";
+import {PersonSelect} from '@dbp-toolkit/person-select';
 import {ScopedElementsMixin} from '@open-wc/scoped-elements';
 
 export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
-
     // If the search term matches a matriculationNumber, we search for that,
     // otherwise the name
     buildUrlData(select, params) {
         let term = params.term.trim();
         let data = {
-            includeLocal: 'matriculationNumber'
+            includeLocal: 'matriculationNumber',
         };
         if (this.isValidMatriculationNumber(term)) {
-            data['queryLocal'] = 'matriculationNumber:'+term;
+            data['queryLocal'] = 'matriculationNumber:' + term;
         } else {
             data['search'] = term;
         }
@@ -27,7 +26,7 @@ export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
 
         let mat = person.localData.matriculationNumber;
         if (mat !== null && this.isValidMatriculationNumber(mat)) {
-             text += ` (${mat})`;
+            text += ` (${mat})`;
         }
 
         return text;

@@ -1,17 +1,17 @@
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
-import {send} from "@dbp-toolkit/common/notification";
-import MicroModal from "./micromodal.es";
-import {FileSource, FileSink} from "@dbp-toolkit/file-handling";
-import {html} from "lit";
+import {send} from '@dbp-toolkit/common/notification';
+import MicroModal from './micromodal.es';
+import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
+import {html} from 'lit';
 import * as dispatchHelper from './utils';
-import {CustomPersonSelect} from "./person-select";
-import {ResourceSelect} from "@dbp-toolkit/resource-select";
-import {IconButton} from "@dbp-toolkit/common";
-import {humanFileSize} from "@dbp-toolkit/common/i18next";
-import {classMap} from "lit/directives/class-map.js";
-import {PdfViewer} from "@dbp-toolkit/pdf-viewer";
-import {getReferenceNumberFromPDF} from "./utils";
+import {CustomPersonSelect} from './person-select';
+import {ResourceSelect} from '@dbp-toolkit/resource-select';
+import {IconButton} from '@dbp-toolkit/common';
+import {humanFileSize} from '@dbp-toolkit/common/i18next';
+import {classMap} from 'lit/directives/class-map.js';
+import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
+import {getReferenceNumberFromPDF} from './utils';
 
 export default class DBPDispatchLitElement extends DBPLitElement {
     constructor() {
@@ -45,7 +45,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     static get properties() {
         return {
             ...super.properties,
-            auth: { type: Object },
+            auth: {type: Object},
 
             currentItem: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
@@ -87,7 +87,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     update(changedProperties) {
         changedProperties.forEach((oldValue, propName) => {
             switch (propName) {
-                case "auth":
+                case 'auth':
                     this._updateAuth();
                     break;
             }
@@ -101,7 +101,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @returns {boolean} true or false
      */
     isLoggedIn() {
-        return (this.auth.person !== undefined && this.auth.person !== null);
+        return this.auth.person !== undefined && this.auth.person !== null;
     }
 
     /**
@@ -109,9 +109,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @returns {boolean} true or false
      */
     isLoading() {
-        if (this._loginStatus === "logged-out")
-            return false;
-        return (!this.isLoggedIn() && this.auth.token !== undefined);
+        if (this._loginStatus === 'logged-out') return false;
+        return !this.isLoggedIn() && this.auth.token !== undefined;
     }
 
     /**
@@ -121,12 +120,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @returns {object} response (error or result)
      */
     async httpGetAsync(url, options) {
-        let response = await fetch(url, options).then(result => {
-            if (!result.ok) throw result;
-            return result;
-        }).catch(error => {
-            return error;
-        });
+        let response = await fetch(url, options)
+            .then((result) => {
+                if (!result.ok) throw result;
+                return result;
+            })
+            .catch((error) => {
+                return error;
+            });
 
         return response;
     }
@@ -141,10 +142,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/ld+json',
-                Authorization: "Bearer " + this.auth.token
+                Authorization: 'Bearer ' + this.auth.token,
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests?perPage=999&groupId=' + groupId, options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/requests?perPage=999&groupId=' + groupId,
+            options,
+        );
     }
 
     /**
@@ -157,10 +161,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/ld+json',
-                Authorization: "Bearer " + this.auth.token
+                Authorization: 'Bearer ' + this.auth.token,
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/requests/' + identifier,
+            options,
+        );
     }
 
     /**
@@ -173,10 +180,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/ld+json',
-                Authorization: "Bearer " + this.auth.token
+                Authorization: 'Bearer ' + this.auth.token,
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients/' + identifier, options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/request-recipients/' + identifier,
+            options,
+        );
     }
 
     /**
@@ -195,16 +205,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
 
         let body = {
-            "name": this.subject && this.subject !== '' ? this.subject : i18n.t('create-request.default-subject'),
-            "senderOrganizationName": this.currentItem.senderOrganizationName,
-            "senderFullName": i18n.t('create-request.sender-full-name'), // this.currentItem.senderFullName,
-            "senderAddressCountry": this.currentItem.senderAddressCountry,
-            "senderPostalCode": this.currentItem.senderPostalCode,
-            "senderAddressLocality": this.currentItem.senderAddressLocality,
-            "senderStreetAddress": this.currentItem.senderStreetAddress,
-            "senderBuildingNumber": '', //this.currentItem.senderBuildingNumber,
-            "groupId": this.groupId,
-            "referenceNumber": this.getDefaultReferenceNumber(),
+            name:
+                this.subject && this.subject !== ''
+                    ? this.subject
+                    : i18n.t('create-request.default-subject'),
+            senderOrganizationName: this.currentItem.senderOrganizationName,
+            senderFullName: i18n.t('create-request.sender-full-name'), // this.currentItem.senderFullName,
+            senderAddressCountry: this.currentItem.senderAddressCountry,
+            senderPostalCode: this.currentItem.senderPostalCode,
+            senderAddressLocality: this.currentItem.senderAddressLocality,
+            senderStreetAddress: this.currentItem.senderStreetAddress,
+            senderBuildingNumber: '', //this.currentItem.senderBuildingNumber,
+            groupId: this.groupId,
+            referenceNumber: this.getDefaultReferenceNumber(),
         };
 
         const options = {
@@ -233,7 +246,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
 
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier, options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/requests/' + identifier,
+            options,
+        );
     }
 
     /**
@@ -252,7 +268,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             body: JSON.stringify(body),
         };
 
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + encodeURIComponent(identifier), options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/requests/' + encodeURIComponent(identifier),
+            options,
+        );
     }
 
     /**
@@ -268,18 +287,28 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param groupId
      * @returns {object} response
      */
-    async sendEditDispatchRequest(identifier, senderOrganizationName, senderFullName, senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId) {
+    async sendEditDispatchRequest(
+        identifier,
+        senderOrganizationName,
+        senderFullName,
+        senderAddressCountry,
+        senderPostalCode,
+        senderAddressLocality,
+        senderStreetAddress,
+        senderBuildingNumber,
+        groupId,
+    ) {
         const i18n = this._i18n;
 
         let body = {
-            "senderOrganizationName": senderOrganizationName,
-            "senderFullName": i18n.t('create-request.sender-full-name'), //senderFullName,
-            "senderAddressCountry": senderAddressCountry,
-            "senderPostalCode": senderPostalCode,
-            "senderAddressLocality": senderAddressLocality,
-            "senderStreetAddress": senderStreetAddress,
-            "senderBuildingNumber": senderBuildingNumber,
-            "groupId": groupId
+            senderOrganizationName: senderOrganizationName,
+            senderFullName: i18n.t('create-request.sender-full-name'), //senderFullName,
+            senderAddressCountry: senderAddressCountry,
+            senderPostalCode: senderPostalCode,
+            senderAddressLocality: senderAddressLocality,
+            senderStreetAddress: senderStreetAddress,
+            senderBuildingNumber: senderBuildingNumber,
+            groupId: groupId,
         };
 
         return await this.sendPatchDispatchRequest(identifier, body);
@@ -302,7 +331,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             body: JSON.stringify(body),
         };
 
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/requests/' + identifier + '/submit', options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/requests/' + identifier + '/submit',
+            options,
+        );
     }
 
     /**
@@ -318,39 +350,49 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param streetAddress
      * @returns {object} response
      */
-    async sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress) {
+    async sendAddRequestRecipientsRequest(
+        id,
+        personIdentifier,
+        givenName,
+        familyName,
+        birthDate,
+        addressCountry,
+        postalCode,
+        addressLocality,
+        streetAddress,
+    ) {
         let body;
 
         if (personIdentifier === null) {
             if (birthDate !== '') {
                 body = {
-                    "dispatchRequestIdentifier": id,
-                    "givenName": givenName,
-                    "familyName": familyName,
-                    "addressCountry": addressCountry,
-                    "postalCode": postalCode,
-                    "addressLocality": addressLocality,
-                    "streetAddress": streetAddress,
-                    "buildingNumber": '',
-                    "birthDate": birthDate
+                    dispatchRequestIdentifier: id,
+                    givenName: givenName,
+                    familyName: familyName,
+                    addressCountry: addressCountry,
+                    postalCode: postalCode,
+                    addressLocality: addressLocality,
+                    streetAddress: streetAddress,
+                    buildingNumber: '',
+                    birthDate: birthDate,
                 };
             } else {
                 body = {
-                    "dispatchRequestIdentifier": id,
-                    "givenName": givenName,
-                    "familyName": familyName,
-                    "addressCountry": addressCountry,
-                    "postalCode": postalCode,
-                    "addressLocality": addressLocality,
-                    "streetAddress": streetAddress,
-                    "buildingNumber": ''
+                    dispatchRequestIdentifier: id,
+                    givenName: givenName,
+                    familyName: familyName,
+                    addressCountry: addressCountry,
+                    postalCode: postalCode,
+                    addressLocality: addressLocality,
+                    streetAddress: streetAddress,
+                    buildingNumber: '',
                 };
             }
         } else {
             body = {
-                "dispatchRequestIdentifier": id,
-                "personIdentifier": personIdentifier,
-                "buildingNumber": ''
+                dispatchRequestIdentifier: id,
+                personIdentifier: personIdentifier,
+                buildingNumber: '',
             };
         }
 
@@ -363,7 +405,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             body: JSON.stringify(body),
         };
 
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients', options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/request-recipients',
+            options,
+        );
     }
 
     async sendDeleteRecipientRequest(id) {
@@ -374,7 +419,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
 
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-recipients/' + id, options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/request-recipients/' + id,
+            options,
+        );
     }
 
     async sendAddFileToRequest(id, file) {
@@ -401,7 +449,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
 
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-files/' + id, options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/request-files/' + id,
+            options,
+        );
     }
 
     async sendGetPersonDetailsRequest(identifier) {
@@ -409,11 +460,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/ld+json',
-                Authorization: "Bearer " + this.auth.token
+                Authorization: 'Bearer ' + this.auth.token,
             },
         };
         // return await this.httpGetAsync(this.entryPointUrl + identifier, options); ///'base/people/'
-        return await this.httpGetAsync(this.entryPointUrl + identifier + '?includeLocal=streetAddress%2CaddressLocality%2CpostalCode%2CaddressCountry', options);
+        return await this.httpGetAsync(
+            this.entryPointUrl +
+                identifier +
+                '?includeLocal=streetAddress%2CaddressLocality%2CpostalCode%2CaddressCountry',
+            options,
+        );
     }
 
     async sendGetPersonRequest(identifier) {
@@ -421,7 +477,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/ld+json',
-                Authorization: "Bearer " + this.auth.token
+                Authorization: 'Bearer ' + this.auth.token,
             },
         };
         return await this.httpGetAsync(this.entryPointUrl + '/base/people/' + identifier, options);
@@ -429,7 +485,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async sendChangeSubjectRequest(identifier, subject) {
         let body = {
-            "name": subject,
+            name: subject,
         };
 
         return await this.sendPatchDispatchRequest(identifier, body);
@@ -442,7 +498,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      */
     async sendChangeReferenceNumberRequest(identifier, referenceNumber) {
         let body = {
-            "referenceNumber": referenceNumber
+            referenceNumber: referenceNumber,
         };
 
         return await this.sendPatchDispatchRequest(identifier, body);
@@ -453,7 +509,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/ld+json',
-                Authorization: "Bearer " + this.auth.token
+                Authorization: 'Bearer ' + this.auth.token,
             },
         };
         return await this.httpGetAsync(this.entryPointUrl + identifier, options);
@@ -464,10 +520,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/ld+json',
-                Authorization: "Bearer " + this.auth.token
+                Authorization: 'Bearer ' + this.auth.token,
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-files/' + identifier, options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/request-files/' + identifier,
+            options,
+        );
     }
 
     async getCreatedDispatchRequests() {
@@ -488,21 +547,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     } else {
                         if (response.status === 500) {
                             send({
-                                "summary": 'Error!',
-                                "body": 'Could not fetch dispatch requests. Response code: 500',
-                                "type": "danger",
-                                "timeout": 5,
+                                summary: 'Error!',
+                                body: 'Could not fetch dispatch requests. Response code: 500',
+                                type: 'danger',
+                                timeout: 5,
                             });
-                        }  else if (response.status === 403) {
+                        } else if (response.status === 403) {
                             //TODO
                         }
                     }
                 } catch (e) {
                     send({
-                        "summary": 'Error!',
-                        "body": 'Could not fetch dispatch requests.',
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: 'Error!',
+                        body: 'Could not fetch dispatch requests.',
+                        type: 'danger',
+                        timeout: 5,
                     });
                 }
             }
@@ -511,7 +570,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let tableObject = this.createTableObject(this.createdRequestsList);
         this.dispatchRequestsTable.replaceData(tableObject);
         this.dispatchRequestsTable.setLocale(this.lang);
-        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
         // console.log('totalNumberOfItems: ' + this.totalNumberOfItems);
         this.tableLoading = false;
 
@@ -523,9 +582,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     /*
-    * Open file source
-    *
-    */
+     * Open file source
+     *
+     */
     openFileSource() {
         this.fileUploadFinished = false;
         const fileSource = this._('#file-source');
@@ -550,17 +609,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
         if (!this.errorCreatingRequest) {
             send({
-                "summary": i18n.t('create-request.successfully-requested-title'),
-                "body": this.singleFileProcessing ? i18n.t('create-request.successfully-requested-text') : i18n.t('create-request.successfully-requested-text-multiple'),
-                "type": "success",
-                "timeout": 5,
+                summary: i18n.t('create-request.successfully-requested-title'),
+                body: this.singleFileProcessing
+                    ? i18n.t('create-request.successfully-requested-text')
+                    : i18n.t('create-request.successfully-requested-text-multiple'),
+                type: 'success',
+                timeout: 5,
             });
         } else {
             send({
-                "summary": i18n.t('create-request.error-requested-title'),
-                "body": i18n.t('create-request.error-requested-text'),
-                "type": "danger",
-                "timeout": 5,
+                summary: i18n.t('create-request.error-requested-title'),
+                body: i18n.t('create-request.error-requested-text'),
+                type: 'danger',
+                timeout: 5,
             });
         }
         this.errorCreatingRequest = false;
@@ -596,10 +657,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } catch (e) {
             //TODO
             send({
-                "summary": 'Error!',
-                "body": 'There was an error.',
-                "type": "danger",
-                "timeout": 5,
+                summary: 'Error!',
+                body: 'There was an error.',
+                type: 'danger',
+                timeout: 5,
             });
         } finally {
             this.tableLoading = false;
@@ -615,7 +676,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         // We override the existing reference number if it isn't set or is equal to the default one
         let shouldOverrideReferenceNumber = false;
-        if (!this.currentItem.referenceNumber || this.currentItem.referenceNumber === this.getDefaultReferenceNumber()) {
+        if (
+            !this.currentItem.referenceNumber ||
+            this.currentItem.referenceNumber === this.getDefaultReferenceNumber()
+        ) {
             shouldOverrideReferenceNumber = true;
         }
 
@@ -626,20 +690,24 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 console.error('Could not set reference number!');
 
                 send({
-                    "summary": i18n.t('show-requests.error-reference-number-auto-update-failed-title'),
-                    "body": i18n.t('show-requests.error-reference-number-auto-update-failed-text'),
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: i18n.t(
+                        'show-requests.error-reference-number-auto-update-failed-title',
+                    ),
+                    body: i18n.t('show-requests.error-reference-number-auto-update-failed-text'),
+                    type: 'danger',
+                    timeout: 5,
                 });
             } else {
-                console.log("referenceNumber was updated", referenceNumber);
+                console.log('referenceNumber was updated', referenceNumber);
                 this.currentItem.referenceNumber = referenceNumber;
 
                 send({
-                    "summary": i18n.t('show-requests.error-reference-number-auto-update-success-title'),
-                    "body": i18n.t('show-requests.error-reference-number-auto-update-success-text'),
-                    "type": "info",
-                    "timeout": 5,
+                    summary: i18n.t(
+                        'show-requests.error-reference-number-auto-update-success-title',
+                    ),
+                    body: i18n.t('show-requests.error-reference-number-auto-update-success-text'),
+                    type: 'info',
+                    timeout: 5,
                 });
             }
         }
@@ -648,13 +716,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 201) {
-
-            if (this.singleFileProcessing) { //TODO
+            if (this.singleFileProcessing) {
+                //TODO
                 send({
-                    "summary": i18n.t('show-requests.successfully-added-file-title'),
-                    "body": i18n.t('show-requests.successfully-added-file-text'),
-                    "type": "success",
-                    "timeout": 5,
+                    summary: i18n.t('show-requests.successfully-added-file-title'),
+                    body: i18n.t('show-requests.successfully-added-file-text'),
+                    type: 'success',
+                    timeout: 5,
                 });
             }
 
@@ -672,10 +740,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             // TODO error handling
             if (this.singleFileProcessing) {
                 send({
-                    "summary": 'Error!',
-                    "body": 'File could not be added.',
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: 'Error!',
+                    body: 'File could not be added.',
+                    type: 'danger',
+                    timeout: 5,
                 });
             }
         }
@@ -690,10 +758,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let response = await this.sendDeleteFileRequest(file.identifier, file);
             if (response.status === 204) {
                 send({
-                    "summary": i18n.t('show-requests.successfully-deleted-file-title'),
-                    "body": i18n.t('show-requests.successfully-deleted-file-text'),
-                    "type": "success",
-                    "timeout": 5,
+                    summary: i18n.t('show-requests.successfully-deleted-file-title'),
+                    body: i18n.t('show-requests.successfully-deleted-file-text'),
+                    type: 'success',
+                    timeout: 5,
                 });
 
                 let id = this.currentItem.identifier;
@@ -706,10 +774,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 // TODO error handling
 
                 send({
-                    "summary": 'Error!',
-                    "body": 'File could not be deleted.',
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: 'Error!',
+                    body: 'File could not be deleted.',
+                    type: 'danger',
+                    timeout: 5,
                 });
             }
         } finally {
@@ -744,9 +812,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && response.status === 200) {
                 console.log('resp: ', responseBody);
                 let fileContentUrl = responseBody['fileContentUrl'];
-                let fileName = 'DeliveryNotification';//responseBody['description']; //TODO
+                let fileName = 'DeliveryNotification'; //responseBody['description']; //TODO
                 await this.downloadFileClickHandler(fileContentUrl, fileName);
-
             } else {
                 //TODO
             }
@@ -777,22 +844,46 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let postalCode = this.currentRecipient.postalCode;
             let addressLocality = this.currentRecipient.addressLocality;
             let streetAddress = this.currentRecipient.streetAddress;
-            let personIdentifier = this.currentRecipient.personIdentifier ? this.currentRecipient.personIdentifier : null;
+            let personIdentifier = this.currentRecipient.personIdentifier
+                ? this.currentRecipient.personIdentifier
+                : null;
 
             let birthDate = '';
-            if (this.currentRecipient.birthDateDay && this.currentRecipient.birthDateMonth && this.currentRecipient.birthDateYear && this.currentRecipient.birthDateDay !== '' && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '') {
-                birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
+            if (
+                this.currentRecipient.birthDateDay &&
+                this.currentRecipient.birthDateMonth &&
+                this.currentRecipient.birthDateYear &&
+                this.currentRecipient.birthDateDay !== '' &&
+                this.currentRecipient.birthDateMonth !== '' &&
+                this.currentRecipient.birthDateYear !== ''
+            ) {
+                birthDate =
+                    this.currentRecipient.birthDateDay +
+                    '.' +
+                    this.currentRecipient.birthDateMonth +
+                    '.' +
+                    this.currentRecipient.birthDateYear;
             }
 
-            let response = await this.sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress);
+            let response = await this.sendAddRequestRecipientsRequest(
+                id,
+                personIdentifier,
+                givenName,
+                familyName,
+                birthDate,
+                addressCountry,
+                postalCode,
+                addressLocality,
+                streetAddress,
+            );
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 201) {
                 send({
-                    "summary": i18n.t('show-requests.successfully-added-recipient-title'),
-                    "body": i18n.t('show-requests.successfully-added-recipient-text'),
-                    "type": "success",
-                    "timeout": 5,
+                    summary: i18n.t('show-requests.successfully-added-recipient-title'),
+                    body: i18n.t('show-requests.successfully-added-recipient-text'),
+                    type: 'success',
+                    timeout: 5,
                 });
 
                 let resp = await this.getDispatchRequest(id);
@@ -819,9 +910,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this._('#tf-add-recipient-pc-dialog').value = this.currentRecipient.postalCode;
                 this._('#tf-add-recipient-al-dialog').value = this.currentRecipient.addressLocality;
                 this._('#tf-add-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
-                this._('#tf-add-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
-                this._('#tf-add-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
-                this._('#tf-add-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
+                this._('#tf-add-recipient-birthdate-day').value =
+                    this.currentRecipient.birthDateDay;
+                this._('#tf-add-recipient-birthdate-month').value =
+                    this.currentRecipient.birthDateMonth;
+                this._('#tf-add-recipient-birthdate-year').value =
+                    this.currentRecipient.birthDateYear;
                 this._('#add-recipient-country-select').value = 'AT';
 
                 this.requestUpdate();
@@ -829,19 +923,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 // TODO error handling
 
                 send({
-                    "summary": 'Error!',
-                    "body": 'Could not add recipient. Response code: ' + response.status,
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: 'Error!',
+                    body: 'Could not add recipient. Response code: ' + response.status,
+                    type: 'danger',
+                    timeout: 5,
                 });
             }
         } catch (e) {
             //TODO
             send({
-                "summary": 'Error!',
-                "body": 'Could not add recipient.',
-                "type": "danger",
-                "timeout": 5,
+                summary: 'Error!',
+                body: 'Could not add recipient.',
+                type: 'danger',
+                timeout: 5,
             });
         } finally {
             this._('#recipient-selector').clear();
@@ -865,8 +959,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let streetAddress = this.currentRecipient.streetAddress;
 
             let birthDate = '';
-            if (this.currentRecipient.birthDateDay && this.currentRecipient.birthDateMonth && this.currentRecipient.birthDateYear && this.currentRecipient.birthDateDay !== '' && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '') {
-                birthDate = this.currentRecipient.birthDateDay + '.' + this.currentRecipient.birthDateMonth + '.' + this.currentRecipient.birthDateYear;
+            if (
+                this.currentRecipient.birthDateDay &&
+                this.currentRecipient.birthDateMonth &&
+                this.currentRecipient.birthDateYear &&
+                this.currentRecipient.birthDateDay !== '' &&
+                this.currentRecipient.birthDateMonth !== '' &&
+                this.currentRecipient.birthDateYear !== ''
+            ) {
+                birthDate =
+                    this.currentRecipient.birthDateDay +
+                    '.' +
+                    this.currentRecipient.birthDateMonth +
+                    '.' +
+                    this.currentRecipient.birthDateYear;
             }
 
             let personIdentifier = this.currentRecipient.personIdentifier;
@@ -877,15 +983,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let response = await this.sendDeleteRecipientRequest(recipientId);
             if (response.status === 204) {
                 // Then, send a new add request to add the updated recipient
-                let innerResponse = await this.sendAddRequestRecipientsRequest(id, personIdentifier, givenName, familyName, birthDate, addressCountry, postalCode, addressLocality, streetAddress);
+                let innerResponse = await this.sendAddRequestRecipientsRequest(
+                    id,
+                    personIdentifier,
+                    givenName,
+                    familyName,
+                    birthDate,
+                    addressCountry,
+                    postalCode,
+                    addressLocality,
+                    streetAddress,
+                );
 
                 let innerResponseBody = await innerResponse.json();
                 if (innerResponseBody !== undefined && innerResponse.status === 201) {
                     send({
-                        "summary": i18n.t('show-requests.successfully-edited-recipient-title'),
-                        "body": i18n.t('show-requests.successfully-edited-recipient-text'),
-                        "type": "success",
-                        "timeout": 5,
+                        summary: i18n.t('show-requests.successfully-edited-recipient-title'),
+                        body: i18n.t('show-requests.successfully-edited-recipient-text'),
+                        type: 'success',
+                        timeout: 5,
                     });
                     this.currentRecipient = innerResponseBody;
 
@@ -924,18 +1040,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } catch (e) {
             //TODO
             send({
-                "summary": 'Error!',
-                "body": 'Could not add recipient.',
-                "type": "danger",
-                "timeout": 5,
+                summary: 'Error!',
+                body: 'Could not add recipient.',
+                type: 'danger',
+                timeout: 5,
             });
         } finally {
             if (hasError) {
                 send({
-                    "summary": 'Error!',
-                    "body": 'Could not add recipient.',
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: 'Error!',
+                    body: 'Could not add recipient.',
+                    type: 'danger',
+                    timeout: 5,
                 });
             }
             this.requestUpdate();
@@ -952,10 +1068,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let response = await this.sendDeleteRecipientRequest(recipient.identifier);
             if (response.status === 204) {
                 send({
-                    "summary": i18n.t('show-requests.successfully-deleted-recipient-title'),
-                    "body": i18n.t('show-requests.successfully-deleted-recipient-text'),
-                    "type": "success",
-                    "timeout": 5,
+                    summary: i18n.t('show-requests.successfully-deleted-recipient-title'),
+                    body: i18n.t('show-requests.successfully-deleted-recipient-text'),
+                    type: 'success',
+                    timeout: 5,
                 });
 
                 let id = this.currentItem.identifier;
@@ -969,10 +1085,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 // TODO error handling
 
                 send({
-                    "summary": 'Error!',
-                    "body": 'Could not delete recipient. Response code: ' + response.status,
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: 'Error!',
+                    body: 'Could not delete recipient. Response code: ' + response.status,
+                    type: 'danger',
+                    timeout: 5,
                 });
             }
         } finally {
@@ -1004,7 +1120,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             this.currentItem.recipients.forEach((element) => {
                 // console.log(element.identifier);
-                this.fetchDetailedRecipientInformation(element.identifier).then(result => {
+                this.fetchDetailedRecipientInformation(element.identifier).then((result) => {
                     //TODO
                 });
             });
@@ -1025,10 +1141,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         if (item.dateSubmitted) {
             send({
-                "summary": i18n.t('show-requests.delete-not-allowed-title'),
-                "body": i18n.t('show-requests.delete-not-allowed-text'),
-                "type": "danger",
-                "timeout": 5,
+                summary: i18n.t('show-requests.delete-not-allowed-title'),
+                body: i18n.t('show-requests.delete-not-allowed-text'),
+                type: 'danger',
+                timeout: 5,
             });
             return;
         }
@@ -1039,19 +1155,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             try {
                 let response = await this.sendDeleteDispatchRequest(item.identifier);
                 if (response.status === 204) {
-                    if (this.dispatchRequestsTable ) {
+                    if (this.dispatchRequestsTable) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
-                            this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== item.identifier);
+                            this.createdRequestsIds = this.createdRequestsIds.filter(
+                                (id) => id !== item.identifier,
+                            );
                             await this.getCreatedDispatchRequests();
                             this.currentItem = {};
 
-                            this.currentItem.senderOrganizationName = "";
-                            this.currentItem.senderFullName = "";
-                            this.currentItem.senderAddressCountry = "";
-                            this.currentItem.senderPostalCode = "";
-                            this.currentItem.senderAddressLocality = "";
-                            this.currentItem.senderStreetAddress = "";
-                            this.currentItem.senderBuildingNumber = "";
+                            this.currentItem.senderOrganizationName = '';
+                            this.currentItem.senderFullName = '';
+                            this.currentItem.senderAddressCountry = '';
+                            this.currentItem.senderPostalCode = '';
+                            this.currentItem.senderAddressLocality = '';
+                            this.currentItem.senderStreetAddress = '';
+                            this.currentItem.senderBuildingNumber = '';
 
                             this.currentItem.files = [];
                             this.currentItem.recipients = [];
@@ -1078,19 +1196,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         }
                     }
                     send({
-                        "summary": i18n.t('show-requests.successfully-deleted-title'),
-                        "body": i18n.t('show-requests.successfully-deleted-text'),
-                        "type": "success",
-                        "timeout": 5,
+                        summary: i18n.t('show-requests.successfully-deleted-title'),
+                        body: i18n.t('show-requests.successfully-deleted-text'),
+                        type: 'success',
+                        timeout: 5,
                     });
                 } else {
                     // TODO error handling
 
                     send({
-                        "summary": 'Error!',
-                        "body": 'Could not delete request. Response code: ' + response.status,
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: 'Error!',
+                        body: 'Could not delete request. Response code: ' + response.status,
+                        type: 'danger',
+                        timeout: 5,
                     });
                 }
             } catch (e) {
@@ -1112,10 +1230,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // No files attached
         if (!request.files || request.files.length === 0) {
             send({
-                "summary": i18n.t('show-requests.missing-files.title'),
-                "body": i18n.t('show-requests.missing-files.text'),
-                "type": "danger",
-                "timeout": 5,
+                summary: i18n.t('show-requests.missing-files.title'),
+                body: i18n.t('show-requests.missing-files.text'),
+                type: 'danger',
+                timeout: 5,
             });
             return false;
         }
@@ -1123,10 +1241,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // No recipients
         if (!request.recipients || request.recipients.length === 0) {
             send({
-                "summary": i18n.t('show-requests.missing-recipients.title'),
-                "body": i18n.t('show-requests.missing-recipients.text'),
-                "type": "danger",
-                "timeout": 5,
+                summary: i18n.t('show-requests.missing-recipients.title'),
+                body: i18n.t('show-requests.missing-recipients.text'),
+                type: 'danger',
+                timeout: 5,
             });
             return false;
         }
@@ -1134,10 +1252,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // Missing or empty referenceNumber
         if (!request.referenceNumber || !request.referenceNumber.trim()) {
             send({
-                "summary": i18n.t('show-requests.missing-reference-number.title'),
-                "body": i18n.t('show-requests.missing-reference-number.text'),
-                "type": "danger",
-                "timeout": 5,
+                summary: i18n.t('show-requests.missing-reference-number.title'),
+                body: i18n.t('show-requests.missing-reference-number.text'),
+                type: 'danger',
+                timeout: 5,
             });
             return false;
         }
@@ -1145,10 +1263,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // Missing or empty subject
         if (!request.name || !request.name.trim()) {
             send({
-                "summary": i18n.t('show-requests.missing-subject.title'),
-                "body": i18n.t('show-requests.missing-subject.text'),
-                "type": "danger",
-                "timeout": 5,
+                summary: i18n.t('show-requests.missing-subject.title'),
+                body: i18n.t('show-requests.missing-subject.text'),
+                type: 'danger',
+                timeout: 5,
             });
             return false;
         }
@@ -1162,10 +1280,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         if (item.dateSubmitted) {
             send({
-                "summary": i18n.t('show-requests.submit-not-allowed-title'),
-                "body": i18n.t('show-requests.submit-not-allowed-text'),
-                "type": "danger",
-                "timeout": 5,
+                summary: i18n.t('show-requests.submit-not-allowed-title'),
+                body: i18n.t('show-requests.submit-not-allowed-text'),
+                type: 'danger',
+                timeout: 5,
             });
             return;
         }
@@ -1174,7 +1292,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
 
-        if(confirm(i18n.t('show-requests.submit-dialog-text_one'))) {
+        if (confirm(i18n.t('show-requests.submit-dialog-text_one'))) {
             try {
                 this._('#submit-btn').start(); //TODO
                 button.start();
@@ -1183,17 +1301,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 if (response.status === 201) {
                     if (this.dispatchRequestsTable) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
-                            this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== item.identifier);
+                            this.createdRequestsIds = this.createdRequestsIds.filter(
+                                (id) => id !== item.identifier,
+                            );
                             await this.getCreatedDispatchRequests();
                             this.currentItem = {};
 
-                            this.currentItem.senderOrganizationName = "";
-                            this.currentItem.senderFullName = "";
-                            this.currentItem.senderAddressCountry = "";
-                            this.currentItem.senderPostalCode = "";
-                            this.currentItem.senderAddressLocality = "";
-                            this.currentItem.senderStreetAddress = "";
-                            this.currentItem.senderBuildingNumber = "";
+                            this.currentItem.senderOrganizationName = '';
+                            this.currentItem.senderFullName = '';
+                            this.currentItem.senderAddressCountry = '';
+                            this.currentItem.senderPostalCode = '';
+                            this.currentItem.senderAddressLocality = '';
+                            this.currentItem.senderStreetAddress = '';
+                            this.currentItem.senderBuildingNumber = '';
 
                             this.currentItem.files = [];
                             this.currentItem.recipients = [];
@@ -1212,40 +1332,39 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             }
                             this.hasRecipients = false;
                             this.showDetailsView = false;
-
                         } else {
                             this.getListOfRequests();
                             this.clearAll();
                         }
                     }
                     send({
-                        "summary": i18n.t('show-requests.successfully-submitted-title'),
-                        "body": i18n.t('show-requests.successfully-submitted-text'),
-                        "type": "success",
-                        "timeout": 5,
+                        summary: i18n.t('show-requests.successfully-submitted-title'),
+                        body: i18n.t('show-requests.successfully-submitted-text'),
+                        type: 'success',
+                        timeout: 5,
                     });
                 } else if (response.status === 400) {
                     send({
-                        "summary": i18n.t('error-delivery-channel-title'),
-                        "body": i18n.t('error-delivery-channel-text'),
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: i18n.t('error-delivery-channel-title'),
+                        body: i18n.t('error-delivery-channel-text'),
+                        type: 'danger',
+                        timeout: 5,
                     });
                 } else if (response.status === 403) {
                     send({
-                        "summary": i18n.t('create-request.error-requested-title'),
-                        "body": i18n.t('error-not-permitted'),
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: i18n.t('create-request.error-requested-title'),
+                        body: i18n.t('error-not-permitted'),
+                        type: 'danger',
+                        timeout: 5,
                     });
                 } else {
                     // TODO error handling
 
                     send({
-                        "summary": 'Error!',
-                        "body": 'Could not submit request. Response code: ' + response.status,
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: 'Error!',
+                        body: 'Could not submit request. Response code: ' + response.status,
+                        type: 'danger',
+                        timeout: 5,
                     });
                 }
             } catch (e) {
@@ -1269,25 +1388,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.subject = this.currentItem.name;
 
                 send({
-                    "summary": i18n.t('show-requests.edit-subject-success-title'),
-                    "body": i18n.t('show-requests.edit-subject-success-text'),
-                    "type": "success",
-                    "timeout": 5,
+                    summary: i18n.t('show-requests.edit-subject-success-title'),
+                    body: i18n.t('show-requests.edit-subject-success-text'),
+                    type: 'success',
+                    timeout: 5,
                 });
             } else if (response.status === 403) {
                 send({
-                    "summary": i18n.t('create-request.error-requested-title'),
-                    "body": i18n.t('error-not-permitted'),
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: i18n.t('create-request.error-requested-title'),
+                    body: i18n.t('error-not-permitted'),
+                    type: 'danger',
+                    timeout: 5,
                 });
             } else {
                 // TODO show error code specific notification
                 send({
-                    "summary": i18n.t('create-request.error-changed-subject-title'),
-                    "body": i18n.t('create-request.error-changed-subject-text'),
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: i18n.t('create-request.error-changed-subject-title'),
+                    body: i18n.t('create-request.error-changed-subject-text'),
+                    type: 'danger',
+                    timeout: 5,
                 });
             }
         } finally {
@@ -1308,25 +1427,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 console.log('responsebody AFTER changeReferenceNumberRequest: ', responseBody);
 
                 send({
-                    "summary": i18n.t('show-requests.edit-reference-number-success-title'),
-                    "body": i18n.t('show-requests.edit-reference-number-success-text'),
-                    "type": "success",
-                    "timeout": 5,
+                    summary: i18n.t('show-requests.edit-reference-number-success-title'),
+                    body: i18n.t('show-requests.edit-reference-number-success-text'),
+                    type: 'success',
+                    timeout: 5,
                 });
             } else if (response.status === 403) {
                 send({
-                    "summary": i18n.t('create-request.error-requested-title'),
-                    "body": i18n.t('error-not-permitted'),
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: i18n.t('create-request.error-requested-title'),
+                    body: i18n.t('error-not-permitted'),
+                    type: 'danger',
+                    timeout: 5,
                 });
             } else {
                 // TODO show error code specific notification
                 send({
-                    "summary": i18n.t('create-request.error-changed-reference-number-title'),
-                    "body": i18n.t('create-request.error-changed-reference-number-text'),
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: i18n.t('create-request.error-changed-reference-number-title'),
+                    body: i18n.t('create-request.error-changed-reference-number-text'),
+                    type: 'danger',
+                    timeout: 5,
                 });
             }
         } finally {
@@ -1345,8 +1464,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let senderPostalCode = this._('#tf-edit-sender-pc-dialog').value;
             let senderAddressLocality = this._('#tf-edit-sender-al-dialog').value;
             let senderStreetAddress = this._('#tf-edit-sender-sa-dialog').value;
-            let senderBuildingNumber = (this._('#tf-edit-sender-bn-dialog') && this._('#tf-edit-sender-bn-dialog').value)
-                ? this._('#tf-edit-sender-bn-dialog').value : '';
+            let senderBuildingNumber =
+                this._('#tf-edit-sender-bn-dialog') && this._('#tf-edit-sender-bn-dialog').value
+                    ? this._('#tf-edit-sender-bn-dialog').value
+                    : '';
 
             let groupId = this.groupId;
 
@@ -1355,15 +1476,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let text = e.options[e.selectedIndex].text;
             let senderAddressCountry = [value, text];
 
-            let response = await this.sendEditDispatchRequest(id, senderOrganizationName, senderFullName, senderAddressCountry[0], senderPostalCode, senderAddressLocality, senderStreetAddress, senderBuildingNumber, groupId);
+            let response = await this.sendEditDispatchRequest(
+                id,
+                senderOrganizationName,
+                senderFullName,
+                senderAddressCountry[0],
+                senderPostalCode,
+                senderAddressLocality,
+                senderStreetAddress,
+                senderBuildingNumber,
+                groupId,
+            );
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
                 send({
-                    "summary": i18n.t('show-requests.successfully-updated-sender-title'),
-                    "body": i18n.t('show-requests.successfully-updated-sender-text'),
-                    "type": "success",
-                    "timeout": 5,
+                    summary: i18n.t('show-requests.successfully-updated-sender-title'),
+                    body: i18n.t('show-requests.successfully-updated-sender-text'),
+                    type: 'success',
+                    timeout: 5,
                 });
 
                 this.currentItem = responseBody;
@@ -1372,19 +1503,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
             } else if (response.status === 403) {
                 send({
-                    "summary": i18n.t('create-request.error-requested-title'),
-                    "body": i18n.t('error-not-permitted'),
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: i18n.t('create-request.error-requested-title'),
+                    body: i18n.t('error-not-permitted'),
+                    type: 'danger',
+                    timeout: 5,
                 });
             } else {
                 // TODO error handling
 
                 send({
-                    "summary": 'Error!',
-                    "body": 'Could not edit sender. Response code: ' + response.status,
-                    "type": "danger",
-                    "timeout": 5,
+                    summary: 'Error!',
+                    body: 'Could not edit sender. Response code: ' + response.status,
+                    type: 'danger',
+                    timeout: 5,
                 });
             }
         } finally {
@@ -1405,10 +1536,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmAddSubject() {
-
         this._('#add-subject-confirm-btn').disabled = true;
 
-        this.subject = this._('#tf-add-subject-fn-dialog').value && this._('#tf-add-subject-fn-dialog').value !== '' ? this._('#tf-add-subject-fn-dialog').value : this._i18n.t('create-request.default-subject');
+        this.subject =
+            this._('#tf-add-subject-fn-dialog').value &&
+            this._('#tf-add-subject-fn-dialog').value !== ''
+                ? this._('#tf-add-subject-fn-dialog').value
+                : this._i18n.t('create-request.default-subject');
 
         await this.processCreateDispatchRequest();
 
@@ -1424,45 +1558,61 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async fetchDetailedRecipientInformation(identifier) {
         // if (this.mayReadAddress) {
-            let response = await this.getDispatchRecipient(identifier);
+        let response = await this.getDispatchRecipient(identifier);
 
-            let responseBody = await response.json();
-            if (responseBody !== undefined && response.status === 200) {
+        let responseBody = await response.json();
+        if (responseBody !== undefined && response.status === 200) {
+            this.currentRecipient = responseBody;
 
-                this.currentRecipient = responseBody;
+            this.currentRecipient.personIdentifier =
+                responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
+            let birthDate =
+                responseBody['birthDate'] && responseBody['birthDate'] !== ''
+                    ? this.convertToBirthDateTuple(responseBody['birthDate'])
+                    : '';
 
-                this.currentRecipient.personIdentifier = responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
-                let birthDate = responseBody['birthDate'] && responseBody['birthDate'] !== '' ? this.convertToBirthDateTuple(responseBody['birthDate']) : '';
-
-                if (birthDate !== '') {
-                    this.currentRecipient.birthDateDay = birthDate.day;
-                    this.currentRecipient.birthDateMonth = birthDate.month;
-                    this.currentRecipient.birthDateYear = birthDate.year;
-                } else {
-                    this.currentRecipient.birthDateDay = '';
-                    this.currentRecipient.birthDateMonth = '';
-                    this.currentRecipient.birthDateYear = '';
-                }
-
-                this.currentRecipient.statusChanges = responseBody['statusChanges'];
-                if (this.currentRecipient.statusChanges.length > 0) {
-                    this.currentRecipient.statusDescription = this.currentRecipient.statusChanges[0].description;
-                    this.currentRecipient.statusType = this.currentRecipient.statusChanges[0].statusType;
-                } else {
-                    this.currentRecipient.statusDescription = null;
-                    this.currentRecipient.statusType = null;
-                }
-                this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
-                this.currentRecipient.appDeliveryId = responseBody['appDeliveryID'] ? responseBody['appDeliveryID'] : '';
-                this.currentRecipient.postalDeliverable = responseBody['postalDeliverable'] ? responseBody['postalDeliverable'] : '';
-                this.currentRecipient.electronicallyDeliverable = responseBody['electronicallyDeliverable'] ? responseBody['electronicallyDeliverable'] : '';
-                this.currentRecipient.lastStatusChange = responseBody['lastStatusChange'] ? responseBody['lastStatusChange'] : '';
-
-
-                // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
+            if (birthDate !== '') {
+                this.currentRecipient.birthDateDay = birthDate.day;
+                this.currentRecipient.birthDateMonth = birthDate.month;
+                this.currentRecipient.birthDateYear = birthDate.year;
             } else {
-                // TODO error handling
+                this.currentRecipient.birthDateDay = '';
+                this.currentRecipient.birthDateMonth = '';
+                this.currentRecipient.birthDateYear = '';
             }
+
+            this.currentRecipient.statusChanges = responseBody['statusChanges'];
+            if (this.currentRecipient.statusChanges.length > 0) {
+                this.currentRecipient.statusDescription =
+                    this.currentRecipient.statusChanges[0].description;
+                this.currentRecipient.statusType =
+                    this.currentRecipient.statusChanges[0].statusType;
+            } else {
+                this.currentRecipient.statusDescription = null;
+                this.currentRecipient.statusType = null;
+            }
+            this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate']
+                ? responseBody['deliveryEndDate']
+                : '';
+            this.currentRecipient.appDeliveryId = responseBody['appDeliveryID']
+                ? responseBody['appDeliveryID']
+                : '';
+            this.currentRecipient.postalDeliverable = responseBody['postalDeliverable']
+                ? responseBody['postalDeliverable']
+                : '';
+            this.currentRecipient.electronicallyDeliverable = responseBody[
+                'electronicallyDeliverable'
+            ]
+                ? responseBody['electronicallyDeliverable']
+                : '';
+            this.currentRecipient.lastStatusChange = responseBody['lastStatusChange']
+                ? responseBody['lastStatusChange']
+                : '';
+
+            // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
+        } else {
+            // TODO error handling
+        }
         // }
     }
 
@@ -1472,7 +1622,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this._('#submit-all-btn').start();
 
         try {
-
             let selectedItems = this.dispatchRequestsTable.getSelectedRows();
             // console.log('selectedItems: ', selectedItems);
 
@@ -1484,10 +1633,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 let result = await response.json();
                 if (result.dateSubmitted) {
                     send({
-                        "summary": i18n.t('show-requests.submit-not-allowed-title'),
-                        "body": i18n.t('show-requests.submit-not-allowed-text'),
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: i18n.t('show-requests.submit-not-allowed-title'),
+                        body: i18n.t('show-requests.submit-not-allowed-text'),
+                        type: 'danger',
+                        timeout: 5,
                     });
                     somethingWentWrong = true;
                     break;
@@ -1502,7 +1651,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 return;
             }
 
-            let dialogText = i18n.t('show-requests.submit-dialog-text_other', {count: this.dispatchRequestsTable.getSelectedRows().length});
+            let dialogText = i18n.t('show-requests.submit-dialog-text_other', {
+                count: this.dispatchRequestsTable.getSelectedRows().length,
+            });
 
             let ids = [];
 
@@ -1522,11 +1673,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
 
                 if (!somethingWentWrong) {
-
-                    if (this.dispatchRequestsTable ) {
+                    if (this.dispatchRequestsTable) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
                             for (let i = 0; i < ids.length; i++) {
-                                this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== ids[i]); //TODO maybe there is a better way to do this
+                                this.createdRequestsIds = this.createdRequestsIds.filter(
+                                    (id) => id !== ids[i],
+                                ); //TODO maybe there is a better way to do this
                             }
                             await this.getCreatedDispatchRequests();
                             if (this.createdRequestsList.length !== 0) {
@@ -1546,18 +1698,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         }
                     }
                     send({
-                        "summary": i18n.t('show-requests.successfully-submitted-title'),
-                        "body": i18n.t('show-requests.successfully-submitted-text'),
-                        "type": "success",
-                        "timeout": 5,
+                        summary: i18n.t('show-requests.successfully-submitted-title'),
+                        body: i18n.t('show-requests.successfully-submitted-text'),
+                        type: 'success',
+                        timeout: 5,
                     });
                 } else {
                     // TODO error handling
                     send({
-                        "summary": 'Error!',
-                        "body": 'Could not submit request.',
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: 'Error!',
+                        body: 'Could not submit request.',
+                        type: 'danger',
+                        timeout: 5,
                     });
                 }
             }
@@ -1572,7 +1724,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this._('#delete-all-btn').start();
 
         try {
-
             let selectedItems = this.dispatchRequestsTable.getSelectedRows();
             // console.log('selectedItems: ', selectedItems);
 
@@ -1584,10 +1735,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 let result = await response.json();
                 if (result.dateSubmitted) {
                     send({
-                        "summary": i18n.t('show-requests.delete-not-allowed-title'),
-                        "body": i18n.t('show-requests.delete-not-allowed-text'),
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: i18n.t('show-requests.delete-not-allowed-title'),
+                        body: i18n.t('show-requests.delete-not-allowed-text'),
+                        type: 'danger',
+                        timeout: 5,
                     });
                     somethingWentWrong = true;
                     break;
@@ -1598,7 +1749,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 return;
             }
 
-            let dialogText = i18n.t('show-requests.delete-dialog-text_other', {count: this.dispatchRequestsTable.getSelectedRows().length});
+            let dialogText = i18n.t('show-requests.delete-dialog-text_other', {
+                count: this.dispatchRequestsTable.getSelectedRows().length,
+            });
 
             let ids = [];
 
@@ -1618,11 +1771,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
 
                 if (!somethingWentWrong) {
-
-                    if (this.dispatchRequestsTable ) {
+                    if (this.dispatchRequestsTable) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
                             for (let i = 0; i < ids.length; i++) {
-                                this.createdRequestsIds = this.createdRequestsIds.filter(id => id !== ids[i]); //TODO maybe there is a better way to do this
+                                this.createdRequestsIds = this.createdRequestsIds.filter(
+                                    (id) => id !== ids[i],
+                                ); //TODO maybe there is a better way to do this
                             }
                             await this.getCreatedDispatchRequests();
 
@@ -1644,18 +1798,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         }
                     }
                     send({
-                        "summary": i18n.t('show-requests.successfully-deleted-title'),
-                        "body": i18n.t('show-requests.successfully-deleted-text'),
-                        "type": "success",
-                        "timeout": 5,
+                        summary: i18n.t('show-requests.successfully-deleted-title'),
+                        body: i18n.t('show-requests.successfully-deleted-text'),
+                        type: 'success',
+                        timeout: 5,
                     });
                 } else {
                     // TODO error handling
                     send({
-                        "summary": 'Error!',
-                        "body": 'Could not delete request.',
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: 'Error!',
+                        body: 'Could not delete request.',
+                        type: 'danger',
+                        timeout: 5,
                     });
                 }
             }
@@ -1686,7 +1840,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.loading = false;
                     },
                 });
-
             } else {
                 //TODO
             }
@@ -1705,7 +1858,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && response.status === 201) {
                 this.currentItem = responseBody;
                 this.requestCreated = true;
-
             } else {
                 this.errorCreatingRequest = true;
             }
@@ -1715,13 +1867,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     expandAll(event) {
-        this.dispatchRequestsTable.getRows('visible').forEach(row => {
+        this.dispatchRequestsTable.getRows('visible').forEach((row) => {
             const item = row.getElement().lastChild;
 
             if (item.classList.contains('tabulator-responsive-collapse')) {
                 item.style.display = 'block';
             }
-            row.getElement().getElementsByClassName('tabulator-responsive-collapse-toggle')[0].classList.add('open');
+            row.getElement()
+                .getElementsByClassName('tabulator-responsive-collapse-toggle')[0]
+                .classList.add('open');
         });
 
         const that = this;
@@ -1734,13 +1888,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     collapseAll(event) {
-        this.dispatchRequestsTable.getRows('visible').forEach(row => {
+        this.dispatchRequestsTable.getRows('visible').forEach((row) => {
             const item = row.getElement().lastChild;
 
             if (item.classList.contains('tabulator-responsive-collapse')) {
                 item.style.display = 'none';
             }
-            row.getElement().getElementsByClassName('tabulator-responsive-collapse-toggle')[0].classList.remove('open');
+            row.getElement()
+                .getElementsByClassName('tabulator-responsive-collapse-toggle')[0]
+                .classList.remove('open');
         });
 
         const that = this;
@@ -1761,19 +1917,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             const that = this;
             setTimeout(function () {
                 if (that._('.tabulator-responsive-collapse-toggle-open')) {
-                    that._a('.tabulator-responsive-collapse-toggle-open').forEach(
-                        (element) =>
-                            element.addEventListener('click', that.toggleCollapse.bind(that))
+                    that._a('.tabulator-responsive-collapse-toggle-open').forEach((element) =>
+                        element.addEventListener('click', that.toggleCollapse.bind(that)),
                     );
                 }
 
                 if (that._('.tabulator-responsive-collapse-toggle-close')) {
-                    that._a('.tabulator-responsive-collapse-toggle-close').forEach(
-                        (element) =>
-                            element.addEventListener('click', that.toggleCollapse.bind(that))
+                    that._a('.tabulator-responsive-collapse-toggle-close').forEach((element) =>
+                        element.addEventListener('click', that.toggleCollapse.bind(that)),
                     );
                 }
-
             }, 0);
         }
     }
@@ -1808,14 +1961,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (
             this.dispatchRequestsTable !== null &&
             this.dispatchRequestsTable.getSelectedRows().length ===
-            this.dispatchRequestsTable.getRows("visible").length) {
+                this.dispatchRequestsTable.getRows('visible').length
+        ) {
             this._('#select_all').checked = true;
         } else {
             this._('#select_all').checked = false;
         }
         if (
             this.dispatchRequestsTable !== null &&
-            this.dispatchRequestsTable.getSelectedRows().length > 0 ) {
+            this.dispatchRequestsTable.getSelectedRows().length > 0
+        ) {
             this.rowsSelected = true;
         } else {
             this.rowsSelected = false;
@@ -1839,7 +1994,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     checkAllSelected() {
         if (this.dispatchRequestsTable) {
-            let maxSelected = this.dispatchRequestsTable.getRows("visible").length;
+            let maxSelected = this.dispatchRequestsTable.getRows('visible').length;
             let selected = this.dispatchRequestsTable.getSelectedRows().length;
             // console.log('currently visible: ', this.dispatchRequestsTable.getRows("visible").length);
             // console.log('currently selected: ', this.dispatchRequestsTable.getSelectedRows().length);
@@ -1855,15 +2010,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
         let output = '';
         if (!list) {
-            return this.mayReadMetadata && !this.mayRead && !this.mayWrite ? i18n.t('show-requests.metadata-files-text') : i18n.t('show-requests.no-files-attached');
+            return this.mayReadMetadata && !this.mayRead && !this.mayWrite
+                ? i18n.t('show-requests.metadata-files-text')
+                : i18n.t('show-requests.no-files-attached');
         }
         list.forEach((file) => {
-            output += file.name + "<br>";
+            output += file.name + '<br>';
         });
         if (output !== '') {
             return output;
         } else {
-            return this.mayReadMetadata && !this.mayRead && !this.mayWrite ? i18n.t('show-requests.metadata-files-text') : i18n.t('show-requests.no-files-attached');
+            return this.mayReadMetadata && !this.mayRead && !this.mayWrite
+                ? i18n.t('show-requests.metadata-files-text')
+                : i18n.t('show-requests.no-files-attached');
         }
     }
 
@@ -1871,7 +2030,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
         let output = '';
         list.forEach((recipient) => {
-            output += recipient.familyName + ", " + recipient.givenName + "<br>";
+            output += recipient.familyName + ', ' + recipient.givenName + '<br>';
         });
         if (output !== '') {
             return output;
@@ -1886,7 +2045,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         if (item.dateSubmitted || !this.mayWrite) {
             let btn = this.createScopedElement('dbp-icon-button');
-            btn.addEventListener('click', async event => {
+            btn.addEventListener('click', async (event) => {
                 this.editRequest(event, item);
                 event.stopPropagation();
             });
@@ -1894,7 +2053,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             div.appendChild(btn);
         } else {
             let btn_edit = this.createScopedElement('dbp-icon-button');
-            btn_edit.addEventListener('click', async event => {
+            btn_edit.addEventListener('click', async (event) => {
                 this.editRequest(event, item);
                 event.stopPropagation();
             });
@@ -1902,7 +2061,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             div.appendChild(btn_edit);
 
             let btn_delete = this.createScopedElement('dbp-icon-button');
-            btn_delete.addEventListener('click', async event => {
+            btn_delete.addEventListener('click', async (event) => {
                 this.deleteRequest(event, item);
                 event.stopPropagation();
             });
@@ -1911,7 +2070,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             div.appendChild(btn_delete);
 
             let btn_submit = this.createScopedElement('dbp-icon-button');
-            btn_submit.addEventListener('click', async event => {
+            btn_submit.addEventListener('click', async (event) => {
                 this.submitRequest(event, item);
                 event.stopPropagation();
             });
@@ -1946,15 +2105,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let content = {
                 requestId: item.identifier,
-                subject: item.name && item.name !== '' ? item.name : this.mayReadMetadata && !this.mayRead && !this.mayWrite ?
-                    i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found'), //span
-                status: item.dateSubmitted ? recipientStatus[1] : i18n.t('show-requests.empty-date-submitted'),
-                gz: item.referenceNumber ? item.referenceNumber : i18n.t('show-requests.empty-reference-number'),
+                subject:
+                    item.name && item.name !== ''
+                        ? item.name
+                        : this.mayReadMetadata && !this.mayRead && !this.mayWrite
+                          ? i18n.t('show-requests.metadata-subject-text')
+                          : i18n.t('show-requests.no-subject-found'), //span
+                status: item.dateSubmitted
+                    ? recipientStatus[1]
+                    : i18n.t('show-requests.empty-date-submitted'),
+                gz: item.referenceNumber
+                    ? item.referenceNumber
+                    : i18n.t('show-requests.empty-reference-number'),
                 dateCreated: item.dateCreated,
-                details: "Details",
+                details: 'Details',
                 files: this.createFormattedFilesList(item.files),
                 recipients: this.createFormattedRecipientsList(item.recipients),
-                dateSubmitted: item.dateSubmitted ? this.convertToReadableDate(item.dateSubmitted) : i18n.t('show-requests.date-submitted-not-submitted'),
+                dateSubmitted: item.dateSubmitted
+                    ? this.convertToReadableDate(item.dateSubmitted)
+                    : i18n.t('show-requests.date-submitted-not-submitted'),
                 controls: this.setControlsHtml(item),
             };
             tableObject.push(content);
@@ -1978,21 +2147,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 let tableObject = this.createTableObject(this.requestList);
                 this.dispatchRequestsTable.setData(tableObject);
                 this.dispatchRequestsTable.setLocale(this.lang);
-                this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
-            } else { //TODO error handling
+                this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
+            } else {
+                //TODO error handling
                 if (responseBody.status === 500) {
                     send({
-                        "summary": 'Error!',
-                        "body": 'Could not fetch dispatch requests. Response code: 500',
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: 'Error!',
+                        body: 'Could not fetch dispatch requests. Response code: 500',
+                        type: 'danger',
+                        timeout: 5,
                     });
-                }  else if (response.status === 403) {
+                } else if (response.status === 403) {
                     send({
-                        "summary": i18n.t('create-request.error-requested-title'),
-                        "body": i18n.t('error-not-permitted'),
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: i18n.t('create-request.error-requested-title'),
+                        body: i18n.t('error-not-permitted'),
+                        type: 'danger',
+                        timeout: 5,
                     });
                 }
             }
@@ -2009,7 +2179,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let tableObject = this.createTableObject(this.requestList);
             this.dispatchRequestsTable.setData(tableObject);
             this.dispatchRequestsTable.setLocale(this.lang);
-            this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+            this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
             this.tableLoading = false;
         }
     }
@@ -2044,7 +2214,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let dateTuple = {
             year: year,
             month: month,
-            day: date
+            day: date,
         };
         return dateTuple;
     }
@@ -2056,7 +2226,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentRecipient.personIdentifier = person['@id'];
 
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
-        elements.forEach((element) => { element.classList.add('muted'); });
+        elements.forEach((element) => {
+            element.classList.add('muted');
+        });
 
         this.requestUpdate();
     }
@@ -2082,10 +2254,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this._('#create-resource-select').value = this.tempValue;
 
                     send({
-                        "summary": i18n.t('create-request.create-not-allowed-title'),
-                        "body": i18n.t('create-request.create-not-allowed-text'),
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: i18n.t('create-request.create-not-allowed-title'),
+                        body: i18n.t('create-request.create-not-allowed-text'),
+                        type: 'danger',
+                        timeout: 5,
                     });
                 }
                 this.mayRead = event.target.valueObject.accessRights.includes('rc');
@@ -2107,8 +2279,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 let groupId = event.target.valueObject.identifier;
                 let mayRead = event.target.valueObject.accessRights.includes('rc');
 
-                let response = await this.sendEditDispatchRequest(this.currentItem.identifier, senderOrganizationName, senderFullName,
-                    senderAddressCountry, senderPostalCode, senderAddressLocality, senderStreetAddress, groupId);
+                let response = await this.sendEditDispatchRequest(
+                    this.currentItem.identifier,
+                    senderOrganizationName,
+                    senderFullName,
+                    senderAddressCountry,
+                    senderPostalCode,
+                    senderAddressLocality,
+                    senderStreetAddress,
+                    groupId,
+                );
 
                 let responseBody = await response.json();
                 if (responseBody !== undefined && response.status === 200) {
@@ -2135,13 +2315,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                     this.tempItem = this.currentItem;
                     this.tempValue = this._('#create-resource-select').value;
-
                 } else if (response.status === 403) {
                     send({
-                        "summary": i18n.t('create-request.error-requested-title'),
-                        "body": i18n.t('error-not-permitted'),
-                        "type": "danger",
-                        "timeout": 5,
+                        summary: i18n.t('create-request.error-requested-title'),
+                        body: i18n.t('error-not-permitted'),
+                        type: 'danger',
+                        timeout: 5,
                     });
                 } else {
                     // TODO error handling
@@ -2176,7 +2355,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async preloadSelectedRecipient() {
         this.currentRecipient = {};
 
-        if (this._('#recipient-selector') && this._('#recipient-selector').getAttribute('data-object') !== null && this._('#recipient-selector').getAttribute('data-object') !== '') {
+        if (
+            this._('#recipient-selector') &&
+            this._('#recipient-selector').getAttribute('data-object') !== null &&
+            this._('#recipient-selector').getAttribute('data-object') !== ''
+        ) {
             // console.log(this._('#recipient-selector').getAttribute('data-object'));
             const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
             const personId = person['@id'];
@@ -2190,7 +2373,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
-
                 // console.log(responseBody);
                 this.currentRecipient.familyName = responseBody.familyName;
                 this.currentRecipient.givenName = responseBody.givenName;
@@ -2200,10 +2382,24 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateYear = birthDate.year ? birthDate.year : '';
 
                 if (responseBody['localData'] !== null) {
-                    this.currentRecipient.addressLocality = responseBody['localData']['addressLocality'] ? responseBody['localData']['addressLocality'] : '';
-                    this.currentRecipient.postalCode = responseBody['localData']['postalCode'] ? responseBody['localData']['postalCode'] : '';
-                    this.currentRecipient.streetAddress = responseBody['localData']['streetAddress'] ? responseBody['localData']['streetAddress'] : '';
-                    this.currentRecipient.addressCountry = responseBody['localData']['addressCountry'] ? dispatchHelper.getCountryMapping(responseBody['localData']['addressCountry']) : dispatchHelper.getCountryMapping('AT');
+                    this.currentRecipient.addressLocality = responseBody['localData'][
+                        'addressLocality'
+                    ]
+                        ? responseBody['localData']['addressLocality']
+                        : '';
+                    this.currentRecipient.postalCode = responseBody['localData']['postalCode']
+                        ? responseBody['localData']['postalCode']
+                        : '';
+                    this.currentRecipient.streetAddress = responseBody['localData']['streetAddress']
+                        ? responseBody['localData']['streetAddress']
+                        : '';
+                    this.currentRecipient.addressCountry = responseBody['localData'][
+                        'addressCountry'
+                    ]
+                        ? dispatchHelper.getCountryMapping(
+                              responseBody['localData']['addressCountry'],
+                          )
+                        : dispatchHelper.getCountryMapping('AT');
                 }
             } else {
                 // TODO error handling
@@ -2245,7 +2441,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.personSelectorIsDisabled = true;
     }
 
-
     resetRecipientFields(event) {
         this._('#recipient-selector').clear();
         this.currentRecipient = {};
@@ -2269,7 +2464,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         console.log(CountrySelectElement.selectedIndex);
         const options = CountrySelectElement.options;
 
-        for (var i=0, iLen=options.length; i<iLen; i++) {
+        for (var i = 0, iLen = options.length; i < iLen; i++) {
             if (options[i].defaultSelected) {
                 CountrySelectElement.selectedIndex = i;
                 return;
@@ -2280,13 +2475,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     clearAll() {
         this.currentItem = {};
 
-        this.currentItem.senderOrganizationName = "";
-        this.currentItem.senderFullName = "";
-        this.currentItem.senderAddressCountry = "";
-        this.currentItem.senderPostalCode = "";
-        this.currentItem.senderAddressLocality = "";
-        this.currentItem.senderStreetAddress = "";
-        this.currentItem.senderBuildingNumber = "";
+        this.currentItem.senderOrganizationName = '';
+        this.currentItem.senderFullName = '';
+        this.currentItem.senderAddressCountry = '';
+        this.currentItem.senderPostalCode = '';
+        this.currentItem.senderAddressLocality = '';
+        this.currentItem.senderStreetAddress = '';
+        this.currentItem.senderBuildingNumber = '';
 
         this.currentItem.files = [];
         this.currentItem.recipients = [];
@@ -2312,22 +2507,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         return html`
             <dbp-file-source
-                  id="file-source"
-                  context="${i18n.t('show-requests.filepicker-context')}"
-                  allowed-mime-types="application/pdf,.pdf"
-                  nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
-                  nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
-                  nextcloud-name="${this.nextcloudName}"
-                  nextcloud-file-url="${this.nextcloudFileURL}"
-                  nexcloud-auth-info="${this.nextcloudAuthInfo}"
-                  enabled-targets="${this.fileHandlingEnabledTargets}"
-                  decompress-zip
-                  lang="${this.lang}"
-                  text="${i18n.t('show-requests.filepicker-context')}"
-                  button-label="${i18n.t('show-requests.filepicker-button-title')}"
-                  @dbp-file-source-file-selected="${this.onFileSelected}"
-                  @dbp-file-source-file-upload-finished="${this.onFileUploadFinished}">
-             </dbp-file-source>
+                id="file-source"
+                context="${i18n.t('show-requests.filepicker-context')}"
+                allowed-mime-types="application/pdf,.pdf"
+                nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
+                nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
+                nextcloud-name="${this.nextcloudName}"
+                nextcloud-file-url="${this.nextcloudFileURL}"
+                nexcloud-auth-info="${this.nextcloudAuthInfo}"
+                enabled-targets="${this.fileHandlingEnabledTargets}"
+                decompress-zip
+                lang="${this.lang}"
+                text="${i18n.t('show-requests.filepicker-context')}"
+                button-label="${i18n.t('show-requests.filepicker-button-title')}"
+                @dbp-file-source-file-selected="${this.onFileSelected}"
+                @dbp-file-source-file-upload-finished="${this
+                    .onFileUploadFinished}"></dbp-file-source>
 
             <dbp-file-sink
                 id="file-sink"
@@ -2356,46 +2551,45 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             <div class="modal micromodal-slide" id="edit-sender-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
                     <div
-                            class="modal-container"
-                            id="edit-sender-modal-box"
-                            role="dialog"
-                            aria-modal="true"
-                            aria-labelledby="edit-sender-modal-title">
+                        class="modal-container"
+                        id="edit-sender-modal-box"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="edit-sender-modal-title">
                         <header class="modal-header">
                             <h3 id="edit-sender-modal-title">
                                 ${i18n.t('show-requests.edit-sender-dialog-title')}
                             </h3>
                             <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-            MicroModal.close(this._('#edit-sender-modal'));
-        }}">
+                                title="${i18n.t('show-requests.modal-close')}"
+                                class="modal-close"
+                                aria-label="Close modal"
+                                @click="${() => {
+                                    MicroModal.close(this._('#edit-sender-modal'));
+                                }}">
                                 <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    name="close"
+                                    class="close-icon"></dbp-icon>
                             </button>
                         </header>
                         <main class="modal-content" id="edit-sender-modal-content">
-
                             <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
                                 </div>
                                 <div>
                                     <input
-                                            required
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-fn-dialog"
-                                            id="tf-edit-sender-fn-dialog"
-                                            value="${this.currentItem && this.currentItem.senderFullName}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
+                                        required
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-sender-fn-dialog"
+                                        id="tf-edit-sender-fn-dialog"
+                                        value="${this.currentItem &&
+                                        this.currentItem.senderFullName}"
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -2404,16 +2598,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-gn-dialog"
-                                            id="tf-edit-sender-gn-dialog"
-                                            value="${this.currentItem && this.currentItem.senderOrganizationName}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
+                                        required
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-sender-gn-dialog"
+                                        id="tf-edit-sender-gn-dialog"
+                                        value="${this.currentItem &&
+                                        this.currentItem.senderOrganizationName}"
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -2422,54 +2616,56 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-sa-dialog"
-                                            id="tf-edit-sender-sa-dialog"
-                                            value="${this.currentItem && this.currentItem.senderStreetAddress}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
+                                        required
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-sender-sa-dialog"
+                                        id="tf-edit-sender-sa-dialog"
+                                        value="${this.currentItem &&
+                                        this.currentItem.senderStreetAddress}"
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
-                            ${this.currentItem && this.currentItem.senderBuildingNumber ? html`
-                                <div class="modal-content-item">
-                                    <div class="nf-label">
-                                        ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
-                                    </div>
-                                    <div>
-                                        <input
-                                                type="text"
-                                                class="input"
-                                                maxlength="10"
-                                                name="tf-edit-sender-bn-dialog"
-                                                id="tf-edit-sender-bn-dialog"
-                                                value="${this.currentItem && this.currentItem.senderBuildingNumber}"
-                                                @input="${() => {
-                                                    // TODO
-                                                }}"
-                                        />
-                                    </div>
-                                </div>
-                            ` : ``}
+                            ${this.currentItem && this.currentItem.senderBuildingNumber
+                                ? html`
+                                      <div class="modal-content-item">
+                                          <div class="nf-label">
+                                              ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
+                                          </div>
+                                          <div>
+                                              <input
+                                                  type="text"
+                                                  class="input"
+                                                  maxlength="10"
+                                                  name="tf-edit-sender-bn-dialog"
+                                                  id="tf-edit-sender-bn-dialog"
+                                                  value="${this.currentItem &&
+                                                  this.currentItem.senderBuildingNumber}"
+                                                  @input="${() => {
+                                                      // TODO
+                                                  }}" />
+                                          </div>
+                                      </div>
+                                  `
+                                : ``}
                             <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-pc-dialog-label')}
                                 </div>
                                 <div>
                                     <input
-                                            required
-                                            type="number"
-                                            class="input"
-                                            name="tf-edit-sender-pc-dialog"
-                                            id="tf-edit-sender-pc-dialog"
-                                            value="${this.currentItem && this.currentItem.senderPostalCode}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
+                                        required
+                                        type="number"
+                                        class="input"
+                                        name="tf-edit-sender-pc-dialog"
+                                        id="tf-edit-sender-pc-dialog"
+                                        value="${this.currentItem &&
+                                        this.currentItem.senderPostalCode}"
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -2478,57 +2674,79 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            required
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-sender-al-dialog"
-                                            id="tf-edit-sender-al-dialog"
-                                            value="${this.currentItem && this.currentItem.senderAddressLocality}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
+                                        required
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-sender-al-dialog"
+                                        id="tf-edit-sender-al-dialog"
+                                        value="${this.currentItem &&
+                                        this.currentItem.senderAddressLocality}"
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
-                                <select required id="edit-sender-country-select" class="country-select">
-                                ${this.lang === "en"
-                                    ? dispatchHelper.getEnglishCountryList()
-                                    : dispatchHelper.getGermanCountryList()}
+                                <select
+                                    required
+                                    id="edit-sender-country-select"
+                                    class="country-select">
+                                    ${this.lang === 'en'
+                                        ? dispatchHelper.getEnglishCountryList()
+                                        : dispatchHelper.getGermanCountryList()}
                                 </select>
                             </div>
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
                                 <button
-                                        class="button"
-                                        data-micromodal-close
-                                        aria-label="Close this dialog window"
-                                        @click="${() => {
-                                            MicroModal.close(this._('#edit-sender-modal'));
-                                        }}">
+                                    class="button"
+                                    data-micromodal-close
+                                    aria-label="Close this dialog window"
+                                    @click="${() => {
+                                        MicroModal.close(this._('#edit-sender-modal'));
+                                    }}">
                                     ${i18n.t('show-requests.edit-sender-dialog-button-cancel')}
                                 </button>
                                 <button
-                                        class="button select-button is-primary"
-                                        id="edit-sender-confirm-btn"
-                                        @click="${() => {
-                                            let validpc = this.checkValidity(this._('#edit-sender-country-select'));
-                                            let validbn = this.checkValidity(this._('#tf-edit-sender-al-dialog'));
-                                            let validsa = this.checkValidity(this._('#tf-edit-sender-pc-dialog'));
-                                            let validbirthday = this.checkValidity(this._('#tf-edit-sender-sa-dialog'));
-                                            let validfn = this.checkValidity(this._('#tf-edit-sender-gn-dialog'));
-                                            let validgn = this.checkValidity(this._('#tf-edit-sender-fn-dialog'));
+                                    class="button select-button is-primary"
+                                    id="edit-sender-confirm-btn"
+                                    @click="${() => {
+                                        let validpc = this.checkValidity(
+                                            this._('#edit-sender-country-select'),
+                                        );
+                                        let validbn = this.checkValidity(
+                                            this._('#tf-edit-sender-al-dialog'),
+                                        );
+                                        let validsa = this.checkValidity(
+                                            this._('#tf-edit-sender-pc-dialog'),
+                                        );
+                                        let validbirthday = this.checkValidity(
+                                            this._('#tf-edit-sender-sa-dialog'),
+                                        );
+                                        let validfn = this.checkValidity(
+                                            this._('#tf-edit-sender-gn-dialog'),
+                                        );
+                                        let validgn = this.checkValidity(
+                                            this._('#tf-edit-sender-fn-dialog'),
+                                        );
 
-                                            if (validgn && validfn && validpc && validsa && validbn && validbirthday) {
-                                                this.confirmEditSender().then(r => {
-                                                    MicroModal.close(this._('#edit-sender-modal'));
-                                                });
-                                            }
-                                        }}">
+                                        if (
+                                            validgn &&
+                                            validfn &&
+                                            validpc &&
+                                            validsa &&
+                                            validbn &&
+                                            validbirthday
+                                        ) {
+                                            this.confirmEditSender().then((r) => {
+                                                MicroModal.close(this._('#edit-sender-modal'));
+                                            });
+                                        }
+                                    }}">
                                     ${i18n.t('show-requests.edit-sender-dialog-button-ok')}
                                 </button>
                             </div>
@@ -2545,27 +2763,28 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return html`
             <div class="modal micromodal-slide" id="add-recipient-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div class="modal-container"
-                         id="add-recipient-modal-box"
-                         role="dialog"
-                         aria-modal="true"
-                         aria-labelledby="add-recipient-modal-title">
+                    <div
+                        class="modal-container"
+                        id="add-recipient-modal-box"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="add-recipient-modal-title">
                         <header class="modal-header">
                             <h3 id="add-recipient-modal-title">
                                 ${i18n.t('show-requests.add-recipient-dialog-title')}
                             </h3>
                             <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        this._('#add-recipient-btn').stop();
-                                        MicroModal.close(this._('#add-recipient-modal'));
-                                    }}">
+                                title="${i18n.t('show-requests.modal-close')}"
+                                class="modal-close"
+                                aria-label="Close modal"
+                                @click="${() => {
+                                    this._('#add-recipient-btn').stop();
+                                    MicroModal.close(this._('#add-recipient-modal'));
+                                }}">
                                 <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    name="close"
+                                    class="close-icon"></dbp-icon>
                             </button>
                         </header>
                         <main class="modal-content" id="add-recipient-modal-content">
@@ -2573,26 +2792,38 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="modal-content-left">
                                     <div class="modal-content-item">
                                         <div class="nf-label selector">
-                                            <h4>${i18n.t('show-requests.add-recipient-person-select-label')}</h4>
+                                            <h4>
+                                                ${i18n.t(
+                                                    'show-requests.add-recipient-person-select-label',
+                                                )}
+                                            </h4>
                                         </div>
                                         <div>
                                             <div class="control">
                                                 <dbp-person-select
-                                                        id="recipient-selector"
-                                                        subscribe="auth"
-                                                        lang="${this.lang}"
-                                                        entry-point-url="${this.entryPointUrl}"
-                                                        show-reload-button
-                                                        ?disabled=${this.personSelectorIsDisabled}
-                                                        @change="${(event) => {this.processSelectedRecipient(event);}}"
-                                                ></dbp-person-select>
+                                                    id="recipient-selector"
+                                                    subscribe="auth"
+                                                    lang="${this.lang}"
+                                                    entry-point-url="${this.entryPointUrl}"
+                                                    show-reload-button
+                                                    ?disabled=${this.personSelectorIsDisabled}
+                                                    @change="${(event) => {
+                                                        this.processSelectedRecipient(event);
+                                                    }}"></dbp-person-select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-content-right">
                                     <div>
-                                        <h4 class="${classMap({ muted: this.currentRecipient && this.currentRecipient.personIdentifier})}">${i18n.t('show-requests.add-recipient-or-text')}</h4>
+                                        <h4
+                                            class="${classMap({
+                                                muted:
+                                                    this.currentRecipient &&
+                                                    this.currentRecipient.personIdentifier,
+                                            })}">
+                                            ${i18n.t('show-requests.add-recipient-or-text')}
+                                        </h4>
                                     </div>
                                     <div class="modal-content-item">
                                         <div class="nf-label no-selector">
@@ -2600,18 +2831,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         </div>
                                         <div>
                                             <input
-                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                                    type="text"
-                                                    class="input"
-                                                    name="tf-add-recipient-gn-dialog"
-                                                    id="tf-add-recipient-gn-dialog"
-                                                    value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
-                                                    required
-                                                    @input="${(event) => {
-                                                        // TODO
-                                                        this.disablePersonSelector(event);
-                                                    }}"
-                                            />
+                                                ?disabled="${this.currentRecipient &&
+                                                this.currentRecipient.personIdentifier}"
+                                                type="text"
+                                                class="input"
+                                                name="tf-add-recipient-gn-dialog"
+                                                id="tf-add-recipient-gn-dialog"
+                                                value="${this.currentRecipient
+                                                    ? this.currentRecipient.givenName
+                                                    : ``}"
+                                                required
+                                                @input="${(event) => {
+                                                    // TODO
+                                                    this.disablePersonSelector(event);
+                                                }}" />
                                         </div>
                                     </div>
                                     <div class="modal-content-item">
@@ -2620,67 +2853,86 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         </div>
                                         <div>
                                             <input
-                                                    ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
-                                                    type="text"
-                                                    class="input"
-                                                    name="tf-add-recipient-fn-dialog"
-                                                    id="tf-add-recipient-fn-dialog"
-                                                    value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
-                                                    required
-                                                    @input="${(event) => {
-                                                        // TODO
-                                                        this.disablePersonSelector(event);
-                                                    }}"
-                                            />
+                                                ?disabled="${this.currentRecipient &&
+                                                this.currentRecipient.personIdentifier}"
+                                                type="text"
+                                                class="input"
+                                                name="tf-add-recipient-fn-dialog"
+                                                id="tf-add-recipient-fn-dialog"
+                                                value="${this.currentRecipient
+                                                    ? this.currentRecipient.familyName
+                                                    : ``}"
+                                                required
+                                                @input="${(event) => {
+                                                    // TODO
+                                                    this.disablePersonSelector(event);
+                                                }}" />
                                         </div>
                                     </div>
                                     <div class="modal-content-item">
                                         <div class="nf-label no-selector">
-                                            ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}
+                                            ${i18n.t(
+                                                'show-requests.add-recipient-birthdate-dialog-label',
+                                            )}
                                         </div>
                                         <div class="birthdate-input">
                                             <input
-                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                ?disabled="${this.currentRecipient &&
+                                                this.currentRecipient.personIdentifier}"
                                                 type="number"
                                                 class="input"
                                                 id="tf-add-recipient-birthdate-day"
-                                                min="1" max="31"
+                                                min="1"
+                                                max="31"
                                                 lang="${this.lang}"
-                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-day')}"
-                                                value="${this.currentRecipient ? this.currentRecipient.birthDateDay : ``}"
+                                                placeholder="${i18n.t(
+                                                    'show-requests.add-recipient-birthdate-dialog-placeholder-day',
+                                                )}"
+                                                value="${this.currentRecipient
+                                                    ? this.currentRecipient.birthDateDay
+                                                    : ``}"
                                                 @input="${(event) => {
                                                     // TODO
                                                     this.disablePersonSelector(event);
-                                                }}"
-                                            />
+                                                }}" />
                                             <input
-                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                ?disabled="${this.currentRecipient &&
+                                                this.currentRecipient.personIdentifier}"
                                                 type="number"
                                                 class="input"
                                                 id="tf-add-recipient-birthdate-month"
-                                                min="1" max="12"
+                                                min="1"
+                                                max="12"
                                                 lang="${this.lang}"
-                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-month')}"
-                                                value="${this.currentRecipient ? this.currentRecipient.birthDateMonth : ``}"
+                                                placeholder="${i18n.t(
+                                                    'show-requests.add-recipient-birthdate-dialog-placeholder-month',
+                                                )}"
+                                                value="${this.currentRecipient
+                                                    ? this.currentRecipient.birthDateMonth
+                                                    : ``}"
                                                 @input="${(event) => {
                                                     // TODO
                                                     this.disablePersonSelector(event);
-                                                }}"
-                                            />
+                                                }}" />
                                             <input
-                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                ?disabled="${this.currentRecipient &&
+                                                this.currentRecipient.personIdentifier}"
                                                 type="number"
                                                 class="input"
                                                 id="tf-add-recipient-birthdate-year"
-                                                min="1800" max="2300"
+                                                min="1800"
+                                                max="2300"
                                                 lang="${this.lang}"
-                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-year')}"
-                                                value="${this.currentRecipient ? this.currentRecipient.birthDateYear : ``}"
+                                                placeholder="${i18n.t(
+                                                    'show-requests.add-recipient-birthdate-dialog-placeholder-year',
+                                                )}"
+                                                value="${this.currentRecipient
+                                                    ? this.currentRecipient.birthDateYear
+                                                    : ``}"
                                                 @input="${(event) => {
                                                     // TODO
                                                     this.disablePersonSelector(event);
-                                                }}"
-                                            />
+                                                }}" />
                                         </div>
                                     </div>
                                     <div class="modal-content-item">
@@ -2689,18 +2941,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         </div>
                                         <div>
                                             <input
-                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                ?disabled="${this.currentRecipient &&
+                                                this.currentRecipient.personIdentifier}"
                                                 type="text"
                                                 class="input"
                                                 name="tf-add-recipient-sa-dialog"
                                                 id="tf-add-recipient-sa-dialog"
-                                                value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
+                                                value="${this.currentRecipient
+                                                    ? this.currentRecipient.streetAddress
+                                                    : ``}"
                                                 required
                                                 @input="${(event) => {
                                                     // TODO
                                                     this.disablePersonSelector(event);
-                                                }}"
-                                            />
+                                                }}" />
                                         </div>
                                     </div>
                                     <div class="modal-content-item">
@@ -2709,18 +2963,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         </div>
                                         <div>
                                             <input
-                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                ?disabled="${this.currentRecipient &&
+                                                this.currentRecipient.personIdentifier}"
                                                 type="number"
                                                 class="input"
                                                 name="tf-add-recipient-pc-dialog"
                                                 id="tf-add-recipient-pc-dialog"
-                                                value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
+                                                value="${this.currentRecipient
+                                                    ? this.currentRecipient.postalCode
+                                                    : ``}"
                                                 required
                                                 @input="${(event) => {
                                                     // TODO
                                                     this.disablePersonSelector(event);
-                                                }}"
-                                            />
+                                                }}" />
                                         </div>
                                     </div>
                                     <div class="modal-content-item">
@@ -2729,18 +2985,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         </div>
                                         <div>
                                             <input
-                                                ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                                ?disabled="${this.currentRecipient &&
+                                                this.currentRecipient.personIdentifier}"
                                                 type="text"
                                                 class="input"
                                                 name="tf-add-recipient-al-dialog"
                                                 id="tf-add-recipient-al-dialog"
-                                                value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
+                                                value="${this.currentRecipient
+                                                    ? this.currentRecipient.addressLocality
+                                                    : ``}"
                                                 required
                                                 @input="${(event) => {
                                                     // TODO
                                                     this.disablePersonSelector(event);
-                                                }}"
-                                            />
+                                                }}" />
                                         </div>
                                     </div>
                                     <div class="modal-content-item">
@@ -2749,14 +3007,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         </div>
 
                                         <select
-                                            ?disabled="${this.currentRecipient && this.currentRecipient.personIdentifier}"
+                                            ?disabled="${this.currentRecipient &&
+                                            this.currentRecipient.personIdentifier}"
                                             id="add-recipient-country-select"
                                             class="country-select"
                                             @change="${(event) => {
                                                 // TODO
                                                 this.disablePersonSelector(event);
                                             }}">
-                                            ${this.lang === "en"
+                                            ${this.lang === 'en'
                                                 ? dispatchHelper.getEnglishCountryList()
                                                 : dispatchHelper.getGermanCountryList()}
                                         </select>
@@ -2767,63 +3026,108 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
                                 <button
-                                        class="button"
-                                        data-micromodal-close
-                                        aria-label="Close this dialog window"
-                                        @click="${() => {
-                                            MicroModal.close(this._('#add-recipient-modal'));
-                                        }}">
+                                    class="button"
+                                    data-micromodal-close
+                                    aria-label="Close this dialog window"
+                                    @click="${() => {
+                                        MicroModal.close(this._('#add-recipient-modal'));
+                                    }}">
                                     ${i18n.t('show-requests.add-recipient-dialog-button-cancel')}
                                 </button>
                                 <button
-                                        class="button is-warning ${classMap({ nothidden: this._('#recipient-selector') && this._('#recipient-selector').value === '' })}"
-                                        @click="${(event) => {
-                                            this.resetRecipientFields(event);
-                                        }}">
-                                        ${i18n.t('show-requests.reset-select-button-text')}
+                                    class="button is-warning ${classMap({
+                                        nothidden:
+                                            this._('#recipient-selector') &&
+                                            this._('#recipient-selector').value === '',
+                                    })}"
+                                    @click="${(event) => {
+                                        this.resetRecipientFields(event);
+                                    }}">
+                                    ${i18n.t('show-requests.reset-select-button-text')}
                                 </button>
                                 <button
-                                        class="button select-button is-primary"
-                                        id="add-recipient-confirm-btn"
-                                        @click="${(event) => {
-                                            let button = event.target;
-                                            button.disabled = true;
+                                    class="button select-button is-primary"
+                                    id="add-recipient-confirm-btn"
+                                    @click="${(event) => {
+                                        let button = event.target;
+                                        button.disabled = true;
 
-                                            let validcountry = this.checkValidity(this._('#add-recipient-country-select'));
-                                            let validal = this.checkValidity(this._('#tf-add-recipient-al-dialog'));
-                                            let validpc = this.checkValidity(this._('#tf-add-recipient-pc-dialog'));
-                                            let validsa = this.checkValidity(this._('#tf-add-recipient-sa-dialog'));
-                                            // let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
-                                            // let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
-                                            // let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
-                                            let validfn = this.checkValidity(this._('#tf-add-recipient-fn-dialog'));
-                                            let validgn = this.checkValidity(this._('#tf-add-recipient-gn-dialog'));
+                                        let validcountry = this.checkValidity(
+                                            this._('#add-recipient-country-select'),
+                                        );
+                                        let validal = this.checkValidity(
+                                            this._('#tf-add-recipient-al-dialog'),
+                                        );
+                                        let validpc = this.checkValidity(
+                                            this._('#tf-add-recipient-pc-dialog'),
+                                        );
+                                        let validsa = this.checkValidity(
+                                            this._('#tf-add-recipient-sa-dialog'),
+                                        );
+                                        // let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
+                                        // let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
+                                        // let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
+                                        let validfn = this.checkValidity(
+                                            this._('#tf-add-recipient-fn-dialog'),
+                                        );
+                                        let validgn = this.checkValidity(
+                                            this._('#tf-add-recipient-gn-dialog'),
+                                        );
 
-                                            if (validgn && validfn && validcountry && validpc && validal && validsa) { // && validbirthday && validbirthmonth && validbirthyear
-                                                this.currentRecipient.givenName = this._('#tf-add-recipient-gn-dialog').value;
-                                                this.currentRecipient.familyName = this._('#tf-add-recipient-fn-dialog').value;
-                                                this.currentRecipient.addressCountry = this._('#add-recipient-country-select').value;
-                                                this.currentRecipient.postalCode = this._('#tf-add-recipient-pc-dialog').value;
-                                                this.currentRecipient.addressLocality = this._('#tf-add-recipient-al-dialog').value;
-                                                this.currentRecipient.streetAddress = this._('#tf-add-recipient-sa-dialog').value;
-                                                this.currentRecipient.birthDateDay = this._('#tf-add-recipient-birthdate-day').value;
-                                                this.currentRecipient.birthDateMonth = this._('#tf-add-recipient-birthdate-month').value;
-                                                this.currentRecipient.birthDateYear = this._('#tf-add-recipient-birthdate-year').value;
+                                        if (
+                                            validgn &&
+                                            validfn &&
+                                            validcountry &&
+                                            validpc &&
+                                            validal &&
+                                            validsa
+                                        ) {
+                                            // && validbirthday && validbirthmonth && validbirthyear
+                                            this.currentRecipient.givenName = this._(
+                                                '#tf-add-recipient-gn-dialog',
+                                            ).value;
+                                            this.currentRecipient.familyName = this._(
+                                                '#tf-add-recipient-fn-dialog',
+                                            ).value;
+                                            this.currentRecipient.addressCountry = this._(
+                                                '#add-recipient-country-select',
+                                            ).value;
+                                            this.currentRecipient.postalCode = this._(
+                                                '#tf-add-recipient-pc-dialog',
+                                            ).value;
+                                            this.currentRecipient.addressLocality = this._(
+                                                '#tf-add-recipient-al-dialog',
+                                            ).value;
+                                            this.currentRecipient.streetAddress = this._(
+                                                '#tf-add-recipient-sa-dialog',
+                                            ).value;
+                                            this.currentRecipient.birthDateDay = this._(
+                                                '#tf-add-recipient-birthdate-day',
+                                            ).value;
+                                            this.currentRecipient.birthDateMonth = this._(
+                                                '#tf-add-recipient-birthdate-month',
+                                            ).value;
+                                            this.currentRecipient.birthDateYear = this._(
+                                                '#tf-add-recipient-birthdate-year',
+                                            ).value;
 
-                                                this.addRecipientToRequest(button).then(r => {
-                                                    button.disabled = false;
-                                                    MicroModal.close(this._('#add-recipient-modal'));
-                                                    this._('#recipient-selector').value = "";
-
-                                                    const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
-                                                    elements.forEach((element) => {
-                                                        element.classList.remove('muted');
-                                                    });
-                                                });
-                                            } else {
+                                            this.addRecipientToRequest(button).then((r) => {
                                                 button.disabled = false;
-                                            }
-                                        }}">
+                                                MicroModal.close(this._('#add-recipient-modal'));
+                                                this._('#recipient-selector').value = '';
+
+                                                const elements =
+                                                    this.shadowRoot.querySelectorAll(
+                                                        '.nf-label.no-selector',
+                                                    );
+                                                elements.forEach((element) => {
+                                                    element.classList.remove('muted');
+                                                });
+                                            });
+                                        } else {
+                                            button.disabled = false;
+                                        }
+                                    }}">
                                     ${i18n.t('show-requests.add-recipient-dialog-button-ok')}
                                 </button>
                             </div>
@@ -2838,30 +3142,31 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
 
         return html`
-             <div class="modal micromodal-slide" id="edit-recipient-modal" aria-hidden="true">
+            <div class="modal micromodal-slide" id="edit-recipient-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div class="modal-container"
-                         id="edit-recipient-modal-box"
-                         role="dialog"
-                         aria-modal="true"
-                         aria-labelledby="edit-recipient-modal-title">
+                    <div
+                        class="modal-container"
+                        id="edit-recipient-modal-box"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="edit-recipient-modal-title">
                         <header class="modal-header">
                             <h3 id="edit-recipient-modal-title">
                                 ${i18n.t('show-requests.edit-recipient-dialog-title')}
                             </h3>
                             <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        let button = this.button;
-                                        button.stop();
-                                        MicroModal.close(this._('#edit-recipient-modal'));
-                                    }}">
+                                title="${i18n.t('show-requests.modal-close')}"
+                                class="modal-close"
+                                aria-label="Close modal"
+                                @click="${() => {
+                                    let button = this.button;
+                                    button.stop();
+                                    MicroModal.close(this._('#edit-recipient-modal'));
+                                }}">
                                 <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    name="close"
+                                    class="close-icon"></dbp-icon>
                             </button>
                         </header>
                         <main class="modal-content" id="edit-recipient-modal-content">
@@ -2871,16 +3176,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-gn-dialog"
-                                            id="tf-edit-recipient-gn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.givenName : ``}"
-                                            required
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-recipient-gn-dialog"
+                                        id="tf-edit-recipient-gn-dialog"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.givenName
+                                            : ``}"
+                                        required
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -2889,51 +3195,64 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-fn-dialog"
-                                            id="tf-edit-recipient-fn-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.familyName : ``}"
-                                            required
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-recipient-fn-dialog"
+                                        id="tf-edit-recipient-fn-dialog"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.familyName
+                                            : ``}"
+                                        required
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}
                                 </div>
-                                 <div class="birthdate-input">
-                                            <input
-                                                type="number"
-                                                class="input"
-                                                id="tf-edit-recipient-birthdate-day"
-                                                min="1" max="31"
-                                                lang="${this.lang}"
-                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-day')}"
-                                                value="${this.currentRecipient ? this.currentRecipient.birthDateDay : ``}"
-                                            />
-                                            <input
-                                                type="number"
-                                                class="input"
-                                                id="tf-edit-recipient-birthdate-month"
-                                                min="1" max="12"
-                                                lang="${this.lang}"
-                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-month')}"
-                                                value="${this.currentRecipient ? this.currentRecipient.birthDateMonth : ``}"
-                                            />
-                                            <input
-                                                type="number"
-                                                class="input"
-                                                id="tf-edit-recipient-birthdate-year"
-                                                min="1800" max="2300"
-                                                lang="${this.lang}"
-                                                placeholder="${i18n.t('show-requests.add-recipient-birthdate-dialog-placeholder-year')}"
-                                                value="${this.currentRecipient ? this.currentRecipient.birthDateYear : ``}"
-                                            />
-                                        </div>
+                                <div class="birthdate-input">
+                                    <input
+                                        type="number"
+                                        class="input"
+                                        id="tf-edit-recipient-birthdate-day"
+                                        min="1"
+                                        max="31"
+                                        lang="${this.lang}"
+                                        placeholder="${i18n.t(
+                                            'show-requests.add-recipient-birthdate-dialog-placeholder-day',
+                                        )}"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.birthDateDay
+                                            : ``}" />
+                                    <input
+                                        type="number"
+                                        class="input"
+                                        id="tf-edit-recipient-birthdate-month"
+                                        min="1"
+                                        max="12"
+                                        lang="${this.lang}"
+                                        placeholder="${i18n.t(
+                                            'show-requests.add-recipient-birthdate-dialog-placeholder-month',
+                                        )}"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.birthDateMonth
+                                            : ``}" />
+                                    <input
+                                        type="number"
+                                        class="input"
+                                        id="tf-edit-recipient-birthdate-year"
+                                        min="1800"
+                                        max="2300"
+                                        lang="${this.lang}"
+                                        placeholder="${i18n.t(
+                                            'show-requests.add-recipient-birthdate-dialog-placeholder-year',
+                                        )}"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.birthDateYear
+                                            : ``}" />
+                                </div>
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
@@ -2941,16 +3260,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-sa-dialog"
-                                            id="tf-edit-recipient-sa-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.streetAddress : ``}"
-                                            required
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-recipient-sa-dialog"
+                                        id="tf-edit-recipient-sa-dialog"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.streetAddress
+                                            : ``}"
+                                        required
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -2959,16 +3279,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            type="number"
-                                            class="input"
-                                            name="tf-edit-recipient-pc-dialog"
-                                            id="tf-edit-recipient-pc-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.postalCode : ``}"
-                                            required
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
+                                        type="number"
+                                        class="input"
+                                        name="tf-edit-recipient-pc-dialog"
+                                        id="tf-edit-recipient-pc-dialog"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.postalCode
+                                            : ``}"
+                                        required
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -2977,26 +3298,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-recipient-al-dialog"
-                                            id="tf-edit-recipient-al-dialog"
-                                            value="${this.currentRecipient ? this.currentRecipient.addressLocality : ``}"
-                                            required
-                                            @input="${() => {
-            // TODO
-        }}"
-                                    />
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-recipient-al-dialog"
+                                        id="tf-edit-recipient-al-dialog"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.addressLocality
+                                            : ``}"
+                                        required
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
-                                <select
-                                    id="edit-recipient-country-select"
-                                    class="country-select">
-                                    ${this.lang === "en"
+                                <select id="edit-recipient-country-select" class="country-select">
+                                    ${this.lang === 'en'
                                         ? dispatchHelper.getEnglishCountryList()
                                         : dispatchHelper.getGermanCountryList()}
                                 </select>
@@ -3005,48 +3325,86 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
                                 <button
-                                        class="button"
-                                        aria-label="Close this dialog window"
-                                        @click="${() => {
-                                            let button = this.button;
-                                            button.stop();
-                                            MicroModal.close(this._('#edit-recipient-modal'));
-                                        }}">
+                                    class="button"
+                                    aria-label="Close this dialog window"
+                                    @click="${() => {
+                                        let button = this.button;
+                                        button.stop();
+                                        MicroModal.close(this._('#edit-recipient-modal'));
+                                    }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
                                 </button>
                                 <button
-                                        class="button select-button is-primary"
-                                        id="edit-recipient-confirm-btn"
-                                        @click="${() => {
-                                            let button = this.button;
+                                    class="button select-button is-primary"
+                                    id="edit-recipient-confirm-btn"
+                                    @click="${() => {
+                                        let button = this.button;
 
-                                            let validcountry = this.checkValidity(this._('#edit-recipient-country-select'));
-                                            let validal = this.checkValidity(this._('#tf-edit-recipient-al-dialog'));
-                                            let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'));
-                                            let validsa = this.checkValidity(this._('#tf-edit-recipient-sa-dialog'));
-                                            // let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
-                                            // let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
-                                            // let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
-                                            let validfn = this.checkValidity(this._('#tf-edit-recipient-fn-dialog'));
-                                            let validgn = this.checkValidity(this._('#tf-edit-recipient-gn-dialog'));
+                                        let validcountry = this.checkValidity(
+                                            this._('#edit-recipient-country-select'),
+                                        );
+                                        let validal = this.checkValidity(
+                                            this._('#tf-edit-recipient-al-dialog'),
+                                        );
+                                        let validpc = this.checkValidity(
+                                            this._('#tf-edit-recipient-pc-dialog'),
+                                        );
+                                        let validsa = this.checkValidity(
+                                            this._('#tf-edit-recipient-sa-dialog'),
+                                        );
+                                        // let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
+                                        // let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
+                                        // let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
+                                        let validfn = this.checkValidity(
+                                            this._('#tf-edit-recipient-fn-dialog'),
+                                        );
+                                        let validgn = this.checkValidity(
+                                            this._('#tf-edit-recipient-gn-dialog'),
+                                        );
 
-                                            if (validgn && validfn && validcountry && validpc && validal && validsa) { // && validbirthday && validbirthmonth && validbirthyear
-                                                this.currentRecipient.givenName = this._('#tf-edit-recipient-gn-dialog').value;
-                                                this.currentRecipient.familyName = this._('#tf-edit-recipient-fn-dialog').value;
-                                                this.currentRecipient.addressCountry = this._('#edit-recipient-country-select').value;
-                                                this.currentRecipient.postalCode = this._('#tf-edit-recipient-pc-dialog').value;
-                                                this.currentRecipient.addressLocality = this._('#tf-edit-recipient-al-dialog').value;
-                                                this.currentRecipient.streetAddress = this._('#tf-edit-recipient-sa-dialog').value;
-                                                this.currentRecipient.birthDateDay = this._('#tf-edit-recipient-birthdate-day').value;
-                                                this.currentRecipient.birthDateMonth = this._('#tf-edit-recipient-birthdate-month').value;
-                                                this.currentRecipient.birthDateYear = this._('#tf-edit-recipient-birthdate-year').value;
+                                        if (
+                                            validgn &&
+                                            validfn &&
+                                            validcountry &&
+                                            validpc &&
+                                            validal &&
+                                            validsa
+                                        ) {
+                                            // && validbirthday && validbirthmonth && validbirthyear
+                                            this.currentRecipient.givenName = this._(
+                                                '#tf-edit-recipient-gn-dialog',
+                                            ).value;
+                                            this.currentRecipient.familyName = this._(
+                                                '#tf-edit-recipient-fn-dialog',
+                                            ).value;
+                                            this.currentRecipient.addressCountry = this._(
+                                                '#edit-recipient-country-select',
+                                            ).value;
+                                            this.currentRecipient.postalCode = this._(
+                                                '#tf-edit-recipient-pc-dialog',
+                                            ).value;
+                                            this.currentRecipient.addressLocality = this._(
+                                                '#tf-edit-recipient-al-dialog',
+                                            ).value;
+                                            this.currentRecipient.streetAddress = this._(
+                                                '#tf-edit-recipient-sa-dialog',
+                                            ).value;
+                                            this.currentRecipient.birthDateDay = this._(
+                                                '#tf-edit-recipient-birthdate-day',
+                                            ).value;
+                                            this.currentRecipient.birthDateMonth = this._(
+                                                '#tf-edit-recipient-birthdate-month',
+                                            ).value;
+                                            this.currentRecipient.birthDateYear = this._(
+                                                '#tf-edit-recipient-birthdate-year',
+                                            ).value;
 
-                                                this.updateRecipient(button);
-                                                MicroModal.close(this._('#edit-recipient-modal'));
-                                            } else {
-                                                button.stop();
-                                            }
-                                        }}">
+                                            this.updateRecipient(button);
+                                            MicroModal.close(this._('#edit-recipient-modal'));
+                                        } else {
+                                            button.stop();
+                                        }
+                                    }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-ok')}
                                 </button>
                             </div>
@@ -3063,26 +3421,27 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return html`
             <div class="modal micromodal-slide" id="show-recipient-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div class="modal-container"
-                         id="show-recipient-modal-box"
-                         role="dialog"
-                         aria-modal="true"
-                         aria-labelledby="show-recipient-modal-title">
+                    <div
+                        class="modal-container"
+                        id="show-recipient-modal-box"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="show-recipient-modal-title">
                         <header class="modal-header">
                             <h3 id="show-recipient-modal-title">
                                 ${i18n.t('show-requests.show-recipient-dialog-title')}
                             </h3>
                             <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        MicroModal.close(this._('#show-recipient-modal'));
-                                    }}">
+                                title="${i18n.t('show-requests.modal-close')}"
+                                class="modal-close"
+                                aria-label="Close modal"
+                                @click="${() => {
+                                    MicroModal.close(this._('#show-recipient-modal'));
+                                }}">
                                 <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    name="close"
+                                    class="close-icon"></dbp-icon>
                             </button>
                         </header>
                         <main class="modal-content" id="show-recipient-modal-content">
@@ -3091,118 +3450,193 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     ${i18n.t('show-requests.edit-recipient-gn-dialog-label')}:
                                 </div>
                                 <div class="element-right first">
-                                    ${this.currentRecipient && this.currentRecipient.givenName ? this.currentRecipient.givenName : ``}
+                                    ${this.currentRecipient && this.currentRecipient.givenName
+                                        ? this.currentRecipient.givenName
+                                        : ``}
                                 </div>
                                 <div class="element-left">
                                     ${i18n.t('show-requests.edit-recipient-fn-dialog-label')}:
                                 </div>
                                 <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.familyName ? this.currentRecipient.familyName : ``}
+                                    ${this.currentRecipient && this.currentRecipient.familyName
+                                        ? this.currentRecipient.familyName
+                                        : ``}
                                 </div>
 
-                                ${this.currentRecipient && this.currentRecipient.birthDateDay && this.currentRecipient.birthDateMonth
-                                && this.currentRecipient.birthDateYear && this.currentRecipient.birthDateDay !== ''
-                                && this.currentRecipient.birthDateMonth !== '' && this.currentRecipient.birthDateYear !== '' ? html`
-                                    <div class="element-left">
-                                        ${i18n.t('show-requests.add-recipient-birthdate-dialog-label')}:
-                                    </div>
-                                    <div class="element-right">
-                                        ${this.currentRecipient.birthDateYear + '-' + this.currentRecipient.birthDateMonth + '-' + this.currentRecipient.birthDateDay}
-                                    </div>
-                                ` : ``}
-                                ${this.currentRecipient && this.currentRecipient.streetAddress ? html`
-                                    <div class="element-left">
-                                        ${i18n.t('show-requests.edit-recipient-sa-dialog-label')}:
-                                    </div>
-                                    <div class="element-right">
-                                        ${this.currentRecipient.streetAddress}
-                                    </div>
-                                ` : ``}
-                                ${this.currentRecipient && this.currentRecipient.postalCode ? html`
-                                    <div class="element-left">
-                                        ${i18n.t('show-requests.edit-recipient-pc-dialog-label')}:
-                                    </div>
-                                    <div class="element-right">
-                                        ${this.currentRecipient.postalCode}
-                                    </div>
-                                ` : ``}
-                                ${this.currentRecipient && this.currentRecipient.addressLocality ? html`
-                                    <div class="element-left">
-                                        ${i18n.t('show-requests.edit-recipient-al-dialog-label')}:
-                                    </div>
-                                    <div class="element-right">
-                                        ${this.currentRecipient.addressLocality}
-                                    </div>
-                                ` : ``}
-                                ${this.currentRecipient && this.currentRecipient.addressCountry ? html`
-                                    <div class="element-left">
-                                        ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}:
-                                    </div>
-                                    <div class="element-right">
-                                        ${this.currentRecipient.addressCountry}
-                                    </div>
-                                ` : ``}
+                                ${this.currentRecipient &&
+                                this.currentRecipient.birthDateDay &&
+                                this.currentRecipient.birthDateMonth &&
+                                this.currentRecipient.birthDateYear &&
+                                this.currentRecipient.birthDateDay !== '' &&
+                                this.currentRecipient.birthDateMonth !== '' &&
+                                this.currentRecipient.birthDateYear !== ''
+                                    ? html`
+                                          <div class="element-left">
+                                              ${i18n.t(
+                                                  'show-requests.add-recipient-birthdate-dialog-label',
+                                              )}:
+                                          </div>
+                                          <div class="element-right">
+                                              ${this.currentRecipient.birthDateYear +
+                                              '-' +
+                                              this.currentRecipient.birthDateMonth +
+                                              '-' +
+                                              this.currentRecipient.birthDateDay}
+                                          </div>
+                                      `
+                                    : ``}
+                                ${this.currentRecipient && this.currentRecipient.streetAddress
+                                    ? html`
+                                          <div class="element-left">
+                                              ${i18n.t(
+                                                  'show-requests.edit-recipient-sa-dialog-label',
+                                              )}:
+                                          </div>
+                                          <div class="element-right">
+                                              ${this.currentRecipient.streetAddress}
+                                          </div>
+                                      `
+                                    : ``}
+                                ${this.currentRecipient && this.currentRecipient.postalCode
+                                    ? html`
+                                          <div class="element-left">
+                                              ${i18n.t(
+                                                  'show-requests.edit-recipient-pc-dialog-label',
+                                              )}:
+                                          </div>
+                                          <div class="element-right">
+                                              ${this.currentRecipient.postalCode}
+                                          </div>
+                                      `
+                                    : ``}
+                                ${this.currentRecipient && this.currentRecipient.addressLocality
+                                    ? html`
+                                          <div class="element-left">
+                                              ${i18n.t(
+                                                  'show-requests.edit-recipient-al-dialog-label',
+                                              )}:
+                                          </div>
+                                          <div class="element-right">
+                                              ${this.currentRecipient.addressLocality}
+                                          </div>
+                                      `
+                                    : ``}
+                                ${this.currentRecipient && this.currentRecipient.addressCountry
+                                    ? html`
+                                          <div class="element-left">
+                                              ${i18n.t(
+                                                  'show-requests.edit-recipient-ac-dialog-label',
+                                              )}:
+                                          </div>
+                                          <div class="element-right">
+                                              ${this.currentRecipient.addressCountry}
+                                          </div>
+                                      `
+                                    : ``}
                                 <div class="element-left">
                                     ${i18n.t('show-requests.delivery-service-dialog-label')}:
                                 </div>
                                 <div class="element-right">
-                                    ${this.currentRecipient.electronicallyDeliverable ? i18n.t('show-requests.electronically-deliverable') :
-                                            (this.currentRecipient.postalDeliverable ? i18n.t('show-requests.only-postal-deliverable') :
-                                                    i18n.t('show-requests.not-deliverable-1') + '. ' + i18n.t('show-requests.not-deliverable-2'))}
+                                    ${this.currentRecipient.electronicallyDeliverable
+                                        ? i18n.t('show-requests.electronically-deliverable')
+                                        : this.currentRecipient.postalDeliverable
+                                          ? i18n.t('show-requests.only-postal-deliverable')
+                                          : i18n.t('show-requests.not-deliverable-1') +
+                                            '. ' +
+                                            i18n.t('show-requests.not-deliverable-2')}
                                 </div>
-                                ${this.currentRecipient && this.currentRecipient.deliveryEndDate ? html`
-                                    <div class="element-left">
-                                        ${i18n.t('show-requests.delivery-end-date')}:
-                                    </div>
-                                    <div class="element-right">
-                                        ${this.convertToReadableDate(this.currentRecipient.deliveryEndDate)}
-                                    </div>
-                                ` : ``}
+                                ${this.currentRecipient && this.currentRecipient.deliveryEndDate
+                                    ? html`
+                                          <div class="element-left">
+                                              ${i18n.t('show-requests.delivery-end-date')}:
+                                          </div>
+                                          <div class="element-right">
+                                              ${this.convertToReadableDate(
+                                                  this.currentRecipient.deliveryEndDate,
+                                              )}
+                                          </div>
+                                      `
+                                    : ``}
                                 <div class="element-left">
                                     ${i18n.t('show-requests.recipient-id')}:
                                 </div>
                                 <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.identifier ? this.currentRecipient.identifier : ``}
+                                    ${this.currentRecipient && this.currentRecipient.identifier
+                                        ? this.currentRecipient.identifier
+                                        : ``}
                                 </div>
-                                ${this.currentRecipient && this.currentRecipient.appDeliveryId ? html`
-                                    <div class="element-left">
-                                        ${i18n.t('show-requests.app-delivery-id')}:
-                                    </div>
-                                    <div class="element-right">
-                                        ${this.currentRecipient && this.currentRecipient.appDeliveryId ? this.currentRecipient.appDeliveryId : ``}
-                                    </div>
-                                ` : ``}
+                                ${this.currentRecipient && this.currentRecipient.appDeliveryId
+                                    ? html`
+                                          <div class="element-left">
+                                              ${i18n.t('show-requests.app-delivery-id')}:
+                                          </div>
+                                          <div class="element-right">
+                                              ${this.currentRecipient &&
+                                              this.currentRecipient.appDeliveryId
+                                                  ? this.currentRecipient.appDeliveryId
+                                                  : ``}
+                                          </div>
+                                      `
+                                    : ``}
                             </div>
 
-                            ${this.currentRecipient && this.currentRecipient.statusChanges && this.currentRecipient.statusChanges.length > 0 ? html`
-                            <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
-                            <div class="scroll">
-                                ${this.currentRecipient.statusChanges.map(statusChange => html`
-                                    <div class="recipient-status">
-                                        <div>
-                                            <div>${this.convertToReadableDate(statusChange.dateCreated)} </div>
-                                            <div class="status-detail new-line-content">${statusChange.description} (StatusType ${statusChange.statusType})</div>
-                                        </div>
-                                        <div class="download-btn">
-                                            ${statusChange.fileFormat ? html`
-                                                <dbp-icon-button class="download-btn"
-                                                                 @click="${(event) => {
-                                                                        this._onDownloadFileClicked(event, statusChange['@id']);
-                                                                    }}"
-                                                                 title="${i18n.t('show-requests.download-button-text')}"
-                                                                 icon-name="download"></dbp-icon-button>
-                                            ` : ``}
-                                        </div>
-                                    </div>
-                                `)}
-                            </div>` : ``}
-                            ${this.currentRecipient && this.currentRecipient.addressCountry && this.currentRecipient.addressCountry.length > 0 && this.currentRecipient.addressCountry !== 'AT'
-                                ? unsafeHTML('<div class="notification-container"><label>Info: </label>' + i18n.t('create-request.add-recipient-country-warning') + '</div>')
+                            ${this.currentRecipient &&
+                            this.currentRecipient.statusChanges &&
+                            this.currentRecipient.statusChanges.length > 0
+                                ? html`
+                                      <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
+                                      <div class="scroll">
+                                          ${this.currentRecipient.statusChanges.map(
+                                              (statusChange) => html`
+                                                  <div class="recipient-status">
+                                                      <div>
+                                                          <div>
+                                                              ${this.convertToReadableDate(
+                                                                  statusChange.dateCreated,
+                                                              )}
+                                                          </div>
+                                                          <div
+                                                              class="status-detail new-line-content">
+                                                              ${statusChange.description} (StatusType ${statusChange.statusType})
+                                                          </div>
+                                                      </div>
+                                                      <div class="download-btn">
+                                                          ${statusChange.fileFormat
+                                                              ? html`
+                                                                    <dbp-icon-button
+                                                                        class="download-btn"
+                                                                        @click="${(event) => {
+                                                                            this._onDownloadFileClicked(
+                                                                                event,
+                                                                                statusChange['@id'],
+                                                                            );
+                                                                        }}"
+                                                                        title="${i18n.t(
+                                                                            'show-requests.download-button-text',
+                                                                        )}"
+                                                                        icon-name="download"></dbp-icon-button>
+                                                                `
+                                                              : ``}
+                                                      </div>
+                                                  </div>
+                                              `,
+                                          )}
+                                      </div>
+                                  `
+                                : ``}
+                            ${this.currentRecipient &&
+                            this.currentRecipient.addressCountry &&
+                            this.currentRecipient.addressCountry.length > 0 &&
+                            this.currentRecipient.addressCountry !== 'AT'
+                                ? unsafeHTML(
+                                      '<div class="notification-container"><label>Info: </label>' +
+                                          i18n.t('create-request.add-recipient-country-warning') +
+                                          '</div>',
+                                  )
                                 : ``}
                         </main>
                         <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                            </div>
+                            <div class="modal-footer-btn"></div>
                         </footer>
                     </div>
                 </div>
@@ -3217,64 +3651,65 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             <div class="modal micromodal-slide" id="edit-subject-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
                     <div
-                            class="modal-container"
-                            id="edit-subject-modal-box"
-                            role="dialog"
-                            aria-modal="true"
-                            aria-labelledby="edit-subject-modal-title">
+                        class="modal-container"
+                        id="edit-subject-modal-box"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="edit-subject-modal-title">
                         <header class="modal-header">
                             <h3 id="edit-subject-modal-title">
                                 ${i18n.t('show-requests.edit-subject-modal-title')}
                             </h3>
                             <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        MicroModal.close(this._('#edit-subject-modal'));
-                                    }}">
+                                title="${i18n.t('show-requests.modal-close')}"
+                                class="modal-close"
+                                aria-label="Close modal"
+                                @click="${() => {
+                                    MicroModal.close(this._('#edit-subject-modal'));
+                                }}">
                                 <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    name="close"
+                                    class="close-icon"></dbp-icon>
                             </button>
                         </header>
                         <main class="modal-content" id="edit-subject-modal-content">
                             <div class="modal-content-item">
                                 <div>
                                     <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-subject-fn-dialog"
-                                            id="tf-edit-subject-fn-dialog"
-                                            value="${this.subject ? this.subject : this._i18n.t('create-request.default-subject')}"
-                                            @input="${() => {
-                                                // TODO
-                                            }}"
-                                    />
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-subject-fn-dialog"
+                                        id="tf-edit-subject-fn-dialog"
+                                        value="${this.subject
+                                            ? this.subject
+                                            : this._i18n.t('create-request.default-subject')}"
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
                                 </div>
                             </div>
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
                                 <button
-                                        class="button"
-                                        data-micromodal-close
-                                        aria-label="Close this dialog window"
-                                        @click="${() => {
-                                            MicroModal.close(this._('#edit-subject-modal'));
-                                        }}">
+                                    class="button"
+                                    data-micromodal-close
+                                    aria-label="Close this dialog window"
+                                    @click="${() => {
+                                        MicroModal.close(this._('#edit-subject-modal'));
+                                    }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
                                 </button>
                                 <button
-                                        class="button select-button is-primary"
-                                        id="edit-subject-confirm-btn"
-                                        @click="${() => {
-                                            // this._('#edit-subject-confirm-btn').start();
-                                            this.confirmEditSubject().then(r => {
-                                                MicroModal.close(this._('#edit-subject-modal'));
-                                            });
-                                        }}">
+                                    class="button select-button is-primary"
+                                    id="edit-subject-confirm-btn"
+                                    @click="${() => {
+                                        // this._('#edit-subject-confirm-btn').start();
+                                        this.confirmEditSubject().then((r) => {
+                                            MicroModal.close(this._('#edit-subject-modal'));
+                                        });
+                                    }}">
                                     ${i18n.t('show-requests.edit-subject-dialog-button-ok')}
                                 </button>
                             </div>
@@ -3292,61 +3727,64 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             <div class="modal micromodal-slide" id="edit-reference-number-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
                     <div
-                            class="modal-container"
-                            id="edit-reference-number-modal-box"
-                            role="dialog"
-                            aria-modal="true"
-                            aria-labelledby="edit-reference-number-modal-title">
+                        class="modal-container"
+                        id="edit-reference-number-modal-box"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="edit-reference-number-modal-title">
                         <header class="modal-header">
                             <h3 id="edit-reference-number-modal-title">
                                 ${i18n.t('show-requests.reference-number-dialog-title')}
                             </h3>
                             <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        MicroModal.close(this._('#edit-reference-number-modal'));
-                                    }}">
+                                title="${i18n.t('show-requests.modal-close')}"
+                                class="modal-close"
+                                aria-label="Close modal"
+                                @click="${() => {
+                                    MicroModal.close(this._('#edit-reference-number-modal'));
+                                }}">
                                 <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    name="close"
+                                    class="close-icon"></dbp-icon>
                             </button>
                         </header>
                         <main class="modal-content" id="edit-reference-number-modal-content">
                             <div class="modal-content-item">
                                 <div>
                                     <input
-                                            type="text"
-                                            class="input"
-                                            name="tf-edit-reference-number-fn-dialog"
-                                            id="tf-edit-reference-number-fn-dialog"
-                                            value="${this.currentItem.referenceNumber ?? ``}"
-                                    />
+                                        type="text"
+                                        class="input"
+                                        name="tf-edit-reference-number-fn-dialog"
+                                        id="tf-edit-reference-number-fn-dialog"
+                                        value="${this.currentItem.referenceNumber ?? ``}" />
                                 </div>
                             </div>
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn">
                                 <button
-                                        class="button"
-                                        data-micromodal-close
-                                        aria-label="Close this dialog window"
-                                        @click="${() => {
-                                            MicroModal.close(this._('#edit-reference-number-modal'));
-                                        }}">
+                                    class="button"
+                                    data-micromodal-close
+                                    aria-label="Close this dialog window"
+                                    @click="${() => {
+                                        MicroModal.close(this._('#edit-reference-number-modal'));
+                                    }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
                                 </button>
                                 <button
-                                        class="button select-button is-primary"
-                                        id="edit-reference-number-confirm-btn"
-                                        @click="${() => {
-                                            this.confirmEditReferenceNumber().then(r => {
-                                                MicroModal.close(this._('#edit-reference-number-modal'));
-                                            });
-                                        }}">
-                                    ${i18n.t('show-requests.edit-reference-number-dialog-button-ok')}
+                                    class="button select-button is-primary"
+                                    id="edit-reference-number-confirm-btn"
+                                    @click="${() => {
+                                        this.confirmEditReferenceNumber().then((r) => {
+                                            MicroModal.close(
+                                                this._('#edit-reference-number-modal'),
+                                            );
+                                        });
+                                    }}">
+                                    ${i18n.t(
+                                        'show-requests.edit-reference-number-dialog-button-ok',
+                                    )}
                                 </button>
                             </div>
                         </footer>
@@ -3362,31 +3800,35 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return html`
             <div class="modal micromodal-slide" id="file-viewer-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div class="modal-container"
-                            id="file-viewer-modal-box"
-                            role="dialog"
-                            aria-modal="true"
-                            aria-labelledby="file-viewer-modal-title">
+                    <div
+                        class="modal-container"
+                        id="file-viewer-modal-box"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="file-viewer-modal-title">
                         <header class="modal-header">
                             <h3 id="file-viewer-modal-title">
                                 ${i18n.t('show-requests.file-viewer-dialog-title')}
                             </h3>
                             <button
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    class="modal-close"
-                                    aria-label="Close modal"
-                                    @click="${() => {
-                                        MicroModal.close(this._('#file-viewer-modal'));
-                                    }}">
+                                title="${i18n.t('show-requests.modal-close')}"
+                                class="modal-close"
+                                aria-label="Close modal"
+                                @click="${() => {
+                                    MicroModal.close(this._('#file-viewer-modal'));
+                                }}">
                                 <dbp-icon
-                                        title="${i18n.t('show-requests.modal-close')}"
-                                        name="close"
-                                        class="close-icon"></dbp-icon>
+                                    title="${i18n.t('show-requests.modal-close')}"
+                                    name="close"
+                                    class="close-icon"></dbp-icon>
                             </button>
                         </header>
                         <main class="modal-content" id="file-viewer-modal-content">
                             <!-- TODO: auto-resize="contain"-->
-                            <dbp-pdf-viewer lang="${this.lang}" auto-resize="cover" id="file-viewer"></dbp-pdf-viewer>
+                            <dbp-pdf-viewer
+                                lang="${this.lang}"
+                                auto-resize="cover"
+                                id="file-viewer"></dbp-pdf-viewer>
                         </main>
                     </div>
                 </div>
@@ -3400,51 +3842,85 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return html`
             <div class="details files">
                 <div class="header-btn">
-                    <div class="section-titles">${i18n.t('show-requests.files')} <span class="section-title-counts">
-                            ${this.currentItem.files && this.currentItem.files.length !== 0 ? `(` + this.currentItem.files.length + `)` : ``}</span>
+                    <div class="section-titles">
+                        ${i18n.t('show-requests.files')}
+                        <span class="section-title-counts">
+                            ${this.currentItem.files && this.currentItem.files.length !== 0
+                                ? `(` + this.currentItem.files.length + `)`
+                                : ``}
+                        </span>
                     </div>
-                    ${!this.currentItem.dateSubmitted ? html`
-                         <dbp-loading-button id="add-files-btn"
-                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                        value="${i18n.t('show-requests.add-files-button-text')}"
-                                        @click="${(event) => {
-                                            this.requestCreated = true;
-                                            this.addFileViaButton = true;
-                                            this.openFileSource();
-                                        }}"
-                                        title="${i18n.t('show-requests.add-files-button-text')}"
-                                        >${i18n.t('show-requests.add-files-button-text')}
-                         </dbp-loading-button>` : `` }
+                    ${!this.currentItem.dateSubmitted
+                        ? html`
+                              <dbp-loading-button
+                                  id="add-files-btn"
+                                  ?disabled="${this.loading ||
+                                  this.currentItem.dateSubmitted ||
+                                  !this.mayWrite}"
+                                  value="${i18n.t('show-requests.add-files-button-text')}"
+                                  @click="${(event) => {
+                                      this.requestCreated = true;
+                                      this.addFileViaButton = true;
+                                      this.openFileSource();
+                                  }}"
+                                  title="${i18n.t('show-requests.add-files-button-text')}">
+                                  ${i18n.t('show-requests.add-files-button-text')}
+                              </dbp-loading-button>
+                          `
+                        : ``}
                 </div>
                 <div class="files-data">
-                    ${this.currentItem.files ? this.currentItem.files.map(file => html`
-                        <div class="file card">
-                            <div class="left-side">
-                                <div>${file.name}</div>
-                                <div>${humanFileSize(file.contentSize)}</div>
-                                <div>${file.fileFormat}</div>
-                                <div>${this.convertToReadableDate(file.dateCreated)}</div>
-                            </div>
-                            <div class="right-side">
-                                <dbp-icon-button id="show-file-btn"
-                                                 @click="${(event) => {
-                                                    this._onShowFileClicked(event, file.identifier);
-                                                }}"
-                                                 title="${i18n.t('show-requests.show-file-button-text')}"
-                                                 icon-name="keyword-research"></dbp-icon-button>
-                                ${!this.currentItem.dateSubmitted ? html`
-                                    <dbp-icon-button id="delete-file-btn"
-                                                ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                @click="${(event) => {
-                                                    this.deleteFile(event, file);
-                                                }}"
-                                                title="${i18n.t('show-requests.delete-file-button-text')}"
-                                                icon-name="trash"></dbp-icon-button>` : ``
-}
-                            </div>
-                        </div>
-                    `) : ``}
-                    <div class="no-files ${classMap({hidden: !this.isLoggedIn() || this.currentItem.files && this.currentItem.files.length !== 0})}">${this.mayReadMetadata && !this.mayRead && !this.mayWrite ? i18n.t('show-requests.metadata-files-text') : i18n.t('show-requests.empty-files-text')}</div>
+                    ${this.currentItem.files
+                        ? this.currentItem.files.map(
+                              (file) => html`
+                                  <div class="file card">
+                                      <div class="left-side">
+                                          <div>${file.name}</div>
+                                          <div>${humanFileSize(file.contentSize)}</div>
+                                          <div>${file.fileFormat}</div>
+                                          <div>${this.convertToReadableDate(file.dateCreated)}</div>
+                                      </div>
+                                      <div class="right-side">
+                                          <dbp-icon-button
+                                              id="show-file-btn"
+                                              @click="${(event) => {
+                                                  this._onShowFileClicked(event, file.identifier);
+                                              }}"
+                                              title="${i18n.t(
+                                                  'show-requests.show-file-button-text',
+                                              )}"
+                                              icon-name="keyword-research"></dbp-icon-button>
+                                          ${!this.currentItem.dateSubmitted
+                                              ? html`
+                                                    <dbp-icon-button
+                                                        id="delete-file-btn"
+                                                        ?disabled="${this.loading ||
+                                                        this.currentItem.dateSubmitted ||
+                                                        !this.mayWrite}"
+                                                        @click="${(event) => {
+                                                            this.deleteFile(event, file);
+                                                        }}"
+                                                        title="${i18n.t(
+                                                            'show-requests.delete-file-button-text',
+                                                        )}"
+                                                        icon-name="trash"></dbp-icon-button>
+                                                `
+                                              : ``}
+                                      </div>
+                                  </div>
+                              `,
+                          )
+                        : ``}
+                    <div
+                        class="no-files ${classMap({
+                            hidden:
+                                !this.isLoggedIn() ||
+                                (this.currentItem.files && this.currentItem.files.length !== 0),
+                        })}">
+                        ${this.mayReadMetadata && !this.mayRead && !this.mayWrite
+                            ? i18n.t('show-requests.metadata-files-text')
+                            : i18n.t('show-requests.empty-files-text')}
+                    </div>
                 </div>
             </div>
         `;
@@ -3462,7 +3938,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 <div class="line"></div>
                 <div>
                     <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
-                    <div>${this.lastModifiedName ? this.lastModifiedName : this.currentItem.personIdentifier}</div>
+                    <div>
+                        ${this.lastModifiedName
+                            ? this.lastModifiedName
+                            : this.currentItem.personIdentifier}
+                    </div>
                 </div>
                 <div class="line"></div>
                 <div>
@@ -3480,36 +3960,84 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             <div class="details sender hidden">
                 <div class="header-btn">
                     <div class="section-titles">${i18n.t('show-requests.sender')}</div>
-                    ${!this.currentItem.dateSubmitted ? html`
-                        <dbp-icon-button id="edit-sender-btn"
-                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                    @click="${(event) => {
-                                        if (this.currentItem.senderAddressCountry !== '') {
-                                            this._('#edit-sender-country-select').value = this.currentItem.senderAddressCountry;
-                                        }
-                                        MicroModal.show(this._('#edit-sender-modal'), {
-                                            disableScroll: true,
-                                            onClose: (modal) => {
-                                                this.loading = false;
-                                            },
-                                        });
-                                    }}"
-                                    title="${i18n.t('show-requests.edit-sender-button-text')}"
-                                    icon-name="pencil"></dbp-icon-button>` : ``}
+                    ${!this.currentItem.dateSubmitted
+                        ? html`
+                              <dbp-icon-button
+                                  id="edit-sender-btn"
+                                  ?disabled="${this.loading ||
+                                  this.currentItem.dateSubmitted ||
+                                  !this.mayWrite}"
+                                  @click="${(event) => {
+                                      if (this.currentItem.senderAddressCountry !== '') {
+                                          this._('#edit-sender-country-select').value =
+                                              this.currentItem.senderAddressCountry;
+                                      }
+                                      MicroModal.show(this._('#edit-sender-modal'), {
+                                          disableScroll: true,
+                                          onClose: (modal) => {
+                                              this.loading = false;
+                                          },
+                                      });
+                                  }}"
+                                  title="${i18n.t('show-requests.edit-sender-button-text')}"
+                                  icon-name="pencil"></dbp-icon-button>
+                          `
+                        : ``}
                 </div>
                 <div class="sender-data">
-                    ${this.currentItem.senderOrganizationName ? html`${this.currentItem.senderOrganizationName}` : ``}
+                    ${this.currentItem.senderOrganizationName
+                        ? html`
+                              ${this.currentItem.senderOrganizationName}
+                          `
+                        : ``}
                     ${this.currentItem.senderFullName && this.currentItem.senderOrganizationName
-                        ? html` ${this.currentItem.senderFullName}` :
-                        html`${this.currentItem.senderFullName ? html`${this.currentItem.senderFullName}` : ``}
-                    `}
-                    ${this.currentItem.senderStreetAddress ? html`<br>${this.currentItem.senderStreetAddress}` : ``}
-                    ${this.currentItem.senderBuildingNumber ? html` ${this.currentItem.senderBuildingNumber}` : ``}
-                    ${this.currentItem.senderPostalCode ? html`<br>${this.currentItem.senderPostalCode}` : ``}
-                    ${this.currentItem.senderAddressLocality ? html` ${this.currentItem.senderAddressLocality}` : ``}
-                    ${this.currentItem.senderAddressCountry ? html`<br>${dispatchHelper.getCountryMapping()[this.currentItem.senderAddressCountry]}` : ``}
+                        ? html`
+                              ${this.currentItem.senderFullName}
+                          `
+                        : html`
+                              ${this.currentItem.senderFullName
+                                  ? html`
+                                        ${this.currentItem.senderFullName}
+                                    `
+                                  : ``}
+                          `}
+                    ${this.currentItem.senderStreetAddress
+                        ? html`
+                              <br />
+                              ${this.currentItem.senderStreetAddress}
+                          `
+                        : ``}
+                    ${this.currentItem.senderBuildingNumber
+                        ? html`
+                              ${this.currentItem.senderBuildingNumber}
+                          `
+                        : ``}
+                    ${this.currentItem.senderPostalCode
+                        ? html`
+                              <br />
+                              ${this.currentItem.senderPostalCode}
+                          `
+                        : ``}
+                    ${this.currentItem.senderAddressLocality
+                        ? html`
+                              ${this.currentItem.senderAddressLocality}
+                          `
+                        : ``}
+                    ${this.currentItem.senderAddressCountry
+                        ? html`
+                              <br />
+                              ${dispatchHelper.getCountryMapping()[
+                                  this.currentItem.senderAddressCountry
+                              ]}
+                          `
+                        : ``}
                 </div>
-                <div class="no-sender ${classMap({hidden: !this.isLoggedIn() || this.currentItem.senderFullName})}">${i18n.t('show-requests.empty-sender-text')}</div>
+                <div
+                    class="no-sender ${classMap({
+                        hidden: !this.isLoggedIn() || this.currentItem.senderFullName,
+                    })}">
+                    ${i18n.t('show-requests.empty-sender-text')}
+                </div>
             </div>
         `;
     }
@@ -3518,39 +4046,88 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
 
         return html`
-             <div class="left-side">
+            <div class="left-side">
                 <div>${recipient.givenName} ${recipient.familyName}</div>
                 <div>${recipient.streetAddress}</div>
                 <div>${recipient.postalCode} ${recipient.addressLocality}</div>
                 <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
-                ${recipient.electronicallyDeliverable ? html`
-                    <div class="delivery-status"><span class="status-green">●</span> ${i18n.t('show-requests.electronically-deliverable')}</div>
-                ` : ``}
-                ${!recipient.electronicallyDeliverable && recipient.postalDeliverable ? html`
-                    <div class="delivery-status"><span class="status-orange">●</span> ${i18n.t('show-requests.only-postal-deliverable')}</div>
-                ` : ``}
-
-                ${!recipient.electronicallyDeliverable && !recipient.postalDeliverable ? html`
-                    <div class="delivery-status"><span class="status-red">●</span> ${i18n.t('show-requests.not-deliverable-1')}
-                    <dbp-tooltip
-                        icon-name="warning-high"
-                        class="info-tooltip"
-                        text-content="${i18n.t('show-requests.not-deliverable-2')}"
-                        interactive></dbp-tooltip></div>
-                ` : ``}
-
-                 ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'failure' ? html`
-                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-red">${i18n.t('show-requests.failure')}</span></div>
-                ` : ``}
-                 ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'success'  ? html`
-                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-green">${i18n.t('show-requests.success')}</span></div>
-                ` : ``}
-                 ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'pending'  ? html`
-                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span>${i18n.t('show-requests.pending')}</span></div>
-                ` : ``}
-                 ${this.currentItem.dateSubmitted && recipient.lastStatusChange.dispatchStatus && recipient.lastStatusChange.dispatchStatus === 'unknown'  ? html`
-                    <div class="dispatch-status"><span class="status-title">${i18n.t('show-requests.dispatch-status')}</span> <span class="status-orange">${i18n.t('show-requests.unknown')}</span></div>
-                ` : ``}
+                ${recipient.electronicallyDeliverable
+                    ? html`
+                          <div class="delivery-status">
+                              <span class="status-green">●</span>
+                              ${i18n.t('show-requests.electronically-deliverable')}
+                          </div>
+                      `
+                    : ``}
+                ${!recipient.electronicallyDeliverable && recipient.postalDeliverable
+                    ? html`
+                          <div class="delivery-status">
+                              <span class="status-orange">●</span>
+                              ${i18n.t('show-requests.only-postal-deliverable')}
+                          </div>
+                      `
+                    : ``}
+                ${!recipient.electronicallyDeliverable && !recipient.postalDeliverable
+                    ? html`
+                          <div class="delivery-status">
+                              <span class="status-red">●</span>
+                              ${i18n.t('show-requests.not-deliverable-1')}
+                              <dbp-tooltip
+                                  icon-name="warning-high"
+                                  class="info-tooltip"
+                                  text-content="${i18n.t('show-requests.not-deliverable-2')}"
+                                  interactive></dbp-tooltip>
+                          </div>
+                      `
+                    : ``}
+                ${this.currentItem.dateSubmitted &&
+                recipient.lastStatusChange.dispatchStatus &&
+                recipient.lastStatusChange.dispatchStatus === 'failure'
+                    ? html`
+                          <div class="dispatch-status">
+                              <span class="status-title">
+                                  ${i18n.t('show-requests.dispatch-status')}
+                              </span>
+                              <span class="status-red">${i18n.t('show-requests.failure')}</span>
+                          </div>
+                      `
+                    : ``}
+                ${this.currentItem.dateSubmitted &&
+                recipient.lastStatusChange.dispatchStatus &&
+                recipient.lastStatusChange.dispatchStatus === 'success'
+                    ? html`
+                          <div class="dispatch-status">
+                              <span class="status-title">
+                                  ${i18n.t('show-requests.dispatch-status')}
+                              </span>
+                              <span class="status-green">${i18n.t('show-requests.success')}</span>
+                          </div>
+                      `
+                    : ``}
+                ${this.currentItem.dateSubmitted &&
+                recipient.lastStatusChange.dispatchStatus &&
+                recipient.lastStatusChange.dispatchStatus === 'pending'
+                    ? html`
+                          <div class="dispatch-status">
+                              <span class="status-title">
+                                  ${i18n.t('show-requests.dispatch-status')}
+                              </span>
+                              <span>${i18n.t('show-requests.pending')}</span>
+                          </div>
+                      `
+                    : ``}
+                ${this.currentItem.dateSubmitted &&
+                recipient.lastStatusChange.dispatchStatus &&
+                recipient.lastStatusChange.dispatchStatus === 'unknown'
+                    ? html`
+                          <div class="dispatch-status">
+                              <span class="status-title">
+                                  ${i18n.t('show-requests.dispatch-status')}
+                              </span>
+                              <span class="status-orange">${i18n.t('show-requests.unknown')}</span>
+                          </div>
+                      `
+                    : ``}
             </div>
         `;
     }
@@ -3580,26 +4157,48 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         }
 
-        let overallStatusText = "";
+        let overallStatusText = '';
 
-        overallStatusText += countSuccess > 0 ? i18n.t('show-requests.overall-status-success', { success: countSuccess }) :  "";
+        overallStatusText +=
+            countSuccess > 0
+                ? i18n.t('show-requests.overall-status-success', {success: countSuccess})
+                : '';
 
-        overallStatusText += countSuccess > 0 && countPending > 0 ? ", " + i18n.t('show-requests.overall-status-pending', { pending: countPending }) :
-                                 countPending > 0 ? i18n.t('show-requests.overall-status-pending', { pending: countPending }) : "";
+        overallStatusText +=
+            countSuccess > 0 && countPending > 0
+                ? ', ' + i18n.t('show-requests.overall-status-pending', {pending: countPending})
+                : countPending > 0
+                  ? i18n.t('show-requests.overall-status-pending', {pending: countPending})
+                  : '';
 
-        overallStatusText += (countSuccess > 0 || countPending > 0) && countFailure > 0 ? ", " + i18n.t('show-requests.overall-status-failure', { failure: countFailure }) :
-                                countFailure > 0 ? i18n.t('show-requests.overall-status-failure', { failure: countFailure }) : "";
+        overallStatusText +=
+            (countSuccess > 0 || countPending > 0) && countFailure > 0
+                ? ', ' + i18n.t('show-requests.overall-status-failure', {failure: countFailure})
+                : countFailure > 0
+                  ? i18n.t('show-requests.overall-status-failure', {failure: countFailure})
+                  : '';
 
-        let shortStatusText = "";
-        shortStatusText += countSuccess > 0 ? i18n.t('show-requests.short-status-success', { success: countSuccess }) :  "";
+        let shortStatusText = '';
+        shortStatusText +=
+            countSuccess > 0
+                ? i18n.t('show-requests.short-status-success', {success: countSuccess})
+                : '';
 
-        shortStatusText += countSuccess > 0 && countPending > 0 ? ", " + i18n.t('show-requests.short-status-pending', { pending: countPending }) :
-                countPending > 0 ? i18n.t('show-requests.short-status-pending', { pending: countPending }) : "";
+        shortStatusText +=
+            countSuccess > 0 && countPending > 0
+                ? ', ' + i18n.t('show-requests.short-status-pending', {pending: countPending})
+                : countPending > 0
+                  ? i18n.t('show-requests.short-status-pending', {pending: countPending})
+                  : '';
 
-        shortStatusText += (countSuccess > 0 || countPending > 0) && countFailure > 0 ? ", " + i18n.t('show-requests.short-status-failure', { failure: countFailure }) :
-                countFailure > 0 ? i18n.t('show-requests.short-status-failure', { failure: countFailure }) : "";
+        shortStatusText +=
+            (countSuccess > 0 || countPending > 0) && countFailure > 0
+                ? ', ' + i18n.t('show-requests.short-status-failure', {failure: countFailure})
+                : countFailure > 0
+                  ? i18n.t('show-requests.short-status-failure', {failure: countFailure})
+                  : '';
 
-        return [ overallStatusText, shortStatusText ];
+        return [overallStatusText, shortStatusText];
     }
 
     storeGroupValue(value) {

@@ -1,11 +1,17 @@
 import {createInstance, setOverridesByGlobalCache} from './i18n';
 import {css, html} from 'lit';
 import {ScopedElementsMixin} from '@open-wc/scoped-elements';
-import DBPDispatchLitElement from "./dbp-dispatch-lit-element";
+import DBPDispatchLitElement from './dbp-dispatch-lit-element';
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
-import {LoadingButton, IconButton, Icon, MiniSpinner, InlineNotification} from "@dbp-toolkit/common";
-import {classMap} from "lit/directives/class-map.js";
+import {
+    LoadingButton,
+    IconButton,
+    Icon,
+    MiniSpinner,
+    InlineNotification,
+} from '@dbp-toolkit/common';
+import {classMap} from 'lit/directives/class-map.js';
 import {Activity} from './activity.js';
 import metadata from './dbp-show-requests.metadata.json';
 import MicroModal from './micromodal.es';
@@ -13,12 +19,12 @@ import {FileSource} from '@dbp-toolkit/file-handling';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import * as dispatchStyles from './styles';
 import {name as pkgName} from './../package.json';
-import {ResourceSelect} from "@dbp-toolkit/resource-select";
-import {InfoTooltip, TooltipElement} from "@dbp-toolkit/tooltip";
-import {CustomPersonSelect} from "./person-select.js";
+import {ResourceSelect} from '@dbp-toolkit/resource-select';
+import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
+import {CustomPersonSelect} from './person-select.js';
 
 // NOTE: pdf-viewer is loading the pdfjs worker also for getBusinessNumberFromPDF!
-import {PdfViewer} from "@dbp-toolkit/pdf-viewer";
+import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -47,23 +53,23 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.organizationSet = false;
         this.addFileViaButton = false;
 
-        this.currentItem.senderOrganizationName = "";
-        this.currentItem.senderFullName = "";
-        this.currentItem.senderAddressCountry = "";
-        this.currentItem.senderPostalCode = "";
-        this.currentItem.senderAddressLocality = "";
-        this.currentItem.senderStreetAddress = "";
-        this.currentItem.senderBuildingNumber = "";
+        this.currentItem.senderOrganizationName = '';
+        this.currentItem.senderFullName = '';
+        this.currentItem.senderAddressCountry = '';
+        this.currentItem.senderPostalCode = '';
+        this.currentItem.senderAddressLocality = '';
+        this.currentItem.senderStreetAddress = '';
+        this.currentItem.senderBuildingNumber = '';
 
         this.lastModifiedName = '';
         this.expanded = false;
 
-        this.fileHandlingEnabledTargets = "local";
-        this.nextcloudWebAppPasswordURL = "";
-        this.nextcloudWebDavURL = "";
-        this.nextcloudName = "";
-        this.nextcloudFileURL = "";
-        this.nextcloudAuthInfo = "";
+        this.fileHandlingEnabledTargets = 'local';
+        this.nextcloudWebAppPasswordURL = '';
+        this.nextcloudWebDavURL = '';
+        this.nextcloudName = '';
+        this.nextcloudFileURL = '';
+        this.nextcloudAuthInfo = '';
 
         this.dispatchRequestsTable = null;
         this.totalNumberOfItems = 0;
@@ -94,7 +100,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-resource-select': ResourceSelect,
             'dbp-info-tooltip': InfoTooltip,
             'dbp-tooltip': TooltipElement,
-            'dbp-pdf-viewer': PdfViewer
+            'dbp-pdf-viewer': PdfViewer,
         };
     }
 
@@ -102,24 +108,24 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         return {
             ...super.properties,
             lang: {type: String},
-            entryPointUrl: { type: String, attribute: 'entry-point-url' },
-            loading: { type: Boolean, attribute: false },
-            initialRequestsLoading: { type: Boolean, attribute: false },
-            tableLoading: { type: Boolean, attribute: false },
-            requestList: { type: Array, attribute: false },
-            showListView: { type: Boolean, attribute: false },
-            showDetailsView: { type: Boolean, attribute: false },
-            currentItem: { type: Object, attribute: false },
-            currentRecipient: { type: Object, attribute: false },
-            totalNumberOfItems: { type: Number, attribute: false },
-            subject: { type: String, attribute: false },
-            organizationSet: { type: Boolean, attribute: false },
-            mayWrite: { type: Boolean, attribute: false },
-            mayRead: { type: Boolean, attribute: false },
-            mayReadMetadata: { type: Boolean, attribute: false },
-            rowsSelected: { type: Boolean, attribute: false },
-            lastModifiedName: { type: String, attribute: false },
-            expanded: { type: Boolean, attribute: false },
+            entryPointUrl: {type: String, attribute: 'entry-point-url'},
+            loading: {type: Boolean, attribute: false},
+            initialRequestsLoading: {type: Boolean, attribute: false},
+            tableLoading: {type: Boolean, attribute: false},
+            requestList: {type: Array, attribute: false},
+            showListView: {type: Boolean, attribute: false},
+            showDetailsView: {type: Boolean, attribute: false},
+            currentItem: {type: Object, attribute: false},
+            currentRecipient: {type: Object, attribute: false},
+            totalNumberOfItems: {type: Number, attribute: false},
+            subject: {type: String, attribute: false},
+            organizationSet: {type: Boolean, attribute: false},
+            mayWrite: {type: Boolean, attribute: false},
+            mayRead: {type: Boolean, attribute: false},
+            mayReadMetadata: {type: Boolean, attribute: false},
+            rowsSelected: {type: Boolean, attribute: false},
+            lastModifiedName: {type: String, attribute: false},
+            expanded: {type: Boolean, attribute: false},
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -127,7 +133,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             nextcloudName: {type: String, attribute: 'nextcloud-name'},
             nextcloudFileURL: {type: String, attribute: 'nextcloud-file-url'},
             nextcloudAuthInfo: {type: String, attribute: 'nextcloud-auth-info'},
-            langDir: {type: String, attribute: "lang-dir"},
+            langDir: {type: String, attribute: 'lang-dir'},
         };
     }
 
@@ -148,9 +154,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        this.dispatchRequestsTable.off("rowClick");
-        this.dispatchRequestsTable.off("dataLoaded");
-        this.dispatchRequestsTable.off("pageLoaded");
+        this.dispatchRequestsTable.off('rowClick');
+        this.dispatchRequestsTable.off('dataLoaded');
+        this.dispatchRequestsTable.off('pageLoaded');
 
         document.removeEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
 
@@ -221,7 +227,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 this._('#select_all').checked = false;
                                 this.rowsSelected = false;
                             } else {
-                                that.dispatchRequestsTable.selectRow("visible");
+                                that.dispatchRequestsTable.selectRow('visible');
                                 this._('#select_all').checked = true;
                                 this.rowsSelected = true;
                             }
@@ -236,7 +242,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         headerSort: false,
                         responsive: 0,
                         widthGrow: 1,
-                        formatter: 'responsiveCollapse'
+                        formatter: 'responsiveCollapse',
                     },
                     {
                         title: i18n.t('show-requests.table-header-date-created'),
@@ -266,7 +272,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         responsive: 2,
                         widthGrow: 3,
                         minWidth: 100,
-                        formatter: 'html'
+                        formatter: 'html',
                     },
                     {
                         title: i18n.t('show-requests.table-header-subject'),
@@ -274,7 +280,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         responsive: 3,
                         widthGrow: 3,
                         minWidth: 100,
-                        formatter: 'html'
+                        formatter: 'html',
                     },
                     {
                         title: 'Status',
@@ -282,7 +288,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         responsive: 2,
                         widthGrow: 1,
                         minWidth: 120,
-                        formatter: 'html'
+                        formatter: 'html',
                     },
                     {
                         title: i18n.t('show-requests.table-header-files'),
@@ -290,10 +296,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         // visible: false,
                         responsive: 8,
                         minWidth: 800,
-                        formatter: function(cell) {
+                        formatter: function (cell) {
                             let value = cell.getValue();
                             return value;
-                        }
+                        },
                     },
                     {
                         title: i18n.t('show-requests.table-header-recipients'),
@@ -301,30 +307,30 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         // visible: false,
                         responsive: 8,
                         minWidth: 800,
-                        formatter: function(cell) {
+                        formatter: function (cell) {
                             let value = cell.getValue();
                             return value;
-                        }
+                        },
                     },
                     {
                         title: i18n.t('show-requests.date-submitted'),
                         field: 'dateSubmitted',
                         responsive: 8,
                         minWidth: 150,
-                        formatter: function(cell) {
+                        formatter: function (cell) {
                             let value = cell.getValue();
                             return value;
-                        }
+                        },
                     },
                     {
                         title: i18n.t('show-requests.table-header-id'),
                         field: 'requestId',
                         responsive: 8,
                         minWidth: 150,
-                        formatter: function(cell) {
+                        formatter: function (cell) {
                             let value = cell.getValue();
                             return value;
-                        }
+                        },
                     },
                     {
                         title: '',
@@ -341,63 +347,63 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     },
                 ],
                 langs: {
-                    'en': {
-                        'columns': {
-                            'dateCreated': 'Date created',
-                            'subject': 'Subject',
-                            'gz': 'Reference number',
-                            'files': 'Files',
-                            'recipients': 'Recipients',
-                            'dateSubmitted': 'Date submitted',
-                            'requestId': 'Request-ID'
+                    en: {
+                        columns: {
+                            dateCreated: 'Date created',
+                            subject: 'Subject',
+                            gz: 'Reference number',
+                            files: 'Files',
+                            recipients: 'Recipients',
+                            dateSubmitted: 'Date submitted',
+                            requestId: 'Request-ID',
                         },
-                        'pagination': {
-                            'page_size': 'Page size',
-                            'page_size_title': 'Page size',
-                            'first': '<span class="mobile-hidden">First</span>',
-                            'first_title': 'First Page',
-                            'last': '<span class="mobile-hidden">Last</span>',
-                            'last_title': 'Last Page',
-                            'prev': '<span class="mobile-hidden">Prev</span>',
-                            'prev_title': 'Prev Page',
-                            'next': '<span class="mobile-hidden">Next</span>',
-                            'next_title': 'Next Page'
-                        }
+                        pagination: {
+                            page_size: 'Page size',
+                            page_size_title: 'Page size',
+                            first: '<span class="mobile-hidden">First</span>',
+                            first_title: 'First Page',
+                            last: '<span class="mobile-hidden">Last</span>',
+                            last_title: 'Last Page',
+                            prev: '<span class="mobile-hidden">Prev</span>',
+                            prev_title: 'Prev Page',
+                            next: '<span class="mobile-hidden">Next</span>',
+                            next_title: 'Next Page',
+                        },
                     },
-                    'de': {
-                        'columns': {
-                            'dateCreated': 'Erstelldatum',
-                            'subject': 'Betreff',
-                            'gz': 'Geschäftszahl',
-                            'files': 'Angehängte Dateien',
-                            'recipients': 'Empfänger',
-                            'dateSubmitted': 'Freigabedatum',
-                            'requestId': 'Auftrags-ID'
+                    de: {
+                        columns: {
+                            dateCreated: 'Erstelldatum',
+                            subject: 'Betreff',
+                            gz: 'Geschäftszahl',
+                            files: 'Angehängte Dateien',
+                            recipients: 'Empfänger',
+                            dateSubmitted: 'Freigabedatum',
+                            requestId: 'Auftrags-ID',
                         },
-                        'pagination': {
-                            'page_size': 'Einträge pro Seite',
-                            'page_size_title': 'Einträge pro Seite',
-                            'first': '<span class="mobile-hidden">Erste</span>',
-                            'first_title': 'Erste Seite',
-                            'last': '<span class="mobile-hidden">Letzte</span>',
-                            'last_title': 'Letzte Seite',
-                            'prev': '<span class="mobile-hidden">Vorherige</span>',
-                            'prev_title': 'Vorherige Seite',
-                            'next': '<span class="mobile-hidden">Nächste</span>',
-                            'next_title': 'Nächste Seite'
-                        }
-                    }
+                        pagination: {
+                            page_size: 'Einträge pro Seite',
+                            page_size_title: 'Einträge pro Seite',
+                            first: '<span class="mobile-hidden">Erste</span>',
+                            first_title: 'Erste Seite',
+                            last: '<span class="mobile-hidden">Letzte</span>',
+                            last_title: 'Letzte Seite',
+                            prev: '<span class="mobile-hidden">Vorherige</span>',
+                            prev_title: 'Vorherige Seite',
+                            next: '<span class="mobile-hidden">Nächste</span>',
+                            next_title: 'Nächste Seite',
+                        },
+                    },
                 },
                 initialSort: [
-                    { column: 'dateCreated', dir: 'desc' },
+                    {column: 'dateCreated', dir: 'desc'},
                     // { column: 'status', dir: 'desc' },
                 ],
             });
 
-            this.dispatchRequestsTable.on("rowClick", this.rowClickFunction.bind(this));
+            this.dispatchRequestsTable.on('rowClick', this.rowClickFunction.bind(this));
             //this.dispatchRequestsTable.on("rowAdded", this.rowAddedFunction.bind(this));
-            this.dispatchRequestsTable.on("dataLoaded", this.dataLoadedFunction.bind(this));
-            this.dispatchRequestsTable.on("pageLoaded", this.pageLoadedFunction.bind(this));
+            this.dispatchRequestsTable.on('dataLoaded', this.dataLoadedFunction.bind(this));
+            this.dispatchRequestsTable.on('pageLoaded', this.pageLoadedFunction.bind(this));
 
             document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
         });
@@ -426,13 +432,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let filter = this._('#searchbar');
         let search = this._('#search-select');
 
-        if (!filter || !search || !this.dispatchRequestsTable)
-            return;
+        if (!filter || !search || !this.dispatchRequestsTable) return;
 
         filter.value = '';
         search.value = 'all';
         this.dispatchRequestsTable.clearFilter();
-        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
     }
 
     /**
@@ -444,12 +449,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let search = this._('#search-select');
         let operator = this._('#search-operator');
 
-        if (!filter || !operator || !search || !this.dispatchRequestsTable)
-            return;
+        if (!filter || !operator || !search || !this.dispatchRequestsTable) return;
 
-        if (filter.value === "") {
+        if (filter.value === '') {
             this.dispatchRequestsTable.clearFilter();
-            this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+            this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
             return;
         }
         filter = filter.value;
@@ -468,7 +472,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         });
 
         this.dispatchRequestsTable.setFilter([filterArray]);
-        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount("active");
+        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
     }
 
     /**
@@ -541,13 +545,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             return;
         }
 
-        if (e.type !== 'keyup' && e.keyCode !== 13
-            && e.originalTarget && e.originalTarget.parentElement
-            && (e.originalTarget.parentElement.classList.contains('extended-menu')
-            || e.originalTarget.parentElement.id === 'search-operator')
-            || (e.originalTarget && e.originalTarget.parentElement && e.originalTarget.parentElement.id === 'search-select')
-            || e.originalTarget && e.originalTarget.id === 'searchbar-menu'
-            || e.originalTarget && e.originalTarget.id === 'searchbar') {
+        if (
+            (e.type !== 'keyup' &&
+                e.keyCode !== 13 &&
+                e.originalTarget &&
+                e.originalTarget.parentElement &&
+                (e.originalTarget.parentElement.classList.contains('extended-menu') ||
+                    e.originalTarget.parentElement.id === 'search-operator')) ||
+            (e.originalTarget &&
+                e.originalTarget.parentElement &&
+                e.originalTarget.parentElement.id === 'search-select') ||
+            (e.originalTarget && e.originalTarget.id === 'searchbar-menu') ||
+            (e.originalTarget && e.originalTarget.id === 'searchbar')
+        ) {
             return;
         }
 
@@ -565,17 +575,27 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      */
     getTableHeaderOptions() {
         const i18n = this._i18n;
-        if (!this.dispatchRequestsTable)
-            return [];
+        if (!this.dispatchRequestsTable) return [];
 
         let options = [];
-        options[0] = html`<option value='all'>${i18n.t('show-requests.all-columns')}</option>`;
+        options[0] = html`
+            <option value="all">${i18n.t('show-requests.all-columns')}</option>
+        `;
 
         this.dispatchRequestsTable.getColumns().forEach((col, counter) => {
             let name = col.getDefinition().title;
             let field = col.getDefinition().field;
-            if (field && !field.includes('no_display') && field !== 'details' && field !== 'requestId' && field !== 'type' && field !== 'controls') {
-                options[counter + 1] = html`<option value='${field}'>${name}</option>`;
+            if (
+                field &&
+                !field.includes('no_display') &&
+                field !== 'details' &&
+                field !== 'requestId' &&
+                field !== 'type' &&
+                field !== 'controls'
+            ) {
+                options[counter + 1] = html`
+                    <option value="${field}">${name}</option>
+                `;
             }
         });
 
@@ -611,22 +631,24 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             /*${commonStyles.getRadioAndCheckboxCss()}*/
             ${dispatchStyles.getDispatchRequestTableStyles()}
             ${dispatchStyles.getDispatchRequestStyles()}
-            
+
             .tabulator .tabulator-placeholder-contents {
                 margin-bottom: auto;
             }
-            
+
             .control.table {
                 padding-top: 1.5rem;
                 font-size: 1.5rem;
                 text-align: center;
             }
-            
+
             .muted {
                 color: var(--dbp-muted);
             }
 
-            #search-operator, #search-select, .dropdown-menu {
+            #search-operator,
+            #search-select,
+            .dropdown-menu {
                 background-color: var(--dbp-secondary-surface);
                 color: var(--dbp-on-secondary-surface);
                 border-color: var(--dbp-secondary-surface-border-color);
@@ -640,7 +662,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 box-sizing: content-box;
             }
 
-            #search-select, #search-operator {
+            #search-select,
+            #search-operator {
                 margin-bottom: 10px;
                 box-sizing: border-box;
                 text-align: left;
@@ -675,20 +698,20 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 justify-content: center;
                 min-width: 300px;
             }
-            
+
             .table-wrapper {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
             }
-            
+
             #extendable-searchbar {
                 display: flex;
                 flex-grow: 1;
                 position: relative;
                 width: 320px;
             }
-            
+
             #searchbar {
                 width: 100%;
                 box-sizing: border-box;
@@ -699,7 +722,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 background-color: var(--dbp-background);
                 color: var(--dbp-content);
             }
-            
+
             #search-button {
                 margin-left: -40px;
                 font-size: 1rem;
@@ -720,58 +743,58 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 margin-top: 1.3em;
                 margin-bottom: 1.3em;
             }
-            
+
             .border {
                 border-top: var(--dbp-override-border);
             }
-            
+
             .requests {
                 margin-top: 1em;
             }
-            
+
             .request-item:first-child {
                 border-top: none;
                 padding-top: 0;
                 margin-top: 0;
             }
-            
+
             .sender-data {
                 /*margin: 0.5em 0 0.5em 16px;*/
                 margin: 0 0 0.5em 1px;
                 line-height: 1.5;
             }
-            
+
             #search-button dbp-icon {
                 top: -4px;
             }
-            
+
             #open-settings-btn dbp-icon,
             .card .button.is-icon dbp-icon,
             .header-btn .button.is-icon dbp-icon {
                 font-size: 1.3em;
             }
-            
+
             @media only screen and (orientation: portrait) and (max-width: 768px) {
-              
                 .edit-selection-buttons {
                     display: flex;
                     gap: 5px;
                     width: 100%;
                 }
 
-                #expand-all-btn, #collapse-all-btn {
+                #expand-all-btn,
+                #collapse-all-btn {
                     padding: 0;
                 }
-                
+
                 #searchbar {
                     width: 100%;
                     height: 40px;
                 }
-                
+
                 #extendable-searchbar {
-                  width: calc(-30px + 100vw);
+                    width: calc(-30px + 100vw);
                 }
-                
+
                 #search-button {
                     position: absolute;
                     right: 0px;
@@ -784,16 +807,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     top: 0px;
                 }
 
-
                 #open-settings-btn {
                     margin-top: 0;
                 }
-                
+
                 .table-wrapper {
                     flex-direction: column;
                     gap: 1em;
                 }
-                
+
                 .filter-buttons {
                     width: calc(100% - 45px);
                 }
@@ -805,55 +827,61 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         const i18n = this._i18n;
         const tabulatorCss = commonUtils.getAssetURL(
             pkgName,
-            'tabulator-tables/css/tabulator.min.css'
+            'tabulator-tables/css/tabulator.min.css',
         );
 
-        if (this.isLoggedIn() && !this.isLoading() && !this._initialFetchDone && !this.initialRequestsLoading && this.organizationSet) {
+        if (
+            this.isLoggedIn() &&
+            !this.isLoading() &&
+            !this._initialFetchDone &&
+            !this.initialRequestsLoading &&
+            this.organizationSet
+        ) {
             this.getListOfRequests();
         }
 
         return html`
             <link rel="stylesheet" href="${tabulatorCss}"/>
-            
+
             <div class="control ${classMap({hidden: this.isLoggedIn() || !this.isLoading() || !this.loadingTranslations})}">
                 <span class="loading">
                     <dbp-mini-spinner text=${i18n.t('loading-message')}></dbp-mini-spinner>
                 </span>
             </div>
-            
-            <dbp-inline-notification class=" ${classMap({ hidden: this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}" 
+
+            <dbp-inline-notification class=" ${classMap({hidden: this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}"
                             type="warning"
                             body="${i18n.t('error-login-message')}">
             </dbp-inline-notification>
 
             <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}">
-                
+
                 <h2>${this.activity.getName(this.lang)}</h2>
-                
+
                 <p class="subheadline">
                     <slot name="description">
                         ${this.activity.getDescription(this.lang)}
                     </slot>
                 </p>
-                
+
                 <slot name="activity-description">
                     <p>${i18n.t('show-requests.description-text')}
                         <a href="#" class="int-link-internal" title="${i18n.t('show-requests.create-new-request')}"
                            @click="${(e) => {
-                                this.dispatchEvent(
-                                    new CustomEvent('dbp-show-activity', {
-                                        detail: {name: 'create-request'},
-                                    })
-                                );
-                                e.preventDefault();
+                               this.dispatchEvent(
+                                   new CustomEvent('dbp-show-activity', {
+                                       detail: {name: 'create-request'},
+                                   }),
+                               );
+                               e.preventDefault();
                            }}"
                         >
                             <span>${i18n.t('show-requests.create-new-request')}.</span>
                         </a>
                     </p>
                 </slot>
-                
-                 <div class="${classMap({hidden: this.showDetailsView })}">
+
+                 <div class="${classMap({hidden: this.showDetailsView})}">
                     ${i18n.t('show-requests.organization-select-description')}
                     <div class="choose-and-create-btns">
                         <dbp-resource-select
@@ -870,29 +898,29 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         ></dbp-resource-select>
                     </div>
                 </div>
-                
+
                 <div class="no-access-notification">
-                    <dbp-inline-notification class="${classMap({ hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.mayWrite || !this.organizationSet })}"
+                    <dbp-inline-notification class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.mayWrite || !this.organizationSet})}"
                                              type="${this.mayRead || this.mayReadMetadata ? 'warning' : 'danger'}"
                                              body="${this.mayRead || this.mayReadMetadata ? i18n.t('error-no-writes') : i18n.t('error-no-read')}">
                     </dbp-inline-notification>
                 </div>
-                
+
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet || this.loadingTranslations})}">
                     ${i18n.t('show-requests.dispatch-orders')}
                 </h3>
-                    
-                
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations|| this.showDetailsView || !this.organizationSet || (!this.mayRead && !this.mayReadMetadata)})}">
+
+
+                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet || (!this.mayRead && !this.mayReadMetadata)})}">
                     <div class="table-wrapper">
                         <div class="selected-buttons">
-                                <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet })}"
+                                <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet})}"
                                     <div class="search-wrapper ">
                                         <div id="extendable-searchbar">
                                             <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
                                                 this.toggleSearchMenu();
                                             }}'>
-                                            <dbp-icon-button id="search-button" title="Suchen" icon-name="search" 
+                                            <dbp-icon-button id="search-button" title="Suchen" icon-name="search"
                                                 @click='${() => {
                                                     this.filterTable();
                                                 }}'></dbp-icon-button>
@@ -902,7 +930,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         title='${i18n.t('show-requests.search-in-column')}:'>
                                                     ${this.getTableHeaderOptions()}
                                                 </select>
-                                                
+
                                                 <label for='search-operator'>${i18n.t('show-requests.search-operator')}
                                                     :</label>
                                                 <select id='search-operator' class='button dropdown-menu'>
@@ -933,65 +961,86 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             </ul>
                                         </div>
                                     </div>
-                                
-                                    <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView })}" id="open-settings-btn"
+
+                                    <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}" id="open-settings-btn"
                                                      ?disabled="${this.loading}"
-                                                     @click="${() => { console.log('open settings'); }}"
+                                                     @click="${() => {
+                                                         console.log('open settings');
+                                                     }}"
                                                      title="TODO"
                                                      icon-name="iconoir_settings"></dbp-icon-button>
-                                
-                                    
+
+
                                 </div>
-                                <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView })}">
+                                <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}">
                                      <dbp-loading-button id="expand-all-btn"
-                                                         class="${classMap({ hidden: this.expanded })}"
+                                                         class="${classMap({hidden: this.expanded})}"
                                                          ?disabled="${this.loading}"
                                                          value="${i18n.t('show-requests.expand-all')}"
-                                                         @click="${(event) => { this.expandAll(event); }}"
+                                                         @click="${(event) => {
+                                                             this.expandAll(event);
+                                                         }}"
                                                          title="${i18n.t('show-requests.expand-all')}"
                                     >${i18n.t('show-requests.expand-all')}</dbp-loading-button>
-                                
+
                                     <dbp-loading-button id="collapse-all-btn"
-                                                        class="${classMap({ hidden: !this.expanded })}"
+                                                        class="${classMap({hidden: !this.expanded})}"
                                                         ?disabled="${this.loading}"
                                                         value="${i18n.t('show-requests.collapse-all')}"
-                                                        @click="${(event) => { this.collapseAll(event); }}"
+                                                        @click="${(event) => {
+                                                            this.collapseAll(event);
+                                                        }}"
                                                         title="${i18n.t('show-requests.collapse-all')}"
                                 >${i18n.t('show-requests.collapse-all')}</dbp-loading-button>
 
-                                ${ this.mayWrite ? html`
-                                  
-                                        <dbp-loading-button id="delete-all-btn"
-                                                            ?disabled="${this.loading || !this.rowsSelected}"
-                                                            value="${i18n.t('show-requests.delete-button-text')}"
-                                                            @click="${(event) => { this.deleteSelected(event); }}"
-                                                            title="${i18n.t('show-requests.delete-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.delete-button-text')}
-                                        </dbp-loading-button>
-                                        <dbp-loading-button id="submit-all-btn"
-                                                            type="is-primary"
-                                                            ?disabled="${this.loading || !this.rowsSelected}"
-                                                            value="${i18n.t('show-requests.submit-button-text')}"
-                                                            @click="${(event) => { this.submitSelected(event); }}"
-                                                            title="${i18n.t('show-requests.submit-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.submit-button-text')}
-                                        </dbp-loading-button>
-                                ` : `` }
+                                ${
+                                    this.mayWrite
+                                        ? html`
+                                              <dbp-loading-button
+                                                  id="delete-all-btn"
+                                                  ?disabled="${this.loading || !this.rowsSelected}"
+                                                  value="${i18n.t(
+                                                      'show-requests.delete-button-text',
+                                                  )}"
+                                                  @click="${(event) => {
+                                                      this.deleteSelected(event);
+                                                  }}"
+                                                  title="${i18n.t(
+                                                      'show-requests.delete-button-text',
+                                                  )}">
+                                                  ${i18n.t('show-requests.delete-button-text')}
+                                              </dbp-loading-button>
+                                              <dbp-loading-button
+                                                  id="submit-all-btn"
+                                                  type="is-primary"
+                                                  ?disabled="${this.loading || !this.rowsSelected}"
+                                                  value="${i18n.t(
+                                                      'show-requests.submit-button-text',
+                                                  )}"
+                                                  @click="${(event) => {
+                                                      this.submitSelected(event);
+                                                  }}"
+                                                  title="${i18n.t(
+                                                      'show-requests.submit-button-text',
+                                                  )}">
+                                                  ${i18n.t('show-requests.submit-button-text')}
+                                              </dbp-loading-button>
+                                          `
+                                        : ``
+                                }
 
                             </div>
                         </div>
-                        
-                        
+
+
                             <div class="control table ${classMap({hidden: !this.initialRequestsLoading && !this.tableLoading})}">
                                 <span class="loading">
                                     <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
                                 </span>
                             </div>
-                            
-                        
-                            <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading || this.tableLoading })}">
+
+
+                            <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading || this.tableLoading})}">
                                 <div id="dispatch-requests-table" class=""></div>
                                 <div class='tabulator' id='custom-pagination'>
                                     <div class='tabulator-footer'>
@@ -1032,23 +1081,23 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </a>
                         </span>
                     </div>
-                    
+
                     <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
-                        ${(this.currentItem && this.currentItem.dateSubmitted) || !this.mayWrite ? 
-                               i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier }) 
+                        ${(this.currentItem && this.currentItem.dateSubmitted) || !this.mayWrite ?
+                               i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier })
                                : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })
                         }:
                     </h3>
-    
+
                     <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
-    
+
                         ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
                                 <div class="request-buttons">
                                     <div class="edit-buttons">
-                                        <dbp-loading-button id="delete-btn" 
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}" 
-                                                            value="${i18n.t('show-requests.delete-button-text')}" 
-                                                            @click="${(event) => { this.deleteRequest(event, this.currentItem); }}" 
+                                        <dbp-loading-button id="delete-btn"
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                                            value="${i18n.t('show-requests.delete-button-text')}"
+                                                            @click="${(event) => { this.deleteRequest(event, this.currentItem); }}"
                                                             title="${i18n.t('show-requests.delete-button-text')}"
                                         >
                                             ${i18n.t('show-requests.delete-button-text')}
@@ -1056,10 +1105,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
                                     <div class="submit-button">
                                         <dbp-loading-button type="is-primary"
-                                                            id="submit-btn" 
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}" 
-                                                            value="${i18n.t('show-requests.submit-button-text')}" 
-                                                            @click="${(event) => { this.submitRequest(event, this.currentItem); }}" 
+                                                            id="submit-btn"
+                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                                            value="${i18n.t('show-requests.submit-button-text')}"
+                                                            @click="${(event) => { this.submitRequest(event, this.currentItem); }}"
                                                             title="${i18n.t('show-requests.submit-button-text')}"
                                         >
                                             ${i18n.t('show-requests.submit-button-text')}
@@ -1067,7 +1116,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
                                 </div>` : ``
                         }
-                        
+
                         ${ this.currentItem ? html`
                             <div class="request-item details">
                                 <div class="details header">
@@ -1119,11 +1168,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         <div>${this.currentItem.referenceNumber ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.empty-reference-number')}`}</div>
                                     </div>
                                 </div>
-                                
+
                                 ${this.addSubHeader()}
 
                                 ${this.addSenderDetails()}
-                                
+
                                 <div class="details recipients">
                                     <div class="header-btn">
                                         <div class="section-titles">${i18n.t('show-requests.recipients')} <span class="section-title-counts">
@@ -1132,7 +1181,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         ${!this.currentItem.dateSubmitted ? html`
                                             <dbp-loading-button id="add-recipient-btn"
                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                            value="${i18n.t('show-requests.add-recipient-button-text')}" 
+                                                            value="${i18n.t('show-requests.add-recipient-button-text')}"
                                                             @click="${(event) => {
                                                                 this.currentRecipient = {};
                                                                 MicroModal.show(this._('#add-recipient-modal'), {
@@ -1141,7 +1190,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                         this.loading = false;
                                                                     },
                                                                 });
-                                                            }}" 
+                                                            }}"
                                                             title="${i18n.t('show-requests.add-recipient-button-text')}">
                                                 ${i18n.t('show-requests.add-recipient-button-text')}
                                             </dbp-loading-button>` : ``
@@ -1150,9 +1199,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                                     <div class="recipients-data">
                                         ${this.sortRecipients(this.currentItem.recipients).map(recipient => html`
-    
+
                                         <div class="recipient card">
-                                            
+
                                             ${this.addRecipientCardLeftSideContent(recipient)}
 
                                             <div class="right-side">
@@ -1198,7 +1247,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                                     this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode ? this.currentRecipient.postalCode : '';
                                                                                     this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : '';
                                                                                     this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : '';
-                                
+
                                                                                     MicroModal.show(this._('#edit-recipient-modal'), {
                                                                                         disableScroll: true,
                                                                                         onShow: modal => { this.button = button; },
@@ -1229,19 +1278,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                                     </div>
                                 </div>
-                                
+
                                ${this.addDetailedFilesView()}
-    
+
                             </div>
                         ` : ``}
                     ` : ``}
                 </div>
             </div>
-            
+
             ${this.addFilePicker()}
-            
+
             ${this.addEditSenderModal()}
-            
+
             ${this.addAddRecipientModal()}
 
             ${this.addEditRecipientModal()}
@@ -1249,9 +1298,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${this.addShowRecipientModal()}
 
             ${this.addEditSubjectModal()}
-            
+
             ${this.addEditReferenceNumberModal()}
-            
+
             ${this.addFileViewerModal()}
             `;
     }

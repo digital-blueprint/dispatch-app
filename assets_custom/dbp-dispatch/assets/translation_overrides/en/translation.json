@@ -1,34 +1,34 @@
 {
-  "dbp-translation": {
-    "organization-select-description": "Please choose your organization:"
-  },
-  "dbp-create-request": {
-    "show-requests": {
-      "organization-select-description": "Please choose your organization:",
-      "edit-sender-fn-dialog-label": "Organization number",
-      "edit-sender-gn-dialog-label": "Organization name",
-      "edit-sender-organization-title": "Please select your organization",
-      "edit-sender-org-dialog-label": "Organization"
+    "dbp-translation": {
+        "organization-select-description": "Please choose your organization:"
     },
-    "create-request": {
-      "error-no-writes": "You only have read rights for shipping orders in this organization, and therefore cannot create new orders.",
-      "create-not-allowed-text": "You only have read rights for dispatch orders in the selected organization and therefore cannot change the sender.",
-      "sender-full-name": "Technische Universität Graz",
-      "default-subject": "Message from TU Graz",
-      "default-reference-number": "-"
+    "dbp-create-request": {
+        "show-requests": {
+            "organization-select-description": "Please choose your organization:",
+            "edit-sender-fn-dialog-label": "Organization number",
+            "edit-sender-gn-dialog-label": "Organization name",
+            "edit-sender-organization-title": "Please select your organization",
+            "edit-sender-org-dialog-label": "Organization"
+        },
+        "create-request": {
+            "error-no-writes": "You only have read rights for shipping orders in this organization, and therefore cannot create new orders.",
+            "create-not-allowed-text": "You only have read rights for dispatch orders in the selected organization and therefore cannot change the sender.",
+            "sender-full-name": "Technische Universität Graz",
+            "default-subject": "Message from TU Graz",
+            "default-reference-number": "-"
+        },
+        "error-no-read": "You are currently not assigned to an organization in which you have read or write permissions for dispatch requests.",
+        "error-no-writes": "You have read-only rights for shipping orders in this organization, and therefore cannot edit, submit, or delete dispatch requests."
     },
-    "error-no-read": "You are currently not assigned to an organization in which you have read or write permissions for dispatch requests.",
-    "error-no-writes": "You have read-only rights for shipping orders in this organization, and therefore cannot edit, submit, or delete dispatch requests."
-  },
-  "dbp-show-requests": {
-    "show-requests": {
-      "organization-select-description": "Please choose your organization:",
-      "edit-sender-fn-dialog-label": "Organization number",
-      "edit-sender-gn-dialog-label": "Organization name",
-      "edit-sender-organization-title": "Please select your organization",
-      "edit-sender-org-dialog-label": "Organization"
-    },
-    "error-no-read": "You are currently not assigned to an organization in which you have read or write permissions for dispatch requests.",
-    "error-no-writes": "You have read-only rights for shipping orders in this organization, and therefore cannot edit, submit, or delete dispatch requests."
-  }
+    "dbp-show-requests": {
+        "show-requests": {
+            "organization-select-description": "Please choose your organization:",
+            "edit-sender-fn-dialog-label": "Organization number",
+            "edit-sender-gn-dialog-label": "Organization name",
+            "edit-sender-organization-title": "Please select your organization",
+            "edit-sender-org-dialog-label": "Organization"
+        },
+        "error-no-read": "You are currently not assigned to an organization in which you have read or write permissions for dispatch requests.",
+        "error-no-writes": "You have read-only rights for shipping orders in this organization, and therefore cannot edit, submit, or delete dispatch requests."
+    }
 }
