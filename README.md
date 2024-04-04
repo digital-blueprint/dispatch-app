@@ -11,8 +11,8 @@ This is an application for managing postal/electronic deliveries which get forwa
 
 ## Prerequisites
 
-- You need the [API server](https://gitlab.tugraz.at/dbp/relay/dbp-relay-server-template) running
-- You need the [DBP Dispatch Bundle](https://gitlab.tugraz.at/dbp/dual-delivery/relay-dispatch-bundle)
+- You need the [API server](https://github.com/digital-blueprint/relay-server-template) running
+- You need the [DBP Dispatch Bundle](https://github.com/digital-blueprint/relay-dispatch-bundle)
 
 ## Local development
 
@@ -25,7 +25,7 @@ git submodule update --init
 # install dependencies
 npm install
 
-# constantly build dist/bundle.js and run a local web-server on port 8001 
+# constantly build dist/bundle.js and run a local web-server on port 8001
 npm run watch
 
 # constantly build dist/bundle.js and run a local web-server on port 8001 using a custom assets directory assets_custom/
@@ -40,8 +40,8 @@ Jump to <http://localhost:8001>, and you should get a Single Sign On login page.
 By default, the application is built using the assets in `assets/`. However, custom assets can also be used to build the application. The custom assets can be added to the directory `assets_custom/dbp-dispatch/assets/`. This allows developers to easily develop and build the application for different environments.
 
 To use the Nextcloud functionality you need a running Nextcloud server with the
-[webapppassword](https://gitlab.tugraz.at/dbp/nextcloud/webapppassword) Nextcloud app like this
-[Nextcloud Development Environment](https://gitlab.tugraz.at/dbp/nextcloud/webapppassword/-/tree/master/docker).
+[webapppassword](https://github.com/digital-blueprint/webapppassword) Nextcloud app like this
+[Nextcloud Development Environment](https://github.com/digital-blueprint/webapppassword/tree/main/docker).
 
 ## Use app via Docker
 
@@ -112,15 +112,15 @@ You can add multiple attributes to the `<dbp-greenlight>` tag.
 
 | attribute name | value | Link to description                                                                                                                 |
 |----------------|-------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `provider-root` | Boolean | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes)                          |
-| `lang`         | String | [language-select](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/language-select#attributes)              | 
-| `entry-point-url` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes)                          |
-| `keycloak-config` | Object | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes)                          |
-| `base-path` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes)                          |
-| `src` | String | [app-shell](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell#attributes)                          |
-| `html-overrides` | String | [common](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/common#overriding-slots-in-nested-web-components) |
-| `themes` | Array | [theme-switcher](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/theme-switcher#themes-attribute)          |
-| `darkModeThemeOverride` | String | [theme-switcher](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/theme-switcher#themes-attribute)          |
+| `provider-root` | Boolean | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `lang`         | String | [language-select](https://github.com/digital-blueprint/toolkit/tree/main/packages/language-select#attributes)              |
+| `entry-point-url` | String | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `keycloak-config` | Object | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `base-path` | String | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `src` | String | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `html-overrides` | String | [common](https://github.com/digital-blueprint/toolkit/tree/main/packages/common#overriding-slots-in-nested-web-components) |
+| `themes` | Array | [theme-switcher](https://github.com/digital-blueprint/toolkit/tree/main/packages/theme-switcher#themes-attribute)          |
+| `darkModeThemeOverride` | String | [theme-switcher](https://github.com/digital-blueprint/toolkit/tree/main/packages/theme-switcher#themes-attribute)          |
 
 #### Mandatory attributes
 
@@ -129,20 +129,20 @@ you need to manually add these attributes so that the topic will work properly:
 
 ```html
 <dbp-dispatch
-        auth
-        requested-login-status
-        analytics-event
-        initial-file-handling-state
-        clipboard-files
+  auth
+  requested-login-status
+  analytics-event
+  initial-file-handling-state
+  clipboard-files
 >
 </dbp-dispatch>
 ```
 
 ### Design
 
-For frontend design customizations, such as logo, colors, font, favicon, and more, take a look at the [theming documentation](https://dbp-demo.tugraz.at/dev-guide/frontend/theming/).
+For frontend design customizations, such as logo, colors, font, favicon, and more, take a look at the [theming documentation](https://handbook.digital-blueprint.org/frameworks/frontend/theming/).
 
 ## "dbp-dispatch" slots
 
-These are common slots for the app-shell. You can find the documentation of these slots in the [app-shell documentation](https://gitlab.tugraz.at/dbp/web-components/toolkit/-/tree/main/packages/app-shell).
+These are common slots for the app-shell. You can find the documentation of these slots in the [app-shell documentation](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell).
 For the app specific slots take a look at the [dispatch activities](https://github.com/digital-blueprint/dispatch-app/tree/main/src).
