@@ -18,6 +18,10 @@
         {
           "matchPackageNames": ["rollup-plugin-serve"],
           "allowedVersions": "<3"
+        },
+        {
+          "matchPackageNames": ["eslint"],
+          "allowedVersions": "<9"
         }
     ]
 }
