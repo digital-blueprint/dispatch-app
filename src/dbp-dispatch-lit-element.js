@@ -466,6 +466,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // return await this.httpGetAsync(this.entryPointUrl + identifier, options); ///'base/people/'
         return await this.httpGetAsync(
             this.entryPointUrl +
+                '/base/people/' +
                 identifier +
                 '?includeLocal=streetAddress%2CaddressLocality%2CpostalCode%2CaddressCountry',
             options,
@@ -2215,7 +2216,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentRecipient = {};
         const person = JSON.parse(event.target.dataset.object);
 
-        // TODO: dont commit this lines.
         // this.currentRecipient.personIdentifier = person['@id'];
         this.currentRecipient.personIdentifier = person['identifier'];
 
@@ -2351,7 +2351,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this._('#recipient-selector').getAttribute('data-object') !== ''
         ) {
             const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
-            const personId = person['@id'];
+            const personId = person['identifier'];
+            // const personId = person['@id'];
 
             // let value = this._('#recipient-selector').getAttribute('data-object');
 
