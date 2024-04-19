@@ -3629,6 +3629,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     renderReturnReceiptButtons(statusChange) {
         const i18n = this._i18n;
+        const dateLocal = i18n.language == 'de' ? 'de-AT' : 'en-US';
 
         if (statusChange.statusType === 26 || statusChange.statusType === 30) {
             return html`
@@ -3639,7 +3640,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                     <span class="return-receipt-widget__upload-date">
                         ${(statusChange.fileFormat && statusChange.fileIsUploadedManually)
-                        ? i18n.t('show-requests.return-receipt.uploaded-on') + ' ' + new Date(statusChange.fileDateAdded).toLocaleString("de-AT", {})
+                        ? i18n.t('show-requests.return-receipt.uploaded-on') + ' ' + new Date(statusChange.fileDateAdded).toLocaleString(dateLocal, {})
                         : ''}
                     </span>
 
