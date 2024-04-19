@@ -20,7 +20,7 @@
         "multiple-requests-text": "Pro Dokument einen eigenen Versandauftrag erstellen",
         "request-subject": "Betreff",
         "sender-full-name": "",
-        "add-recipient-country-warning": "Die österreichische Post bietet derzeit keine hybriden Rückscheine für internationale Aussendungen an. Falls für Ihr Zielland die Zusatzleistung Rückschein besteht, wird Ihnen dieser physisch zugestellt. Genauere Informationen über die Versandbedingungen erfahren Sie für das jeweilige Zielland auf der Webseite der <a href='https://www.post.at/p/c/brief-laenderinformationen'>Österreichischen Post</a>.",
+        "add-recipient-country-warning": "Die österreichische Post bietet derzeit keine hybriden Rückscheine für internationale Aussendungen an. Falls für Ihr Zielland die Zusatzleistung Rückschein besteht, wird Ihnen dieser physisch zugestellt. Genauere Informationen über die Versandbedingungen erfahren Sie für das jeweilige Zielland auf der Webseite der <a class='int-link-external' href='https://www.post.at/p/c/brief-laenderinformationen'>Österreichischen Post</a>.",
         "successfully-requested-text": "Der Versandauftrag wurde erfolgreich angelegt. Sie können diesen jetzt weiter bearbeiten, sowie löschen oder freigeben, oder einen weiteren Versandauftrag anlegen.",
         "successfully-requested-text-multiple": "Die Versandaufträge wurden erfolgreich angelegt. Sie können diese jetzt weiter bearbeiten, sowie löschen oder freigeben, oder weitere Versandaufträge anlegen.",
         "successfully-requested-title": "Erfolgreich erstellt!"

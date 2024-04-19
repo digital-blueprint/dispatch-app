@@ -20,7 +20,7 @@
         "multiple-requests-text": "Create a new dispatch orders for each document",
         "request-subject": "Subject",
         "sender-full-name": "",
-        "add-recipient-country-warning": "The Austrian Post currently does not offer hybrid advice of receipt for international mailings. If the advice of receipt is available for your destination country, it will be delivered to you physically. More detailed information about the shipping conditions for the respective destination country is available on the <a href='https://www.post.at/p/c/brief-laenderinformationen'>Austrian Post's website</a>.",
+        "add-recipient-country-warning": "The Austrian Post currently does not offer hybrid advice of receipt for international mailings. If the advice of receipt is available for your destination country, it will be delivered to you physically. More detailed information about the shipping conditions for the respective destination country is available on the <a class='int-link-external' href='https://www.post.at/p/c/brief-laenderinformationen'>Austrian Post's website</a>.",
         "successfully-requested-text": "The dispatch order has been created successfully. You can edit it further now or save it for later.",
         "successfully-requested-text-multiple": "The dispatch orders have been created successfully. You can edit them further now or save them for later.",
         "successfully-requested-title": "Successfully created"
