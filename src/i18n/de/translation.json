@@ -221,19 +221,19 @@
             "widget-label": "Rückschein",
             "pdf-only-text": "Nur PDF-Dateien sind erlaubt",
             "upload-button-text": "Rückschein hochladen",
-            "upload-pdf-text": "Laden Sie Ihre Rückschein hoch",
+            "upload-pdf-text": "Rückschein hochladen",
             "download-button-text": "Rückschein herunterladen",
             "view-button-text": "Rückschein anzeigen",
             "delete-button-text": "Rückschein löschen",
             "uploaded-on": "Hochgeladen am:",
-            "upload-not-allowed": "Sie dürfen zu diesem Status keine Rückschein hochladen.",
-            "delete-before-uploading": "Löschen Sie die aktuelle Rückschein, bevor Sie eine neue hochladen.",
+            "upload-not-allowed": "Aktuell ist kein Hochladen von Rückscheinen möglich.",
+            "delete-before-uploading": "Ein Rückschein wurde bereits hochgeladen. Falls Sie einen neuen Rückschein hochladen möchten, löschen Sie bitte zuerst den aktuellen.",
             "file-not-received": "Keine Datei erhalten",
-            "file-uploaded-successfully-text": "Die RückscRückscheinhein wurde erfolgreich hochgeladen.",
-            "file-upload-error-title": "Fehler beim Hochladen der Datei!",
-            "file-delete-error-text": "Beim Löschen der Datei ist ein Fehler aufgetreten.",
-            "successfully-deleted-file-text": "Die Rückschein wurde erfolgreich gelöscht.",
-            "error-file-donwload": "Kann die Rückschein nicht herunterladen"
+            "file-uploaded-successfully-text": "Der Rückschein wurde erfolgreich hochgeladen.",
+            "file-upload-error-title": "Fehler beim Hochladen der Datei",
+            "file-delete-error-text": "Fehler beim Löschen der Datei",
+            "successfully-deleted-file-text": "Der Rückschein wurde erfolgreich gelöscht.",
+            "error-file-donwload": "Fehler beim Herunterladen der Datei"
         }
     }
 }
