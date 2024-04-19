@@ -1205,73 +1205,76 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             ${this.addRecipientCardLeftSideContent(recipient)}
 
                                             <div class="right-side">
-                                                    <dbp-icon-button id="show-recipient-btn"
-                                                                @click="${(event) => {
-                                                                    let button = event.target;
-                                                                    button.start();
-                                                                    this.currentRecipient = recipient;
-                                                                    try {
-                                                                        this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                            MicroModal.show(this._('#show-recipient-modal'), {
-                                                                                disableScroll: true,
-                                                                                onShow: modal => { this.button = button; },
-                                                                                onClose: (modal) => {
-                                                                                    this.loading = false;
-                                                                                    this.currentRecipient = {};
-                                                                                    button.stop();
-                                                                                },
-                                                                            });
-                                                                        });
-                                                                    } catch {
+                                                <dbp-icon-button id="show-recipient-btn"
+                                                    @click="${(event) => {
+                                                        let button = event.target;
+                                                        button.start();
+                                                        this.currentRecipient = recipient;
+                                                        try {
+                                                            this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                MicroModal.show(this._('#show-recipient-modal'), {
+                                                                    disableScroll: true,
+                                                                    onShow: modal => { this.button = button; },
+                                                                    onClose: (modal) => {
+                                                                        this.loading = false;
+                                                                        this.currentRecipient = {};
                                                                         button.stop();
-                                                                    }
-                                                                }}"
-                                                                title="${i18n.t('show-requests.show-recipient-button-text')}"
-                                                                icon-name="keyword-research"></dbp-icon></dbp-icon-button>
-                                                    ${!this.currentItem.dateSubmitted ? html`
-                                                        <dbp-icon-button id="edit-recipient-btn"
-                                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite || recipient.personIdentifier}"
-                                                                     @click="${(event) => {
-                                                                            let button = event.target;
-                                                                            button.start();
-                                                                            this.currentRecipient = recipient;
-                                                                            try {
-                                                                                this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                                    this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                                    this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
-                                                                                    this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
-                                                                                    this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
+                                                                    },
+                                                                });
+                                                            });
+                                                        } catch {
+                                                            button.stop();
+                                                        } finally {
+                                                            button.stop();
+                                                        }
+                                                    }}"
+                                                    title="${i18n.t('show-requests.show-recipient-button-text')}"
+                                                    icon-name="keyword-research"></dbp-icon></dbp-icon-button>
+                                                ${!this.currentItem.dateSubmitted ? html`
+                                                    <dbp-icon-button id="edit-recipient-btn"
+                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite || recipient.personIdentifier}"
+                                                        @click="${(event) => {
+                                                            let button = event.target;
+                                                            button.start();
+                                                            this.currentRecipient = recipient;
+                                                            try {
+                                                                this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                    this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
+                                                                    this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
+                                                                    this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
+                                                                    this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
 
-                                                                                    this._('#tf-edit-recipient-gn-dialog').value = this.currentRecipient.givenName;
-                                                                                    this._('#tf-edit-recipient-fn-dialog').value = this.currentRecipient.familyName;
-                                                                                    this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode ? this.currentRecipient.postalCode : '';
-                                                                                    this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : '';
-                                                                                    this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : '';
+                                                                    this._('#tf-edit-recipient-gn-dialog').value = this.currentRecipient.givenName;
+                                                                    this._('#tf-edit-recipient-fn-dialog').value = this.currentRecipient.familyName;
+                                                                    this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode ? this.currentRecipient.postalCode : '';
+                                                                    this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : '';
+                                                                    this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : '';
 
-                                                                                    MicroModal.show(this._('#edit-recipient-modal'), {
-                                                                                        disableScroll: true,
-                                                                                        onShow: modal => { this.button = button; },
-                                                                                        onClose: (modal) => {
-                                                                                            this.loading = false;
-                                                                                            this.currentRecipient = {};
-                                                                                        }
-                                                                                    });
-                                                                                });
-                                                                            } catch {
-                                                                                button.stop();
-                                                                            }
-                                                                        }}"
-                                                                     title="${i18n.t('show-requests.edit-recipients-button-text')}"
-                                                                     icon-name="pencil"></dbp-icon-button>
-                                                        <dbp-icon-button id="delete-recipient-btn"
-                                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                                    @click="${(event) => {
-                                                                        this.deleteRecipient(event, recipient);
-                                                                    }}"
-                                                                    title="${i18n.t('show-requests.delete-recipient-button-text')}"
-                                                                    icon-name="trash"></dbp-icon-button>` : `` }
+                                                                    MicroModal.show(this._('#edit-recipient-modal'), {
+                                                                        disableScroll: true,
+                                                                        onShow: modal => { this.button = button; },
+                                                                        onClose: (modal) => {
+                                                                            this.loading = false;
+                                                                            this.currentRecipient = {};
+                                                                        }
+                                                                    });
+                                                                });
+                                                            } catch {
+                                                                button.stop();
+                                                            }
+                                                        }}"
+                                                        title="${i18n.t('show-requests.edit-recipients-button-text')}"
+                                                        icon-name="pencil"></dbp-icon-button>
+                                                    <dbp-icon-button id="delete-recipient-btn"
+                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                                        @click="${(event) => {
+                                                            this.deleteRecipient(event, recipient);
+                                                        }}"
+                                                        title="${i18n.t('show-requests.delete-recipient-button-text')}"
+                                                        icon-name="trash"></dbp-icon-button>
+                                                ` : `` }
                                             </div>
-                                        </div>  `)}
+                                        </div>`)}
                                         <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">
                                             ${i18n.t('show-requests.no-recipients-text')}
                                         </div>
@@ -1302,7 +1305,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${this.addEditReferenceNumberModal()}
 
             ${this.addFileViewerModal()}
-            `;
+        `;
     }
 }
 

@@ -933,13 +933,29 @@ export function getDispatchRequestStyles() {
         }
 
         .recipient-status {
-            margin-bottom: 1em;
+            margin-bottom: 2em;
             display: flex;
             justify-content: space-between;
         }
 
         .recipient-status .status-detail {
             font-weight: bolder;
+        }
+
+        .return-receipt-widget {
+            margin-block: auto;
+            min-width: 140px;
+            background-color: #333;
+            padding: 0 1em;
+        }
+
+        .return-receipt-widget__title {
+            margin: .5em 0 0;
+        }
+
+        .return-receipt-widget__upload-date {
+            display: block;
+            font-size: 14px;
         }
 
         .download-btn {
@@ -949,6 +965,9 @@ export function getDispatchRequestStyles() {
 
         .new-line-content {
             white-space: pre-line;
+            /* white-space: normal; */
+            /* width: 90%; */
+            margin-top: -1em;
         }
 
         .scroll {

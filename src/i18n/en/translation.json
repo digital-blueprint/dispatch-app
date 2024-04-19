@@ -215,6 +215,24 @@
         "table-header-id": "Request-ID",
         "table-header-recipients": "Recipients",
         "table-header-subject": "Subject",
-        "unknown": "Unknown"
+        "unknown": "Unknown",
+        "return-receipt": {
+            "widget-label": "Return receipt",
+            "pdf-only-text": "Only pdf files are allowed",
+            "upload-button-text": "Upload return receipt",
+            "upload-pdf-text": "Upload your return receipt",
+            "download-button-text": "Download return receipt",
+            "view-button-text": "View return receipt",
+            "delete-button-text": "Delete return receipt",
+            "uploaded-on": "Uploaded on:",
+            "upload-not-allowed": "You are not allowed to upload receipt to this status",
+            "delete-before-uploading": "Delete current receipt before uploading a new.",
+            "file-not-received": "No file received",
+            "file-uploaded-successfully-text": "The receipt is successfully uploaded",
+            "file-upload-error-title": "File upload error!",
+            "file-delete-error-text": "An error occurred while deleting the file.",
+            "successfully-deleted-file-text": "The receipt was successfully deleted.",
+            "error-file-donwload": "Can not download the receipt file"
+        }
     }
 }

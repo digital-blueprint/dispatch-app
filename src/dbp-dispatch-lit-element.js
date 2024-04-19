@@ -512,7 +512,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: 'Bearer ' + this.auth.token,
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + identifier, options);
+        return await this.httpGetAsync(this.entryPointUrl + '/dispatch/request-status-changes/' + identifier, options);
     }
 
     async sendGetFileRequest(identifier) {
@@ -571,7 +571,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.dispatchRequestsTable.replaceData(tableObject);
         this.dispatchRequestsTable.setLocale(this.lang);
         this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
-        // console.log('totalNumberOfItems: ' + this.totalNumberOfItems);
         this.tableLoading = false;
 
         this.createRequestsLoading = false;
@@ -802,6 +801,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async _onDownloadFileClicked(event, statusRequestId) {
+        const i18n = this._i18n;
         let button = event.target;
         button.start();
 
@@ -810,12 +810,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
-                console.log('resp: ', responseBody);
                 let fileContentUrl = responseBody['fileContentUrl'];
-                let fileName = 'DeliveryNotification'; //responseBody['description']; //TODO
+                let fileName = 'DeliveryNotification';
                 await this.downloadFileClickHandler(fileContentUrl, fileName);
             } else {
-                //TODO
+                send({
+                    summary: 'Error',
+                    body: i18n.t('show-requests.error-file-donwload'),
+                    type: 'success',
+                    timeout: 5,
+                });
             }
         } finally {
             button.stop();
@@ -890,7 +894,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 let responseBody = await resp.json();
                 if (responseBody !== undefined && responseBody.status !== 403) {
                     this.currentItem = responseBody;
-                    // console.log(this.currentItem);
                     this.currentRecipient = {};
                 }
                 this.currentRecipient.personIdentifier = '';
@@ -1119,7 +1122,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
 
             this.currentItem.recipients.forEach((element) => {
-                // console.log(element.identifier);
                 this.fetchDetailedRecipientInformation(element.identifier).then((result) => {
                     //TODO
                 });
@@ -1623,8 +1625,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         try {
             let selectedItems = this.dispatchRequestsTable.getSelectedRows();
-            // console.log('selectedItems: ', selectedItems);
-
             let somethingWentWrong = false;
 
             for (let i = 0; i < selectedItems.length; i++) {
@@ -1725,8 +1725,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         try {
             let selectedItems = this.dispatchRequestsTable.getSelectedRows();
-            // console.log('selectedItems: ', selectedItems);
-
             let somethingWentWrong = false;
 
             for (let i = 0; i < selectedItems.length; i++) {
@@ -1932,13 +1930,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     toggleCollapse(e) {
-        console.log('toggleCollapse');
         const table = this.dispatchRequestsTable;
         // give a chance to draw the table
         // this is for getting more height in tabulator table, when toggle is called
-
-        console.log(e);
-
         // const that = this;
 
         setTimeout(function () {
@@ -1996,8 +1990,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (this.dispatchRequestsTable) {
             let maxSelected = this.dispatchRequestsTable.getRows('visible').length;
             let selected = this.dispatchRequestsTable.getSelectedRows().length;
-            // console.log('currently visible: ', this.dispatchRequestsTable.getRows("visible").length);
-            // console.log('currently selected: ', this.dispatchRequestsTable.getSelectedRows().length);
 
             if (selected === maxSelected) {
                 return true;
@@ -2223,7 +2215,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentRecipient = {};
         const person = JSON.parse(event.target.dataset.object);
 
-        this.currentRecipient.personIdentifier = person['@id'];
+        // TODO: dont commit this lines.
+        // this.currentRecipient.personIdentifier = person['@id'];
+        this.currentRecipient.personIdentifier = person['identifier'];
 
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
         elements.forEach((element) => {
@@ -2249,7 +2243,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             } else if (!mayWrite && this.requestCreated) {
                 if (Object.keys(this.tempItem).length !== 0) {
                     this.currentItem = this.tempItem;
-                    // console.log('case 2 current: ', this.currentItem);
                     this.tempChange = true;
                     this._('#create-resource-select').value = this.tempValue;
 
@@ -2264,7 +2257,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.mayWrite = mayWrite;
                 return;
             } else if (mayWrite && this.requestCreated && !this.tempChange) {
-                // console.log('case3 curr', this.currentItem);
                 let senderFullName = event.target.valueObject.identifier;
 
                 if (senderFullName === this.currentItem.senderFullName) {
@@ -2300,7 +2292,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     // });
 
                     this.currentItem = responseBody;
-                    // console.log(event.target.valueObject);
                     this.currentItem.senderFullName = senderFullName;
                     this.currentItem.senderOrganizationName = senderOrganizationName;
                     this.currentItem.senderAddressCountry = senderAddressCountry;
@@ -2332,7 +2323,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     // });
                 }
             } else {
-                // console.log(event.target.valueObject);
                 this.currentItem.senderFullName = event.target.valueObject.identifier;
                 this.currentItem.senderOrganizationName = event.target.valueObject.name;
                 this.currentItem.senderAddressCountry = event.target.valueObject.country;
@@ -2360,20 +2350,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this._('#recipient-selector').getAttribute('data-object') !== null &&
             this._('#recipient-selector').getAttribute('data-object') !== ''
         ) {
-            // console.log(this._('#recipient-selector').getAttribute('data-object'));
             const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
             const personId = person['@id'];
 
             // let value = this._('#recipient-selector').getAttribute('data-object');
-            // console.log('selector', this._('#recipient-selector'));
-            // console.log('value: ', value);
-            // console.log('persId', personId);
 
             let response = await this.sendGetPersonDetailsRequest(personId);
 
             let responseBody = await response.json();
             if (responseBody !== undefined && response.status === 200) {
-                // console.log(responseBody);
                 this.currentRecipient.familyName = responseBody.familyName;
                 this.currentRecipient.givenName = responseBody.givenName;
                 let birthDate = responseBody.birthDate ? responseBody.birthDate : '';
@@ -2404,7 +2389,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             } else {
                 // TODO error handling
             }
-            // console.log('rec', this.currentRecipient);
             this.requestUpdate();
         }
     }
@@ -2461,7 +2445,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         // Reset country selector.
         const CountrySelectElement = this.shadowRoot.querySelector('#add-recipient-country-select');
-        console.log(CountrySelectElement.selectedIndex);
         const options = CountrySelectElement.options;
 
         for (var i = 0, iLen = options.length; i < iLen; i++) {
@@ -2535,6 +2518,23 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 nextcloud-name="${this.nextcloudName}"
                 nextcloud-file-url="${this.nextcloudFileURL}"
                 lang="${this.lang}"></dbp-file-sink>
+
+            <dbp-file-source
+                id="file-return-receipt"
+                lang="${this.lang}"
+                class="file-source-return-receipt"
+                allowed-mime-types="application/pdf,.pdf"
+                max-selected-items="1"
+                @dbp-file-source-file-selected="${this.onReturnReceiptSelected}"
+                @dbp-file-source-file-upload-finished="${this.onReturnReceiptUploadFinished}"
+                subscribe="nextcloud-auth-url:nextcloud-auth-url,nextcloud-web-dav-url:nextcloud-web-dav-url,nextcloud-name:nextcloud-name,nextcloud-file-url:nextcloud-file-url"
+                enabled-targets="local,nextcloud"
+                text="${i18n.t(
+                    'show-requests.return-receipt.pdf-only-text',
+                )}"
+                button-label="${i18n.t(
+                    'show-requests.return-receipt.upload-pdf-text',
+                )}"></dbp-file-source>
         `;
     }
 
@@ -3584,56 +3584,39 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             this.currentRecipient.statusChanges &&
                             this.currentRecipient.statusChanges.length > 0
                                 ? html`
-                                      <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
-                                      <div class="scroll">
-                                          ${this.currentRecipient.statusChanges.map(
-                                              (statusChange) => html`
-                                                  <div class="recipient-status">
-                                                      <div>
-                                                          <div>
-                                                              ${this.convertToReadableDate(
-                                                                  statusChange.dateCreated,
-                                                              )}
-                                                          </div>
-                                                          <div
-                                                              class="status-detail new-line-content">
-                                                              ${statusChange.description} (StatusType ${statusChange.statusType})
-                                                          </div>
-                                                      </div>
-                                                      <div class="download-btn">
-                                                          ${statusChange.fileFormat
-                                                              ? html`
-                                                                    <dbp-icon-button
-                                                                        class="download-btn"
-                                                                        @click="${(event) => {
-                                                                            this._onDownloadFileClicked(
-                                                                                event,
-                                                                                statusChange['@id'],
-                                                                            );
-                                                                        }}"
-                                                                        title="${i18n.t(
-                                                                            'show-requests.download-button-text',
-                                                                        )}"
-                                                                        icon-name="download"></dbp-icon-button>
-                                                                `
-                                                              : ``}
-                                                      </div>
-                                                  </div>
-                                              `,
-                                          )}
-                                      </div>
-                                  `
+                                    <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
+                                    <div class="scroll">
+                                        ${this.currentRecipient.statusChanges.map(
+                                            (statusChange) => html`
+                                                <div class="recipient-status">
+                                                    <div>
+                                                        <div>
+                                                            ${this.convertToReadableDate(
+                                                                statusChange.dateCreated,
+                                                            )}
+                                                        </div>
+                                                        <div class="status-detail new-line-content">
+                                                            ${statusChange.description} (StatusType ${statusChange.statusType})
+                                                        </div>
+                                                    </div>
+
+                                                    ${this.renderReturnReceiptButtons(statusChange)}
+                                                </div>
+                                            `,
+                                        )}
+                                    </div>
+                                `
                                 : ``}
                             ${this.currentRecipient &&
-                            this.currentRecipient.addressCountry &&
-                            this.currentRecipient.addressCountry.length > 0 &&
-                            this.currentRecipient.addressCountry !== 'AT'
-                                ? unsafeHTML(
-                                      '<div class="notification-container"><label>Info: </label>' +
-                                          i18n.t('create-request.add-recipient-country-warning') +
-                                          '</div>',
-                                  )
-                                : ``}
+                                this.currentRecipient.addressCountry &&
+                                this.currentRecipient.addressCountry.length > 0 &&
+                                this.currentRecipient.addressCountry !== 'AT'
+                                    ? unsafeHTML(
+                                        '<div class="notification-container"><label>Info: </label>' +
+                                            i18n.t('create-request.add-recipient-country-warning') +
+                                        '</div>'
+                                    )
+                                    : ``}
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn"></div>
@@ -3642,6 +3625,263 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 </div>
             </div>
         `;
+    }
+
+    renderReturnReceiptButtons(statusChange) {
+        const i18n = this._i18n;
+
+        if (statusChange.statusType === 26 || statusChange.statusType === 30) {
+            return html`
+                <div class="return-receipt-widget">
+                    <h4 class="return-receipt-widget__title">
+                        ${i18n.t('show-requests.return-receipt.widget-label')}
+                    </h4>
+
+                    <span class="return-receipt-widget__upload-date">
+                        ${(statusChange.fileFormat && statusChange.fileIsUploadedManually)
+                        ? i18n.t('show-requests.return-receipt.uploaded-on') + ' ' + new Date(statusChange.fileDateAdded).toLocaleString("de-AT", {})
+                        : ''}
+                    </span>
+
+                    ${!statusChange.fileFormat ? this.renderReturnReceiptUploadWidget(statusChange) : ''}
+                    ${statusChange.fileFormat ? this.renderReturnReceiptDownloadButton(statusChange) : ''}
+                    ${statusChange.fileFormat ? this.renderReturnReceiptViewButton(statusChange) : ''}
+                    ${(statusChange.fileFormat && statusChange.fileIsUploadedManually) ? this.renderReturnReceiptDeleteButton(statusChange) : ''}
+                </div>
+            `;
+        }
+    }
+
+    renderReturnReceiptUploadWidget(statusChange) {
+        const i18n = this._i18n;
+
+        return html`
+            <dbp-icon-button
+                class="upload-btn"
+                @click="${(event) => {
+                    this._('#file-return-receipt').setAttribute('dialog-open', '');
+                }}"
+                title="${i18n.t(
+                    'show-requests.return-receipt.upload-button-text',
+                )}"
+                icon-name="add-file"></dbp-icon-button>
+        `;
+    }
+    renderReturnReceiptDownloadButton(statusChange) {
+        const i18n = this._i18n;
+        return html`
+            <dbp-icon-button
+                class="download-btn"
+                @click="${(event) => {
+                    this._onDownloadFileClicked(
+                        event,
+                        // statusChange['@id'],
+                        statusChange['identifier'],
+                    );
+                }}"
+                title="${i18n.t(
+                    'show-requests.download-button-text',
+                )}"
+                icon-name="download"></dbp-icon-button>
+        `;
+    }
+
+    renderReturnReceiptViewButton(statusChange) {
+        const i18n = this._i18n;
+        return html`
+            <dbp-icon-button
+                class="view-btn"
+                @click="${(event) => {
+                    this.showReturnReceiptFileViewer(event, statusChange);
+                }}"
+                title="${i18n.t(
+                    'show-requests.return-receipt.view-button-text',
+                )}"
+                icon-name="eye"></dbp-icon-button>
+        `;
+    }
+
+    async showReturnReceiptFileViewer(event, statusChange) {
+        let button = event.target;
+        button.start();
+
+        try {
+            let response = await this.sendGetStatusChangeRequest(statusChange['identifier']);
+
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
+                let fileContentUrl = responseBody['fileContentUrl'];
+                let fileName = 'DeliveryNotification';
+                const arr = dispatchHelper.convertDataURIToBinary(fileContentUrl);
+                const binaryFile = new File([arr], fileName, {
+                    type: dispatchHelper.getDataURIContentType(fileContentUrl),
+                });
+
+                this._('#file-viewer').showPDF(binaryFile);
+
+                MicroModal.show(this._('#file-viewer-modal'), {
+                    disableScroll: true,
+                    onClose: (modal) => {
+                        this.loading = false;
+                        button.stop();
+                    },
+                });
+            } else {
+                send({
+                    summary: 'Error',
+                    body: 'No file could not be displayed',
+                    type: 'danger',
+                    timeout: 10,
+                });
+            }
+        } finally {
+            button.stop();
+        }
+    }
+
+    renderReturnReceiptDeleteButton(statusChange) {
+        const i18n = this._i18n;
+        return html`
+            <dbp-icon-button
+                class="delete-btn"
+                @click="${(event) => {
+                    this._onDeleteReceiptClicked(
+                        event,
+                        statusChange,
+                    );
+                }}"
+                title="${i18n.t(
+                    'show-requests.return-receipt.delete-button-text',
+                )}"
+                icon-name="trash"></dbp-icon-button>
+        `;
+    }
+
+    async _onDeleteReceiptClicked(event, statusChange){
+        const i18n = this._i18n;
+        let button = event.target;
+        button.start();
+
+        try {
+            let responseDelete = await this.sendDeleteStatusChangeFileRequest(statusChange.identifier);
+            if (responseDelete.ok === true && responseDelete.status === 204) {
+                send({
+                    summary: i18n.t('show-requests.successfully-deleted-file-title'),
+                    body: i18n.t('show-requests.return-receipt.successfully-deleted-file-text'),
+                    type: 'success',
+                    timeout: 5,
+                });
+
+                // Update statusChange in currentRecipient.
+                this.fetchDetailedRecipientInformation(this.currentRecipient.identifier);
+            }
+        } catch (error) {
+            send({
+                summary: 'Error',
+                body: i18n.t('show-requests.return-receipt.file-delete-error-text') + error,
+                type: 'error',
+                timeout: 5,
+            });
+        } finally {
+            button.stop();
+        }
+    }
+
+    async sendDeleteStatusChangeFileRequest(id) {
+        const options = {
+            method: 'DELETE',
+            headers: {
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+        };
+
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/request-status-changes/' + id + '/file',
+            options,
+        );
+    }
+
+    async onReturnReceiptSelected(event) {
+        const i18n = this._i18n;
+
+        if (this.currentRecipient.statusType !== 26 && this.currentRecipient.statusType !== 30) {
+            send({
+                summary: 'Bad statusType',
+                body: i18n.t('show-requests.return-receipt.upload-not-allowed'),
+                type: 'danger',
+                timeout: 10,
+            });
+            return;
+        }
+
+        const lastStatusChange = this.currentRecipient.lastStatusChange;
+        if (lastStatusChange.fileFormat) {
+            send({
+                summary: 'Error',
+                body: i18n.t('show-requests.return-receipt.delete-before-uploading'),
+                type: 'danger',
+                timeout: 10,
+            });
+            return;
+        }
+
+        if (!event.detail.file) {
+            send({
+                summary: 'Error',
+                body: i18n.t('show-requests.return-receipt.file-not-received'),
+                type: 'danger',
+                timeout: 10,
+            });
+            return;
+        }
+
+        const deliveryStatusChangeIdentifier = lastStatusChange.identifier;
+
+        let statusChangeFormData = new FormData();
+        statusChangeFormData.append('dispatchRequestIdentifier', this.currentItem.identifier);
+        statusChangeFormData.append('dispatchRequestRecipientIdentifier', this.currentRecipient.identifier);
+        statusChangeFormData.append('file', event.detail.file);
+        statusChangeFormData.append('statusType', 26);
+        statusChangeFormData.append('description', 'Rückschein uploaded');
+        statusChangeFormData.append('fileUploaderIdentifier', this.auth['user-id']);
+
+        let response  = await this.sendPostDeliveryStatusChangeFile(statusChangeFormData, deliveryStatusChangeIdentifier);
+        let statusChange = await response.json();
+        if (statusChange !== undefined && response.status === 201) {
+            send({
+                summary: 'Success',
+                body: i18n.t('show-requests.return-receipt.file-uploaded-successfully-text'),
+                type: 'success',
+                timeout: 10,
+            });
+            this.fetchDetailedRecipientInformation(this.currentRecipient.identifier);
+        } else {
+            send({
+                summary: i18n.t('show-requests.return-receipt.file-upload-error-title'),
+                body: response.status + ' - ' + response.statusText,
+                type: 'danger',
+                timeout: 10,
+            });
+        }
+    }
+
+    onReturnReceiptUploadFinished(){
+        console.log('onReturnReceiptUploadFinished');
+    }
+
+    async sendPostDeliveryStatusChangeFile(statusChangeFormData, id) {
+        const options = {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + this.auth.token,
+            },
+            body: statusChangeFormData,
+        };
+
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/dispatch/request-status-changes/' + id + '/file',
+            options,
+        );
     }
 
     addEditSubjectModal() {
