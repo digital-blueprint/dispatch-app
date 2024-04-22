@@ -945,7 +945,7 @@ export function getDispatchRequestStyles() {
         .return-receipt-widget {
             margin-block: auto;
             min-width: 140px;
-            background-color: #333;
+            background-color: var(--dbp-background);
             padding: 0 1em;
         }
 
