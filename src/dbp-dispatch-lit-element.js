@@ -4341,7 +4341,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                               <span class="status-title">
                                   ${i18n.t('show-requests.dispatch-status')}
                               </span>
-                              <span class="status-green">${i18n.t('show-requests.success')}</span>
+                              <span class="status-green">${i18n.t(recipient.addressCountry === 'AT' ? 'show-requests.success' : 'show-requests.success-foreign-countries')}</span>
                           </div>
                       `
                     : ``}
