@@ -36,6 +36,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.loading = false;
         this._initialFetchDone = false;
         this.requestList = [];
+
         this.showListView = true;
         this.showDetailsView = false;
 
@@ -113,6 +114,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             initialRequestsLoading: {type: Boolean, attribute: false},
             tableLoading: {type: Boolean, attribute: false},
             requestList: {type: Array, attribute: false},
+
             showListView: {type: Boolean, attribute: false},
             showDetailsView: {type: Boolean, attribute: false},
             currentItem: {type: Object, attribute: false},
@@ -602,7 +604,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         return options;
     }
 
-    processSelectedOrganization(event) {
+    async processSelectedOrganization(event) {
         this.storeGroupValue(event.detail.value);
         this.groupId = event.target.valueObject.identifier;
 
@@ -613,7 +615,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.mayWrite = event.target.valueObject.accessRights.includes('w');
         }
         this.organizationSet = true;
-        this.getListOfRequests();
+        await this.getListOfRequests();
+        console.log('request list' + this.requestList);
     }
 
     static get styles() {
@@ -891,9 +894,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     resource-path="dispatch/groups"
                                     value="${this.groupValue}"
                                     @change=${(event) => {
-                                        this.processSelectedOrganization(event);
-                                        // console.log("read: ", this.mayRead);
-                                        // console.log("write: ", this.mayWrite);
+                                        if (this.isLoggedIn() && !this.isLoading()) {
+                                            this.processSelectedOrganization(event).then(() => {
+                                                console.log('worked');
+                                            });
+                                        }
                                     }}
                         ></dbp-resource-select>
                     </div>

@@ -29,6 +29,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.tempItem = {};
         this.tempValue = {};
         this.tempChange = false;
+
+        this.requestList2 = [];
     }
 
     static get scopedElements() {
@@ -61,6 +63,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             nextcloudName: {type: String, attribute: 'nextcloud-name'},
             nextcloudFileURL: {type: String, attribute: 'nextcloud-file-url'},
             nextcloudAuthInfo: {type: String, attribute: 'nextcloud-auth-info'},
+
+            requestList2: {type: Array, attribute: false},
         };
     }
 
@@ -2136,6 +2140,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let responseBody = await response.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
+                this.requestList2 = this.parseListOfRequests(responseBody);
                 let tableObject = this.createTableObject(this.requestList);
                 this.dispatchRequestsTable.setData(tableObject);
                 this.dispatchRequestsTable.setLocale(this.lang);
