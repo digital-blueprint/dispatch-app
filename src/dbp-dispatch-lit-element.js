@@ -210,7 +210,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     ? this.subject
                     : i18n.t('create-request.default-subject'),
             senderOrganizationName: this.currentItem.senderOrganizationName,
-            senderFullName: i18n.t('create-request.sender-full-name'), // this.currentItem.senderFullName,
+            senderFullName: this.currentItem.senderFullName ? this.currentItem.senderFullName : '',
             senderAddressCountry: this.currentItem.senderAddressCountry,
             senderPostalCode: this.currentItem.senderPostalCode,
             senderAddressLocality: this.currentItem.senderAddressLocality,
@@ -298,11 +298,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         senderBuildingNumber,
         groupId,
     ) {
-        const i18n = this._i18n;
-
         let body = {
             senderOrganizationName: senderOrganizationName,
-            senderFullName: i18n.t('create-request.sender-full-name'), //senderFullName,
+            senderFullName: senderFullName,
             senderAddressCountry: senderAddressCountry,
             senderPostalCode: senderPostalCode,
             senderAddressLocality: senderAddressLocality,
@@ -2258,7 +2256,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 return;
             } else if (mayWrite && this.requestCreated && !this.tempChange) {
                 let senderFullName = event.target.valueObject.identifier;
-
                 if (senderFullName === this.currentItem.senderFullName) {
                     return;
                 }
@@ -2323,7 +2320,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     // });
                 }
             } else {
-                this.currentItem.senderFullName = event.target.valueObject.identifier;
+                this.currentItem.senderFullName = ''; //event.target.valueObject.identifier;
                 this.currentItem.senderOrganizationName = event.target.valueObject.name;
                 this.currentItem.senderAddressCountry = event.target.valueObject.country;
                 this.currentItem.senderStreetAddress = event.target.valueObject.street;
@@ -2581,7 +2578,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                        required
                                         type="text"
                                         class="input"
                                         name="tf-edit-sender-fn-dialog"
@@ -4199,7 +4195,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
 
         return html`
-            <div class="details sender hidden">
+            <div class="details sender">
                 <div class="header-btn">
                     <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                     ${!this.currentItem.dateSubmitted
@@ -4227,11 +4223,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         : ``}
                 </div>
                 <div class="sender-data">
-                    ${this.currentItem.senderOrganizationName
-                        ? html`
-                              ${this.currentItem.senderOrganizationName}
-                          `
-                        : ``}
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
+                    </div>
                     ${this.currentItem.senderFullName && this.currentItem.senderOrganizationName
                         ? html`
                               ${this.currentItem.senderFullName}
@@ -4243,42 +4237,53 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     `
                                   : ``}
                           `}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-gn-dialog-label')}
+                    </div>
+                    ${this.currentItem.senderOrganizationName
+                        ? html`
+                              ${this.currentItem.senderOrganizationName}
+                          `
+                        : ``}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
+                    </div>
                     ${this.currentItem.senderStreetAddress
                         ? html`
-                              <br />
                               ${this.currentItem.senderStreetAddress}
                           `
                         : ``}
-                    ${this.currentItem.senderBuildingNumber
-                        ? html`
-                              ${this.currentItem.senderBuildingNumber}
-                          `
-                        : ``}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-pc-dialog-label')}
+                    </div>
                     ${this.currentItem.senderPostalCode
                         ? html`
-                              <br />
                               ${this.currentItem.senderPostalCode}
                           `
                         : ``}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-al-dialog-label')}
+                    </div>
                     ${this.currentItem.senderAddressLocality
                         ? html`
                               ${this.currentItem.senderAddressLocality}
                           `
                         : ``}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
+                    </div>
                     ${this.currentItem.senderAddressCountry
                         ? html`
-                              <br />
                               ${dispatchHelper.getCountryMapping()[
                                   this.currentItem.senderAddressCountry
                               ]}
                           `
                         : ``}
-                </div>
-                <div
-                    class="no-sender ${classMap({
-                        hidden: !this.isLoggedIn() || this.currentItem.senderFullName,
-                    })}">
-                    ${i18n.t('show-requests.empty-sender-text')}
                 </div>
             </div>
         `;

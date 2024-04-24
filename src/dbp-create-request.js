@@ -1072,6 +1072,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                       </div>
                                   </div>
 
+                                  ${this.addSenderDetails()}
+
                                   <div
                                       class="details recipients ${classMap({
                                           hidden: !this.hasSender || !this.hasSubject,

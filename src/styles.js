@@ -982,6 +982,12 @@ export function getDispatchRequestStyles() {
             font-weight: 400;
         }
 
+        .inline-label {
+            display: inline-block;
+            font-weight: 600;
+            min-width: 230px;
+        }
+
         @media only screen and (orientation: portrait) and (max-width: 768px) {
             .edit-selection-buttons {
                 display: flex;
