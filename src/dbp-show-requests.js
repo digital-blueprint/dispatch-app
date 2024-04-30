@@ -23,6 +23,7 @@ import {name as pkgName} from './../package.json';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
 import {CustomPersonSelect} from './person-select.js';
+import * as tabulatorStyles from './tabulator-table-styles';
 
 // NOTE: pdf-viewer is loading the pdfjs worker also for getBusinessNumberFromPDF!
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
@@ -633,9 +634,20 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         console.log('request list' + this.requestList[0]);
 
         let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
+        let icon = this.createScopedElement('dbp-icon');
+        icon.setAttribute('name', 'chevron-right');
+        icon.setAttribute('title', i18n.t('show-registrations.open-forms'));
+        let btn = this.createScopedElement('dbp-button');
+        //this.allCourseSubmissions = [{'creation-date': '2024-03-13', 'firstname': 'as', 'lastname': 'asas'}];
 
+
+        btn.appendChild(icon);
+
+        let div = this.createScopedElement('div');
+        div.classList.add('button-wrapper');
+        div.appendChild(btn);
         let data = [
-            {details: 's', dateCreated: this.convertToReadableDate(this.requestList[0]['dateCreated']), referenceNumber: this.requestList[0]['referenceNumber'], subject: this.requestList[0]['name'], status: Recipientstatus},
+            {details: btn, dateCreated: this.convertToReadableDate(this.requestList[0]['dateCreated']), referenceNumber: this.requestList[0]['referenceNumber'], subject: this.requestList[0]['name'], status: Recipientstatus},
         ];
 
         //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
@@ -657,6 +669,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             /*${commonStyles.getRadioAndCheckboxCss()}*/
             ${dispatchStyles.getDispatchRequestTableStyles()}
             ${dispatchStyles.getDispatchRequestStyles()}
+            ${tabulatorStyles.getTabulatorStyles()}
 
             .tabulator .tabulator-placeholder-contents {
                 margin-bottom: auto;
@@ -891,7 +904,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             langs: langs,
             layout: 'fitColumns',
             columns: [
-                {field: 'details', width: 150},
+                {field: 'details', width: 150, formatter: 'html'},
                 {field: 'dateCreated'},
                 {field: 'referenceNumber'},
                 {field: 'subject'},
