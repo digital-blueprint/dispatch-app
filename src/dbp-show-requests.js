@@ -635,7 +635,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
 
         let data = [
-            {details: 's', dateCreated: this.requestList[0]['dateCreated'], referenceNumber: this.requestList[0]['referenceNumber'], subject: this.requestList[0]['name'], status: Recipientstatus},
+            {details: 's', dateCreated: this.convertToReadableDate(this.requestList[0]['dateCreated']), referenceNumber: this.requestList[0]['referenceNumber'], subject: this.requestList[0]['name'], status: Recipientstatus},
         ];
 
         //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
