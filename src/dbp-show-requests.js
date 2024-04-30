@@ -17,6 +17,7 @@ import metadata from './dbp-show-requests.metadata.json';
 import MicroModal from './micromodal.es';
 import {FileSource} from '@dbp-toolkit/file-handling';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
+import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import * as dispatchStyles from './styles';
 import {name as pkgName} from './../package.json';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
@@ -102,6 +103,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-info-tooltip': InfoTooltip,
             'dbp-tooltip': TooltipElement,
             'dbp-pdf-viewer': PdfViewer,
+            'dbp-tabulator-table': TabulatorTable,
         };
     }
 
@@ -183,6 +185,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
 
         this.updateComplete.then(() => {
+            // see: http://tabulator.info/docs/5.1
+            this._a('.tabulator-table').forEach((table) => {
+                table.buildTable();
+
+            });
+
             let paginationElement = this._('.tabulator-paginator');
 
             const i18n = this._i18n;
@@ -604,7 +612,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         return options;
     }
 
+    setTableData(data) {
+        let table = this._('#tabulator-table-orders');
+        table.setData(data);
+    }
+
     async processSelectedOrganization(event) {
+        const i18n = this._i18n;
         this.storeGroupValue(event.detail.value);
         this.groupId = event.target.valueObject.identifier;
 
@@ -616,7 +630,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
         this.organizationSet = true;
         await this.getListOfRequests();
-        console.log('request list' + this.requestList);
+        console.log('request list' + this.requestList[0]);
+
+        let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
+
+        let data = [
+            {details: 's', dateCreated: this.requestList[0]['dateCreated'], referenceNumber: this.requestList[0]['referenceNumber'], subject: this.requestList[0]['name'], status: Recipientstatus},
+        ];
+
+        //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
+        this.setTableData(data);
     }
 
     static get styles() {
@@ -843,6 +866,44 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.getListOfRequests();
         }
 
+        let langs  = {
+            'en': {
+                columns: {
+                    'details': i18n.t('tabulator.details', {lng: 'en'}),
+                    'dateCreated': i18n.t('tabulator.dateCreated', {lng: 'en'}),
+                    'referenceNumber': i18n.t('tabulator.referenceNumber', {lng: 'en'}),
+                    'subject': i18n.t('tabulator.subject', {lng: 'en'}),
+                    'status': i18n.t('tabulator.status', {lng: 'en'}),
+                },
+            },
+            'de': {
+                columns: {
+                    'details': i18n.t('tabulator.details', {lng: 'de'}),
+                    'dateCreated': i18n.t('tabulator.dateCreated', {lng: 'de'}),
+                    'referenceNumber': i18n.t('tabulator.referenceNumber', {lng: 'de'}),
+                    'subject': i18n.t('tabulator.subject', {lng: 'de'}),
+                    'status': i18n.t('tabulator.status', {lng: 'de'}),
+                },
+            },
+        };
+
+        let options = {
+            langs: langs,
+            layout: 'fitColumns',
+            columns: [
+                {field: 'details', width: 150},
+                {field: 'dateCreated'},
+                {field: 'referenceNumber'},
+                {field: 'subject'},
+                {field: 'status'},
+            ],
+            columnDefaults: {
+                vertAlign: 'middle',
+                hozAlign: 'left',
+                resizable: false,
+            },
+        };
+
         return html`
             <link rel="stylesheet" href="${tabulatorCss}"/>
 
@@ -914,6 +975,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet || this.loadingTranslations})}">
                     ${i18n.t('show-requests.dispatch-orders')}
                 </h3>
+
+                <div class="container">
+                    <dbp-tabulator-table
+                            lang="${this.lang}"
+                            class="tabulator-table"
+                            id="tabulator-table-orders"
+                            pagination-size="10"
+                            pagination-enabled="true"
+                            options=${JSON.stringify(options)}></dbp-tabulator-table>
+                </div>
 
 
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet || (!this.mayRead && !this.mayReadMetadata)})}">

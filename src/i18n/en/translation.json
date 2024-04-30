@@ -235,5 +235,12 @@
             "successfully-deleted-file-text": "The receipt was successfully deleted.",
             "error-file-donwload": "Can not download the receipt file"
         }
+    },
+    "tabulator": {
+        "details": "Details",
+        "dateCreated": "Date created",
+        "referenceNumber": "Reference number",
+        "subject": "Subject",
+        "status": "Status"
     }
 }

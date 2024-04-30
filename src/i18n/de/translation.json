@@ -235,5 +235,12 @@
             "successfully-deleted-file-text": "Die Rückschein wurde erfolgreich gelöscht.",
             "error-file-donwload": "Kann die Rückschein nicht herunterladen"
         }
+    },
+    "tabulator": {
+        "details": "Details",
+        "dateCreated": "Erstelldatum",
+        "referenceNumber": "Geschäftszahl",
+        "subject": "Betreff",
+        "status": "Status"
     }
 }
