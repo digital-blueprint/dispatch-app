@@ -3586,8 +3586,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.currentRecipient.statusChanges.map(
                                             (statusChange) => html`
                                                 <div class="recipient-status">
-                                                    <div>
-                                                        <div>
+                                                    <div class="status-container">
+                                                        <div class="status-date">
                                                             ${this.convertToReadableDate(
                                                                 statusChange.dateCreated,
                                                             )}
@@ -3641,10 +3641,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         : ''}
                     </span>
 
-                    ${!statusChange.fileFormat ? this.renderReturnReceiptUploadWidget(statusChange) : ''}
-                    ${statusChange.fileFormat ? this.renderReturnReceiptDownloadButton(statusChange) : ''}
-                    ${statusChange.fileFormat ? this.renderReturnReceiptViewButton(statusChange) : ''}
-                    ${(statusChange.fileFormat && statusChange.fileIsUploadedManually) ? this.renderReturnReceiptDeleteButton(statusChange) : ''}
+                    <span class="return-receipt__buttons">
+                        ${!statusChange.fileFormat ? this.renderReturnReceiptUploadWidget(statusChange) : ''}
+                        ${statusChange.fileFormat ? this.renderReturnReceiptDownloadButton(statusChange) : ''}
+                        ${statusChange.fileFormat ? this.renderReturnReceiptViewButton(statusChange) : ''}
+                        ${(statusChange.fileFormat && statusChange.fileIsUploadedManually) ? this.renderReturnReceiptDeleteButton(statusChange) : ''}
+                    </span>
                 </div>
             `;
         }
