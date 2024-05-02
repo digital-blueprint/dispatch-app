@@ -633,35 +633,38 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         await this.getListOfRequests();
         console.log('request list' + this.requestList[0]);
 
-        let details_div = this.createScopedElement('div');
-        details_div.classList.add('button-wrapper');
 
-        let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
-        let icon = this.createScopedElement('dbp-icon');
-        icon.setAttribute('name', 'chevron-right');
-        icon.setAttribute('title', i18n.t('show-registrations.open-forms'));
-        //this.allCourseSubmissions = [{'creation-date': '2024-03-13', 'firstname': 'as', 'lastname': 'asas'}];
+        let data = [];
+
+        this.requestList.forEach((item) => {
+            let details_div = this.createScopedElement('div');
+            details_div.classList.add('button-wrapper');
+
+            let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
+            let icon = this.createScopedElement('dbp-icon');
+            icon.setAttribute('name', 'chevron-right');
+            icon.setAttribute('title', i18n.t('show-registrations.open-forms'));
+            //this.allCourseSubmissions = [{'creation-date': '2024-03-13', 'firstname': 'as', 'lastname': 'asas'}];
 
 
-        details_div.appendChild(icon);
+            details_div.appendChild(icon);
 
-        let controls_div = this.createScopedElement('div');
-        let btn_edit = this.createScopedElement('dbp-icon-button');
-        btn_edit.setAttribute('icon-name', 'pencil');
-        controls_div.appendChild(btn_edit);
+            let controls_div = this.createScopedElement('div');
+            let btn_edit = this.createScopedElement('dbp-icon-button');
+            btn_edit.setAttribute('icon-name', 'pencil');
+            controls_div.appendChild(btn_edit);
 
-        let btn_delete = this.createScopedElement('dbp-icon-button');
-        btn_delete.setAttribute('icon-name', 'trash');
-        controls_div.appendChild(btn_delete);
+            let btn_delete = this.createScopedElement('dbp-icon-button');
+            btn_delete.setAttribute('icon-name', 'trash');
+            controls_div.appendChild(btn_delete);
 
-        let btn_submit = this.createScopedElement('dbp-icon-button');
-        btn_submit.setAttribute('icon-name', 'send-diagonal');
-        controls_div.appendChild(btn_submit);
-
-        let data = [
-            {checkAll: '', details: details_div, dateCreated: this.convertToReadableDate(this.requestList[0]['dateCreated']), referenceNumber: this.requestList[0]['referenceNumber'], subject: this.requestList[0]['name'], status: Recipientstatus,
-            controls: controls_div},
-        ];
+            let btn_submit = this.createScopedElement('dbp-icon-button');
+            btn_submit.setAttribute('icon-name', 'send-diagonal');
+            controls_div.appendChild(btn_submit);
+            let order = {checkAll: '', details: details_div, dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
+                controls: controls_div};
+            data.push(order);
+        });
 
         //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
         this.setTableData(data);
