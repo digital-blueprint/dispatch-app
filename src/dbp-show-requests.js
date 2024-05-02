@@ -637,7 +637,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let icon = this.createScopedElement('dbp-icon');
         icon.setAttribute('name', 'chevron-right');
         icon.setAttribute('title', i18n.t('show-registrations.open-forms'));
-        let btn = this.createScopedElement('dbp-button');
+        let btn = this.createScopedElement('button');
         //this.allCourseSubmissions = [{'creation-date': '2024-03-13', 'firstname': 'as', 'lastname': 'asas'}];
 
 
@@ -647,7 +647,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         div.classList.add('button-wrapper');
         div.appendChild(btn);
         let data = [
-            {details: btn, dateCreated: this.convertToReadableDate(this.requestList[0]['dateCreated']), referenceNumber: this.requestList[0]['referenceNumber'], subject: this.requestList[0]['name'], status: Recipientstatus},
+            {checkAll: '', details: btn, dateCreated: this.convertToReadableDate(this.requestList[0]['dateCreated']), referenceNumber: this.requestList[0]['referenceNumber'], subject: this.requestList[0]['name'], status: Recipientstatus},
         ];
 
         //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
@@ -882,6 +882,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let langs  = {
             'en': {
                 columns: {
+                    'checkAll': '<input type = checkbox>',
                     'details': i18n.t('tabulator.details', {lng: 'en'}),
                     'dateCreated': i18n.t('tabulator.dateCreated', {lng: 'en'}),
                     'referenceNumber': i18n.t('tabulator.referenceNumber', {lng: 'en'}),
@@ -891,6 +892,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             },
             'de': {
                 columns: {
+                    'checkAll': '<input type = checkbox>',
                     'details': i18n.t('tabulator.details', {lng: 'de'}),
                     'dateCreated': i18n.t('tabulator.dateCreated', {lng: 'de'}),
                     'referenceNumber': i18n.t('tabulator.referenceNumber', {lng: 'de'}),
@@ -904,7 +906,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             langs: langs,
             layout: 'fitColumns',
             columns: [
-                {field: 'details', width: 150, formatter: 'html'},
+                {field: 'checkAll', width: 150, formatter: 'html'},
+                {field: 'details', formatter: 'html'},
                 {field: 'dateCreated'},
                 {field: 'referenceNumber'},
                 {field: 'subject'},
