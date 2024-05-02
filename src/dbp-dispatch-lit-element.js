@@ -2523,10 +2523,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 class="file-source-return-receipt"
                 allowed-mime-types="application/pdf,.pdf"
                 max-selected-items="1"
+                nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
+                nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
+                nextcloud-name="${this.nextcloudName}"
+                nextcloud-file-url="${this.nextcloudFileURL}"
+                nexcloud-auth-info="${this.nextcloudAuthInfo}"
                 @dbp-file-source-file-selected="${this.onReturnReceiptSelected}"
                 @dbp-file-source-file-upload-finished="${this.onReturnReceiptUploadFinished}"
                 subscribe="nextcloud-auth-url:nextcloud-auth-url,nextcloud-web-dav-url:nextcloud-web-dav-url,nextcloud-name:nextcloud-name,nextcloud-file-url:nextcloud-file-url"
-                enabled-targets="local,nextcloud"
+                enabled-targets="${this.fileHandlingEnabledTargets}"
                 text="${i18n.t(
                     'show-requests.return-receipt.pdf-only-text',
                 )}"
