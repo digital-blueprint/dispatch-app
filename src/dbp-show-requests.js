@@ -1011,15 +1011,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     ${i18n.t('show-requests.dispatch-orders')}
                 </h3>
 
-                <div class="container">
-                    <dbp-tabulator-table
-                            lang="${this.lang}"
-                            class="tabulator-table"
-                            id="tabulator-table-orders"
-                            pagination-size="10"
-                            pagination-enabled="true"
-                            options=${JSON.stringify(options)}></dbp-tabulator-table>
-                </div>
+                
 
 
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet || (!this.mayRead && !this.mayReadMetadata)})}">
@@ -1150,6 +1142,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </span>
                             </div>
 
+                            <div class="container">
+                                <dbp-tabulator-table
+                                        lang="${this.lang}"
+                                        class="tabulator-table"
+                                        id="tabulator-table-orders"
+                                        pagination-size="10"
+                                        pagination-enabled="true"
+                                        options=${JSON.stringify(options)}></dbp-tabulator-table>
+                            </div>
 
                             <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading || this.tableLoading})}">
                                 <div id="dispatch-requests-table" class=""></div>
