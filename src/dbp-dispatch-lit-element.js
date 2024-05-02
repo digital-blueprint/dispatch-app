@@ -836,7 +836,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             };
         });
         list.sort(this.compareListItems);
-
+        console.log('RECIPIENT ' + response['hydra:member'][0].recipients[0]);
         return list;
     }
 
