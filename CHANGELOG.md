@@ -1,6 +1,6 @@
 # Changelog
 
-## Next
+## v1.3.1
 
 * Show special text for non-Austrian countries in the recipient-status
 * Enable displaying and editing of sender in the UI
