@@ -253,7 +253,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         headerSort: false,
                         responsive: 0,
                         widthGrow: 1,
-                        //formatter: 'responsiveCollapse',
+                        formatter: 'responsiveCollapse',
                     },
                     {
                         title: i18n.t('show-requests.table-header-date-created'),
@@ -638,23 +638,21 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.requestList.forEach((item) => {
             let details_div = this.createScopedElement('div');
-            details_div.classList.add('button-wrapper');
 
             let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
-            let icon = this.createScopedElement('svg');
-            //icon.setAttribute('name', 'chevron-right');
-            let line_1 = this.createScopedElement('line');
-            line_1.setAttribute('x1', "7");
-            line_1.setAttribute('y1', "12");
-            line_1.setAttribute('x2', "17");
-            line_1.setAttribute('y2', "12");
-            line_1.setAttribute('fill', "none");
-            line_1.setAttribute('stroke-width', "3");
-            line_1.setAttribute('stroke-linecap', "round");
-            icon.append(line_1);
-            icon.setAttribute('title', i18n.t('show-registrations.open-forms'));
+            let icon = this.createScopedElement('dbp-icon-button');
+            icon.setAttribute('icon-name', 'chevron-right');
             //this.allCourseSubmissions = [{'creation-date': '2024-03-13', 'firstname': 'as', 'lastname': 'asas'}];
-
+            icon.addEventListener("click",function(e){
+                if(icon.getAttribute('icon-name') === 'chevron-right')
+                {
+                    icon.setAttribute('icon-name', 'chevron-down');
+                }
+                else if(icon.getAttribute('icon-name') === 'chevron-down')
+                {
+                    icon.setAttribute('icon-name', 'chevron-right');
+                }
+            });
 
             details_div.appendChild(icon);
 
@@ -933,7 +931,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             langs: langs,
             layout: 'fitColumns',
             columns: [
-                {field: 'checkAll', width: 150, formatter: 'html'},
+                {field: 'checkAll', width: 50, formatter: 'html'},
                 {field: 'details', formatter: 'html'},
                 {field: 'dateCreated'},
                 {field: 'referenceNumber'},
