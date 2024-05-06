@@ -32,8 +32,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
         super();
         this._i18n = createInstance();
-        this.lang = this._i18n.language;
         this.activity = new Activity(metadata);
+        this.lang = this._i18n.language;
         this.entryPointUrl = '';
         this.loading = false;
         this._initialFetchDone = false;
@@ -253,7 +253,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         headerSort: false,
                         responsive: 0,
                         widthGrow: 1,
-                        formatter: 'responsiveCollapse',
+                        //formatter: 'responsiveCollapse',
                     },
                     {
                         title: i18n.t('show-requests.table-header-date-created'),
@@ -641,8 +641,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             details_div.classList.add('button-wrapper');
 
             let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
-            let icon = this.createScopedElement('dbp-icon');
-            icon.setAttribute('name', 'chevron-right');
+            let icon = this.createScopedElement('svg');
+            //icon.setAttribute('name', 'chevron-right');
+            let line_1 = this.createScopedElement('line');
+            line_1.setAttribute('x1', "7");
+            line_1.setAttribute('y1', "12");
+            line_1.setAttribute('x2', "17");
+            line_1.setAttribute('y2', "12");
+            line_1.setAttribute('fill', "none");
+            line_1.setAttribute('stroke-width', "3");
+            line_1.setAttribute('stroke-linecap', "round");
+            icon.append(line_1);
             icon.setAttribute('title', i18n.t('show-registrations.open-forms'));
             //this.allCourseSubmissions = [{'creation-date': '2024-03-13', 'firstname': 'as', 'lastname': 'asas'}];
 
