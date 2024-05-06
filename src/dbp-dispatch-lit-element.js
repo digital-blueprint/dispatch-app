@@ -461,7 +461,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: 'Bearer ' + this.auth.token,
             },
         };
-        // return await this.httpGetAsync(this.entryPointUrl + identifier, options); ///'base/people/'
         return await this.httpGetAsync(
             this.entryPointUrl +
                 '/base/people/' +
@@ -2214,7 +2213,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentRecipient = {};
         const person = JSON.parse(event.target.dataset.object);
 
-        // this.currentRecipient.personIdentifier = person['@id'];
         this.currentRecipient.personIdentifier = person['identifier'];
 
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
@@ -2349,9 +2347,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         ) {
             const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
             const personId = person['identifier'];
-            // const personId = person['@id'];
-
-            // let value = this._('#recipient-selector').getAttribute('data-object');
 
             let response = await this.sendGetPersonDetailsRequest(personId);
 
