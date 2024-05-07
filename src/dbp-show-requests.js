@@ -640,21 +640,21 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let details_div = this.createScopedElement('div');
 
             let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
-            let icon = this.createScopedElement('dbp-icon-button');
-            icon.setAttribute('icon-name', 'chevron-right');
+            let details_arrow = this.createScopedElement('dbp-icon-button');
+            details_arrow.setAttribute('icon-name', 'chevron-right');
             //this.allCourseSubmissions = [{'creation-date': '2024-03-13', 'firstname': 'as', 'lastname': 'asas'}];
-            icon.addEventListener("click",function(e){
-                if(icon.getAttribute('icon-name') === 'chevron-right')
+            details_arrow.addEventListener("click",function(){
+                if(details_arrow.getAttribute('icon-name') === 'chevron-right')
                 {
-                    icon.setAttribute('icon-name', 'chevron-down');
+                    details_arrow.setAttribute('icon-name', 'chevron-down');
                 }
-                else if(icon.getAttribute('icon-name') === 'chevron-down')
+                else if(details_arrow.getAttribute('icon-name') === 'chevron-down')
                 {
-                    icon.setAttribute('icon-name', 'chevron-right');
+                    details_arrow.setAttribute('icon-name', 'chevron-right');
                 }
             });
 
-            details_div.appendChild(icon);
+            details_div.appendChild(details_arrow);
 
             let controls_div = this.createScopedElement('div');
             let btn_edit = this.createScopedElement('dbp-icon-button');
@@ -663,12 +663,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
+            btn_delete.addEventListener("click",function(event){
+                this.deleteRequest(event, item);
+            });
+
             controls_div.appendChild(btn_delete);
 
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             controls_div.appendChild(btn_submit);
-            let order = {checkAll: '', details: details_div, dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
+            let order = { details: details_div, dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
                 controls: controls_div};
             data.push(order);
         });
@@ -901,11 +905,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         ) {
             this.getListOfRequests();
         }
-
+        //look at toolkit for better tabulator format
         let langs  = {
             'en': {
                 columns: {
-                    'checkAll': '<input type = checkbox>',
                     'details': i18n.t('tabulator.details', {lng: 'en'}),
                     'dateCreated': i18n.t('tabulator.dateCreated', {lng: 'en'}),
                     'referenceNumber': i18n.t('tabulator.referenceNumber', {lng: 'en'}),
@@ -916,7 +919,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             },
             'de': {
                 columns: {
-                    'checkAll': '<input type = checkbox>',
                     'details': i18n.t('tabulator.details', {lng: 'de'}),
                     'dateCreated': i18n.t('tabulator.dateCreated', {lng: 'de'}),
                     'referenceNumber': i18n.t('tabulator.referenceNumber', {lng: 'de'}),
@@ -931,7 +933,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             langs: langs,
             layout: 'fitColumns',
             columns: [
-                {field: 'checkAll', width: 50, formatter: 'html'},
                 {field: 'details', formatter: 'html'},
                 {field: 'dateCreated'},
                 {field: 'referenceNumber'},
@@ -1156,6 +1157,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         id="tabulator-table-orders"
                                         pagination-size="10"
                                         pagination-enabled="true"
+                                        select-all-enabled
                                         options=${JSON.stringify(options)}></dbp-tabulator-table>
                             </div>
 
