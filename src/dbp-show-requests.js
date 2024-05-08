@@ -635,6 +635,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
 
         let data = [];
+        let table = this._('#tabulator-table-orders');
 
         this.requestList.forEach((item) => {
             let details_div = this.createScopedElement('div');
@@ -664,7 +665,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
             btn_delete.addEventListener("click",function(event){
-                this.deleteRequest(event, item);
+                table.deleteRow(1);
             });
 
             controls_div.appendChild(btn_delete);
