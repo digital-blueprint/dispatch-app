@@ -2253,11 +2253,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.mayWrite = mayWrite;
                 return;
             } else if (mayWrite && this.requestCreated && !this.tempChange) {
-                let senderFullName = event.target.valueObject.identifier;
-                if (senderFullName === this.currentItem.senderFullName) {
-                    return;
-                }
-
+                let senderFullName = this.currentItem.senderFullName ? this.currentItem.senderFullName :'';
                 let senderOrganizationName = event.target.valueObject.name;
                 let senderAddressCountry = event.target.valueObject.country;
                 let senderStreetAddress = event.target.valueObject.street;
@@ -2318,7 +2314,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     // });
                 }
             } else {
-                this.currentItem.senderFullName = ''; //event.target.valueObject.identifier;
+                this.currentItem.senderFullName = this.currentItem.senderFullName ? this.currentItem.senderFullName :'';
                 this.currentItem.senderOrganizationName = event.target.valueObject.name;
                 this.currentItem.senderAddressCountry = event.target.valueObject.country;
                 this.currentItem.senderStreetAddress = event.target.valueObject.street;
