@@ -4386,6 +4386,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let countFailure = 0;
         let countSuccess = 0;
+        let countSuccessForeignCountries = 0;
         let countPending = 0;
 
         for (let i = 0; i < recipients.length; i++) {
@@ -4398,7 +4399,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 status = 'unknown';
             }
             if (status === 'success') {
-                countSuccess++;
+                if (recipient.addressCountry === 'AT') {
+                    countSuccess++;
+                } else {
+                    countSuccessForeignCountries++;
+                }
             } else if (status === 'pending') {
                 countPending++;
             } else {
@@ -4406,46 +4411,31 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         }
 
-        let overallStatusText = '';
+        let overallStatusTextItems = [];
+        let shortStatusTextItems = [];
 
-        overallStatusText +=
-            countSuccess > 0
-                ? i18n.t('show-requests.overall-status-success', {success: countSuccess})
-                : '';
+        if (countSuccess > 0) {
+            overallStatusTextItems.push(i18n.t('show-requests.overall-status-success', {success: countSuccess}));
+            shortStatusTextItems.push(i18n.t('show-requests.short-status-success', {success: countSuccess}));
+        }
 
-        overallStatusText +=
-            countSuccess > 0 && countPending > 0
-                ? ', ' + i18n.t('show-requests.overall-status-pending', {pending: countPending})
-                : countPending > 0
-                  ? i18n.t('show-requests.overall-status-pending', {pending: countPending})
-                  : '';
+        if (countSuccessForeignCountries > 0) {
+            overallStatusTextItems.push(i18n.t('show-requests.overall-status-success-foreign-countries', {success: countSuccessForeignCountries}));
+            shortStatusTextItems.push(i18n.t('show-requests.short-status-success-foreign-countries', {success: countSuccessForeignCountries}));
+        }
 
-        overallStatusText +=
-            (countSuccess > 0 || countPending > 0) && countFailure > 0
-                ? ', ' + i18n.t('show-requests.overall-status-failure', {failure: countFailure})
-                : countFailure > 0
-                  ? i18n.t('show-requests.overall-status-failure', {failure: countFailure})
-                  : '';
+        if (countPending > 0) {
+            overallStatusTextItems.push(i18n.t('show-requests.overall-status-pending', {pending: countPending}));
+            shortStatusTextItems.push(i18n.t('show-requests.short-status-pending', {pending: countPending}));
+        }
 
-        let shortStatusText = '';
-        shortStatusText +=
-            countSuccess > 0
-                ? i18n.t('show-requests.short-status-success', {success: countSuccess})
-                : '';
+        if (countFailure > 0) {
+            overallStatusTextItems.push(i18n.t('show-requests.overall-status-failure', {failure: countFailure}));
+            shortStatusTextItems.push(i18n.t('show-requests.short-status-failure', {failure: countFailure}));
+        }
 
-        shortStatusText +=
-            countSuccess > 0 && countPending > 0
-                ? ', ' + i18n.t('show-requests.short-status-pending', {pending: countPending})
-                : countPending > 0
-                  ? i18n.t('show-requests.short-status-pending', {pending: countPending})
-                  : '';
-
-        shortStatusText +=
-            (countSuccess > 0 || countPending > 0) && countFailure > 0
-                ? ', ' + i18n.t('show-requests.short-status-failure', {failure: countFailure})
-                : countFailure > 0
-                  ? i18n.t('show-requests.short-status-failure', {failure: countFailure})
-                  : '';
+        const overallStatusText = overallStatusTextItems.join(', ');
+        const shortStatusText = shortStatusTextItems.join(', ');
 
         return [overallStatusText, shortStatusText];
     }
