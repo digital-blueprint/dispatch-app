@@ -593,15 +593,17 @@ export function getDispatchRequestStyles() {
         }
 
         #edit-recipient-modal-box {
-            max-height: 640px;
-            min-height: 640px;
+            height: auto;
+            min-height: fit-content;
             max-width: 400px;
+            gap: 20px;
         }
 
         #add-recipient-modal-box {
-            max-height: 645px;
-            min-height: 645px;
+            height: auto;
+            min-height: fit-content;
             max-width: 736px;
+            gap: 20px;
         }
 
         #add-recipient-modal-box h4 {
@@ -629,9 +631,10 @@ export function getDispatchRequestStyles() {
         }
 
         #edit-sender-modal-box {
-            max-height: 550px;
-            min-height: 550px;
+            height: auto;
+            min-height: fit-content;
             max-width: 400px;
+            gap: 20px;
         }
 
         #show-recipient-modal-box {
