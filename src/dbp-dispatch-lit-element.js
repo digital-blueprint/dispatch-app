@@ -3108,7 +3108,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 button.disabled = false;
                                                 MicroModal.close(this._('#add-recipient-modal'));
                                                 this._('#recipient-selector').value = '';
-
+                                                // Re-enable manual recipient fields.
                                                 const elements =
                                                     this.shadowRoot.querySelectorAll(
                                                         '.nf-label.no-selector',
@@ -3116,6 +3116,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 elements.forEach((element) => {
                                                     element.classList.remove('muted');
                                                 });
+                                                // Re-enable person selector.
+                                                this.personSelectorIsDisabled = false;
                                             });
                                         } else {
                                             button.disabled = false;
