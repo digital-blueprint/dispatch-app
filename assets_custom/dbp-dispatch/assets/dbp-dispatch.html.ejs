@@ -30,13 +30,13 @@
 
     <!-- Loading spinner -->
     <script type="module">
-        import {Spinner} from '<%= getPrivateUrl('tug_spinner.js') %>';
+        import {Spinner} from "<%= getPrivateUrl('tug_spinner.js') %>";
         customElements.define('tug-spinner', Spinner);
     </script>
 
     <script type="module">
-        import '<%= getUrl(name + '.js') %>';
-        import {Logo} from '<%= getUrl('logo.js') %>';
+        import "<%= getUrl(name + '.js') %>";
+        import {Logo} from "<%= getUrl('logo.js') %>";
         customElements.define('tug-logo', Logo);
     </script>
 
