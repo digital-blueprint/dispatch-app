@@ -3057,9 +3057,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         let validsa = this.checkValidity(
                                             this._('#tf-add-recipient-sa-dialog'),
                                         );
-                                        // let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
-                                        // let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
-                                        // let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
+                                        let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
+                                        let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
+                                        let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
                                         let validfn = this.checkValidity(
                                             this._('#tf-add-recipient-fn-dialog'),
                                         );
@@ -3073,9 +3073,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             validcountry &&
                                             validpc &&
                                             validal &&
-                                            validsa
+                                            validsa && validbirthday && validbirthmonth && validbirthyear
                                         ) {
-                                            // && validbirthday && validbirthmonth && validbirthyear
                                             this.currentRecipient.givenName = this._(
                                                 '#tf-add-recipient-gn-dialog',
                                             ).value;
@@ -3347,9 +3346,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         let validsa = this.checkValidity(
                                             this._('#tf-edit-recipient-sa-dialog'),
                                         );
-                                        // let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
-                                        // let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
-                                        // let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
+                                        let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
+                                        let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
+                                        let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
                                         let validfn = this.checkValidity(
                                             this._('#tf-edit-recipient-fn-dialog'),
                                         );
@@ -3363,9 +3362,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             validcountry &&
                                             validpc &&
                                             validal &&
-                                            validsa
+                                            validsa && validbirthday && validbirthmonth && validbirthyear
                                         ) {
-                                            // && validbirthday && validbirthmonth && validbirthyear
                                             this.currentRecipient.givenName = this._(
                                                 '#tf-edit-recipient-gn-dialog',
                                             ).value;
