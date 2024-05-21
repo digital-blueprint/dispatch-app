@@ -167,10 +167,6 @@ export default (async () => {
         //preserveEntrySignatures: false,
         // external: ['zlib', 'http', 'fs', 'https', 'url'],
         onwarn: function (warning, warn) {
-            // ignore chai warnings
-            if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.message.includes('/chai/')) {
-                return;
-            }
             // keycloak bundled code uses eval
             if (warning.code === 'EVAL' && warning.id.includes('sha256.js')) {
                 return;
