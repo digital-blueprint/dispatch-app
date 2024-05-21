@@ -8,7 +8,7 @@ Header set Cache-Control "must-revalidate, max-age=60"
 
 # For more security you can enable the CSP header by uncommenting the following line and adding
 # all the required policies, for example your API and Keycloak URLs.
-# Header set Content-Security-Policy "default-src 'self' 'unsafe-eval' 'unsafe-inline' http://127.0.0.1:8000 www.handy-signatur.at; img-src * blob: data:; font-src 'self' data:"
+# Header set Content-Security-Policy "default-src 'self' 'unsafe-inline' http://127.0.0.1:8000 www.handy-signatur.at; img-src * blob: data:; font-src 'self' data:"
 
 # Apache adds a "-gzip" suffix to the etag when it uses gzip but doesn't
 # take that into account when receiving requests.
