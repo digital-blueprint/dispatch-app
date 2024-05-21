@@ -167,10 +167,6 @@ export default (async () => {
         //preserveEntrySignatures: false,
         // external: ['zlib', 'http', 'fs', 'https', 'url'],
         onwarn: function (warning, warn) {
-            // keycloak bundled code uses eval
-            if (warning.code === 'EVAL' && warning.id.includes('sha256.js')) {
-                return;
-            }
             // more eval
             if (warning.code === 'EVAL' && warning.id.includes('pdfAnnotate.js')) {
                 return;
