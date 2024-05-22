@@ -555,6 +555,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         }
                     }
                 } catch (e) {
+                    console.error(`${e.name}: ${e.message}`);
                     send({
                         summary: 'Error!',
                         body: 'Could not fetch dispatch requests.',
@@ -652,7 +653,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let id = this.currentItem.identifier;
             await this.addFileToRequest(id, file);
         } catch (e) {
-            //TODO
+            console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'There was an error.',
@@ -931,7 +932,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } catch (e) {
-            //TODO
+            console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'Could not add recipient.',
@@ -1039,7 +1040,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 hasError = true;
             }
         } catch (e) {
-            //TODO
+            console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'Could not add recipient.',
@@ -1202,8 +1203,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         timeout: 5,
                     });
                 } else {
-                    // TODO error handling
-
                     send({
                         summary: 'Error!',
                         body: 'Could not delete request. Response code: ' + response.status,
@@ -1212,7 +1211,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                 }
             } catch (e) {
-                //TODO
+                console.error(`${e.name}: ${e.message}`);
             } finally {
                 button.stop();
             }
@@ -1368,7 +1367,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                 }
             } catch (e) {
-                //TODO
+                console.error(`${e.name}: ${e.message}`);
             } finally {
                 this._('#submit-btn').stop();
                 button.stop();
