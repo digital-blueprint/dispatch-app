@@ -146,7 +146,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests?perPage=999&groupId=' + groupId,
+            this.entryPointUrl + '/dispatch/requests?perPage=9999&groupId=' + groupId,
             options,
         );
     }
