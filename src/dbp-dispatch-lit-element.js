@@ -1,4 +1,5 @@
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
+import {createInstance} from './i18n';
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {send} from '@dbp-toolkit/common/notification';
 import MicroModal from './micromodal.es';
@@ -18,6 +19,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         super();
         this.isSessionRefreshed = false;
         this.auth = {};
+        this._i18n = createInstance();
+        this.lang = this._i18n.language;
 
         this.currentItem = {};
         this.currentRecipient = {};
@@ -25,6 +28,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.groupId = '';
         this.groupValue = this.loadGroupValue();
         this.personSelectorIsDisabled = false;
+        this.dispatchRequestsTable = null;
 
         this.tempItem = {};
         this.tempValue = {};
@@ -977,8 +981,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateYear;
             }
 
-            let personIdentifier = this.currentRecipient.personIdentifier;
-
+            let personIdentifier = null;
+            // Only set personIdentifier if electronic of postal delivery is possible.
+            // Otherwise, allow to add address to recipient trough the edit recipient modal.
+            if (this.currentRecipient.electronicallyDeliverable || this.currentRecipient.postalDeliverable) {
+                personIdentifier = this.currentRecipient.personIdentifier;
+            }
             let recipientId = this.currentRecipient.identifier;
 
             // First, send a delete requests to remove the old recipient

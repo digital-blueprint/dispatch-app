@@ -1185,7 +1185,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                               id="edit-recipient-btn"
                                                               ?disabled="${this.loading ||
                                                               this.currentItem.dateSubmitted ||
-                                                              recipient.personIdentifier}"
+                                                              (recipient.personIdentifier &&
+                                                                  (recipient.electronicallyDeliverable ||
+                                                                      recipient.postalDeliverable))}"
                                                               @click="${(event) => {
                                                                   let button = event.target;
                                                                   button.start();
