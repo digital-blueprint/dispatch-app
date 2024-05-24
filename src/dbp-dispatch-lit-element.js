@@ -2037,6 +2037,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     setControlsHtml(item) {
+        const i18n = this._i18n;
         let div = this.createScopedElement('div');
         div.classList.add('tabulator-icon-buttons');
 
@@ -2047,6 +2048,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 event.stopPropagation();
             });
             btn.setAttribute('icon-name', 'keyword-research');
+            btn.setAttribute('aria-label', i18n.t('show-requests.show-detailed-dispatch-order'));
+            btn.setAttribute('title', i18n.t('show-requests.show-detailed-dispatch-order'));
             div.appendChild(btn);
         } else {
             let btn_edit = this.createScopedElement('dbp-icon-button');
@@ -2055,6 +2058,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 event.stopPropagation();
             });
             btn_edit.setAttribute('icon-name', 'pencil');
+            btn_edit.setAttribute('aria-label', i18n.t('show-requests.edit-request-button-text'));
+            btn_edit.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
             div.appendChild(btn_edit);
 
             let btn_delete = this.createScopedElement('dbp-icon-button');
@@ -2063,6 +2068,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 event.stopPropagation();
             });
             btn_delete.setAttribute('icon-name', 'trash');
+            btn_delete.setAttribute('aria-label', i18n.t('show-requests.delete-request-button-text'));
+            btn_delete.setAttribute('title', i18n.t('show-requests.delete-request-button-text'));
 
             div.appendChild(btn_delete);
 
@@ -2072,6 +2079,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 event.stopPropagation();
             });
             btn_submit.setAttribute('icon-name', 'send-diagonal');
+            btn_submit.setAttribute('aria-label', i18n.t('show-requests.send-request-button-text'));
+            btn_submit.setAttribute('title', i18n.t('show-requests.send-request-button-text'));
 
             div.appendChild(btn_submit);
         }
@@ -3664,6 +3673,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 @click="${(event) => {
                     this._('#file-return-receipt').setAttribute('dialog-open', '');
                 }}"
+                aria-label="${i18n.t(
+                    'show-requests.return-receipt.upload-button-text',
+                )}"
                 title="${i18n.t(
                     'show-requests.return-receipt.upload-button-text',
                 )}"
@@ -3682,6 +3694,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         statusChange['identifier'],
                     );
                 }}"
+                aria-label="${i18n.t(
+                    'show-requests.download-button-text',
+                )}"
                 title="${i18n.t(
                     'show-requests.download-button-text',
                 )}"
@@ -3697,6 +3712,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 @click="${(event) => {
                     this.showReturnReceiptFileViewer(event, statusChange);
                 }}"
+                aria-label="${i18n.t(
+                    'show-requests.return-receipt.view-button-text',
+                )}"
                 title="${i18n.t(
                     'show-requests.return-receipt.view-button-text',
                 )}"
@@ -3753,6 +3771,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         statusChange,
                     );
                 }}"
+                aria-label="${i18n.t(
+                    'show-requests.return-receipt.delete-button-text',
+                )}"
                 title="${i18n.t(
                     'show-requests.return-receipt.delete-button-text',
                 )}"
@@ -4125,14 +4146,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                       </div>
                                       <div class="right-side">
                                           <dbp-icon-button
-                                              id="show-file-btn"
-                                              @click="${(event) => {
-                                                  this._onShowFileClicked(event, file.identifier);
-                                              }}"
-                                              title="${i18n.t(
-                                                  'show-requests.show-file-button-text',
-                                              )}"
-                                              icon-name="keyword-research"></dbp-icon-button>
+                                                id="show-file-btn"
+                                                @click="${(event) => {
+                                                    this._onShowFileClicked(event, file.identifier);
+                                                }}"
+                                                aria-label="${i18n.t(
+                                                    'show-requests.show-file-button-text',
+                                                )}"
+                                                title="${i18n.t(
+                                                    'show-requests.show-file-button-text',
+                                                )}"
+                                                icon-name="keyword-research"></dbp-icon-button>
                                           ${!this.currentItem.dateSubmitted
                                               ? html`
                                                     <dbp-icon-button
@@ -4143,6 +4167,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                         @click="${(event) => {
                                                             this.deleteFile(event, file);
                                                         }}"
+                                                        aria-label="${i18n.t(
+                                                            'show-requests.delete-file-button-text',
+                                                        )}"
                                                         title="${i18n.t(
                                                             'show-requests.delete-file-button-text',
                                                         )}"
@@ -4205,26 +4232,26 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                     ${!this.currentItem.dateSubmitted
                         ? html`
-                              <dbp-icon-button
-                                  id="edit-sender-btn"
-                                  ?disabled="${this.loading ||
-                                  this.currentItem.dateSubmitted ||
-                                  !this.mayWrite}"
-                                  @click="${(event) => {
-                                      if (this.currentItem.senderAddressCountry !== '') {
-                                          this._('#edit-sender-country-select').value =
-                                              this.currentItem.senderAddressCountry;
-                                      }
-                                      MicroModal.show(this._('#edit-sender-modal'), {
-                                          disableScroll: true,
-                                          onClose: (modal) => {
-                                              this.loading = false;
-                                          },
-                                      });
-                                  }}"
-                                  title="${i18n.t('show-requests.edit-sender-button-text')}"
-                                  icon-name="pencil"></dbp-icon-button>
-                          `
+                            <dbp-icon-button
+                                id="edit-sender-btn"
+                                ?disabled="${this.loading ||
+                                this.currentItem.dateSubmitted ||
+                                !this.mayWrite}"
+                                @click="${(event) => {
+                                    if (this.currentItem.senderAddressCountry !== '') {
+                                        this._('#edit-sender-country-select').value =
+                                            this.currentItem.senderAddressCountry;
+                                    }
+                                    MicroModal.show(this._('#edit-sender-modal'), {
+                                        disableScroll: true,
+                                        onClose: (modal) => {
+                                            this.loading = false;
+                                        },
+                                    });
+                                }}"
+                                aria-label="${i18n.t('show-requests.edit-sender-button-text')}"
+                                title="${i18n.t('show-requests.edit-sender-button-text')}"
+                                icon-name="pencil"></dbp-icon-button>`
                         : ``}
                 </div>
                 <div class="sender-data">
@@ -4236,11 +4263,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                               ${this.currentItem.senderFullName}
                           `
                         : html`
-                              ${this.currentItem.senderFullName
-                                  ? html`
-                                        ${this.currentItem.senderFullName}
-                                    `
-                                  : ``}
+                            ${this.currentItem.senderFullName
+                                ? html`
+                                    ${this.currentItem.senderFullName}
+                                `
+                                : ``}
                           `}
                     <br>
                     <div class="inline-label">

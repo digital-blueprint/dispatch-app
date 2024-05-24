@@ -976,6 +976,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                     },
                                                                 );
                                                             }}"
+                                                            aria-label="${i18n.t(
+                                                                'show-requests.edit-subject-button-text',
+                                                            )}"
                                                             title="${i18n.t(
                                                                 'show-requests.edit-subject-button-text',
                                                             )}"
@@ -1051,6 +1054,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                     },
                                                                 );
                                                             }}"
+                                                            aria-label="${i18n.t(
+                                                                'show-requests.edit-reference-number-button-text',
+                                                            )}"
                                                             title="${i18n.t(
                                                                 'show-requests.edit-reference-number-button-text',
                                                             )}"
@@ -1175,8 +1181,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  } catch {
                                                                      button.stop();
                                                                  }
-                                                             }}"
-                                                             title="${i18n.t('show-requests.show-recipient-button-text')}"
+                                                            }}"
+                                                            title="${i18n.t('show-requests.show-recipient-button-text')}"
+                                                            aria-label="${i18n.t(
+                                                                'show-requests.show-recipient-button-text',
+                                                            )}"
                                                              icon-name="keyword-research"></dbp-icon></dbp-icon-button>
                                             ${
                                                 !this.currentItem.dateSubmitted
@@ -1248,50 +1257,56 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                                     .streetAddress
                                                                               : '';
 
-                                                                          MicroModal.show(
-                                                                              this._(
-                                                                                  '#edit-recipient-modal',
-                                                                              ),
-                                                                              {
-                                                                                  disableScroll: true,
-                                                                                  onShow: (
-                                                                                      modal,
-                                                                                  ) => {
-                                                                                      this.button =
-                                                                                          button;
-                                                                                  },
-                                                                                  onClose: (
-                                                                                      modal,
-                                                                                  ) => {
-                                                                                      this.loading = false;
-                                                                                      this.currentRecipient =
-                                                                                          {};
-                                                                                  },
-                                                                              },
+                                                                        MicroModal.show(
+                                                                            this._(
+                                                                                '#edit-recipient-modal',
+                                                                            ),
+                                                                            {
+                                                                                disableScroll: true,
+                                                                                onShow: (
+                                                                                    modal,
+                                                                                ) => {
+                                                                                    this.button =
+                                                                                        button;
+                                                                                },
+                                                                                onClose: (
+                                                                                    modal,
+                                                                                ) => {
+                                                                                    this.loading = false;
+                                                                                    this.currentRecipient =
+                                                                                        {};
+                                                                                },
+                                                                            },
                                                                           );
                                                                       });
                                                                   } catch {
                                                                       button.stop();
                                                                   }
                                                               }}"
-                                                              title="${i18n.t(
-                                                                  'show-requests.edit-recipients-button-text',
-                                                              )}"
-                                                              icon-name="pencil"></dbp-icon-button>
-                                                          <dbp-icon-button
-                                                              id="delete-recipient-btn"
-                                                              ?disabled="${this.loading ||
-                                                              this.currentItem.dateSubmitted}"
-                                                              @click="${(event) => {
-                                                                  this.deleteRecipient(
-                                                                      event,
-                                                                      recipient,
-                                                                  );
-                                                              }}"
-                                                              title="${i18n.t(
-                                                                  'show-requests.delete-recipient-button-text',
-                                                              )}"
-                                                              icon-name="trash"></dbp-icon-button>
+                                                            title="${i18n.t(
+                                                                'show-requests.edit-recipients-button-text',
+                                                            )}"
+                                                            aria-label="${i18n.t(
+                                                                'show-requests.show-recipient-button-text',
+                                                            )}"
+                                                            icon-name="pencil"></dbp-icon-button>
+                                                        <dbp-icon-button
+                                                            id="delete-recipient-btn"
+                                                            ?disabled="${this.loading ||
+                                                            this.currentItem.dateSubmitted}"
+                                                            @click="${(event) => {
+                                                                this.deleteRecipient(
+                                                                    event,
+                                                                    recipient,
+                                                                );
+                                                            }}"
+                                                            aria-label="${i18n.t(
+                                                                'show-requests.delete-recipient-button-text',
+                                                            )}"
+                                                            title="${i18n.t(
+                                                                'show-requests.delete-recipient-button-text',
+                                                            )}"
+                                                            icon-name="trash"></dbp-icon-button>
                                                       `
                                                     : ``
                                             }
