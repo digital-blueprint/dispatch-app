@@ -1,5 +1,5 @@
-FROM node:18-alpine as node
-RUN apk add --no-cache git
+FROM node:18 as node
+RUN apt-get update && apt-get install -y git
 WORKDIR /app
 COPY . /app
 #COPY ./dist /app/dist

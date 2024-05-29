@@ -126,7 +126,7 @@ const atrustHosts = [
     'https://service.a-trust.at',
 ];
 
-config.CSP = `default-src 'self' 'unsafe-eval' 'unsafe-inline' \
+config.CSP = `default-src 'self' 'unsafe-inline' \
 ${getOrigin(config.matomoUrl)} ${getOrigin(config.keyCloakBaseURL)} ${getOrigin(
     config.entryPointURL
 )} \
@@ -167,14 +167,6 @@ export default (async () => {
         //preserveEntrySignatures: false,
         // external: ['zlib', 'http', 'fs', 'https', 'url'],
         onwarn: function (warning, warn) {
-            // ignore chai warnings
-            if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.message.includes('/chai/')) {
-                return;
-            }
-            // keycloak bundled code uses eval
-            if (warning.code === 'EVAL' && warning.id.includes('sha256.js')) {
-                return;
-            }
             // more eval
             if (warning.code === 'EVAL' && warning.id.includes('pdfAnnotate.js')) {
                 return;

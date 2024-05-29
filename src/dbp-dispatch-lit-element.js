@@ -1,4 +1,5 @@
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
+import {createInstance} from './i18n';
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {send} from '@dbp-toolkit/common/notification';
 import MicroModal from './micromodal.es';
@@ -18,6 +19,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         super();
         this.isSessionRefreshed = false;
         this.auth = {};
+        this._i18n = createInstance();
+        this.lang = this._i18n.language;
 
         this.currentItem = {};
         this.currentRecipient = {};
@@ -25,6 +28,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.groupId = '';
         this.groupValue = this.loadGroupValue();
         this.personSelectorIsDisabled = false;
+        this.dispatchRequestsTable = null;
 
         this.tempItem = {};
         this.tempValue = {};
@@ -146,7 +150,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests?perPage=999&groupId=' + groupId,
+            this.entryPointUrl + '/dispatch/requests?perPage=9999&groupId=' + groupId,
             options,
         );
     }
@@ -210,7 +214,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     ? this.subject
                     : i18n.t('create-request.default-subject'),
             senderOrganizationName: this.currentItem.senderOrganizationName,
-            senderFullName: i18n.t('create-request.sender-full-name'), // this.currentItem.senderFullName,
+            senderFullName: this.currentItem.senderFullName ? this.currentItem.senderFullName : '',
             senderAddressCountry: this.currentItem.senderAddressCountry,
             senderPostalCode: this.currentItem.senderPostalCode,
             senderAddressLocality: this.currentItem.senderAddressLocality,
@@ -298,11 +302,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         senderBuildingNumber,
         groupId,
     ) {
-        const i18n = this._i18n;
-
         let body = {
             senderOrganizationName: senderOrganizationName,
-            senderFullName: i18n.t('create-request.sender-full-name'), //senderFullName,
+            senderFullName: senderFullName,
             senderAddressCountry: senderAddressCountry,
             senderPostalCode: senderPostalCode,
             senderAddressLocality: senderAddressLocality,
@@ -463,9 +465,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: 'Bearer ' + this.auth.token,
             },
         };
-        // return await this.httpGetAsync(this.entryPointUrl + identifier, options); ///'base/people/'
         return await this.httpGetAsync(
             this.entryPointUrl +
+                '/base/people/' +
                 identifier +
                 '?includeLocal=streetAddress%2CaddressLocality%2CpostalCode%2CaddressCountry',
             options,
@@ -557,6 +559,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         }
                     }
                 } catch (e) {
+                    console.error(`${e.name}: ${e.message}`);
                     send({
                         summary: 'Error!',
                         body: 'Could not fetch dispatch requests.',
@@ -654,7 +657,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let id = this.currentItem.identifier;
             await this.addFileToRequest(id, file);
         } catch (e) {
-            //TODO
+            console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'There was an error.',
@@ -936,7 +939,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } catch (e) {
-            //TODO
+            console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'Could not add recipient.',
@@ -981,8 +984,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateYear;
             }
 
-            let personIdentifier = this.currentRecipient.personIdentifier;
-
+            let personIdentifier = null;
+            // Only set personIdentifier if electronic of postal delivery is possible.
+            // Otherwise, allow to add address to recipient trough the edit recipient modal.
+            if (this.currentRecipient.electronicallyDeliverable || this.currentRecipient.postalDeliverable) {
+                personIdentifier = this.currentRecipient.personIdentifier;
+            }
             let recipientId = this.currentRecipient.identifier;
 
             // First, send a delete requests to remove the old recipient
@@ -1044,7 +1051,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 hasError = true;
             }
         } catch (e) {
-            //TODO
+            console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'Could not add recipient.',
@@ -1207,8 +1214,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         timeout: 5,
                     });
                 } else {
-                    // TODO error handling
-
                     send({
                         summary: 'Error!',
                         body: 'Could not delete request. Response code: ' + response.status,
@@ -1217,7 +1222,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                 }
             } catch (e) {
-                //TODO
+                console.error(`${e.name}: ${e.message}`);
             } finally {
                 button.stop();
             }
@@ -1373,7 +1378,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                 }
             } catch (e) {
-                //TODO
+                console.error(`${e.name}: ${e.message}`);
             } finally {
                 this._('#submit-btn').stop();
                 button.stop();
@@ -2035,6 +2040,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     setControlsHtml(item) {
+        const i18n = this._i18n;
         let div = this.createScopedElement('div');
         div.classList.add('tabulator-icon-buttons');
 
@@ -2045,6 +2051,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 event.stopPropagation();
             });
             btn.setAttribute('icon-name', 'keyword-research');
+            btn.setAttribute('aria-label', i18n.t('show-requests.show-detailed-dispatch-order'));
+            btn.setAttribute('title', i18n.t('show-requests.show-detailed-dispatch-order'));
             div.appendChild(btn);
         } else {
             let btn_edit = this.createScopedElement('dbp-icon-button');
@@ -2053,6 +2061,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 event.stopPropagation();
             });
             btn_edit.setAttribute('icon-name', 'pencil');
+            btn_edit.setAttribute('aria-label', i18n.t('show-requests.edit-request-button-text'));
+            btn_edit.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
             div.appendChild(btn_edit);
 
             let btn_delete = this.createScopedElement('dbp-icon-button');
@@ -2061,6 +2071,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 event.stopPropagation();
             });
             btn_delete.setAttribute('icon-name', 'trash');
+            btn_delete.setAttribute('aria-label', i18n.t('show-requests.delete-request-button-text'));
+            btn_delete.setAttribute('title', i18n.t('show-requests.delete-request-button-text'));
 
             div.appendChild(btn_delete);
 
@@ -2070,6 +2082,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 event.stopPropagation();
             });
             btn_submit.setAttribute('icon-name', 'send-diagonal');
+            btn_submit.setAttribute('aria-label', i18n.t('show-requests.send-request-button-text'));
+            btn_submit.setAttribute('title', i18n.t('show-requests.send-request-button-text'));
 
             div.appendChild(btn_submit);
         }
@@ -2218,8 +2232,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentRecipient = {};
         const person = JSON.parse(event.target.dataset.object);
 
-        // TODO: dont commit this lines.
-        // this.currentRecipient.personIdentifier = person['@id'];
         this.currentRecipient.personIdentifier = person['identifier'];
 
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
@@ -2260,12 +2272,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.mayWrite = mayWrite;
                 return;
             } else if (mayWrite && this.requestCreated && !this.tempChange) {
-                let senderFullName = event.target.valueObject.identifier;
-
-                if (senderFullName === this.currentItem.senderFullName) {
-                    return;
-                }
-
+                let senderFullName = this.currentItem.senderFullName ? this.currentItem.senderFullName :'';
                 let senderOrganizationName = event.target.valueObject.name;
                 let senderAddressCountry = event.target.valueObject.country;
                 let senderStreetAddress = event.target.valueObject.street;
@@ -2326,7 +2333,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     // });
                 }
             } else {
-                this.currentItem.senderFullName = event.target.valueObject.identifier;
+                this.currentItem.senderFullName = this.currentItem.senderFullName ? this.currentItem.senderFullName :'';
                 this.currentItem.senderOrganizationName = event.target.valueObject.name;
                 this.currentItem.senderAddressCountry = event.target.valueObject.country;
                 this.currentItem.senderStreetAddress = event.target.valueObject.street;
@@ -2354,9 +2361,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this._('#recipient-selector').getAttribute('data-object') !== ''
         ) {
             const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
-            const personId = person['@id'];
-
-            // let value = this._('#recipient-selector').getAttribute('data-object');
+            const personId = person['identifier'];
 
             let response = await this.sendGetPersonDetailsRequest(personId);
 
@@ -2528,10 +2533,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 class="file-source-return-receipt"
                 allowed-mime-types="application/pdf,.pdf"
                 max-selected-items="1"
+                nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
+                nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
+                nextcloud-name="${this.nextcloudName}"
+                nextcloud-file-url="${this.nextcloudFileURL}"
+                nexcloud-auth-info="${this.nextcloudAuthInfo}"
                 @dbp-file-source-file-selected="${this.onReturnReceiptSelected}"
                 @dbp-file-source-file-upload-finished="${this.onReturnReceiptUploadFinished}"
                 subscribe="nextcloud-auth-url:nextcloud-auth-url,nextcloud-web-dav-url:nextcloud-web-dav-url,nextcloud-name:nextcloud-name,nextcloud-file-url:nextcloud-file-url"
-                enabled-targets="local,nextcloud"
+                enabled-targets="${this.fileHandlingEnabledTargets}"
                 text="${i18n.t(
                     'show-requests.return-receipt.pdf-only-text',
                 )}"
@@ -2583,7 +2593,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 </div>
                                 <div>
                                     <input
-                                        required
                                         type="text"
                                         class="input"
                                         name="tf-edit-sender-fn-dialog"
@@ -3067,9 +3076,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         let validsa = this.checkValidity(
                                             this._('#tf-add-recipient-sa-dialog'),
                                         );
-                                        // let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
-                                        // let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
-                                        // let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
+                                        let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
+                                        let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
+                                        let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
                                         let validfn = this.checkValidity(
                                             this._('#tf-add-recipient-fn-dialog'),
                                         );
@@ -3083,9 +3092,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             validcountry &&
                                             validpc &&
                                             validal &&
-                                            validsa
+                                            validsa && validbirthday && validbirthmonth && validbirthyear
                                         ) {
-                                            // && validbirthday && validbirthmonth && validbirthyear
                                             this.currentRecipient.givenName = this._(
                                                 '#tf-add-recipient-gn-dialog',
                                             ).value;
@@ -3118,7 +3126,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 button.disabled = false;
                                                 MicroModal.close(this._('#add-recipient-modal'));
                                                 this._('#recipient-selector').value = '';
-
+                                                // Re-enable manual recipient fields.
                                                 const elements =
                                                     this.shadowRoot.querySelectorAll(
                                                         '.nf-label.no-selector',
@@ -3126,6 +3134,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 elements.forEach((element) => {
                                                     element.classList.remove('muted');
                                                 });
+                                                // Re-enable person selector.
+                                                this.personSelectorIsDisabled = false;
                                             });
                                         } else {
                                             button.disabled = false;
@@ -3355,9 +3365,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         let validsa = this.checkValidity(
                                             this._('#tf-edit-recipient-sa-dialog'),
                                         );
-                                        // let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
-                                        // let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
-                                        // let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
+                                        let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
+                                        let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
+                                        let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
                                         let validfn = this.checkValidity(
                                             this._('#tf-edit-recipient-fn-dialog'),
                                         );
@@ -3371,9 +3381,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             validcountry &&
                                             validpc &&
                                             validal &&
-                                            validsa
+                                            validsa && validbirthday && validbirthmonth && validbirthyear
                                         ) {
-                                            // && validbirthday && validbirthmonth && validbirthyear
                                             this.currentRecipient.givenName = this._(
                                                 '#tf-edit-recipient-gn-dialog',
                                             ).value;
@@ -3592,8 +3601,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.currentRecipient.statusChanges.map(
                                             (statusChange) => html`
                                                 <div class="recipient-status">
-                                                    <div>
-                                                        <div>
+                                                    <div class="status-container">
+                                                        <div class="status-date">
                                                             ${this.convertToReadableDate(
                                                                 statusChange.dateCreated,
                                                             )}
@@ -3647,10 +3656,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         : ''}
                     </span>
 
-                    ${!statusChange.fileFormat ? this.renderReturnReceiptUploadWidget(statusChange) : ''}
-                    ${statusChange.fileFormat ? this.renderReturnReceiptDownloadButton(statusChange) : ''}
-                    ${statusChange.fileFormat ? this.renderReturnReceiptViewButton(statusChange) : ''}
-                    ${(statusChange.fileFormat && statusChange.fileIsUploadedManually) ? this.renderReturnReceiptDeleteButton(statusChange) : ''}
+                    <span class="return-receipt__buttons">
+                        ${!statusChange.fileFormat ? this.renderReturnReceiptUploadWidget(statusChange) : ''}
+                        ${statusChange.fileFormat ? this.renderReturnReceiptDownloadButton(statusChange) : ''}
+                        ${statusChange.fileFormat ? this.renderReturnReceiptViewButton(statusChange) : ''}
+                        ${(statusChange.fileFormat && statusChange.fileIsUploadedManually) ? this.renderReturnReceiptDeleteButton(statusChange) : ''}
+                    </span>
                 </div>
             `;
         }
@@ -3665,6 +3676,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 @click="${(event) => {
                     this._('#file-return-receipt').setAttribute('dialog-open', '');
                 }}"
+                aria-label="${i18n.t(
+                    'show-requests.return-receipt.upload-button-text',
+                )}"
                 title="${i18n.t(
                     'show-requests.return-receipt.upload-button-text',
                 )}"
@@ -3683,6 +3697,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         statusChange['identifier'],
                     );
                 }}"
+                aria-label="${i18n.t(
+                    'show-requests.download-button-text',
+                )}"
                 title="${i18n.t(
                     'show-requests.download-button-text',
                 )}"
@@ -3698,6 +3715,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 @click="${(event) => {
                     this.showReturnReceiptFileViewer(event, statusChange);
                 }}"
+                aria-label="${i18n.t(
+                    'show-requests.return-receipt.view-button-text',
+                )}"
                 title="${i18n.t(
                     'show-requests.return-receipt.view-button-text',
                 )}"
@@ -3754,6 +3774,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         statusChange,
                     );
                 }}"
+                aria-label="${i18n.t(
+                    'show-requests.return-receipt.delete-button-text',
+                )}"
                 title="${i18n.t(
                     'show-requests.return-receipt.delete-button-text',
                 )}"
@@ -4126,14 +4149,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                       </div>
                                       <div class="right-side">
                                           <dbp-icon-button
-                                              id="show-file-btn"
-                                              @click="${(event) => {
-                                                  this._onShowFileClicked(event, file.identifier);
-                                              }}"
-                                              title="${i18n.t(
-                                                  'show-requests.show-file-button-text',
-                                              )}"
-                                              icon-name="keyword-research"></dbp-icon-button>
+                                                id="show-file-btn"
+                                                @click="${(event) => {
+                                                    this._onShowFileClicked(event, file.identifier);
+                                                }}"
+                                                aria-label="${i18n.t(
+                                                    'show-requests.show-file-button-text',
+                                                )}"
+                                                title="${i18n.t(
+                                                    'show-requests.show-file-button-text',
+                                                )}"
+                                                icon-name="keyword-research"></dbp-icon-button>
                                           ${!this.currentItem.dateSubmitted
                                               ? html`
                                                     <dbp-icon-button
@@ -4144,6 +4170,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                         @click="${(event) => {
                                                             this.deleteFile(event, file);
                                                         }}"
+                                                        aria-label="${i18n.t(
+                                                            'show-requests.delete-file-button-text',
+                                                        )}"
                                                         title="${i18n.t(
                                                             'show-requests.delete-file-button-text',
                                                         )}"
@@ -4201,86 +4230,95 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
 
         return html`
-            <div class="details sender hidden">
+            <div class="details sender">
                 <div class="header-btn">
                     <div class="section-titles">${i18n.t('show-requests.sender')}</div>
                     ${!this.currentItem.dateSubmitted
                         ? html`
-                              <dbp-icon-button
-                                  id="edit-sender-btn"
-                                  ?disabled="${this.loading ||
-                                  this.currentItem.dateSubmitted ||
-                                  !this.mayWrite}"
-                                  @click="${(event) => {
-                                      if (this.currentItem.senderAddressCountry !== '') {
-                                          this._('#edit-sender-country-select').value =
-                                              this.currentItem.senderAddressCountry;
-                                      }
-                                      MicroModal.show(this._('#edit-sender-modal'), {
-                                          disableScroll: true,
-                                          onClose: (modal) => {
-                                              this.loading = false;
-                                          },
-                                      });
-                                  }}"
-                                  title="${i18n.t('show-requests.edit-sender-button-text')}"
-                                  icon-name="pencil"></dbp-icon-button>
-                          `
+                            <dbp-icon-button
+                                id="edit-sender-btn"
+                                ?disabled="${this.loading ||
+                                this.currentItem.dateSubmitted ||
+                                !this.mayWrite}"
+                                @click="${(event) => {
+                                    if (this.currentItem.senderAddressCountry !== '') {
+                                        this._('#edit-sender-country-select').value =
+                                            this.currentItem.senderAddressCountry;
+                                    }
+                                    MicroModal.show(this._('#edit-sender-modal'), {
+                                        disableScroll: true,
+                                        onClose: (modal) => {
+                                            this.loading = false;
+                                        },
+                                    });
+                                }}"
+                                aria-label="${i18n.t('show-requests.edit-sender-button-text')}"
+                                title="${i18n.t('show-requests.edit-sender-button-text')}"
+                                icon-name="pencil"></dbp-icon-button>`
                         : ``}
                 </div>
                 <div class="sender-data">
-                    ${this.currentItem.senderOrganizationName
-                        ? html`
-                              ${this.currentItem.senderOrganizationName}
-                          `
-                        : ``}
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
+                    </div>
                     ${this.currentItem.senderFullName && this.currentItem.senderOrganizationName
                         ? html`
                               ${this.currentItem.senderFullName}
                           `
                         : html`
-                              ${this.currentItem.senderFullName
-                                  ? html`
-                                        ${this.currentItem.senderFullName}
-                                    `
-                                  : ``}
+                            ${this.currentItem.senderFullName
+                                ? html`
+                                    ${this.currentItem.senderFullName}
+                                `
+                                : ``}
                           `}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-gn-dialog-label')}
+                    </div>
+                    ${this.currentItem.senderOrganizationName
+                        ? html`
+                              ${this.currentItem.senderOrganizationName}
+                          `
+                        : ``}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
+                    </div>
                     ${this.currentItem.senderStreetAddress
                         ? html`
-                              <br />
                               ${this.currentItem.senderStreetAddress}
                           `
                         : ``}
-                    ${this.currentItem.senderBuildingNumber
-                        ? html`
-                              ${this.currentItem.senderBuildingNumber}
-                          `
-                        : ``}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-pc-dialog-label')}
+                    </div>
                     ${this.currentItem.senderPostalCode
                         ? html`
-                              <br />
                               ${this.currentItem.senderPostalCode}
                           `
                         : ``}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-al-dialog-label')}
+                    </div>
                     ${this.currentItem.senderAddressLocality
                         ? html`
                               ${this.currentItem.senderAddressLocality}
                           `
                         : ``}
+                    <br>
+                    <div class="inline-label">
+                        ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
+                    </div>
                     ${this.currentItem.senderAddressCountry
                         ? html`
-                              <br />
                               ${dispatchHelper.getCountryMapping()[
                                   this.currentItem.senderAddressCountry
                               ]}
                           `
                         : ``}
-                </div>
-                <div
-                    class="no-sender ${classMap({
-                        hidden: !this.isLoggedIn() || this.currentItem.senderFullName,
-                    })}">
-                    ${i18n.t('show-requests.empty-sender-text')}
                 </div>
             </div>
         `;
@@ -4381,6 +4419,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let countFailure = 0;
         let countSuccess = 0;
+        let countSuccessForeignCountries = 0;
         let countPending = 0;
 
         for (let i = 0; i < recipients.length; i++) {
@@ -4393,7 +4432,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 status = 'unknown';
             }
             if (status === 'success') {
-                countSuccess++;
+                if (recipient.addressCountry === 'AT') {
+                    countSuccess++;
+                } else {
+                    countSuccessForeignCountries++;
+                }
             } else if (status === 'pending') {
                 countPending++;
             } else {
@@ -4401,46 +4444,31 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         }
 
-        let overallStatusText = '';
+        let overallStatusTextItems = [];
+        let shortStatusTextItems = [];
 
-        overallStatusText +=
-            countSuccess > 0
-                ? i18n.t('show-requests.overall-status-success', {success: countSuccess})
-                : '';
+        if (countSuccess > 0) {
+            overallStatusTextItems.push(i18n.t('show-requests.overall-status-success', {success: countSuccess}));
+            shortStatusTextItems.push(i18n.t('show-requests.short-status-success', {success: countSuccess}));
+        }
 
-        overallStatusText +=
-            countSuccess > 0 && countPending > 0
-                ? ', ' + i18n.t('show-requests.overall-status-pending', {pending: countPending})
-                : countPending > 0
-                  ? i18n.t('show-requests.overall-status-pending', {pending: countPending})
-                  : '';
+        if (countSuccessForeignCountries > 0) {
+            overallStatusTextItems.push(i18n.t('show-requests.overall-status-success-foreign-countries', {success: countSuccessForeignCountries}));
+            shortStatusTextItems.push(i18n.t('show-requests.short-status-success-foreign-countries', {success: countSuccessForeignCountries}));
+        }
 
-        overallStatusText +=
-            (countSuccess > 0 || countPending > 0) && countFailure > 0
-                ? ', ' + i18n.t('show-requests.overall-status-failure', {failure: countFailure})
-                : countFailure > 0
-                  ? i18n.t('show-requests.overall-status-failure', {failure: countFailure})
-                  : '';
+        if (countPending > 0) {
+            overallStatusTextItems.push(i18n.t('show-requests.overall-status-pending', {pending: countPending}));
+            shortStatusTextItems.push(i18n.t('show-requests.short-status-pending', {pending: countPending}));
+        }
 
-        let shortStatusText = '';
-        shortStatusText +=
-            countSuccess > 0
-                ? i18n.t('show-requests.short-status-success', {success: countSuccess})
-                : '';
+        if (countFailure > 0) {
+            overallStatusTextItems.push(i18n.t('show-requests.overall-status-failure', {failure: countFailure}));
+            shortStatusTextItems.push(i18n.t('show-requests.short-status-failure', {failure: countFailure}));
+        }
 
-        shortStatusText +=
-            countSuccess > 0 && countPending > 0
-                ? ', ' + i18n.t('show-requests.short-status-pending', {pending: countPending})
-                : countPending > 0
-                  ? i18n.t('show-requests.short-status-pending', {pending: countPending})
-                  : '';
-
-        shortStatusText +=
-            (countSuccess > 0 || countPending > 0) && countFailure > 0
-                ? ', ' + i18n.t('show-requests.short-status-failure', {failure: countFailure})
-                : countFailure > 0
-                  ? i18n.t('show-requests.short-status-failure', {failure: countFailure})
-                  : '';
+        const overallStatusText = overallStatusTextItems.join(', ');
+        const shortStatusText = shortStatusTextItems.join(', ');
 
         return [overallStatusText, shortStatusText];
     }

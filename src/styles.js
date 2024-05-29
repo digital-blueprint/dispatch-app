@@ -593,15 +593,17 @@ export function getDispatchRequestStyles() {
         }
 
         #edit-recipient-modal-box {
-            max-height: 640px;
-            min-height: 640px;
+            height: auto;
+            min-height: fit-content;
             max-width: 400px;
+            gap: 20px;
         }
 
         #add-recipient-modal-box {
-            max-height: 645px;
-            min-height: 645px;
+            height: auto;
+            min-height: fit-content;
             max-width: 736px;
+            gap: 20px;
         }
 
         #add-recipient-modal-box h4 {
@@ -629,14 +631,16 @@ export function getDispatchRequestStyles() {
         }
 
         #edit-sender-modal-box {
-            max-height: 550px;
-            min-height: 550px;
+            height: auto;
+            min-height: fit-content;
             max-width: 400px;
+            gap: 20px;
         }
 
         #show-recipient-modal-box {
             height: auto;
             min-height: fit-content;
+            max-width: 800px;
         }
 
         #edit-sender-modal-box header.modal-header,
@@ -936,6 +940,13 @@ export function getDispatchRequestStyles() {
             margin-bottom: 2em;
             display: flex;
             justify-content: space-between;
+            gap: 10px;
+        }
+
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
 
         .recipient-status .status-detail {
@@ -943,19 +954,35 @@ export function getDispatchRequestStyles() {
         }
 
         .return-receipt-widget {
-            margin-block: auto;
-            min-width: 140px;
-            background-color: #333;
-            padding: 0 1em;
+            min-width: 220px;
+            background-color: var(--dbp-background);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            /* Align right. */
+            align-items: flex-end;
         }
 
         .return-receipt-widget__title {
-            margin: .5em 0 0;
+            margin: 0;
         }
 
         .return-receipt-widget__upload-date {
             display: block;
             font-size: 14px;
+            text-align: right;
+        }
+
+        .return-receipt__buttons {
+            display: flex;
+            flex-direction: row;
+            /* margin-left: -8px; */
+            /* Align right. */
+            margin-right: -11px;
+        }
+
+        .upload-btn {
+            margin-left: -2px;
         }
 
         .download-btn {
@@ -964,14 +991,15 @@ export function getDispatchRequestStyles() {
         }
 
         .new-line-content {
-            white-space: pre-line;
+            /* white-space: pre-line; */
             /* white-space: normal; */
             /* width: 90%; */
-            margin-top: -1em;
+            /* margin-top: -1em; */
         }
 
         .scroll {
             overflow-y: auto;
+            overflow-x: clip;
         }
 
         .dispatch-status {
@@ -980,6 +1008,12 @@ export function getDispatchRequestStyles() {
 
         .dispatch-status .status-title {
             font-weight: 400;
+        }
+
+        .inline-label {
+            display: inline-block;
+            font-weight: 600;
+            min-width: 230px;
         }
 
         @media only screen and (orientation: portrait) and (max-width: 768px) {
@@ -1083,6 +1117,28 @@ export function getDispatchRequestStyles() {
 
             .sender-data {
                 margin-bottom: 0;
+            }
+
+            .return-receipt-widget__upload-date {
+                max-width: 180px;
+            }
+        }
+
+        @media only screen and (max-width: 650px) {
+            .recipient-status {
+                flex-direction: column;
+            }
+
+            .return-receipt-widget {
+                align-items: flex-start;
+            }
+
+            .return-receipt-widget__upload-date {
+                text-align: left;
+            }
+
+            .return-receipt__buttons {
+                margin-left: -8px;
             }
         }
 

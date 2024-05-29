@@ -1032,7 +1032,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
                                                 this.toggleSearchMenu();
                                             }}'>
-                                            <dbp-icon-button id="search-button" title="Suchen" icon-name="search"
+                                            <dbp-icon-button id="search-button"
+                                                title="${i18n.t(
+                                                    'show-requests.search-box-text',
+                                                )}"
+                                                icon-name="search"
+                                                aria-label="${i18n.t(
+                                                    'show-requests.search-box-text',
+                                                )}"
                                                 @click='${() => {
                                                     this.filterTable();
                                                 }}'></dbp-icon-button>
@@ -1247,19 +1254,20 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             ${i18n.t('show-requests.id')}
                                             ${!this.currentItem.dateSubmitted ? html`
                                                 <dbp-icon-button id="edit-subject-btn"
-                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                             @click="${(event) => {
-                                                                 this.subject = this.currentItem.name ? this.currentItem.name : '';
-                                                                 this._('#tf-edit-subject-fn-dialog').value = this.currentItem.name ? this.currentItem.name : ``;
-                                                                 MicroModal.show(this._('#edit-subject-modal'), {
-                                                                     disableScroll: true,
-                                                                     onClose: (modal) => {
-                                                                         this.loading = false;
-                                                                     },
-                                                                 });
-                                                            }}"
-                                                             title="${i18n.t('show-requests.edit-subject-button-text')}"
-                                                             icon-name="pencil"></dbp-icon-button>` : ``}
+                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                                    @click="${(event) => {
+                                                        this.subject = this.currentItem.name ? this.currentItem.name : '';
+                                                        this._('#tf-edit-subject-fn-dialog').value = this.currentItem.name ? this.currentItem.name : ``;
+                                                        MicroModal.show(this._('#edit-subject-modal'), {
+                                                            disableScroll: true,
+                                                            onClose: (modal) => {
+                                                                this.loading = false;
+                                                            },
+                                                        });
+                                                    }}"
+                                                    aria-label="${i18n.t('show-requests.edit-subject-button-text')}"
+                                                    title="${i18n.t('show-requests.edit-subject-button-text')}"
+                                                    icon-name="pencil"></dbp-icon-button>` : ``}
                                         </div>
                                         <div>${this.currentItem.name ? html`${this.currentItem.name}` : html`${this.mayReadMetadata && !this.mayRead && !this.mayWrite ? i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found')}`}</div>
                                     </div>
@@ -1274,18 +1282,20 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                             ${i18n.t('show-requests.reference-number')}
                                             ${!this.currentItem.dateSubmitted ? html`
                                                 <dbp-icon-button id="edit-reference-number-btn"
-                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                             @click="${(event) => {
-                                                                 this._('#tf-edit-reference-number-fn-dialog').value = this.currentItem.referenceNumber ?? ``;
-                                                                 MicroModal.show(this._('#edit-reference-number-modal'), {
-                                                                    disableScroll: true,
-                                                                    onClose: (modal) => {
-                                                                        this.loading = false;
-                                                                    },
-                                                                });
-                                                            }}"
-                                                             title="${i18n.t('show-requests.edit-reference-number-button-text')}"
-                                                             icon-name="pencil"></dbp-icon-button>` : ``}
+                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                                    @click="${(event) => {
+                                                        this._('#tf-edit-reference-number-fn-dialog').value = this.currentItem.referenceNumber ?? ``;
+                                                        MicroModal.show(this._('#edit-reference-number-modal'), {
+                                                        disableScroll: true,
+                                                        onClose: (modal) => {
+                                                            this.loading = false;
+                                                        },
+                                                    });
+                                                    }}"
+                                                    aria-label="${i18n.t('show-requests.edit-reference-number-button-text')}"
+                                                    title="${i18n.t('show-requests.edit-reference-number-button-text')}"
+                                                    icon-name="pencil"></dbp-icon-button>`
+                                                : ``}
                                         </div>
                                         <div>${this.currentItem.referenceNumber ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.empty-reference-number')}`}</div>
                                     </div>
@@ -1350,11 +1360,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             button.stop();
                                                         }
                                                     }}"
+                                                    aria-label="${i18n.t('show-requests.show-recipient-button-text')}"
                                                     title="${i18n.t('show-requests.show-recipient-button-text')}"
                                                     icon-name="keyword-research"></dbp-icon></dbp-icon-button>
                                                 ${!this.currentItem.dateSubmitted ? html`
                                                     <dbp-icon-button id="edit-recipient-btn"
-                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite || recipient.personIdentifier}"
+                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite ||
+                                                            (recipient.personIdentifier && (recipient.electronicallyDeliverable || recipient.postalDeliverable))}"
                                                         @click="${(event) => {
                                                             let button = event.target;
                                                             button.start();
@@ -1381,10 +1393,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                         }
                                                                     });
                                                                 });
-                                                            } catch {
+                                                            } finally {
                                                                 button.stop();
                                                             }
                                                         }}"
+                                                        aria-label="${i18n.t('show-requests.edit-recipients-button-text')}"
                                                         title="${i18n.t('show-requests.edit-recipients-button-text')}"
                                                         icon-name="pencil"></dbp-icon-button>
                                                     <dbp-icon-button id="delete-recipient-btn"
@@ -1392,6 +1405,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         @click="${(event) => {
                                                             this.deleteRecipient(event, recipient);
                                                         }}"
+                                                        aria-label="${i18n.t('show-requests.delete-recipient-button-text')}"
                                                         title="${i18n.t('show-requests.delete-recipient-button-text')}"
                                                         icon-name="trash"></dbp-icon-button>
                                                 ` : `` }
