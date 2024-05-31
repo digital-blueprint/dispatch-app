@@ -2426,11 +2426,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return sortedRecipients;
     }
 
-    disablePersonSelector(event) {
+    disablePersonSelector() {
         this.personSelectorIsDisabled = true;
     }
 
-    resetRecipientFields(event) {
+    resetRecipientFields() {
+        console.log('resetRecipientFields');
         this._('#recipient-selector').clear();
         this.currentRecipient = {};
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
@@ -2788,6 +2789,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 aria-label="Close modal"
                                 @click="${() => {
                                     this._('#add-recipient-btn').stop();
+                                    this.resetRecipientFields();
                                     MicroModal.close(this._('#add-recipient-modal'));
                                 }}">
                                 <dbp-icon
@@ -2850,9 +2852,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     ? this.currentRecipient.givenName
                                                     : ``}"
                                                 required
-                                                @input="${(event) => {
-                                                    // TODO
-                                                    this.disablePersonSelector(event);
+                                                @input="${() => {
+                                                    this.disablePersonSelector();
                                                 }}" />
                                         </div>
                                     </div>
@@ -2872,9 +2873,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     ? this.currentRecipient.familyName
                                                     : ``}"
                                                 required
-                                                @input="${(event) => {
-                                                    // TODO
-                                                    this.disablePersonSelector(event);
+                                                @input="${() => {
+                                                    this.disablePersonSelector();
                                                 }}" />
                                         </div>
                                     </div>
@@ -2900,9 +2900,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 value="${this.currentRecipient
                                                     ? this.currentRecipient.birthDateDay
                                                     : ``}"
-                                                @input="${(event) => {
-                                                    // TODO
-                                                    this.disablePersonSelector(event);
+                                                @input="${() => {
+                                                    this.disablePersonSelector();
                                                 }}" />
                                             <input
                                                 ?disabled="${this.currentRecipient &&
@@ -2919,9 +2918,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 value="${this.currentRecipient
                                                     ? this.currentRecipient.birthDateMonth
                                                     : ``}"
-                                                @input="${(event) => {
-                                                    // TODO
-                                                    this.disablePersonSelector(event);
+                                                @input="${() => {
+                                                    this.disablePersonSelector();
                                                 }}" />
                                             <input
                                                 ?disabled="${this.currentRecipient &&
@@ -2938,9 +2936,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 value="${this.currentRecipient
                                                     ? this.currentRecipient.birthDateYear
                                                     : ``}"
-                                                @input="${(event) => {
-                                                    // TODO
-                                                    this.disablePersonSelector(event);
+                                                @input="${() => {
+                                                    this.disablePersonSelector();
                                                 }}" />
                                         </div>
                                     </div>
@@ -2960,9 +2957,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     ? this.currentRecipient.streetAddress
                                                     : ``}"
                                                 required
-                                                @input="${(event) => {
-                                                    // TODO
-                                                    this.disablePersonSelector(event);
+                                                @input="${() => {
+                                                    this.disablePersonSelector();
                                                 }}" />
                                         </div>
                                     </div>
@@ -2982,9 +2978,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     ? this.currentRecipient.postalCode
                                                     : ``}"
                                                 required
-                                                @input="${(event) => {
-                                                    // TODO
-                                                    this.disablePersonSelector(event);
+                                                @input="${() => {
+                                                    this.disablePersonSelector();
                                                 }}" />
                                         </div>
                                     </div>
@@ -3004,9 +2999,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     ? this.currentRecipient.addressLocality
                                                     : ``}"
                                                 required
-                                                @input="${(event) => {
-                                                    // TODO
-                                                    this.disablePersonSelector(event);
+                                                @input="${() => {
+                                                    this.disablePersonSelector();
                                                 }}" />
                                         </div>
                                     </div>
@@ -3020,9 +3014,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             this.currentRecipient.personIdentifier}"
                                             id="add-recipient-country-select"
                                             class="country-select"
-                                            @change="${(event) => {
-                                                // TODO
-                                                this.disablePersonSelector(event);
+                                            @change="${() => {
+                                                this.disablePersonSelector();
                                             }}">
                                             ${this.lang === 'en'
                                                 ? dispatchHelper.getEnglishCountryList()
@@ -3036,9 +3029,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <div class="modal-footer-btn">
                                 <button
                                     class="button"
-                                    data-micromodal-close
                                     aria-label="Close this dialog window"
                                     @click="${() => {
+                                        this.resetRecipientFields();
                                         MicroModal.close(this._('#add-recipient-modal'));
                                     }}">
                                     ${i18n.t('show-requests.add-recipient-dialog-button-cancel')}
@@ -3049,8 +3042,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             this._('#recipient-selector') &&
                                             this._('#recipient-selector').value === '',
                                     })}"
-                                    @click="${(event) => {
-                                        this.resetRecipientFields(event);
+                                    @click="${() => {
+                                        this.resetRecipientFields();
                                     }}">
                                     ${i18n.t('show-requests.reset-select-button-text')}
                                 </button>
