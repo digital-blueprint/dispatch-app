@@ -618,6 +618,18 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         table.setData(data);
     }
 
+    expandAll(){
+        this.expandedTabulator = false;
+        let table = this._('#tabulator-table-demo-8');
+        table.expandAll();
+    }
+
+    collapseAll(){
+        this.expandedTabulator = true;
+        let table = this._('#tabulator-table-demo-8');
+        table.collapseAll();
+    }
+
     async processSelectedOrganization(event) {
         const i18n = this._i18n;
         this.storeGroupValue(event.detail.value);
@@ -674,7 +686,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             controls_div.appendChild(btn_submit);
             let order = { details: details_div, dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
-                controls: controls_div};
+                controls: controls_div, files:'', recipients: '', dateSubmitted: '', requestId: ''};
             data.push(order);
         });
 
@@ -916,6 +928,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     'subject': i18n.t('tabulator.subject', {lng: 'en'}),
                     'status': i18n.t('tabulator.status', {lng: 'en'}),
                     'controls': '',
+                    'files': 'files',
+                    'recipients': 'recipients',
+                    'dateSubmitted': 'dateSubmitted',
+                    'requestId': 'requestId',
                 },
             },
             'de': {
@@ -926,6 +942,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     'subject': i18n.t('tabulator.subject', {lng: 'de'}),
                     'status': i18n.t('tabulator.status', {lng: 'de'}),
                     'controls': '',
+                    'files': 'files',
+                    'recipients': 'recipients',
+                    'dateSubmitted': 'dateSubmitted',
+                    'requestId': 'requestId',
                 },
             },
         };
@@ -933,6 +953,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let options = {
             langs: langs,
             layout: 'fitColumns',
+            responsiveLayout: 'collapse',
+            responsiveLayoutCollapseStartOpen: false,
+            rowHeader:{formatter:"responsiveCollapse", width:30, minWidth:30, hozAlign:"center", resizable:false, headerSort:false},
             columns: [
                 {field: 'details', formatter: 'html'},
                 {field: 'dateCreated'},
@@ -940,6 +963,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 {field: 'subject'},
                 {field: 'status'},
                 {field: 'controls', formatter: 'html'},
+                {field: 'files', responsive:3},
+                {field: 'recipients', responsive:4},
+                {field: 'dateSubmitted', responsive:5},
+                {field: 'requestId', responsive:6},
             ],
             columnDefaults: {
                 vertAlign: 'middle',
@@ -1166,6 +1193,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         pagination-size="10"
                                         pagination-enabled="true"
                                         select-all-enabled
+                                        collapse-enabled
                                         options=${JSON.stringify(options)}></dbp-tabulator-table>
                             </div>
 
