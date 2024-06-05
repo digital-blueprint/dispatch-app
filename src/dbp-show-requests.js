@@ -89,6 +89,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.langDir = undefined;
         this.loadingTranslations = false;
         this.tableLoading = false;
+        this.expandedTabulator = true;
     }
 
     static get scopedElements() {
@@ -139,6 +140,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             nextcloudFileURL: {type: String, attribute: 'nextcloud-file-url'},
             nextcloudAuthInfo: {type: String, attribute: 'nextcloud-auth-info'},
             langDir: {type: String, attribute: 'lang-dir'},
+            expandedTabulator: {type: Boolean},
         };
     }
 
@@ -618,16 +620,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         table.setData(data);
     }
 
-    expandAll(){
-        this.expandedTabulator = false;
-        let table = this._('#tabulator-table-demo-8');
-        table.expandAll();
-    }
 
-    collapseAll(){
-        this.expandedTabulator = true;
-        let table = this._('#tabulator-table-demo-8');
-        table.collapseAll();
+    deleteRow(e, row) {
+        //let table = this._('#tabulator-table-demo-7');
+        //table.rowClickFunction(e, row);
+
+        let table = this._('#tabulator-table-orders');
+        e.stopPropagation();
+        table.deleteRow(e, row);
     }
 
     async processSelectedOrganization(event) {
@@ -650,48 +650,37 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let table = this._('#tabulator-table-orders');
 
         this.requestList.forEach((item) => {
-            let details_div = this.createScopedElement('div');
+
 
             let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
-            let details_arrow = this.createScopedElement('dbp-icon-button');
-            details_arrow.setAttribute('icon-name', 'chevron-right');
-            //this.allCourseSubmissions = [{'creation-date': '2024-03-13', 'firstname': 'as', 'lastname': 'asas'}];
-            details_arrow.addEventListener("click",function(){
-                if(details_arrow.getAttribute('icon-name') === 'chevron-right')
-                {
-                    details_arrow.setAttribute('icon-name', 'chevron-down');
-                }
-                else if(details_arrow.getAttribute('icon-name') === 'chevron-down')
-                {
-                    details_arrow.setAttribute('icon-name', 'chevron-right');
-                }
-            });
 
-            details_div.appendChild(details_arrow);
-
-            let controls_div = this.createScopedElement('div');
+            /*let controls_div = this.createScopedElement('div');
             let btn_edit = this.createScopedElement('dbp-icon-button');
             btn_edit.setAttribute('icon-name', 'pencil');
             controls_div.appendChild(btn_edit);
-
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
-            btn_delete.addEventListener("click",function(event){
-                table.deleteRow(1);
+            btn_delete.addEventListener("click",function(e){
+                table.deleteRow(e, 1);
+
             });
+
 
             controls_div.appendChild(btn_delete);
 
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
-            controls_div.appendChild(btn_submit);
-            let order = { details: details_div, dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
-                controls: controls_div, files:'', recipients: '', dateSubmitted: '', requestId: ''};
+            controls_div.appendChild(btn_submit);*/
+            let order = { details:'', dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
+                 files:'safdsfs', recipients: 'dsfdsf', dateSubmitted: 'dsfsdf', requestId: 'sdfsdf'};
             data.push(order);
         });
 
         //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
-        this.setTableData(data);
+        //this.setTableData(data);
+        table.setData(data);
+        table.updateData([{id:1, subject: 'something'}])
+
     }
 
     static get styles() {
@@ -957,16 +946,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayoutCollapseStartOpen: false,
             rowHeader:{formatter:"responsiveCollapse", width:30, minWidth:30, hozAlign:"center", resizable:false, headerSort:false},
             columns: [
-                {field: 'details', formatter: 'html'},
-                {field: 'dateCreated'},
-                {field: 'referenceNumber'},
-                {field: 'subject'},
-                {field: 'status'},
-                {field: 'controls', formatter: 'html'},
-                {field: 'files', responsive:3},
-                {field: 'recipients', responsive:4},
-                {field: 'dateSubmitted', responsive:5},
-                {field: 'requestId', responsive:6},
+                {field: 'details', width: 150},
+                {field: 'dateCreated', width: 150},
+                {field: 'referenceNumber', width: 150},
+                {field: 'subject', width: 250},
+                {field: 'status', width: 150},
+                {field: 'controls', width: 150, formatter: 'html'},
+                {field: 'files', minWidth: 800, responsive:8},
+                {field: 'recipients', minWidth: 800, responsive:8},
+                {field: 'dateSubmitted',minWidth: 800, responsive:8},
+                {field: 'requestId', minWidth: 800, responsive:8},
             ],
             columnDefaults: {
                 vertAlign: 'middle',
@@ -1028,7 +1017,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     @change=${(event) => {
                                         if (this.isLoggedIn() && !this.isLoading()) {
                                             this.processSelectedOrganization(event).then(() => {
-                                                console.log('worked');
+                                                
                                             });
                                         }
                                     }}
@@ -1119,25 +1108,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                                 </div>
                                 <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}">
-                                     <dbp-loading-button id="expand-all-btn"
-                                                         class="${classMap({hidden: this.expanded})}"
-                                                         ?disabled="${this.loading}"
-                                                         value="${i18n.t('show-requests.expand-all')}"
-                                                         @click="${(event) => {
-                                                             this.expandAll(event);
-                                                         }}"
-                                                         title="${i18n.t('show-requests.expand-all')}"
-                                    >${i18n.t('show-requests.expand-all')}</dbp-loading-button>
-
-                                    <dbp-loading-button id="collapse-all-btn"
-                                                        class="${classMap({hidden: !this.expanded})}"
-                                                        ?disabled="${this.loading}"
-                                                        value="${i18n.t('show-requests.collapse-all')}"
-                                                        @click="${(event) => {
-                                                            this.collapseAll(event);
-                                                        }}"
-                                                        title="${i18n.t('show-requests.collapse-all')}"
-                                >${i18n.t('show-requests.collapse-all')}</dbp-loading-button>
 
                                 ${
                                     this.mayWrite
@@ -1186,15 +1156,29 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
 
                             <div class="container">
+                                <h3 class="demo-sub-title">Tabulator table - Collapsed Lists</h3>
+                                <div class="edit-selection-buttons ${classMap({hidden: !this.expandedTabulator})}">
+                                                <button class="button is-primary" @click="${() => {
+                                    this.expandAll();
+                                }}">${i18n.t('expand-all')}</button>
+                                            </div>
+                        
+                                            <div class="edit-selection-buttons ${classMap({hidden: this.expandedTabulator})}">
+                                                <button class="button is-primary" @click="${() => {
+                                    this.collapseAll();
+                                }}">${i18n.t('collapse-all')}</button>
+                                            </div>
                                 <dbp-tabulator-table
+                                        collapse-enabled
                                         lang="${this.lang}"
                                         class="tabulator-table"
                                         id="tabulator-table-orders"
                                         pagination-size="10"
                                         pagination-enabled="true"
                                         select-all-enabled
-                                        collapse-enabled
-                                        options=${JSON.stringify(options)}></dbp-tabulator-table>
+                                        options=${JSON.stringify(options)}>
+                                    <div class="tabulator-responsive-collapse"><p>dfgdsgfd</p></div>
+                                </dbp-tabulator-table>
                             </div>
 
                             <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading || this.tableLoading})}">
