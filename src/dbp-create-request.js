@@ -208,8 +208,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
                 layout: 'fitColumns',
                 placeholder: i18n.t('show-requests.no-table-data'),
-                selectable: true,
-                selectablePersistence: false, // disable persistent selections
+                selectableRows: true,
+                selectableRowsPersistence: false, // disable persistent selections
                 responsiveLayout: 'collapse',
                 responsiveLayoutCollapseStartOpen: false,
                 pagination: 'local',
