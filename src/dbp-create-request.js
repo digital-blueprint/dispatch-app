@@ -212,7 +212,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 selectableRowsPersistence: false, // disable persistent selections
                 responsiveLayout: 'collapse',
                 responsiveLayoutCollapseStartOpen: false,
-                pagination: 'local',
+                pagination: true,
                 paginationSize: 10,
                 paginationSizeSelector: true,
                 paginationElement: paginationElement,
