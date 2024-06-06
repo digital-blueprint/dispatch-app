@@ -834,12 +834,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         response['hydra:member'].forEach((item) => {
             list.push(item);
-            for (const [key, value] of Object.entries(item)) {
-                console.log(`${key}: ${value}`);
-            };
         });
         list.sort(this.compareListItems);
-        console.log('RECIPIENT ' + response['hydra:member'][0].recipients[0]);
         return list;
     }
 
@@ -2153,7 +2149,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let responseBody = await response.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
-                console.log(this.requestList);
                 let tableObject = this.createTableObject(this.requestList);
                 this.dispatchRequestsTable.setData(tableObject);
                 this.dispatchRequestsTable.setLocale(this.lang);

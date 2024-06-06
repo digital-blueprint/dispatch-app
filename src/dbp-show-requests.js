@@ -621,14 +621,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
 
-    deleteRow(e, row) {
-        //let table = this._('#tabulator-table-demo-7');
-        //table.rowClickFunction(e, row);
 
-        let table = this._('#tabulator-table-orders');
-        e.stopPropagation();
-        table.deleteRow(e, row);
-    }
 
     async processSelectedOrganization(event) {
         const i18n = this._i18n;
@@ -672,6 +665,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             controls_div.appendChild(btn_submit);*/
             let order = { details:'', dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
+                controls: '',
                  files:'safdsfs', recipients: 'dsfdsf', dateSubmitted: 'dsfsdf', requestId: 'sdfsdf'};
             data.push(order);
         });
@@ -679,7 +673,20 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
         //this.setTableData(data);
         table.setData(data);
-        table.updateData([{id:1, subject: 'something'}])
+        let rows = table.getRows();
+
+        for (let row of rows) {
+            let controls_div = this.createScopedElement('div');
+            let btn_delete = this.createScopedElement('dbp-icon-button');
+            btn_delete.setAttribute('icon-name', 'trash');
+            btn_delete.addEventListener("click",function(e){
+                table.deleteRow(row);
+
+            });
+            controls_div.appendChild(btn_delete);
+            let newData = {controls: controls_div};
+            table.updateRow(row, newData);
+        }
 
     }
 
@@ -941,7 +948,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         let options = {
             langs: langs,
-            layout: 'fitColumns',
+            layout: 'fitDataFill',
             responsiveLayout: 'collapse',
             responsiveLayoutCollapseStartOpen: false,
             rowHeader:{formatter:"responsiveCollapse", width:30, minWidth:30, hozAlign:"center", resizable:false, headerSort:false},
@@ -1169,10 +1176,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 }}">${i18n.t('collapse-all')}</button>
                                             </div>
                                 <dbp-tabulator-table
-                                        collapse-enabled
                                         lang="${this.lang}"
                                         class="tabulator-table"
                                         id="tabulator-table-orders"
+                                        collapse-enabled
                                         pagination-size="10"
                                         pagination-enabled="true"
                                         select-all-enabled
