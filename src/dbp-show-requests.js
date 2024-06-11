@@ -677,6 +677,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         for (let row of rows) {
             let controls_div = this.createScopedElement('div');
+
+            let btn_edit = this.createScopedElement('dbp-icon-button');
+            btn_edit.setAttribute('icon-name', 'pencil');
+            controls_div.appendChild(btn_edit);
+
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
             btn_delete.addEventListener("click",function(e){
@@ -684,6 +689,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             });
             controls_div.appendChild(btn_delete);
+
+            let btn_submit = this.createScopedElement('dbp-icon-button');
+            btn_submit.setAttribute('icon-name', 'send-diagonal');
+            controls_div.appendChild(btn_submit);
+
             let newData = {controls: controls_div};
             table.updateRow(row, newData);
         }
@@ -1163,7 +1173,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
 
                             <div class="container">
-                                <h3 class="demo-sub-title">Tabulator table - Collapsed Lists</h3>
                                 <div class="edit-selection-buttons ${classMap({hidden: !this.expandedTabulator})}">
                                                 <button class="button is-primary" @click="${() => {
                                     this.expandAll();
@@ -1184,7 +1193,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         pagination-enabled="true"
                                         select-all-enabled
                                         options=${JSON.stringify(options)}>
-                                    <div class="tabulator-responsive-collapse"><p>dfgdsgfd</p></div>
+                                    <div class="tabulator-responsive-collapse"></div>
                                 </dbp-tabulator-table>
                             </div>
 
