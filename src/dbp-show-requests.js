@@ -664,8 +664,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             controls_div.appendChild(btn_submit);*/
+            let controls_div = this.createScopedElement('div');
+
+            let btn_delete = this.createScopedElement('dbp-icon-button');
+            btn_delete.setAttribute('icon-name', 'trash');
+
+            controls_div.appendChild(btn_delete);
+
             let order = { details:'', dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
-                controls: '',
+                controls: controls_div,
                  files:'safdsfs', recipients: 'dsfdsf', dateSubmitted: 'dsfsdf', requestId: 'sdfsdf'};
             data.push(order);
         });
@@ -673,7 +680,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
         //this.setTableData(data);
         table.setData(data);
-        let rows = table.getRows();
+        /*let rows = table.getRows();
 
         for (let row of rows) {
             let controls_div = this.createScopedElement('div');
@@ -696,7 +703,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             let newData = {controls: controls_div};
             table.updateRow(row, newData);
-        }
+        }*/
 
     }
 
