@@ -221,6 +221,7 @@
         "table-header-gz": "Reference number",
         "table-header-id": "Request-ID",
         "table-header-recipients": "Recipients",
+        "table-header-status": "Status",
         "table-header-subject": "Subject",
         "unknown": "Unknown",
         "return-receipt": {
@@ -241,12 +242,5 @@
             "successfully-deleted-file-text": "The receipt was successfully deleted.",
             "error-file-donwload": "Error during file download"
         }
-    },
-    "tabulator": {
-        "details": "Details",
-        "dateCreated": "Date created",
-        "referenceNumber": "Reference number",
-        "subject": "Subject",
-        "status": "Status"
     }
 }

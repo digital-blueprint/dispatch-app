@@ -221,6 +221,7 @@
         "table-header-gz": "Geschäftszahl",
         "table-header-id": "Auftrags-ID",
         "table-header-recipients": "Empfänger",
+        "table-header-status": "Status",
         "table-header-subject": "Betreff",
         "unknown": "Unbekannt",
         "return-receipt": {
@@ -241,12 +242,5 @@
             "successfully-deleted-file-text": "Der Rückschein wurde erfolgreich gelöscht.",
             "error-file-donwload": "Fehler beim Herunterladen der Datei"
         }
-    },
-    "tabulator": {
-        "details": "Details",
-        "dateCreated": "Erstelldatum",
-        "referenceNumber": "Geschäftszahl",
-        "subject": "Betreff",
-        "status": "Status"
     }
 }

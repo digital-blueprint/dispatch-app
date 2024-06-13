@@ -191,7 +191,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             // see: http://tabulator.info/docs/5.1
             this._a('.tabulator-table').forEach((table) => {
                 table.buildTable();
-
+                document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
             });
 
             let paginationElement = this._('.tabulator-paginator');
@@ -617,7 +617,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     setTableData(data) {
         let table = this._('#tabulator-table-orders');
-        table.setData(data);
+        table.setData(JSON.stringify(data));
     }
 
 
@@ -647,14 +647,18 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
 
-            /*let controls_div = this.createScopedElement('div');
+            let controls_div = this.createScopedElement('div');
             let btn_edit = this.createScopedElement('dbp-icon-button');
             btn_edit.setAttribute('icon-name', 'pencil');
+            btn_edit.addEventListener('click', async (event) => {
+                this.editRequest(event, item);
+                event.stopPropagation();
+            });
             controls_div.appendChild(btn_edit);
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
             btn_delete.addEventListener("click",function(e){
-                table.deleteRow(e, 1);
+                //table.deleteRow(e, 1);
 
             });
 
@@ -663,13 +667,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
-            controls_div.appendChild(btn_submit);*/
-            let controls_div = this.createScopedElement('div');
-
-            let btn_delete = this.createScopedElement('dbp-icon-button');
-            btn_delete.setAttribute('icon-name', 'trash');
-
-            controls_div.appendChild(btn_delete);
+            controls_div.appendChild(btn_submit);
 
             let order = { details:'', dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
                 controls: controls_div,
@@ -679,7 +677,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
         //this.setTableData(data);
-        table.setData(data);
+
+        //table.setData(data);
+
         /*let rows = table.getRows();
 
         for (let row of rows) {
@@ -932,54 +932,58 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.getListOfRequests();
         }
         //look at toolkit for better tabulator format
+        //the problem with collapsed tabulator was probably the lack of id
+        let order =  [
+            {id: 1, details: 'Oli Bob', dateCreated: '12', gz: 'red', subject: '', status: 'B', controls: '', files: 'asdasd', recipients: 'sdasd',
+            dateSubmitted: 'dasd', requestID: 'asdas'}
+        ];
+
         let langs  = {
             'en': {
                 columns: {
-                    'details': i18n.t('tabulator.details', {lng: 'en'}),
-                    'dateCreated': i18n.t('tabulator.dateCreated', {lng: 'en'}),
-                    'referenceNumber': i18n.t('tabulator.referenceNumber', {lng: 'en'}),
-                    'subject': i18n.t('tabulator.subject', {lng: 'en'}),
-                    'status': i18n.t('tabulator.status', {lng: 'en'}),
-                    'controls': '',
-                    'files': 'files',
-                    'recipients': 'recipients',
-                    'dateSubmitted': 'dateSubmitted',
-                    'requestId': 'requestId',
+                    'details': i18n.t('show-requests.table-header-details', {lng: 'en'}),
+                    'dateCreated': i18n.t('show-requests.table-header-date-created', {lng: 'en'}),
+                    'gz': i18n.t('show-requests.table-header-gz', {lng: 'en'}),
+                    'subject': i18n.t('show-requests.table-header-subject', {lng: 'en'}),
+                    'status': i18n.t('show-requests.table-header-status', {lng: 'en'}),
+                    'files': i18n.t('show-requests.table-header-files', {lng: 'en'}),
+                    'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'en'}),
+                    'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'en'}),
+                    'requestID': i18n.t('show-requests.table-header-id', {lng: 'en'}),
                 },
             },
             'de': {
                 columns: {
-                    'details': i18n.t('tabulator.details', {lng: 'de'}),
-                    'dateCreated': i18n.t('tabulator.dateCreated', {lng: 'de'}),
-                    'referenceNumber': i18n.t('tabulator.referenceNumber', {lng: 'de'}),
-                    'subject': i18n.t('tabulator.subject', {lng: 'de'}),
-                    'status': i18n.t('tabulator.status', {lng: 'de'}),
-                    'controls': '',
-                    'files': 'files',
-                    'recipients': 'recipients',
-                    'dateSubmitted': 'dateSubmitted',
-                    'requestId': 'requestId',
+                    'details': i18n.t('show-requests.table-header-details', {lng: 'de'}),
+                    'dateCreated': i18n.t('show-requests.table-header-date-created', {lng: 'de'}),
+                    'gz': i18n.t('show-requests.table-header-gz', {lng: 'de'}),
+                    'subject': i18n.t('show-requests.table-header-subject', {lng: 'de'}),
+                    'status': i18n.t('show-requests.table-header-status', {lng: 'de'}),
+                    'files': i18n.t('show-requests.table-header-files', {lng: 'de'}),
+                    'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'de'}),
+                    'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'de'}),
+                    'requestID': i18n.t('show-requests.table-header-id', {lng: 'de'}),
                 },
             },
         };
 
         let options = {
             langs: langs,
-            layout: 'fitDataFill',
+            layout: 'fitColumns',
             responsiveLayout: 'collapse',
             responsiveLayoutCollapseStartOpen: false,
             rowHeader:{formatter:"responsiveCollapse", width:30, minWidth:30, hozAlign:"center", resizable:false, headerSort:false},
             columns: [
-                {field: 'details', width: 150},
-                {field: 'dateCreated', width: 150},
-                {field: 'referenceNumber', width: 150},
-                {field: 'subject', width: 250},
-                {field: 'status', width: 150},
-                {field: 'controls', width: 150, formatter: 'html'},
-                {field: 'files', minWidth: 800, responsive:8},
-                {field: 'recipients', minWidth: 800, responsive:8},
-                {field: 'dateSubmitted',minWidth: 800, responsive:8},
-                {field: 'requestId', minWidth: 800, responsive:8},
+                {title: 'details', field: 'details', width: 100},
+                {title: 'dateCreated', field: 'dateCreated', width: 250, hozAlign: 'left'},
+                {title: 'gz', field: 'gz', width: 250},
+                {title: 'subject', field: 'subject', width: 250, hozAlign: 'center'},
+                {title: 'status', field: 'status', width: 150},
+                {title: '', field: 'controls', width: 150, formatter: 'html'},
+                {title: 'files', field: 'files', width: 150},
+                {title: 'recipients', field: 'recipients', width: 150},
+                {title: 'dateSubmitted', field: 'dateSubmitted', width: 150},
+                {title: 'requestID', field: 'requestID', width: 150}
             ],
             columnDefaults: {
                 vertAlign: 'middle',
@@ -987,6 +991,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 resizable: false,
             },
         };
+
 
         return html`
             <link rel="stylesheet" href="${tabulatorCss}"/>
@@ -1171,6 +1176,20 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                             </div>
                         </div>
+                        
+                        <div class="container">
+                        <dbp-tabulator-table
+                                lang="${this.lang}"
+                                class="tabulator-table"
+                                id="tabulator-table-orders"
+                                collapse-enabled
+                                pagination-size="10"
+                                pagination-enabled
+                                select-all-enabled
+                                data=${JSON.stringify(order)}
+                                options=${JSON.stringify(options)}>
+                        </dbp-tabulator-table>
+                    </div>
 
 
                             <div class="control table ${classMap({hidden: !this.initialRequestsLoading && !this.tableLoading})}">
@@ -1178,31 +1197,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
                                 </span>
                             </div>
-
-                            <div class="container">
-                                <div class="edit-selection-buttons ${classMap({hidden: !this.expandedTabulator})}">
-                                                <button class="button is-primary" @click="${() => {
-                                    this.expandAll();
-                                }}">${i18n.t('expand-all')}</button>
-                                            </div>
-                        
-                                            <div class="edit-selection-buttons ${classMap({hidden: this.expandedTabulator})}">
-                                                <button class="button is-primary" @click="${() => {
-                                    this.collapseAll();
-                                }}">${i18n.t('collapse-all')}</button>
-                                            </div>
-                                <dbp-tabulator-table
-                                        lang="${this.lang}"
-                                        class="tabulator-table"
-                                        id="tabulator-table-orders"
-                                        collapse-enabled
-                                        pagination-size="10"
-                                        pagination-enabled="true"
-                                        select-all-enabled
-                                        options=${JSON.stringify(options)}>
-                                    <div class="tabulator-responsive-collapse"></div>
-                                </dbp-tabulator-table>
-                            </div>
+                    
+                            
 
                             <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading || this.tableLoading})}">
                                 <div id="dispatch-requests-table" class=""></div>
