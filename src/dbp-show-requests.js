@@ -640,10 +640,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
 
         let data = [];
-        //let table = this._('#tabulator-table-orders');
+        let table = this._('#tabulator-table-orders');
 
         this.requestList.forEach((item) => {
-
+            console.log(item);
 
             let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
 
@@ -669,16 +669,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             controls_div.appendChild(btn_submit);
 
-            let order = { details:'', dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
+            let order = { dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
                 controls: controls_div,
-                 files:'safdsfs', recipients: 'dsfdsf', dateSubmitted: 'dsfsdf', requestId: 'sdfsdf'};
+                 files:item['files'], recipients: 'dsfdsf', dateSubmitted: 'dsfsdf', requestID: item['identifier']};
             data.push(order);
         });
 
         //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
         //this.setTableData(data);
 
-        //table.setData(data);
+        table.setData(data);
 
         /*let rows = table.getRows();
 
@@ -933,10 +933,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
         //look at toolkit for better tabulator format
         //the problem with collapsed tabulator was probably the lack of id
-        let order =  [
-            {id: 1, details: 'Oli Bob', dateCreated: '12', gz: 'red', subject: '', status: 'B', controls: '', files: 'asdasd', recipients: 'sdasd',
-            dateSubmitted: 'dasd', requestID: 'asdas'}
-        ];
 
         let langs  = {
             'en': {
@@ -976,7 +972,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center"},
                 {title: 'dateCreated', field: 'dateCreated', width: 250, hozAlign: 'left'},
                 {title: 'gz', field: 'gz', width: 250},
-                {title: 'subject', field: 'subject', width: 250, hozAlign: 'center'},
+                {title: 'subject', field: 'subject', width: 250},
                 {title: 'status', field: 'status', width: 150},
                 {title: '', field: 'controls', width: 150, formatter: 'html'},
                 {title: 'files', field: 'files', width: 150},
@@ -1185,7 +1181,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 pagination-size="10"
                                 pagination-enabled
                                 select-all-enabled
-                                data=${JSON.stringify(order)}
                                 options=${JSON.stringify(options)}>
                         </dbp-tabulator-table>
                     </div>
