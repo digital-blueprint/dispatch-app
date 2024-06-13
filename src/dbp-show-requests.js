@@ -640,7 +640,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
 
         let data = [];
-        let table = this._('#tabulator-table-orders');
+        //let table = this._('#tabulator-table-orders');
 
         this.requestList.forEach((item) => {
 
@@ -972,9 +972,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             layout: 'fitColumns',
             responsiveLayout: 'collapse',
             responsiveLayoutCollapseStartOpen: false,
-            rowHeader:{formatter:"responsiveCollapse", width:30, minWidth:30, hozAlign:"center", resizable:false, headerSort:false},
             columns: [
-                {title: 'details', field: 'details', width: 100},
+                {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center"},
                 {title: 'dateCreated', field: 'dateCreated', width: 250, hozAlign: 'left'},
                 {title: 'gz', field: 'gz', width: 250},
                 {title: 'subject', field: 'subject', width: 250, hozAlign: 'center'},
