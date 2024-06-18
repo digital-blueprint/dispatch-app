@@ -652,17 +652,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_edit.setAttribute('icon-name', 'pencil');
             btn_edit.addEventListener('click', async (event) => {
                 this.editRequest(event, item);
-                event.stopPropagation();
+               event.stopPropagation();
             });
+            console.log(btn_edit);
             controls_div.appendChild(btn_edit);
+
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
             btn_delete.addEventListener("click",function(e){
                 //table.deleteRow(e, 1);
 
             });
-
-
             controls_div.appendChild(btn_delete);
 
             let btn_submit = this.createScopedElement('dbp-icon-button');
@@ -670,8 +670,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             controls_div.appendChild(btn_submit);
 
             let order = { dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
-                controls: controls_div,
-                 files:item['files'], recipients: 'dsfdsf', dateSubmitted: 'dsfsdf', requestID: item['identifier']};
+                controls: controls_div, files:item['files'], recipients: 'dsfdsf', dateSubmitted: 'dsfsdf', requestID: item['identifier']};
             data.push(order);
         });
 
@@ -971,10 +970,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             columns: [
                 {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center"},
                 {title: 'dateCreated', field: 'dateCreated', width: 250, hozAlign: 'left'},
-                {title: 'gz', field: 'gz', width: 250},
+                {title: 'gz', field: 'gz', width: 150},
                 {title: 'subject', field: 'subject', width: 250},
                 {title: 'status', field: 'status', width: 150},
-                {title: '', field: 'controls', width: 150, formatter: 'html'},
+                {title: '', field: 'controls', formatter: 'html'},
                 {title: 'files', field: 'files', width: 150},
                 {title: 'recipients', field: 'recipients', width: 150},
                 {title: 'dateSubmitted', field: 'dateSubmitted', width: 150},
