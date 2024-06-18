@@ -636,7 +636,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
         this.organizationSet = true;
         await this.getListOfRequests();
-        console.log('request list' + this.requestList[0]);
 
 
         let data = [];
@@ -669,8 +668,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             controls_div.appendChild(btn_submit);
 
-            let order = { dateCreated: this.convertToReadableDate(item['dateCreated']), referenceNumber: item['referenceNumber'], subject: item['name'], status: Recipientstatus,
-                controls: controls_div, files:item['files'], recipients: 'dsfdsf', dateSubmitted: 'dsfsdf', requestID: item['identifier']};
+            let order = { dateCreated: this.convertToReadableDate(item['dateCreated']),
+                gz: item['referenceNumber']
+                    ? item['referenceNumber']
+                    : i18n.t('show-requests.empty-reference-number'),
+                subject: item['name'], status: Recipientstatus,
+                controls: controls_div, files:this.createFormattedFilesList(item['files']), recipients: this.createFormattedRecipientsList(item['recipients']),
+                dateSubmitted: item['dateSubmitted']
+                        ? this.convertToReadableDate(item['dateSubmitted'])
+                        : i18n.t('show-requests.date-submitted-not-submitted'),
+                requestID: item['identifier']};
             data.push(order);
         });
 
@@ -974,7 +981,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 {title: 'subject', field: 'subject', width: 250},
                 {title: 'status', field: 'status', width: 150},
                 {title: '', field: 'controls', formatter: 'html'},
-                {title: 'files', field: 'files', width: 150},
+                {title: 'files', field: 'files', width: 150, formatter: 'html'},
                 {title: 'recipients', field: 'recipients', width: 150},
                 {title: 'dateSubmitted', field: 'dateSubmitted', width: 150},
                 {title: 'requestID', field: 'requestID', width: 150}
