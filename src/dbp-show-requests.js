@@ -642,7 +642,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let table = this._('#tabulator-table-orders');
 
         this.requestList.forEach((item) => {
-            console.log(item);
 
             let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
 
@@ -653,19 +652,22 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 this.editRequest(event, item);
                event.stopPropagation();
             });
-            console.log(btn_edit);
             controls_div.appendChild(btn_edit);
 
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
-            btn_delete.addEventListener("click",function(e){
-                //table.deleteRow(e, 1);
-
+            btn_delete.addEventListener('click', async (event) => {
+                this.deleteRequest(event, item);
+                event.stopPropagation();
             });
             controls_div.appendChild(btn_delete);
 
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
+            btn_submit.addEventListener('click', async (event) => {
+                this.submitRequest(event, item);
+                event.stopPropagation();
+            });
             controls_div.appendChild(btn_submit);
 
             let order = { dateCreated: this.convertToReadableDate(item['dateCreated']),
@@ -976,10 +978,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayoutCollapseStartOpen: false,
             columns: [
                 {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center"},
-                {title: 'dateCreated', field: 'dateCreated', width: 250, hozAlign: 'left'},
-                {title: 'gz', field: 'gz', width: 150},
+                {title: 'dateCreated', field: 'dateCreated', width: 200, hozAlign: 'left'},
+                {title: 'gz', field: 'gz', width: 200},
                 {title: 'subject', field: 'subject', width: 250},
-                {title: 'status', field: 'status', width: 150},
+                {title: 'status', field: 'status', width: 200},
                 {title: '', field: 'controls', formatter: 'html'},
                 {title: 'files', field: 'files', width: 150, formatter: 'html'},
                 {title: 'recipients', field: 'recipients', width: 150},

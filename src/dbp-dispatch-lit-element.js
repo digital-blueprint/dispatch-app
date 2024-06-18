@@ -1430,8 +1430,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && response.status === 200) {
                 this.currentItem = responseBody;
 
-                console.log('responsebody AFTER changeReferenceNumberRequest: ', responseBody);
-
                 send({
                     summary: i18n.t('show-requests.edit-reference-number-success-title'),
                     body: i18n.t('show-requests.edit-reference-number-success-text'),
