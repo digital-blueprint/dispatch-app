@@ -312,7 +312,7 @@ Dependencies:
                     {src: 'assets/silent-check-sso.html', dest: 'dist'},
                     // the pdfjs worker is needed for signature, pdf-viewer and the annotation loading in dispatch!
                     {
-                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
+                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.mjs'),
                         dest: 'dist/local/@digital-blueprint/esign-app/pdfjs',
                     },
                     {
@@ -320,7 +320,7 @@ Dependencies:
                         dest: 'dist/local/@digital-blueprint/esign-app/pdfjs',
                     }, // do we want all map files?
                     {
-                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
+                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.mjs'),
                         dest: 'dist/local/@dbp-toolkit/pdf-viewer/pdfjs',
                     },
                     {
@@ -382,7 +382,7 @@ Dependencies:
                     {src: customAssetsPath + 'silent-check-sso.html', dest: 'dist'},
                     // the pdfjs worker is needed for signature, pdf-viewer and the annotation loading in dispatch!
                     {
-                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
+                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.mjs'),
                         dest: 'dist/local/@digital-blueprint/esign-app/pdfjs',
                     },
                     {
@@ -390,7 +390,7 @@ Dependencies:
                         dest: 'dist/local/@digital-blueprint/esign-app/pdfjs',
                     }, // do we want all map files?
                     {
-                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.js'),
+                        src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.mjs'),
                         dest: 'dist/local/@dbp-toolkit/pdf-viewer/pdfjs',
                     },
                     {
