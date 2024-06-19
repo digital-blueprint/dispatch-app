@@ -706,9 +706,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             rows.forEach((row, index) =>{
             let controls_div = this.createScopedElement('div');
 
-            /*let btn_edit = this.createScopedElement('dbp-icon-button');
+            let btn_edit = this.createScopedElement('dbp-icon-button');
             btn_edit.setAttribute('icon-name', 'pencil');
-            controls_div.appendChild(btn_edit);*/
+            btn_edit.addEventListener('click', async (event) => {
+                this.editRequest(event, this.requestList[index]);
+                event.stopPropagation();
+            });
+            controls_div.appendChild(btn_edit);
+
 
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
@@ -721,9 +726,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
             controls_div.appendChild(btn_delete);
 
-            /*let btn_submit = this.createScopedElement('dbp-icon-button');
+            let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
-            controls_div.appendChild(btn_submit);*/
+            btn_submit.addEventListener('click', async (event) => {
+                this.submitRequest(event, this.requestList[index]);
+                event.stopPropagation();
+            });
+            controls_div.appendChild(btn_submit);
 
             let newData = {controls: controls_div};
 
