@@ -87,7 +87,7 @@
         "matomoSiteId": 131,
         "nextcloudBaseURL": "https://cloud-demo.tugraz.at",
         "nextcloudName": "dbp cloud",
-        "pdfAsQualifiedlySigningServer": "https://sig-test.tugraz.at",
+        "pdfAsQualifiedlySigningServer": "https://sig-demo.tugraz.at",
         "hiddenActivities": [],
         "shortName": "dbp",
         "appDomain": "https://dbp-demo.tugraz.at/apps/dispatch/"
@@ -102,7 +102,7 @@
         "matomoSiteId": 131,
         "nextcloudBaseURL": "https://cloud-demo.tugraz.at",
         "nextcloudName": "TU Graz cloud",
-        "pdfAsQualifiedlySigningServer": "https://sig-test.tugraz.at",
+        "pdfAsQualifiedlySigningServer": "https://sig-demo.tugraz.at",
         "hiddenActivities": [],
         "shortName": "TU Graz",
         "appDomain": "https://epost.tugraz.at/",
