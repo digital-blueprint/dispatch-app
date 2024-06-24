@@ -1529,6 +1529,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async confirmEditSubject() {
         let subject = this._('#tf-edit-subject-fn-dialog').value;
+        let table = this._('#tabulator-table-orders');
+        let rows = table.getRows();
+        let row = this.currentRow;
+        table.updateRow(row, {subject: subject});
         let id = this.currentItem.identifier;
         await this.changeSubjectRequest(id, subject);
     }

@@ -65,6 +65,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderStreetAddress = '';
         this.currentItem.senderBuildingNumber = '';
 
+        this.currentRow = {};
+
         this.lastModifiedName = '';
         this.expanded = false;
 
@@ -124,6 +126,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             showListView: {type: Boolean, attribute: false},
             showDetailsView: {type: Boolean, attribute: false},
             currentItem: {type: Object, attribute: false},
+            currentRow: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
             totalNumberOfItems: {type: Number, attribute: false},
             subject: {type: String, attribute: false},
@@ -623,9 +626,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         table.setData(JSON.stringify(data));
     }
 
-
-
-
     async processSelectedOrganization(event) {
         const i18n = this._i18n;
         this.storeGroupValue(event.detail.value);
@@ -644,45 +644,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let data = [];
         let table = this._('#tabulator-table-orders');
 
-        this.requestList.forEach((item, index) => {
+        this.requestList.forEach((item) => {
 
             let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
-
-            let controls_div = this.createScopedElement('div');
-            let btn_edit = this.createScopedElement('dbp-icon-button');
-            btn_edit.setAttribute('icon-name', 'pencil');
-            btn_edit.addEventListener('click', async (event) => {
-                this.editRequest(event, item);
-               event.stopPropagation();
-            });
-            controls_div.appendChild(btn_edit);
-
-            let btn_delete = this.createScopedElement('dbp-icon-button');
-            btn_delete.setAttribute('icon-name', 'trash');
-            btn_delete.addEventListener('click', async (event) => {
-                this.editTable = true;
-                this.deleteRequest(event, item);
-                console.log('index ', index);
-                table.deleteRow(event, index + 1);
-
-                //event.stopPropagation();
-            });
-            controls_div.appendChild(btn_delete);
-
-            let btn_submit = this.createScopedElement('dbp-icon-button');
-            btn_submit.setAttribute('icon-name', 'send-diagonal');
-            btn_submit.addEventListener('click', async (event) => {
-                this.submitRequest(event, item);
-                event.stopPropagation();
-            });
-            controls_div.appendChild(btn_submit);
 
             let order = { dateCreated: this.convertToReadableDate(item['dateCreated']),
                 gz: item['referenceNumber']
                     ? item['referenceNumber']
                     : i18n.t('show-requests.empty-reference-number'),
-                subject: item['name'], status: Recipientstatus,
-                controls: controls_div, files:this.createFormattedFilesList(item['files']), recipients: this.createFormattedRecipientsList(item['recipients']),
+                subject: item['name'], status: Recipientstatus, files:this.createFormattedFilesList(item['files']),
+                recipients: this.createFormattedRecipientsList(item['recipients']),
                 dateSubmitted: item['dateSubmitted']
                         ? this.convertToReadableDate(item['dateSubmitted'])
                         : i18n.t('show-requests.date-submitted-not-submitted'),
@@ -690,54 +661,48 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             data.push(order);
         });
 
-        //console.log('check status ' + this.checkRecipientStatus(this.requestList.recipients)[0]);
-        //this.setTableData(data);
-
         table.setData(data);
-        console.log('requests list ', this.requestList);
 
         let rows = table.getRows();
 
         rows.forEach((num1, index) => {
             const num2 = this.requestList[index];
-            console.log(num1, num2);
         });
 
-            rows.forEach((row, index) =>{
-            let controls_div = this.createScopedElement('div');
+        rows.forEach((row, index) =>{
+        let controls_div = this.createScopedElement('div');
 
-            let btn_edit = this.createScopedElement('dbp-icon-button');
-            btn_edit.setAttribute('icon-name', 'pencil');
-            btn_edit.addEventListener('click', async (event) => {
-                this.editRequest(event, this.requestList[index]);
-                event.stopPropagation();
-            });
-            controls_div.appendChild(btn_edit);
-
-
-            let btn_delete = this.createScopedElement('dbp-icon-button');
-            btn_delete.setAttribute('icon-name', 'trash');
-            btn_delete.addEventListener("click", async (event) => {
-                this.deleteRequest(event, this.requestList[index]);
-                event.stopPropagation();
-                table.deleteRow(row);
-                console.log(this.requestList);
-                //this.deleteRequest(e, this.requestList[index]);
-            });
-            controls_div.appendChild(btn_delete);
-
-            let btn_submit = this.createScopedElement('dbp-icon-button');
-            btn_submit.setAttribute('icon-name', 'send-diagonal');
-            btn_submit.addEventListener('click', async (event) => {
-                this.submitRequest(event, this.requestList[index]);
-                event.stopPropagation();
-            });
-            controls_div.appendChild(btn_submit);
-
-            let newData = {controls: controls_div};
-
-            table.updateRow(row, newData);
+        let btn_edit = this.createScopedElement('dbp-icon-button');
+        btn_edit.setAttribute('icon-name', 'pencil');
+        btn_edit.addEventListener('click', async (event) => {
+            this.editRequest(event, this.requestList[index]);
+            this.currentRow = row;
+            event.stopPropagation();
         });
+        controls_div.appendChild(btn_edit);
+
+
+        let btn_delete = this.createScopedElement('dbp-icon-button');
+        btn_delete.setAttribute('icon-name', 'trash');
+        btn_delete.addEventListener("click", async (event) => {
+            this.deleteRequest(event, this.requestList[index]);
+            event.stopPropagation();
+            table.deleteRow(row);
+        });
+        controls_div.appendChild(btn_delete);
+
+        let btn_submit = this.createScopedElement('dbp-icon-button');
+        btn_submit.setAttribute('icon-name', 'send-diagonal');
+        btn_submit.addEventListener('click', async (event) => {
+            this.submitRequest(event, this.requestList[index]);
+            event.stopPropagation();
+        });
+        controls_div.appendChild(btn_submit);
+
+        let newData = {controls: controls_div};
+
+        table.updateRow(row, newData);
+    });
 
     }
 
