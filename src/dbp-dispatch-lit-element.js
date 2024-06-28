@@ -1020,6 +1020,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.currentItem = responseBody;
                         this.currentRecipient = {};
                     }
+                    let table = this._('#tabulator-table-orders');
+                    let row = this.currentRow;
+                    table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
+
                     this.currentRecipient.personIdentifier = '';
                     this.currentRecipient.givenName = '';
                     this.currentRecipient.familyName = '';
@@ -1043,9 +1047,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 } else {
                     hasError = true;
                 }
-                let table = this._('#tabulator-table-orders');
-                let row = this.currentRow;
-                table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
+
 
             } else {
                 hasError = true;
@@ -1094,7 +1096,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 if (responseBody !== undefined && responseBody.status !== 403) {
                     this.currentItem = responseBody;
                     this.requestCreated = false;
+                    let table = this._('#tabulator-table-orders');
+                    let row = this.currentRow;
+                    //console.log(this.currentItem.recipients);
+                    table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                 }
+
             } else {
                 // TODO error handling
 
@@ -2311,7 +2318,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.birthDateYear = this._(
                 '#tf-edit-recipient-birthdate-year',
             ).value;
-            console.log("update recipient");
             this.updateRecipient(button);
         } else {
             button.stop();
