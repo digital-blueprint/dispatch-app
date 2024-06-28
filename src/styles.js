@@ -162,6 +162,7 @@ export function getDispatchRequestTableStyles() {
         .tabulator .tabulator-footer {
             background-color: var(--dbp-background);
             color: var(--dbp-content);
+            border-top: none;
         }
 
         .tabulator .tabulator-footer .tabulator-paginator .tabulator-page {
@@ -295,6 +296,10 @@ export function getDispatchRequestTableStyles() {
             .tabulator-col-content
             .tabulator-col-title-holder {
             display: inline-flex;
+        }
+
+        .tabulator .tabulator-tableholder .tabulator-table {
+            background-color: var(--dbp-background);
         }
 
         @media only screen and (orientation: portrait) and (max-width: 768px) {
