@@ -665,10 +665,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         let rows = table.getRows();
 
-        rows.forEach((num1, index) => {
-            const num2 = this.requestList[index];
-        });
-
         rows.forEach((row, index) =>{
         let controls_div = this.createScopedElement('div');
 
