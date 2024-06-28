@@ -950,7 +950,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async updateRecipient(button) {
-        table.updateRow(row, {recipients: this.currentItem.recipients});
         button.start();
         const i18n = this._i18n;
         let hasError = false;
@@ -1044,10 +1043,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 } else {
                     hasError = true;
                 }
-                /*console.log(this.currentItem.recipients);
                 let table = this._('#tabulator-table-orders');
                 let row = this.currentRow;
-                table.updateRow(row, {recipients: this.currentItem.recipients});*/
+                table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
 
             } else {
                 hasError = true;
@@ -2253,6 +2251,73 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.requestUpdate();
     }
 
+    async confirmEditRecipient() {
+        let button = this.button;
+
+        let validcountry = this.checkValidity(
+            this._('#edit-recipient-country-select'),
+        );
+        let validal = this.checkValidity(
+            this._('#tf-edit-recipient-al-dialog'),
+        );
+        let validpc = this.checkValidity(
+            this._('#tf-edit-recipient-pc-dialog'),
+        );
+        let validsa = this.checkValidity(
+            this._('#tf-edit-recipient-sa-dialog'),
+        );
+        let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
+        let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
+        let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
+        let validfn = this.checkValidity(
+            this._('#tf-edit-recipient-fn-dialog'),
+        );
+        let validgn = this.checkValidity(
+            this._('#tf-edit-recipient-gn-dialog'),
+        );
+
+        if (
+            validgn &&
+            validfn &&
+            validcountry &&
+            validpc &&
+            validal &&
+            validsa && validbirthday && validbirthmonth && validbirthyear
+        ) {
+            this.currentRecipient.givenName = this._(
+                '#tf-edit-recipient-gn-dialog',
+            ).value;
+            this.currentRecipient.familyName = this._(
+                '#tf-edit-recipient-fn-dialog',
+            ).value;
+            this.currentRecipient.addressCountry = this._(
+                '#edit-recipient-country-select',
+            ).value;
+            this.currentRecipient.postalCode = this._(
+                '#tf-edit-recipient-pc-dialog',
+            ).value;
+            this.currentRecipient.addressLocality = this._(
+                '#tf-edit-recipient-al-dialog',
+            ).value;
+            this.currentRecipient.streetAddress = this._(
+                '#tf-edit-recipient-sa-dialog',
+            ).value;
+            this.currentRecipient.birthDateDay = this._(
+                '#tf-edit-recipient-birthdate-day',
+            ).value;
+            this.currentRecipient.birthDateMonth = this._(
+                '#tf-edit-recipient-birthdate-month',
+            ).value;
+            this.currentRecipient.birthDateYear = this._(
+                '#tf-edit-recipient-birthdate-year',
+            ).value;
+            console.log("update recipient");
+            this.updateRecipient(button);
+        } else {
+            button.stop();
+        }
+    }
+
     async processSelectedSender(event) {
         console.log('selected sender');
         this.storeGroupValue(event.detail.value);
@@ -3356,72 +3421,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     class="button select-button is-primary"
                                     id="edit-recipient-confirm-btn"
                                     @click="${() => {
-                                        let button = this.button;
-
-                                        let validcountry = this.checkValidity(
-                                            this._('#edit-recipient-country-select'),
-                                        );
-                                        let validal = this.checkValidity(
-                                            this._('#tf-edit-recipient-al-dialog'),
-                                        );
-                                        let validpc = this.checkValidity(
-                                            this._('#tf-edit-recipient-pc-dialog'),
-                                        );
-                                        let validsa = this.checkValidity(
-                                            this._('#tf-edit-recipient-sa-dialog'),
-                                        );
-                                        let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
-                                        let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
-                                        let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
-                                        let validfn = this.checkValidity(
-                                            this._('#tf-edit-recipient-fn-dialog'),
-                                        );
-                                        let validgn = this.checkValidity(
-                                            this._('#tf-edit-recipient-gn-dialog'),
-                                        );
-
-                                        if (
-                                            validgn &&
-                                            validfn &&
-                                            validcountry &&
-                                            validpc &&
-                                            validal &&
-                                            validsa && validbirthday && validbirthmonth && validbirthyear
-                                        ) {
-                                            this.currentRecipient.givenName = this._(
-                                                '#tf-edit-recipient-gn-dialog',
-                                            ).value;
-                                            this.currentRecipient.familyName = this._(
-                                                '#tf-edit-recipient-fn-dialog',
-                                            ).value;
-                                            this.currentRecipient.addressCountry = this._(
-                                                '#edit-recipient-country-select',
-                                            ).value;
-                                            this.currentRecipient.postalCode = this._(
-                                                '#tf-edit-recipient-pc-dialog',
-                                            ).value;
-                                            this.currentRecipient.addressLocality = this._(
-                                                '#tf-edit-recipient-al-dialog',
-                                            ).value;
-                                            this.currentRecipient.streetAddress = this._(
-                                                '#tf-edit-recipient-sa-dialog',
-                                            ).value;
-                                            this.currentRecipient.birthDateDay = this._(
-                                                '#tf-edit-recipient-birthdate-day',
-                                            ).value;
-                                            this.currentRecipient.birthDateMonth = this._(
-                                                '#tf-edit-recipient-birthdate-month',
-                                            ).value;
-                                            this.currentRecipient.birthDateYear = this._(
-                                                '#tf-edit-recipient-birthdate-year',
-                                            ).value;
-                                            console.log("update recipient");
-                                            this.updateRecipient(button);
-                                            
+                                        this.confirmEditRecipient().then((r) => {
                                             MicroModal.close(this._('#edit-recipient-modal'));
-                                        } else {
-                                            button.stop();
-                                        }
+                                        });
                                     }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-ok')}
                                 </button>
