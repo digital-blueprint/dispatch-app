@@ -897,6 +897,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 if (responseBody !== undefined && responseBody.status !== 403) {
                     this.currentItem = responseBody;
                     this.currentRecipient = {};
+                    let table = this._('#tabulator-table-orders');
+                    let row = this.currentRow;
+                    table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                 }
                 this.currentRecipient.personIdentifier = '';
                 this.currentRecipient.givenName = '';
@@ -1019,10 +1022,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
                         this.currentRecipient = {};
+                        let table = this._('#tabulator-table-orders');
+                        let row = this.currentRow;
+                        table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
-                    let table = this._('#tabulator-table-orders');
-                    let row = this.currentRow;
-                    table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
 
                     this.currentRecipient.personIdentifier = '';
                     this.currentRecipient.givenName = '';
@@ -1098,7 +1101,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.requestCreated = false;
                     let table = this._('#tabulator-table-orders');
                     let row = this.currentRow;
-                    //console.log(this.currentItem.recipients);
                     table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                 }
 
