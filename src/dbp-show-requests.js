@@ -975,7 +975,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 {title: 'status', field: 'status', width: 200},
                 {title: '', field: 'controls', formatter: 'html'},
                 {title: 'files', field: 'files', width: 150, formatter: 'html'},
-                {title: 'recipients', field: 'recipients', width: 150},
+                {title: 'recipients', field: 'recipients', width: 150, formatter: 'html'},
                 {title: 'dateSubmitted', field: 'dateSubmitted', width: 150},
                 {title: 'requestID', field: 'requestID', width: 150}
             ],

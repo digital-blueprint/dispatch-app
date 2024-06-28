@@ -950,6 +950,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async updateRecipient(button) {
+        table.updateRow(row, {recipients: this.currentItem.recipients});
         button.start();
         const i18n = this._i18n;
         let hasError = false;
@@ -1043,6 +1044,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 } else {
                     hasError = true;
                 }
+                /*console.log(this.currentItem.recipients);
+                let table = this._('#tabulator-table-orders');
+                let row = this.currentRow;
+                table.updateRow(row, {recipients: this.currentItem.recipients});*/
+
             } else {
                 hasError = true;
             }
@@ -1066,6 +1072,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.requestUpdate();
             button.stop();
         }
+
     }
 
     async deleteRecipient(event, recipient) {
@@ -1458,6 +1465,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmEditSender() {
+        console.log('edit sender');
         const i18n = this._i18n;
 
         try {
@@ -1525,12 +1533,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } finally {
             this._('#edit-sender-btn').stop();
         }
+
     }
 
     async confirmEditSubject() {
+        console.log('edit subject');
         let subject = this._('#tf-edit-subject-fn-dialog').value;
         let table = this._('#tabulator-table-orders');
-        let rows = table.getRows();
         let row = this.currentRow;
         table.updateRow(row, {subject: subject});
         let id = this.currentItem.identifier;
@@ -1539,11 +1548,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async confirmEditReferenceNumber() {
         let referenceNumber = this._('#tf-edit-reference-number-fn-dialog').value;
+        let table = this._('#tabulator-table-orders');
+        let row = this.currentRow;
+        table.updateRow(row, {gz: referenceNumber});
         let id = this.currentItem.identifier;
         await this.changeReferenceNumberRequest(id, referenceNumber);
     }
 
     async confirmAddSubject() {
+        console.log('add subject');
         this._('#add-subject-confirm-btn').disabled = true;
 
         this.subject =
@@ -2241,6 +2254,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async processSelectedSender(event) {
+        console.log('selected sender');
         this.storeGroupValue(event.detail.value);
         const i18n = this._i18n;
         this.organizationLoaded = true;
@@ -2558,7 +2572,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addEditSenderModal() {
         const i18n = this._i18n;
-
+        //console.log('edit sender modal');
         return html`
             <div class="modal micromodal-slide" id="edit-sender-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>
@@ -3401,8 +3415,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             this.currentRecipient.birthDateYear = this._(
                                                 '#tf-edit-recipient-birthdate-year',
                                             ).value;
-
+                                            console.log("update recipient");
                                             this.updateRecipient(button);
+                                            
                                             MicroModal.close(this._('#edit-recipient-modal'));
                                         } else {
                                             button.stop();
