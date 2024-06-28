@@ -1,5 +1,5 @@
 import {html} from 'lit';
-import pdfjs from 'pdfjs-dist/legacy/build/pdf.js';
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import * as commonUtils from '@dbp-toolkit/common/utils';
 
 export const getPDFFileBase64Content = (file) => {
@@ -40,9 +40,9 @@ export const getReferenceNumberFromPDF = async (file) => {
                 // Check if the annotation is a business number, and we haven't found one yet
                 if (
                     referenceNumber === null &&
-                    annotation.contents.startsWith('dbp_annotation_bbe3a371=')
+                    annotation.contentsObj.str.startsWith('dbp_annotation_bbe3a371=')
                 ) {
-                    let contents = annotation.contents;
+                    let contents = annotation.contentsObj.str;
                     referenceNumber = contents.substring(contents.indexOf('=') + 1);
                 }
             });
