@@ -257,24 +257,24 @@ export default (async () => {
                 preferBuiltins: true,
             }),
             checkLicenses &&
-                license({
-                    banner: {
-                        commentStyle: 'ignored',
-                        content: `
+            license({
+                banner: {
+                    commentStyle: 'ignored',
+                    content: `
 License: <%= pkg.license %>
 Dependencies:
 <% _.forEach(dependencies, function (dependency) { if (dependency.name) { %>
 <%= dependency.name %>: <%= dependency.license %><% }}) %>
 `,
+                },
+                thirdParty: {
+                    allow: {
+                        test: '(MIT OR BSD-3-Clause OR Apache-2.0 OR LGPL-2.1-or-later)',
+                        failOnUnlicensed: true,
+                        failOnViolation: true,
                     },
-                    thirdParty: {
-                        allow: {
-                            test: '(MIT OR BSD-3-Clause OR Apache-2.0 OR LGPL-2.1-or-later)',
-                            failOnUnlicensed: true,
-                            failOnViolation: true,
-                        },
-                    },
-                }),
+                },
+            }),
             commonjs({
                 include: 'node_modules/**',
             }),
@@ -431,35 +431,35 @@ Dependencies:
             }),
 
             useBabel &&
-                getBabelOutputPlugin({
-                    compact: false,
-                    presets: [
-                        [
-                            '@babel/preset-env',
-                            {
-                                loose: true,
-                                shippedProposals: true,
-                                bugfixes: true,
-                                modules: false,
-                                targets: {
-                                    esmodules: true,
-                                },
+            getBabelOutputPlugin({
+                compact: false,
+                presets: [
+                    [
+                        '@babel/preset-env',
+                        {
+                            loose: true,
+                            shippedProposals: true,
+                            bugfixes: true,
+                            modules: false,
+                            targets: {
+                                esmodules: true,
                             },
-                        ],
+                        },
                     ],
-                }),
+                ],
+            }),
             useTerser ? terser() : false,
             watch
                 ? serve({
-                      contentBase: '.',
-                      host: '127.0.0.1',
-                      port: 8001,
-                      historyApiFallback: config.basePath + pkg.internalName + '.html',
-                      https: useHTTPS ? await generateTLSConfig() : false,
-                      headers: {
-                          'Content-Security-Policy': config.CSP,
-                      },
-                  })
+                    contentBase: '.',
+                    host: '127.0.0.1',
+                    port: 8001,
+                    historyApiFallback: config.basePath + pkg.internalName + '.html',
+                    https: useHTTPS ? await generateTLSConfig() : false,
+                    headers: {
+                        'Content-Security-Policy': config.CSP,
+                    },
+                })
                 : false,
         ],
     };
