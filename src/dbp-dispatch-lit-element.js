@@ -652,10 +652,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async addFile(file) {
         this._('#add-files-btn').start();
-
+        console.log('add file');
         try {
             let id = this.currentItem.identifier;
             await this.addFileToRequest(id, file);
+            let table = this._('#tabulator-table-orders');
+            let row = this.currentRow;
+            table.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
         } catch (e) {
             console.error(`${e.name}: ${e.message}`);
             send({
@@ -772,6 +775,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 if (responseBody !== undefined && responseBody.status !== 403) {
                     this.currentItem = responseBody;
                 }
+                let table = this._('#tabulator-table-orders');
+                let row = this.currentRow;
+                table.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
             } else {
                 // TODO error handling
 
