@@ -79,7 +79,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.dispatchRequestsTable = null;
         this.totalNumberOfItems = 0;
-        this.rowsSelected = false;
+        this.rowsSelected = true;
 
         this.boundSelectHandler = this.selectAllFiles.bind(this);
 
@@ -244,7 +244,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 // that.dispatchRequestsTable.deselectRow("visible"));
                                 this.dispatchRequestsTable.deselectRow();
                                 this._('#select_all').checked = false;
-                                this.rowsSelected = false;
+                                this.rowsSelected = true;
                             } else {
                                 that.dispatchRequestsTable.selectRow('visible');
                                 this._('#select_all').checked = true;
@@ -624,6 +624,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     setTableData(data) {
         let table = this._('#tabulator-table-orders');
         table.setData(JSON.stringify(data));
+    }
+
+    deleteSelectedRows(){
+        let table = this._('#tabulator-table-orders');
+        table.deleteSelectedRows();
     }
 
     async processSelectedOrganization(event) {
@@ -1139,6 +1144,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                   )}"
                                                   @click="${(event) => {
                                                       this.deleteSelected(event);
+                                                      this.deleteSelectedRows();
                                                   }}"
                                                   title="${i18n.t(
                                                       'show-requests.delete-button-text',
@@ -1176,6 +1182,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 pagination-size="10"
                                 pagination-enabled
                                 select-all-enabled
+                                select-rows-enabled
                                 options=${JSON.stringify(options)}>
                         </dbp-tabulator-table>
                     </div>

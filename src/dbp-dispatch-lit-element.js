@@ -1164,6 +1164,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async deleteRequest(event, item) {
+        console.log('delete request');
         const i18n = this._i18n;
         let button = event.target;
 
@@ -1229,6 +1230,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         type: 'success',
                         timeout: 5,
                     });
+                    //let row = this.currentRow;
+                    //table.deleteRow(row);
                 } else {
                     send({
                         summary: 'Error!',
