@@ -79,7 +79,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.dispatchRequestsTable = null;
         this.totalNumberOfItems = 0;
-        this.rowsSelected = true;
+        this.rowsSelected = false;
 
         this.boundSelectHandler = this.selectAllFiles.bind(this);
 
@@ -237,21 +237,21 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         headerSort: false,
                         responsive: 0,
                         widthGrow: 1,
-                        headerClick: (e) => {
+                        /*headerClick: (e) => {
                             let allSelected = that.checkAllSelected();
 
                             if (allSelected) {
                                 // that.dispatchRequestsTable.deselectRow("visible"));
                                 this.dispatchRequestsTable.deselectRow();
                                 this._('#select_all').checked = false;
-                                this.rowsSelected = true;
+                                this.rowsSelected = false;
                             } else {
                                 that.dispatchRequestsTable.selectRow('visible');
                                 this._('#select_all').checked = true;
                                 this.rowsSelected = true;
                             }
                             e.preventDefault();
-                        },
+                        },*/
                     },
                     {
                         title: i18n.t('show-requests.table-header-details'),
@@ -626,10 +626,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         table.setData(JSON.stringify(data));
     }
 
-    deleteSelectedRows(){
+    /*deleteSelectedRows(){
         let table = this._('#tabulator-table-orders');
         table.deleteSelectedRows();
-    }
+    }*/
 
     async processSelectedOrganization(event) {
         const i18n = this._i18n;
@@ -662,7 +662,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 dateSubmitted: item['dateSubmitted']
                         ? this.convertToReadableDate(item['dateSubmitted'])
                         : i18n.t('show-requests.date-submitted-not-submitted'),
-                requestID: item['identifier']};
+                requestId: item['identifier']};
             data.push(order);
         });
 
@@ -945,7 +945,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     'files': i18n.t('show-requests.table-header-files', {lng: 'en'}),
                     'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'en'}),
                     'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'en'}),
-                    'requestID': i18n.t('show-requests.table-header-id', {lng: 'en'}),
+                    'requestId': i18n.t('show-requests.table-header-id', {lng: 'en'}),
                 },
             },
             'de': {
@@ -958,7 +958,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     'files': i18n.t('show-requests.table-header-files', {lng: 'de'}),
                     'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'de'}),
                     'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'de'}),
-                    'requestID': i18n.t('show-requests.table-header-id', {lng: 'de'}),
+                    'requestId': i18n.t('show-requests.table-header-id', {lng: 'de'}),
                 },
             },
         };
@@ -978,7 +978,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 {title: 'files', field: 'files', width: 150, formatter: 'html'},
                 {title: 'recipients', field: 'recipients', width: 150, formatter: 'html'},
                 {title: 'dateSubmitted', field: 'dateSubmitted', width: 150},
-                {title: 'requestID', field: 'requestID', width: 150}
+                {title: 'requestId', field: 'requestId', width: 150}
             ],
             columnDefaults: {
                 vertAlign: 'middle',
@@ -1138,13 +1138,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         ? html`
                                               <dbp-loading-button
                                                   id="delete-all-btn"
-                                                  ?disabled="${this.loading || !this.rowsSelected}"
+                                                  
                                                   value="${i18n.t(
                                                       'show-requests.delete-button-text',
                                                   )}"
                                                   @click="${(event) => {
                                                       this.deleteSelected(event);
-                                                      this.deleteSelectedRows();
+                                                      //this.deleteSelectedRows();
                                                   }}"
                                                   title="${i18n.t(
                                                       'show-requests.delete-button-text',

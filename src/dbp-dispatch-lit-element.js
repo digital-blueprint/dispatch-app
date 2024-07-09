@@ -1230,8 +1230,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         type: 'success',
                         timeout: 5,
                     });
-                    //let row = this.currentRow;
-                    //table.deleteRow(row);
+                    let table = this._('#tabulator-table-orders');
+                    let row = this.currentRow;
+                    table.deleteRow(row);
                 } else {
                     send({
                         summary: 'Error!',
@@ -1759,11 +1760,34 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this._('#delete-all-btn').start();
 
         try {
+            let table = this._('#tabulator-table-orders');
             let selectedItems = this.dispatchRequestsTable.getSelectedRows();
+            let selectedItems2 = table.getSelectedRows();
+            //TODO replace with dbt tabulator
             let somethingWentWrong = false;
+
+            for (let i = 0; i < selectedItems2.length; i++) {
+                let data = selectedItems2[i].getData();
+                let id = selectedItems2[i].getData()['requestId'];
+                let response = await this.getDispatchRequest(id);
+                let result = await response.json();
+
+                if (result.dateSubmitted) {
+                    send({
+                        summary: i18n.t('show-requests.delete-not-allowed-title'),
+                        body: i18n.t('show-requests.delete-not-allowed-text'),
+                        type: 'danger',
+                        timeout: 5,
+                    });
+                    somethingWentWrong = true;
+                    break;
+                }
+
+            }
 
             for (let i = 0; i < selectedItems.length; i++) {
                 let id = selectedItems[i].getData()['requestId'];
+                console.log(selectedItems[i].getData());
                 let response = await this.getDispatchRequest(id);
                 let result = await response.json();
                 if (result.dateSubmitted) {
@@ -1783,17 +1807,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
 
             let dialogText = i18n.t('show-requests.delete-dialog-text_other', {
-                count: this.dispatchRequestsTable.getSelectedRows().length,
+                //count: this.dispatchRequestsTable.getSelectedRows().length,
+                count: table.getSelectedRows().length,
             });
 
             let ids = [];
 
             if (confirm(dialogText)) {
-                for (let i = 0; i < selectedItems.length; i++) {
-                    let id = selectedItems[i].getData()['requestId'];
+                for (let i = 0; i < selectedItems2.length; i++) {
+                    let id = selectedItems2[i].getData()['requestId'];
+
                     ids.push(id);
+
                     let response = await this.getDispatchRequest(id);
                     let result = await response.json();
+
 
                     let deleteResponse = await this.sendDeleteDispatchRequest(result.identifier);
 
@@ -1804,7 +1832,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
 
                 if (!somethingWentWrong) {
-                    if (this.dispatchRequestsTable) {
+                    //if (this.dispatchRequestsTable) {
+                    if (table) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
                             for (let i = 0; i < ids.length; i++) {
                                 this.createdRequestsIds = this.createdRequestsIds.filter(
@@ -1836,6 +1865,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         type: 'success',
                         timeout: 5,
                     });
+
+                    table.deleteSelectedRows();
                 } else {
                     // TODO error handling
                     send({
