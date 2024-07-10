@@ -640,11 +640,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     rowClick(event) {
         this.selected = true;
         let deleteButton = this._('#delete-all-btn');
+        let submitButton = this._('#submit-all-btn');
         let table = this._('#tabulator-table-orders');
-        if(table.getSelectedRows().length !== 0)
+        if(table.getSelectedRows().length !== 0) {
             deleteButton.disabled = false;
-        else
+            submitButton.disabled = false;
+        }
+        else {
             deleteButton.disabled = true;
+            submitButton.disabled = true;
+        }
     }
 
     async processSelectedOrganization(event) {
@@ -1152,21 +1157,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 ${
                                     this.mayWrite
                                         ? html`
-                                              <!--<dbp-loading-button
-                                                  id="delete-all-btn"
-                                                  ?disabled="${this.loading || !this.rowsSelected}"
-                                                  value="${i18n.t(
-                                                      'show-requests.delete-button-text',
-                                                  )}"
-                                                  @click="${(event) => {
-                                                      this.deleteSelected(event);
-                                                      //this.deleteSelectedRows();
-                                                  }}"
-                                                  title="${i18n.t(
-                                                      'show-requests.delete-button-text',
-                                                  )}">
-                                                  ${i18n.t('show-requests.delete-button-text')}
-                                              </dbp-loading-button>-->
                                               <dbp-loading-button
                                                   id="delete-all-btn"
                                                   disabled
@@ -1184,6 +1174,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               </dbp-loading-button>
                                               <dbp-loading-button
                                                   id="submit-all-btn"
+                                                  disabled
                                                   type="is-primary"
                                                   value="${i18n.t(
                                                       'show-requests.submit-button-text',
