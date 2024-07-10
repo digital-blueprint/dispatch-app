@@ -2,6 +2,7 @@
     "name": "@digital-blueprint/dispatch-app",
     "internalName": "dbp-dispatch",
     "version": "1.4.0",
+    "type": "module",
     "main": "src/dbp-dispatch.js",
     "license": "LGPL-2.1-or-later",
     "private": true,
@@ -69,18 +70,18 @@
         "pdfjs-dist": ">=4.3 <4.4"
     },
     "scripts": {
-        "build": "rollup --bundleConfigAsCjs -c",
+        "build": "rollup -c",
         "i18next": "i18next",
         "format": "npm run format:eslint && npm run format:prettier",
         "format:eslint": "eslint \"**/*.{js,ts}\" --fix",
         "format:prettier": "prettier \"**/*.{js,json,ts}\" --write",
-        "watch": "rollup --bundleConfigAsCjs -c --watch",
+        "watch": "rollup -c --watch",
         "watch-local": "npm run watch",
-        "watch-full": "rollup --bundleConfigAsCjs -c --watch --environment FORCE_FULL",
-        "watch-bs": "rollup --bundleConfigAsCjs -c --watch --environment APP_ENV:bs",
-        "watch-custom": "rollup --bundleConfigAsCjs -c --watch --environment APP_ENV:localCustom",
-        "test": "rollup --bundleConfigAsCjs -c --environment APP_ENV:test && karma start --singleRun",
-        "test-full": "rollup --bundleConfigAsCjs -c --environment FORCE_FULL,APP_ENV:test && karma start --singleRun",
+        "watch-full": "rollup -c --watch --environment FORCE_FULL",
+        "watch-bs": "rollup -c --watch --environment APP_ENV:bs",
+        "watch-custom": "rollup -c --watch --environment APP_ENV:localCustom",
+        "test": "rollup -c --environment APP_ENV:test && karma start karma.conf.cjs --singleRun",
+        "test-full": "rollup -c --environment FORCE_FULL,APP_ENV:test && karma start karma.conf.cjs --singleRun",
         "lint": "eslint .",
         "publish": "sed -i 's/\"private\": true/\"private\": false/' package.json && can-npm-publish --verbose 2>&1 && npm publish --access public 2>&1; sed -i 's/\"private\": false/\"private\": true/' package.json"
     }
