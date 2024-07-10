@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     createOldCatalogs: false,
     indentation: 4,
     keepRemoved: false,

@@ -4,7 +4,7 @@ import globals from "globals";
 
 export default [
     {
-        ignores: ['dist/', 'vendor/', '*.js', 'src/micromodal.es.js'],
+        ignores: ['dist/', 'vendor/', '*.cjs', 'src/micromodal.es.js'],
     },
     js.configs.recommended,
     jsdoc.configs["flat/recommended"],
