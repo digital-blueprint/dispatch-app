@@ -167,7 +167,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        this.dispatchRequestsTable.off('rowClick');
+        //this.dispatchRequestsTable.off('rowClick');
+        let table = this._('#tabulator-table-orders');
+        table.off('rowClick');
         this.dispatchRequestsTable.off('dataLoaded');
         this.dispatchRequestsTable.off('pageLoaded');
 
@@ -419,7 +421,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 ],
             });
 
-            this.dispatchRequestsTable.on('rowClick', this.rowClickFunction.bind(this));
+            //this.dispatchRequestsTable.on('rowClick', this.rowClickFunction.bind(this));
+            //let table = this._('#tabulator-table-orders');
+            //table.on('rowClick', this.rowClickFunction.bind(this))
+            this.rowClickFunction.bind(this);
             //this.dispatchRequestsTable.on("rowAdded", this.rowAddedFunction.bind(this));
             this.dispatchRequestsTable.on('dataLoaded', this.dataLoadedFunction.bind(this));
             this.dispatchRequestsTable.on('pageLoaded', this.pageLoadedFunction.bind(this));
@@ -1136,9 +1141,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 ${
                                     this.mayWrite
                                         ? html`
-                                              <dbp-loading-button
+                                              <!--<dbp-loading-button
                                                   id="delete-all-btn"
-                                                  
+                                                  ?disabled="${this.loading || !this.rowsSelected}"
                                                   value="${i18n.t(
                                                       'show-requests.delete-button-text',
                                                   )}"
@@ -1150,11 +1155,25 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                       'show-requests.delete-button-text',
                                                   )}">
                                                   ${i18n.t('show-requests.delete-button-text')}
+                                              </dbp-loading-button>-->
+                                              <dbp-loading-button
+                                                  id="delete-all-btn"
+                                                  ?disabled="${this.loading || !this.rowsSelected}"
+                                                  value="${i18n.t(
+                                                    'show-requests.delete-button-text',
+                                                  )}"
+                                                  @click="${(event) => {
+                                                this.deleteSelected(event);
+                                                //this.deleteSelectedRows();
+                                                  }}"
+                                                  title="${i18n.t(
+                                                    'show-requests.delete-button-text',
+                                                  )}">
+                                                  ${i18n.t('show-requests.delete-button-text')}
                                               </dbp-loading-button>
                                               <dbp-loading-button
                                                   id="submit-all-btn"
                                                   type="is-primary"
-                                                  ?disabled="${this.loading || !this.rowsSelected}"
                                                   value="${i18n.t(
                                                       'show-requests.submit-button-text',
                                                   )}"
@@ -1288,7 +1307,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         MicroModal.show(this._('#edit-subject-modal'), {
                                                             disableScroll: true,
                                                             onClose: (modal) => {
-                                                                this.loading = false;
+                                                                //this.loading = false;
                                                             },
                                                         });
                                                     }}"
@@ -1315,7 +1334,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         MicroModal.show(this._('#edit-reference-number-modal'), {
                                                         disableScroll: true,
                                                         onClose: (modal) => {
-                                                            this.loading = false;
+                                                            //this.loading = false;
                                                         },
                                                     });
                                                     }}"
@@ -1346,7 +1365,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 MicroModal.show(this._('#add-recipient-modal'), {
                                                                     disableScroll: true,
                                                                     onClose: (modal) => {
-                                                                        this.loading = false;
+                                                                        //this.loading = false;
                                                                     },
                                                                 });
                                                             }}"
@@ -1375,7 +1394,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                     disableScroll: true,
                                                                     onShow: modal => { this.button = button; },
                                                                     onClose: (modal) => {
-                                                                        this.loading = false;
+                                                                        //this.loading = false;
                                                                         this.currentRecipient = {};
                                                                         button.stop();
                                                                     },
@@ -1415,7 +1434,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                         disableScroll: true,
                                                                         onShow: modal => { this.button = button; },
                                                                         onClose: (modal) => {
-                                                                            this.loading = false;
+                                                                            //this.loading = false;
                                                                             this.currentRecipient = {};
                                                                         }
                                                                     });

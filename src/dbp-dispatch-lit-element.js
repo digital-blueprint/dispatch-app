@@ -1763,7 +1763,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let table = this._('#tabulator-table-orders');
             let selectedItems = this.dispatchRequestsTable.getSelectedRows();
             let selectedItems2 = table.getSelectedRows();
-            //TODO replace with dbt tabulator
             let somethingWentWrong = false;
 
             for (let i = 0; i < selectedItems2.length; i++) {
@@ -2018,7 +2017,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     rowClickFunction(e, row) {
-        if (
+        /*if (
             this.dispatchRequestsTable !== null &&
             this.dispatchRequestsTable.getSelectedRows().length ===
                 this.dispatchRequestsTable.getRows('visible').length
@@ -2034,7 +2033,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.rowsSelected = true;
         } else {
             this.rowsSelected = false;
-        }
+        }*/
+        console.log('0row click');
     }
 
     /**
