@@ -1158,7 +1158,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               </dbp-loading-button>-->
                                               <dbp-loading-button
                                                   id="delete-all-btn"
-                                                  ?disabled="${this.loading || !this.rowsSelected}"
+                                                  disabled
                                                   value="${i18n.t(
                                                     'show-requests.delete-button-text',
                                                   )}"
