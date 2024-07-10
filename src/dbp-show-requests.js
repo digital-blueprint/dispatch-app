@@ -79,7 +79,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.dispatchRequestsTable = null;
         this.totalNumberOfItems = 0;
-        this.rowsSelected = false;
+        this.selectedRow = this.rowClick.bind(this);
 
         this.boundSelectHandler = this.selectAllFiles.bind(this);
 
@@ -134,7 +134,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             mayWrite: {type: Boolean, attribute: false},
             mayRead: {type: Boolean, attribute: false},
             mayReadMetadata: {type: Boolean, attribute: false},
-            rowsSelected: {type: Boolean, attribute: false},
             lastModifiedName: {type: String, attribute: false},
             expanded: {type: Boolean, attribute: false},
 
@@ -200,6 +199,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             this._a('.tabulator-table').forEach((table) => {
                 table.buildTable();
                 document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
+                if(table.id == 'tabulator-table-orders')
+                    table.addEventListener('click', this.selectedRow);
             });
 
             let paginationElement = this._('.tabulator-paginator');
@@ -635,6 +636,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let table = this._('#tabulator-table-orders');
         table.deleteSelectedRows();
     }*/
+
+    rowClick(event) {
+        this.selected = true;
+        let deleteButton = this._('#delete-all-btn');
+        let table = this._('#tabulator-table-orders');
+        if(table.getSelectedRows().length !== 0)
+            deleteButton.disabled = false;
+        else
+            deleteButton.disabled = true;
+    }
 
     async processSelectedOrganization(event) {
         const i18n = this._i18n;
