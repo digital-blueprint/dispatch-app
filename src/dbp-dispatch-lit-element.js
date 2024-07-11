@@ -1373,6 +1373,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         type: 'success',
                         timeout: 5,
                     });
+                    let responseBody = await response.json();
+                    console.log(responseBody);
+                    let table = this._('#tabulator-table-orders');
+                    let row = this.currentRow;
+                    let Recipientstatus = i18n.t('show-requests.pending');
+                    table.updateRow(row, {status: Recipientstatus});
+                    let submitted = this.convertToReadableDate(responseBody['dateSubmitted']);
+                    table.updateRow(row, {dateSubmitted: submitted});
+                    //table.updateRow(row, {subject: 'sent'});
+
                 } else if (response.status === 400) {
                     send({
                         summary: i18n.t('error-delivery-channel-title'),

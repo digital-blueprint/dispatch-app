@@ -666,7 +666,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.organizationSet = true;
         await this.getListOfRequests();
 
-
         let data = [];
         let table = this._('#tabulator-table-orders');
 
@@ -697,8 +696,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let btn_edit = this.createScopedElement('dbp-icon-button');
         btn_edit.setAttribute('icon-name', 'pencil');
         btn_edit.addEventListener('click', async (event) => {
-            this.editRequest(event, this.requestList[index]);
             this.currentRow = row;
+            this.editRequest(event, this.requestList[index]);
+
             event.stopPropagation();
         });
         controls_div.appendChild(btn_edit);
@@ -707,15 +707,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let btn_delete = this.createScopedElement('dbp-icon-button');
         btn_delete.setAttribute('icon-name', 'trash');
         btn_delete.addEventListener("click", async (event) => {
+            this.currentRow = row;
             this.deleteRequest(event, this.requestList[index]);
             event.stopPropagation();
-            table.deleteRow(row);
         });
         controls_div.appendChild(btn_delete);
 
         let btn_submit = this.createScopedElement('dbp-icon-button');
         btn_submit.setAttribute('icon-name', 'send-diagonal');
         btn_submit.addEventListener('click', async (event) => {
+            this.currentRow = row;
             this.submitRequest(event, this.requestList[index]);
             event.stopPropagation();
         });
