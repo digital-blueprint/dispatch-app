@@ -1,4 +1,4 @@
-FROM node:18 as node
+FROM node:20 as node
 RUN apt-get update && apt-get install -y git
 WORKDIR /app
 COPY . /app
