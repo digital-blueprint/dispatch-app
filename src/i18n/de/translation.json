@@ -63,6 +63,8 @@
         "delete-button-text": "Löschen",
         "delete-dialog-text_one": "Möchten Sie diesen Versandauftrag wirklich löschen? Bitte beachten Sie, dass dabei auch alle gespeicherten Anhänge und Empfänger gelöscht werden.",
         "delete-dialog-text_other": "Möchten Sie diese {{count}} Versandaufträge wirklich löschen? Bitte beachten Sie, dass dabei auch alle gespeicherten Anhänge und Empfänger gelöscht werden.",
+        "delete-dialog-recipient": "Möchten Sie diesen Empfänger aus Ihrem Versandauftrag wirklich entfernen?",
+        "delete-dialog-file": "Möchten Sie diese Datei wirklich entfernen?",
         "delete-file-button-text": "Datei löschen",
         "delete-not-allowed-text": "Diese Aktion ist bei bereits freigegebenen Versandaufträgen nicht mehr möglich.",
         "delete-not-allowed-title": "Nicht erlaubt!",

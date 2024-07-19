@@ -754,36 +754,39 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async deleteFile(event, file) {
         const i18n = this._i18n;
         let button = event.target;
-        button.start();
 
-        try {
-            let response = await this.sendDeleteFileRequest(file.identifier, file);
-            if (response.status === 204) {
-                send({
-                    summary: i18n.t('show-requests.successfully-deleted-file-title'),
-                    body: i18n.t('show-requests.successfully-deleted-file-text'),
-                    type: 'success',
-                    timeout: 5,
-                });
+        if (confirm(i18n.t('show-requests.delete-dialog-file'))) {
+            button.start();
 
-                let id = this.currentItem.identifier;
-                let resp = await this.getDispatchRequest(id);
-                let responseBody = await resp.json();
-                if (responseBody !== undefined && responseBody.status !== 403) {
-                    this.currentItem = responseBody;
+            try {
+                let response = await this.sendDeleteFileRequest(file.identifier);
+                if (response.status === 204) {
+                    send({
+                        summary: i18n.t('show-requests.successfully-deleted-file-title'),
+                        body: i18n.t('show-requests.successfully-deleted-file-text'),
+                        type: 'success',
+                        timeout: 5,
+                    });
+
+                    let id = this.currentItem.identifier;
+                    let resp = await this.getDispatchRequest(id);
+                    let responseBody = await resp.json();
+                    if (responseBody !== undefined && responseBody.status !== 403) {
+                        this.currentItem = responseBody;
+                    }
+                } else {
+                    // TODO error handling
+
+                    send({
+                        summary: 'Error!',
+                        body: 'File could not be deleted.',
+                        type: 'danger',
+                        timeout: 5,
+                    });
                 }
-            } else {
-                // TODO error handling
-
-                send({
-                    summary: 'Error!',
-                    body: 'File could not be deleted.',
-                    type: 'danger',
-                    timeout: 5,
-                });
+            } finally {
+                button.stop();
             }
-        } finally {
-            button.stop();
         }
     }
 
@@ -1072,37 +1075,38 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async deleteRecipient(event, recipient) {
         const i18n = this._i18n;
         let button = event.target;
-        button.start();
 
-        try {
-            let response = await this.sendDeleteRecipientRequest(recipient.identifier);
-            if (response.status === 204) {
-                send({
-                    summary: i18n.t('show-requests.successfully-deleted-recipient-title'),
-                    body: i18n.t('show-requests.successfully-deleted-recipient-text'),
-                    type: 'success',
-                    timeout: 5,
-                });
+        if (confirm(i18n.t('show-requests.delete-dialog-recipient'))) {
+            button.start();
 
-                let id = this.currentItem.identifier;
-                let resp = await this.getDispatchRequest(id);
-                let responseBody = await resp.json();
-                if (responseBody !== undefined && responseBody.status !== 403) {
-                    this.currentItem = responseBody;
-                    this.requestCreated = false;
+            try {
+                let response = await this.sendDeleteRecipientRequest(recipient.identifier);
+                if (response.status === 204) {
+                    send({
+                        summary: i18n.t('show-requests.successfully-deleted-recipient-title'),
+                        body: i18n.t('show-requests.successfully-deleted-recipient-text'),
+                        type: 'success',
+                        timeout: 5,
+                    });
+
+                    let id = this.currentItem.identifier;
+                    let resp = await this.getDispatchRequest(id);
+                    let responseBody = await resp.json();
+                    if (responseBody !== undefined && responseBody.status !== 403) {
+                        this.currentItem = responseBody;
+                        this.requestCreated = false;
+                    }
+                } else {
+                    send({
+                        summary: 'Error!',
+                        body: 'Could not delete recipient. Response code: ' + response.status,
+                        type: 'danger',
+                        timeout: 5,
+                    });
                 }
-            } else {
-                // TODO error handling
-
-                send({
-                    summary: 'Error!',
-                    body: 'Could not delete recipient. Response code: ' + response.status,
-                    type: 'danger',
-                    timeout: 5,
-                });
+            } finally {
+                button.stop();
             }
-        } finally {
-            button.stop();
         }
     }
 
