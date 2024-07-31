@@ -63,6 +63,8 @@
         "delete-button-text": "Delete",
         "delete-dialog-text_one": "Do you really want to delete this dispatch order? Please note that this will also delete all saved attachments and recipients.",
         "delete-dialog-text_other": "Do you really want to delete these {{count}} dispatch orders? Please note that this will also delete all saved attachments and recipients.",
+        "delete-dialog-recipient": "Do you really want to delete this recipient from your dispatch order?",
+        "delete-dialog-file": "Do you really want to delete this attachment?",
         "delete-file-button-text": "Delete file",
         "delete-not-allowed-text": "This action is no longer allowed for dispatch orders that have already been released.",
         "delete-not-allowed-title": "Not allowed!",

@@ -15,12 +15,13 @@
         "vendor/signature"
     ],
     "engines": {
-        "node": ">=18.0.0",
+        "node": ">=20.0.0",
         "npm": ">=7.0.0"
     },
     "devDependencies": {
         "@babel/core": "^7.10.3",
         "@babel/preset-env": "^7.10.3",
+        "@dbp-toolkit/dev-utils": "^0.1.0",
         "@rollup/plugin-babel": "^6.0.0",
         "@rollup/plugin-commonjs": "^26.0.0",
         "@rollup/plugin-json": "^6.0.0",
@@ -32,7 +33,7 @@
         "chai": "^5.0.0",
         "eslint": "^9.0.0",
         "eslint-plugin-jsdoc": "^48.0.0",
-        "glob": "^10.0.0",
+        "glob": "^11.0.0",
         "globals": "^15.3.0",
         "i18next-parser": "^9.0.0",
         "karma": "^6.0.0",
@@ -48,8 +49,7 @@
         "rollup-plugin-delete": "^2.0.0",
         "rollup-plugin-emit-ejs": "^3.1.0",
         "rollup-plugin-license": "^3.0.1",
-        "rollup-plugin-serve": "^2.0.0",
-        "selfsigned": "^2.0.0"
+        "rollup-plugin-serve": "^3.0.0"
     },
     "dependencies": {
         "@dbp-toolkit/app-shell": "^0.3.0",
@@ -66,8 +66,8 @@
         "@tugraz/font-source-sans-pro": "^0.2.4",
         "@tugraz/web-components": "^0.3.6",
         "@webcomponents/scoped-custom-element-registry": "^0.0.9",
-        "lit": "^2.7.0 || ^3.0.0",
-        "pdfjs-dist": ">=4.3 <4.4"
+        "lit": "^3.0.0",
+        "pdfjs-dist": "^4.3"
     },
     "scripts": {
         "build": "rollup -c",
