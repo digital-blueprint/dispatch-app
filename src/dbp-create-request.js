@@ -34,6 +34,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.requestList = [];
 
         this.currentItem = {};
+        this.currentItemTabulator = {};
 
         this.currentItem.files = [];
         this.currentItem.recipients = [];
@@ -117,6 +118,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             entryPointUrl: {type: String, attribute: 'entry-point-url'},
 
             currentItem: {type: Object, attribute: false},
+            currentItemTabulator: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
 
             subject: {type: String, attribute: false},
@@ -424,6 +426,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     async _onCreateRequestButtonClicked(event) {
         this.openFileSource();
+        console.log('this.currentItemTabulator create request', this.currentItemTabulator);
     }
 
     getCurrentTime() {

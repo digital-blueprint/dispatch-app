@@ -23,6 +23,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.lang = this._i18n.language;
 
         this.currentItem = {};
+        this.currentItemTabulator = {};
         this.currentRecipient = {};
         this.subject = '';
         this.groupId = '';
@@ -52,6 +53,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             auth: {type: Object},
 
             currentItem: {type: Object, attribute: false},
+            currentItemTabulator: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
             personSelectorIsDisabled: {type: Boolean, attribute: false},
             subject: {type: String, attribute: false},
@@ -596,11 +598,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         if (this.singleFileProcessing && !this.requestCreated) {
             this.processCreateDispatchRequest().then(() => {
+                console.log('precess create dispatch request');
+
                 this.showDetailsView = true;
                 this.hasSubject = true;
                 this.hasSender = true;
             });
         }
+        this.currentItemTabulator = this.currentItem;
+        console.log('this.currentItemTabulator ', this.currentItemTabulator);
     }
 
     onFileUploadFinished(event) {
@@ -632,6 +638,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async onFileSelected(event) {
         this.tableLoading = true;
         this.fileUploadFinished = false;
+        console.log('this.singleFileProcessing ', this.singleFileProcessing);
+        console.log('this.requestCreated ', this.requestCreated);
         if (!this.singleFileProcessing && !this.requestCreated) {
             this.processCreateDispatchRequest().then(async () => {
                 this.showDetailsView = false;
