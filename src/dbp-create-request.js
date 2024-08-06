@@ -21,6 +21,7 @@ import {FileSource} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
 import {name as pkgName} from './../package.json';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
+import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
@@ -108,6 +109,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-pdf-viewer': PdfViewer,
+            'dbp-tabulator-table': TabulatorTable,
         };
     }
 
@@ -143,6 +145,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             totalNumberOfCreatedRequestItems: {type: Number, attribute: false},
             filesAdded: {type: Boolean, attribute: false},
             createRequestsLoading: {type: Boolean, attribute: false},
+            createdRequestsList: {type:Array, attribute: false},
             expanded: {type: Boolean, attribute: false},
 
             fileUploadFinished: {type: Boolean, attribute: false},
@@ -205,6 +208,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             const i18n = this._i18n;
             const that = this;
+
+            this._a('.tabulator-table').forEach((table) => {
+                table.buildTable();
+            });
 
             // see: http://tabulator.info/docs/5.1
             this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
@@ -426,7 +433,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     async _onCreateRequestButtonClicked(event) {
         this.openFileSource();
-        console.log('this.currentItemTabulator create request', this.currentItemTabulator);
+
     }
 
     getCurrentTime() {
@@ -478,6 +485,18 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.singleFileProcessing = !(
             this._('#multiple-requests-button') && this._('#multiple-requests-button').checked
         );
+    }
+
+    setTabulatorData(createdRequests) {
+        let data = [];
+        let table = this._('#tabulator-table-created-requests');
+
+        createdRequests.forEach((item) => {
+
+            console.log('item ', item);
+        });
+
+        table.setData(data);
     }
 
     static get styles() {
@@ -633,6 +652,59 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'tabulator-tables/css/tabulator.min.css',
         );
 
+        let langs  = {
+            'en': {
+                columns: {
+                    'details': i18n.t('show-requests.table-header-details', {lng: 'en'}),
+                    'dateCreated': i18n.t('show-requests.table-header-date-created', {lng: 'en'}),
+                    'gz': i18n.t('show-requests.table-header-gz', {lng: 'en'}),
+                    'subject': i18n.t('show-requests.table-header-subject', {lng: 'en'}),
+                    'status': i18n.t('show-requests.table-header-status', {lng: 'en'}),
+                    'files': i18n.t('show-requests.table-header-files', {lng: 'en'}),
+                    'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'en'}),
+                    'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'en'}),
+                    'requestId': i18n.t('show-requests.table-header-id', {lng: 'en'}),
+                },
+            },
+            'de': {
+                columns: {
+                    'details': i18n.t('show-requests.table-header-details', {lng: 'de'}),
+                    'dateCreated': i18n.t('show-requests.table-header-date-created', {lng: 'de'}),
+                    'gz': i18n.t('show-requests.table-header-gz', {lng: 'de'}),
+                    'subject': i18n.t('show-requests.table-header-subject', {lng: 'de'}),
+                    'status': i18n.t('show-requests.table-header-status', {lng: 'de'}),
+                    'files': i18n.t('show-requests.table-header-files', {lng: 'de'}),
+                    'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'de'}),
+                    'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'de'}),
+                    'requestId': i18n.t('show-requests.table-header-id', {lng: 'de'}),
+                },
+            },
+        };
+
+        let options = {
+            langs: langs,
+            layout: 'fitColumns',
+            responsiveLayout: 'collapse',
+            responsiveLayoutCollapseStartOpen: false,
+            columns: [
+                {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center"},
+                {title: 'dateCreated', field: 'dateCreated', width: 200, hozAlign: 'left'},
+                {title: 'gz', field: 'gz', width: 200},
+                {title: 'subject', field: 'subject', width: 250},
+                {title: 'status', field: 'status', width: 200},
+                {title: '', field: 'controls', formatter: 'html'},
+                {title: 'files', field: 'files', width: 150, formatter: 'html'},
+                {title: 'recipients', field: 'recipients', width: 150, formatter: 'html'},
+                {title: 'dateSubmitted', field: 'dateSubmitted', width: 150},
+                {title: 'requestId', field: 'requestId', width: 150}
+            ],
+            columnDefaults: {
+                vertAlign: 'middle',
+                hozAlign: 'left',
+                resizable: false,
+            },
+        };
+
         return html`
             <link rel="stylesheet" href="${tabulatorCss}" />
 
@@ -782,7 +854,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             href="#"
                             title="${i18n.t('show-requests.back-to-list')}"
                             @click="${(e) => {
-                                this.getCreatedDispatchRequests();
+                                let createdRequests = this.getCreatedDispatchRequests();
+                                console.log('createdRequests ', createdRequests);
                                 this.showDetailsView = false;
                                 this.showListView = true;
                                 this.subject = '';
@@ -903,7 +976,22 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="container">
+                                <dbp-tabulator-table
+                                        lang="${this.lang}"
+                                        class="tabulator-table"
+                                        id="tabulator-table-created-requests"
+                                        collapse-enabled
+                                        pagination-size="10"
+                                        pagination-enabled
+                                        select-all-enabled
+                                        select-rows-enabled
+                                        options=${JSON.stringify(options)}>
+                                </dbp-tabulator-table>
+                            </div>
                         </div>
+                        
                     </div>
                 </div>
 

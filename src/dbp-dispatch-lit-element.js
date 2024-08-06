@@ -31,6 +31,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.personSelectorIsDisabled = false;
         this.dispatchRequestsTable = null;
 
+        this.createdRequestsList = [];
+
         this.tempItem = {};
         this.tempValue = {};
         this.tempChange = false;
@@ -60,6 +62,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             groupId: {type: String, attribute: false},
             tempItem: {type: Object, attribute: false},
             tempValue: {type: Object, attribute: false},
+
+            createdRequestsList: {type:Array, attribute: false},
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -583,6 +587,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         // this.requestCreated ? this.showListView = true : this.showListView = false;
         this.showListView = true;
+
+        console.log('createdRequestsList ', this.createdRequestsList);
+        return this.createdRequestsList;
     }
 
     /*

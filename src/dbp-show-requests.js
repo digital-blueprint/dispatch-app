@@ -627,16 +627,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         return options;
     }
 
-    setTableData(data) {
-        let table = this._('#tabulator-table-orders');
-        table.setData(JSON.stringify(data));
-    }
-
-    /*deleteSelectedRows(){
-        let table = this._('#tabulator-table-orders');
-        table.deleteSelectedRows();
-    }*/
-
     rowClick(event) {
         this.selected = true;
         let deleteButton = this._('#delete-all-btn');
@@ -1195,7 +1185,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                             </div>
                         </div>
                         
-                        <div class="container">
+                    <div class="container">
                         <dbp-tabulator-table
                                 lang="${this.lang}"
                                 class="tabulator-table"
