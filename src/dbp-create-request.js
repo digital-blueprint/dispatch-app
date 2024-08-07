@@ -32,7 +32,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.activity = new Activity(metadata);
         this.entryPointUrl = '';
 
-        this.requestList = [];
+        this.newRequests = [];
 
         this.currentItem = {};
         this.currentItemTabulator = {};
@@ -118,6 +118,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             ...super.properties,
             lang: {type: String},
             entryPointUrl: {type: String, attribute: 'entry-point-url'},
+
+            newRequests: {type: Array, attribute: false},
 
             currentItem: {type: Object, attribute: false},
             currentItemTabulator: {type: Object, attribute: false},
@@ -433,7 +435,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     async _onCreateRequestButtonClicked(event) {
         this.openFileSource();
-
     }
 
     getCurrentTime() {
@@ -474,6 +475,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         let currentPage = this.dispatchRequestsTable ? this.dispatchRequestsTable.getPage() : 1;
         // this.getListOfRequests();
         this.getCreatedDispatchRequests().then(() => {
+            console.log('createdRequest');
             this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
             this.showDetailsView = false;
             this.showListView = true;
@@ -488,15 +490,61 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     setTabulatorData(createdRequests) {
+        const i18n = this._i18n;
         let data = [];
         let table = this._('#tabulator-table-created-requests');
 
         createdRequests.forEach((item) => {
 
-            console.log('item ', item);
+            let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
+
+            let controls_div = this.createScopedElement('div');
+
+            let btn_edit = this.createScopedElement('dbp-icon-button');
+            btn_edit.setAttribute('icon-name', 'pencil');
+            btn_edit.addEventListener('click', async (event) => {
+                this.currentRow = row;
+                this.editRequest(event, this.requestList[index]);
+
+                event.stopPropagation();
+            });
+            controls_div.appendChild(btn_edit);
+
+
+            let btn_delete = this.createScopedElement('dbp-icon-button');
+            btn_delete.setAttribute('icon-name', 'trash');
+            btn_delete.addEventListener("click", async (event) => {
+                this.currentRow = row;
+                this.deleteRequest(event, this.requestList[index]);
+                event.stopPropagation();
+            });
+            controls_div.appendChild(btn_delete);
+
+            let btn_submit = this.createScopedElement('dbp-icon-button');
+            btn_submit.setAttribute('icon-name', 'send-diagonal');
+            btn_submit.addEventListener('click', async (event) => {
+                this.currentRow = row;
+                this.submitRequest(event, this.requestList[index]);
+                event.stopPropagation();
+            });
+            controls_div.appendChild(btn_submit);
+
+            let order = { dateCreated: this.convertToReadableDate(item['dateCreated']),
+                gz: item['referenceNumber']
+                    ? item['referenceNumber']
+                    : i18n.t('show-requests.empty-reference-number'),
+                subject: item['name'], status: Recipientstatus, files:this.createFormattedFilesList(item['files']),
+                recipients: this.createFormattedRecipientsList(item['recipients']),
+                dateSubmitted: item['dateSubmitted']
+                    ? this.convertToReadableDate(item['dateSubmitted'])
+                    : i18n.t('show-requests.date-submitted-not-submitted'),
+                requestId: item['identifier'],
+                controls: controls_div};
+            data.push(order);
         });
 
         table.setData(data);
+
     }
 
     static get styles() {
@@ -856,6 +904,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             @click="${(e) => {
                                 let createdRequests = this.getCreatedDispatchRequests();
                                 console.log('createdRequests ', createdRequests);
+                                this.setTabulatorData(createdRequests);
                                 this.showDetailsView = false;
                                 this.showListView = true;
                                 this.subject = '';

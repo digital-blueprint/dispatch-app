@@ -588,7 +588,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // this.requestCreated ? this.showListView = true : this.showListView = false;
         this.showListView = true;
 
-        console.log('createdRequestsList ', this.createdRequestsList);
+        //console.log('createdRequestsList ', this.createdRequestsList);
         return this.createdRequestsList;
     }
 
@@ -613,7 +613,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             });
         }
         this.currentItemTabulator = this.currentItem;
-        console.log('this.currentItemTabulator ', this.currentItemTabulator);
     }
 
     onFileUploadFinished(event) {
@@ -645,8 +644,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async onFileSelected(event) {
         this.tableLoading = true;
         this.fileUploadFinished = false;
-        console.log('this.singleFileProcessing ', this.singleFileProcessing);
-        console.log('this.requestCreated ', this.requestCreated);
         if (!this.singleFileProcessing && !this.requestCreated) {
             this.processCreateDispatchRequest().then(async () => {
                 this.showDetailsView = false;
@@ -659,6 +656,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 await this.addFile(event.detail.file);
                 this.filesAdded = true;
+                this.setTabulatorData(this.newRequests);
             });
         } else {
             await this.addFile(event.detail.file);
@@ -667,7 +665,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async addFile(file) {
         this._('#add-files-btn').start();
-        console.log('add file');
         try {
             let id = this.currentItem.identifier;
             await this.addFileToRequest(id, file);
@@ -754,7 +751,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentFileIndex++;
 
             if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
-                await this.getCreatedDispatchRequests();
+                this.newRequests = await this.getCreatedDispatchRequests();
+                console.log('request 2 ', this.newRequests);
             }
         } else {
             // TODO error handling
@@ -1392,7 +1390,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         timeout: 5,
                     });
                     let responseBody = await response.json();
-                    console.log(responseBody);
                     let table = this._('#tabulator-table-orders');
                     let row = this.currentRow;
                     let Recipientstatus = i18n.t('show-requests.pending');
@@ -1510,7 +1507,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmEditSender() {
-        console.log('edit sender');
         const i18n = this._i18n;
 
         try {
@@ -1582,7 +1578,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmEditSubject() {
-        console.log('edit subject');
         let subject = this._('#tf-edit-subject-fn-dialog').value;
         let table = this._('#tabulator-table-orders');
         let row = this.currentRow;
@@ -1601,7 +1596,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmAddSubject() {
-        console.log('add subject');
         this._('#add-subject-confirm-btn').disabled = true;
 
         this.subject =
@@ -1814,7 +1808,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             for (let i = 0; i < selectedItems.length; i++) {
                 let id = selectedItems[i].getData()['requestId'];
-                console.log(selectedItems[i].getData());
                 let response = await this.getDispatchRequest(id);
                 let result = await response.json();
                 if (result.dateSubmitted) {
@@ -2395,7 +2388,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async processSelectedSender(event) {
-        console.log('selected sender');
         this.storeGroupValue(event.detail.value);
         const i18n = this._i18n;
         this.organizationLoaded = true;
@@ -2587,7 +2579,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     resetRecipientFields() {
-        console.log('resetRecipientFields');
         this._('#recipient-selector').clear();
         this.currentRecipient = {};
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
