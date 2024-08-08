@@ -592,9 +592,57 @@ export function getDispatchRequestStyles() {
             min-width: 320px;
         }
 
+        .modal-content {
+            container-type: inline-size;
+        }
+
         .modal-content-container {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        /* #add-recipient-modal-box h4 { */
+        .modal-content-container h4 {
+            margin-top: 0;
+        }
+
+        .modal-content-right {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
+            gap: 0.4em;
+            padding-left: 20px;
+        }
+
+        .modal-content-left {
+            border-right: var(--dbp-border);
+            padding-right: 20px;
+        }
+
+        @container (max-width: 490px) {
+            .modal-content-container {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .modal-content-right {
+                padding-left: 0;
+            }
+
+            .modal-content-left h4 {
+                margin-top: 0;
+                margin-bottom: 15px;
+            }
+
+            .modal-content-right h4 {
+                margin-top: 30px;
+                margin-bottom: 10px;
+            }
+
+            .modal-content-left {
+                padding-right: 0;
+                border-right: 0;
+                padding-bottom: 20px;
+                border-bottom: 1px solid var(--dbp-content);
+            }
         }
 
         #edit-recipient-modal-box {
@@ -609,22 +657,6 @@ export function getDispatchRequestStyles() {
             min-height: fit-content;
             max-width: 736px;
             gap: 20px;
-        }
-
-        #add-recipient-modal-box h4 {
-            margin-top: 0;
-        }
-
-        .modal-content-right {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4em;
-            padding-left: 20px;
-        }
-
-        .modal-content-left {
-            border-right: var(--dbp-border);
-            padding-right: 20px;
         }
 
         #add-subject-modal-box,
@@ -755,11 +787,11 @@ export function getDispatchRequestStyles() {
             display: flex;
             flex-direction: row;
             gap: 0.5em;
-            width: 331px;
+            width: 100%;
         }
 
         #edit-recipient-modal-content .birthdate-input {
-            width: 360px;
+            width: 100%;
         }
 
         #file-viewer-modal-box {
