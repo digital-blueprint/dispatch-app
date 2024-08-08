@@ -440,7 +440,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      */
     pressEnterAndSubmitSearch(event) {
         if (event.keyCode === 13) {
-            console.log('enter detected');
             const activeElement = this.shadowRoot.activeElement;
             if (activeElement && activeElement.id === 'searchbar') {
                 event.preventDefault();
@@ -656,13 +655,46 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.organizationSet = true;
         await this.getListOfRequests();
 
-        let data = [];
+
         let table = this._('#tabulator-table-orders');
 
-        this.requestList.forEach((item) => {
+        this.requestList.forEach((item, index) => {
+            let data = [];
             let Recipientstatus = item['dateSubmitted'] ? this.checkRecipientStatus(item['recipients'])[1] : i18n.t('show-requests.empty-date-submitted');
             let controls_div = this.createScopedElement('div');
-            if(Recipientstatus !== i18n.t('show-requests.empty-date-submitted')) {
+            if(Recipientstatus === i18n.t('show-requests.empty-date-submitted')) {
+                let btn_edit = this.createScopedElement('dbp-icon-button');
+                btn_edit.setAttribute('icon-name', 'pencil');
+                btn_edit.addEventListener('click', async (event) => {
+                    this.currentRow = table.getRowFromPosition(index + 1);
+                    this.editRequest(event, item);
+
+                    event.stopPropagation();
+                });
+                controls_div.appendChild(btn_edit);
+
+
+                let btn_delete = this.createScopedElement('dbp-icon-button');
+                btn_delete.setAttribute('icon-name', 'trash');
+                btn_delete.addEventListener("click", async (event) => {
+                    this.currentRow = table.getRowFromPosition(index + 1);
+                    this.deleteRequest(event, item);
+                    event.stopPropagation();
+                });
+                controls_div.appendChild(btn_delete);
+
+                let btn_submit = this.createScopedElement('dbp-icon-button');
+                btn_submit.setAttribute('icon-name', 'send-diagonal');
+                btn_submit.addEventListener('click', async (event) => {
+                    this.currentRow = table.getRowFromPosition(index + 1);
+                    console.log('item ', item);
+                    this.currentItem = item;
+                    this.submitRequest(event, this.currentItem, index + 1);
+                    event.stopPropagation();
+                });
+                controls_div.appendChild(btn_submit);
+            }
+            else{
                 let btn_research = this.createScopedElement('dbp-icon-button');
                 btn_research.setAttribute('icon-name', 'keyword-research');
                 btn_research.addEventListener('click', async (event) => {
@@ -682,54 +714,22 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 requestId: item['identifier'],
             controls: controls_div};
             data.push(order);
+            table.addData(data);
         });
 
-        table.setData(data);
 
-        let rows = table.getRows();
+
+        /*let rows = table.getRows();
 
         rows.forEach((row, index) =>{
 
             let data = row.getData();
             console.log('data ', data);
-            if(data.status === i18n.t('show-requests.empty-date-submitted')) {
-                let btn_edit = this.createScopedElement('dbp-icon-button');
-                btn_edit.setAttribute('icon-name', 'pencil');
-                btn_edit.addEventListener('click', async (event) => {
-                    this.currentRow = row;
-                    this.editRequest(event, this.requestList[index]);
-
-                    event.stopPropagation();
-                });
-                controls_div.appendChild(btn_edit);
-
-
-                let btn_delete = this.createScopedElement('dbp-icon-button');
-                btn_delete.setAttribute('icon-name', 'trash');
-                btn_delete.addEventListener("click", async (event) => {
-                    this.currentRow = row;
-                    this.deleteRequest(event, this.requestList[index]);
-                    event.stopPropagation();
-                });
-                controls_div.appendChild(btn_delete);
-
-                let btn_submit = this.createScopedElement('dbp-icon-button');
-                btn_submit.setAttribute('icon-name', 'send-diagonal');
-                btn_submit.addEventListener('click', async (event) => {
-                    this.currentRow = row;
-                    this.submitRequest(event, this.requestList[index]);
-                    event.stopPropagation();
-                });
-                controls_div.appendChild(btn_submit);
-            }
-            else {
-
-            }
 
             let newData = {controls: controls_div};
 
             table.updateRow(row, newData);
-    });
+    });*/
 
     }
 
@@ -1150,7 +1150,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}" id="open-settings-btn"
                                                      ?disabled="${this.loading}"
                                                      @click="${() => {
-                                                         console.log('open settings');
+                                                         
                                                      }}"
                                                      title="TODO"
                                                      icon-name="iconoir_settings"></dbp-icon-button>
