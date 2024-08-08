@@ -192,6 +192,7 @@
         "show-file-button-text": "Show file",
         "show-recipient-button-text": "Show details",
         "show-recipient-dialog-title": "Show recipient",
+        "download-file-button-text": "Download attachment file",
         "status-completed-date": "Sent {{date}}",
         "submit-button-text": "Release for dispatch",
         "submit-dialog-text_one": "Do you really want to release this dispatch order?",

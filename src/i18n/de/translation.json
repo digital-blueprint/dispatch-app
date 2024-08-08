@@ -192,6 +192,7 @@
         "show-file-button-text": "Datei ansehen",
         "show-recipient-button-text": "Detailansicht öffnen",
         "show-recipient-dialog-title": "Empfängerdetails",
+        "download-file-button-text": "File herunterladen",
         "status-completed-date": "Abgesendet am {{date}}",
         "submit-button-text": "Zum Versand freigeben",
         "submit-dialog-text_one": "Möchten Sie diesen Versandauftrag wirklich freigeben?",
