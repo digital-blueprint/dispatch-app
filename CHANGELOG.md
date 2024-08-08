@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* Add download button to request attachments
+
 ## v1.4.0
 
 * Update toolkit/esign and update pdf.js to v4; remove unsafe-eval from the CSP
