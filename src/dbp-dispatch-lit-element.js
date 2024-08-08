@@ -605,8 +605,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         if (this.singleFileProcessing && !this.requestCreated) {
             this.processCreateDispatchRequest().then(() => {
-                console.log('precess create dispatch request');
-
                 this.showDetailsView = true;
                 this.hasSubject = true;
                 this.hasSender = true;
@@ -715,7 +713,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     timeout: 5,
                 });
             } else {
-                console.log('referenceNumber was updated', referenceNumber);
                 this.currentItem.referenceNumber = referenceNumber;
 
                 send({
@@ -752,7 +749,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
                 this.newRequests = await this.getCreatedDispatchRequests();
-                console.log('request 2 ', this.newRequests);
             }
         } else {
             // TODO error handling
@@ -1180,7 +1176,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async deleteRequest(event, item) {
-        console.log('delete request');
         const i18n = this._i18n;
         let button = event.target;
 
@@ -2055,7 +2050,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } else {
             this.rowsSelected = false;
         }*/
-        console.log('0row click');
     }
 
     /**
@@ -2232,7 +2226,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let responseBody = await response.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
-                console.log('this.requestList ', this.requestList);
                 let tableObject = this.createTableObject(this.requestList);
                 this.dispatchRequestsTable.setData(tableObject);
                 this.dispatchRequestsTable.setLocale(this.lang);

@@ -903,7 +903,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             title="${i18n.t('show-requests.back-to-list')}"
                             @click="${(e) => {
                                 let createdRequests = this.getCreatedDispatchRequests();
-                                console.log('createdRequests ', createdRequests);
                                 this.setTabulatorData(createdRequests);
                                 this.showDetailsView = false;
                                 this.showListView = true;
