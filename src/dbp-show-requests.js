@@ -660,9 +660,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let table = this._('#tabulator-table-orders');
 
         this.requestList.forEach((item) => {
-
-            let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
-
+            let Recipientstatus = item['dateSubmitted'] ? this.checkRecipientStatus(item['recipients'])[1] : i18n.t('show-requests.empty-date-submitted');
+            console.log('Recipientstatus ', Recipientstatus, ' ', this.checkRecipientStatus(item['recipients'])[1]);
             let order = { dateCreated: this.convertToReadableDate(item['dateCreated']),
                 gz: item['referenceNumber']
                     ? item['referenceNumber']
