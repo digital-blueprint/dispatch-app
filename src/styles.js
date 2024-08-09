@@ -51,6 +51,24 @@ export function getDispatchRequestTableStyles() {
             overflow: unset;
         }
 
+        .tabulator-table {
+            width: 100%;
+        }
+
+        .tabulator-row {
+            display: flex;
+            flex-wrap: wrap;
+            padding-right: .5rem;
+        }
+
+        .tabulator-responsive-collapse {
+            flex-basis: 100%;
+        }
+
+        .tabulator-cell[tabulator-field="controls"] {
+            flex-grow: 1;
+        }
+
         /**************************************************************************************************************/
 
         .tabulator-icon-buttons {
@@ -60,8 +78,16 @@ export function getDispatchRequestTableStyles() {
             gap: 0.5rem;
         }
 
+        .tabulator-row .tabulator-responsive-collapse td {
+            white-space: wrap;
+        }
+
+        .tabulator-row .tabulator-responsive-collapse td:nth-child(2) {
+            word-wrap: anywhere;
+        }
+
         .tabulator-responsive-collapse table tr td:first-child {
-            width: 4em;
+            width: 8em;
         }
 
         .tabulator .tabulator-placeholder-contents {
@@ -87,6 +113,15 @@ export function getDispatchRequestTableStyles() {
         .tabulator-responsive-collapse-toggle-close {
             content: none;
             visibility: hidden;
+        }
+
+        .tabulator-responsive-collapse-toggle,
+        .tabulator-row .tabulator-cell .tabulator-responsive-collapse-toggle {
+            margin: 0 0 0 0;
+        }
+
+        .tabulator-cell[tabulator-field="type"] {
+            display: none !important;
         }
 
         .tabulator-responsive-collapse-toggle-open::after,
@@ -416,6 +451,22 @@ export function getDispatchRequestTableStyles() {
 
             .tabulator {
                 overflow: visible;
+            }
+        }
+
+        @media only screen and (max-width: 490px) {
+            .tabulator-responsive-collapse table tr td:first-child {
+                width: 4em;
+            }
+
+            .tabulator-row {
+                padding-right: 0;
+            }
+        }
+
+        @media only screen and (max-width: 420px) {
+            .tabulator-row .tabulator-cell.tabulator-row-handle {
+                width: 40px !important;
             }
         }
     `;

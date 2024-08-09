@@ -247,9 +247,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     {
                         title: i18n.t('show-requests.table-header-date-created'),
                         field: 'dateCreated',
-                        responsive: 1,
+                        responsive: 0,
                         widthGrow: 1,
-                        minWidth: 160,
+                        hozAlign: 'center',
+                        minWidth: 140,
                         sorter: (a, b) => {
                             const a_timestamp = Date.parse(a);
                             const b_timestamp = Date.parse(b);
@@ -339,7 +340,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         minWidth: 140,
                         widthGrow: 1,
                         headerSort: false,
-                        responsive: 1,
+                        responsive: 0,
                         formatter: (cell) => {
                             let value = cell.getValue();
                             return value;
