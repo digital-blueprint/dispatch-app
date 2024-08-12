@@ -496,7 +496,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         createdRequests.forEach((item) => {
 
-            let Recipientstatus = this.currentItem.dateSubmitted ? this.checkRecipientStatus(this.currentItem.recipients)[0] : i18n.t('show-requests.empty-date-submitted');
+            let recipientStatus = item['dateSubmitted'] ? this.checkRecipientStatus(item.recipients)[1] : i18n.t('show-requests.empty-date-submitted');
 
             let controls_div = this.createScopedElement('div');
 
@@ -533,7 +533,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 gz: item['referenceNumber']
                     ? item['referenceNumber']
                     : i18n.t('show-requests.empty-reference-number'),
-                subject: item['name'], status: Recipientstatus, files:this.createFormattedFilesList(item['files']),
+                subject: item['name'],
+                status: recipientStatus,
+                files:this.createFormattedFilesList(item['files']),
                 recipients: this.createFormattedRecipientsList(item['recipients']),
                 dateSubmitted: item['dateSubmitted']
                     ? this.convertToReadableDate(item['dateSubmitted'])
