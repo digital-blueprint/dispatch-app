@@ -208,8 +208,8 @@ export function getDispatchRequestTableStyles() {
             cursor: pointer;
             justify-content: center;
             padding-bottom: calc(0.375em - 1px);
-            padding-left: 0.75em;
-            padding-right: 0.75em;
+            padding-left: 1em;
+            padding-right: 1em;
             padding-top: calc(0.375em - 1px);
             text-align: center;
             white-space: nowrap;
