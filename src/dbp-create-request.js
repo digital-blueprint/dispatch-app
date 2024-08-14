@@ -445,44 +445,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         return currentHours + ':' + currentMinutes;
     }
 
-    saveRequest() {
-        this.currentItem = {};
-        this.currentItem.senderOrganizationName = '';
-        this.currentItem.senderFullName = '';
-        this.currentItem.senderAddressCountry = '';
-        this.currentItem.senderPostalCode = '';
-        this.currentItem.senderAddressLocality = '';
-        this.currentItem.senderStreetAddress = '';
-        this.currentItem.senderBuildingNumber = '';
-        this.currentItem.files = [];
-        this.currentItem.recipients = [];
-
-        this.currentRecipient = {};
-
-        this.subject = '';
-
-        this.hasEmptyFields = false;
-        this.hasSender = false;
-        this.hasRecipients = false;
-
-        this.expanded = false;
-
-        this.showListView = true;
-        this.showDetailsView = false;
-
-        this.requestCreated = false;
-
-        let currentPage = this.dispatchRequestsTable ? this.dispatchRequestsTable.getPage() : 1;
-        // this.getListOfRequests();
-        this.getCreatedDispatchRequests().then(() => {
-            console.log('createdRequest');
-            this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
-            this.showDetailsView = false;
-            this.showListView = true;
-            this.requestCreated = false;
-        });
-    }
-
     checkMultipleRequestsCheckmark() {
         this.singleFileProcessing = !(
             this._('#multiple-requests-button') && this._('#multiple-requests-button').checked
@@ -904,8 +866,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             href="#"
                             title="${i18n.t('show-requests.back-to-list')}"
                             @click="${(e) => {
-                                let createdRequests = this.getCreatedDispatchRequests();
-                                this.setTabulatorData(createdRequests);
+                                this.getCreatedDispatchRequests();
                                 this.showDetailsView = false;
                                 this.showListView = true;
                                 this.subject = '';
