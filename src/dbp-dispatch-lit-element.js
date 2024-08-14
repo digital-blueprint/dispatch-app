@@ -1936,6 +1936,32 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    async _onDownloadRequestFileClicked(event, fileId) {
+        const i18n = this._i18n;
+        let button = event.target;
+        button.start();
+
+        try {
+            let response = await this.sendGetFileRequest(fileId);
+
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
+                let fileContentUrl = responseBody['contentUrl'];
+                let fileName = responseBody['name'];
+                await this.downloadFileClickHandler(fileContentUrl, fileName);
+            } else {
+                send({
+                    summary: 'Error',
+                    body: i18n.t('show-requests.error-file-donwload'),
+                    type: 'success',
+                    timeout: 5,
+                });
+            }
+        } finally {
+            button.stop();
+        }
+    }
+
     async processCreateDispatchRequest() {
         this._('#create-btn').start();
 
@@ -4239,6 +4265,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                     'show-requests.show-file-button-text',
                                                 )}"
                                                 icon-name="keyword-research"></dbp-icon-button>
+                                            <dbp-icon-button
+                                                id="download-file-btn"
+                                                @click="${(event) => {
+                                                    this._onDownloadRequestFileClicked(event, file.identifier);
+                                                }}"
+                                                aria-label="${i18n.t(
+                                                    'show-requests.download-file-button-text',
+                                                )}"
+                                                title="${i18n.t(
+                                                    'show-requests.download-file-button-text',
+                                                )}"
+                                                icon-name="download"></dbp-icon-button>
                                           ${!this.currentItem.dateSubmitted
                                               ? html`
                                                     <dbp-icon-button

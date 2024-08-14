@@ -51,6 +51,24 @@ export function getDispatchRequestTableStyles() {
             overflow: unset;
         }
 
+        .tabulator-table {
+            width: 100%;
+        }
+
+        .tabulator-row {
+            display: flex;
+            flex-wrap: wrap;
+            padding-right: .5rem;
+        }
+
+        .tabulator-responsive-collapse {
+            flex-basis: 100%;
+        }
+
+        .tabulator-cell[tabulator-field="controls"] {
+            flex-grow: 1;
+        }
+
         /**************************************************************************************************************/
 
         .tabulator-icon-buttons {
@@ -60,8 +78,16 @@ export function getDispatchRequestTableStyles() {
             gap: 0.5rem;
         }
 
+        .tabulator-row .tabulator-responsive-collapse td {
+            white-space: wrap;
+        }
+
+        .tabulator-row .tabulator-responsive-collapse td:nth-child(2) {
+            word-wrap: anywhere;
+        }
+
         .tabulator-responsive-collapse table tr td:first-child {
-            width: 4em;
+            width: 8em;
         }
 
         .tabulator .tabulator-placeholder-contents {
@@ -87,6 +113,15 @@ export function getDispatchRequestTableStyles() {
         .tabulator-responsive-collapse-toggle-close {
             content: none;
             visibility: hidden;
+        }
+
+        .tabulator-responsive-collapse-toggle,
+        .tabulator-row .tabulator-cell .tabulator-responsive-collapse-toggle {
+            margin: 0 0 0 0;
+        }
+
+        .tabulator-cell[tabulator-field="type"] {
+            display: none !important;
         }
 
         .tabulator-responsive-collapse-toggle-open::after,
@@ -173,8 +208,8 @@ export function getDispatchRequestTableStyles() {
             cursor: pointer;
             justify-content: center;
             padding-bottom: calc(0.375em - 1px);
-            padding-left: 0.75em;
-            padding-right: 0.75em;
+            padding-left: 1em;
+            padding-right: 1em;
             padding-top: calc(0.375em - 1px);
             text-align: center;
             white-space: nowrap;
@@ -418,6 +453,22 @@ export function getDispatchRequestTableStyles() {
                 overflow: visible;
             }
         }
+
+        @media only screen and (max-width: 490px) {
+            .tabulator-responsive-collapse table tr td:first-child {
+                width: 4em;
+            }
+
+            .tabulator-row {
+                padding-right: 0;
+            }
+        }
+
+        @media only screen and (max-width: 420px) {
+            .tabulator-row .tabulator-cell.tabulator-row-handle {
+                width: 40px !important;
+            }
+        }
     `;
 }
 
@@ -592,9 +643,57 @@ export function getDispatchRequestStyles() {
             min-width: 320px;
         }
 
+        .modal-content {
+            container-type: inline-size;
+        }
+
         .modal-content-container {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        /* #add-recipient-modal-box h4 { */
+        .modal-content-container h4 {
+            margin-top: 0;
+        }
+
+        .modal-content-right {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
+            gap: 0.4em;
+            padding-left: 20px;
+        }
+
+        .modal-content-left {
+            border-right: var(--dbp-border);
+            padding-right: 20px;
+        }
+
+        @container (max-width: 490px) {
+            .modal-content-container {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .modal-content-right {
+                padding-left: 0;
+            }
+
+            .modal-content-left h4 {
+                margin-top: 0;
+                margin-bottom: 15px;
+            }
+
+            .modal-content-right h4 {
+                margin-top: 30px;
+                margin-bottom: 10px;
+            }
+
+            .modal-content-left {
+                padding-right: 0;
+                border-right: 0;
+                padding-bottom: 20px;
+                border-bottom: 1px solid var(--dbp-content);
+            }
         }
 
         #edit-recipient-modal-box {
@@ -609,22 +708,6 @@ export function getDispatchRequestStyles() {
             min-height: fit-content;
             max-width: 736px;
             gap: 20px;
-        }
-
-        #add-recipient-modal-box h4 {
-            margin-top: 0;
-        }
-
-        .modal-content-right {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4em;
-            padding-left: 20px;
-        }
-
-        .modal-content-left {
-            border-right: var(--dbp-border);
-            padding-right: 20px;
         }
 
         #add-subject-modal-box,
@@ -755,11 +838,11 @@ export function getDispatchRequestStyles() {
             display: flex;
             flex-direction: row;
             gap: 0.5em;
-            width: 331px;
+            width: 100%;
         }
 
         #edit-recipient-modal-content .birthdate-input {
-            width: 360px;
+            width: 100%;
         }
 
         #file-viewer-modal-box {
