@@ -758,6 +758,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }*/
 
             this.newRequests = await this.getCreatedDispatchRequests();
+            this.setTabulatorData(this.newRequests);
         } else {
             // TODO error handling
             if (this.singleFileProcessing) {
