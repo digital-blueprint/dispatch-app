@@ -427,8 +427,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             //table.on('rowClick', this.rowClickFunction.bind(this))
             this.rowClickFunction.bind(this);
             //this.dispatchRequestsTable.on("rowAdded", this.rowAddedFunction.bind(this));
-            this.dispatchRequestsTable.on('dataLoaded', this.dataLoadedFunction.bind(this));
-            this.dispatchRequestsTable.on('pageLoaded', this.pageLoadedFunction.bind(this));
+            //this.dispatchRequestsTable.on('dataLoaded', this.dataLoadedFunction.bind(this));
+            //this.dispatchRequestsTable.on('pageLoaded', this.pageLoadedFunction.bind(this));
 
             document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
         });
@@ -490,10 +490,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
 
         let filterArray = [];
-        this.dispatchRequestsTable.getColumns().forEach((col) => {
+        /*this.dispatchRequestsTable.getColumns().forEach((col) => {
             let field = col.getDefinition().field;
             filterArray.push({field: field, type: operator, value: filter});
-        });
+        });*/
 
         this.dispatchRequestsTable.setFilter([filterArray]);
         this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
@@ -606,7 +606,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             <option value="all">${i18n.t('show-requests.all-columns')}</option>
         `;
 
-        this.dispatchRequestsTable.getColumns().forEach((col, counter) => {
+        /*this.dispatchRequestsTable.getColumns().forEach((col, counter) => {
             let name = col.getDefinition().title;
             let field = col.getDefinition().field;
             if (
@@ -621,7 +621,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     <option value="${field}">${name}</option>
                 `;
             }
-        });
+        });*/
 
         return options;
     }
@@ -1122,10 +1122,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 }}'></dbp-icon-button>
                                             <ul class='extended-menu hidden' id='searchbar-menu'>
                                                 <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
-                                                <select id='search-select' class='button dropdown-menu'
+                                                <!--<select id='search-select' class='button dropdown-menu'
                                                         title='${i18n.t('show-requests.search-in-column')}:'>
                                                     ${this.getTableHeaderOptions()}
-                                                </select>
+                                                </select>-->
 
                                                 <label for='search-operator'>${i18n.t('show-requests.search-operator')}
                                                     :</label>
@@ -1233,7 +1233,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     
                             
 
-                            <div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading || this.tableLoading})}">
+                            <!--<div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading || this.tableLoading})}">
                                 <div id="dispatch-requests-table" class=""></div>
                                 <div class='tabulator' id='custom-pagination'>
                                     <div class='tabulator-footer'>
@@ -1242,7 +1242,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 ${ this.mayRead || this.mayReadMetadata ? html`

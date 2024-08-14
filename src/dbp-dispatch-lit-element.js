@@ -565,7 +565,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         }
                     }
                 } catch (e) {
-                    console.error(`${e.name}: ${e.message}`);
+                    //console.error(`${e.name}: ${e.message}`);
                     send({
                         summary: 'Error!',
                         body: 'Could not fetch dispatch requests.',
@@ -670,7 +670,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let row = this.currentRow;
             table.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
         } catch (e) {
-            console.error(`${e.name}: ${e.message}`);
+            //console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'There was an error.',
@@ -956,7 +956,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } catch (e) {
-            console.error(`${e.name}: ${e.message}`);
+            //console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'Could not add recipient.',
@@ -1074,7 +1074,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 hasError = true;
             }
         } catch (e) {
-            console.error(`${e.name}: ${e.message}`);
+            //console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'Could not add recipient.',
@@ -1253,7 +1253,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                 }
             } catch (e) {
-                console.error(`${e.name}: ${e.message}`);
+                //console.error(`${e.name}: ${e.message}`);
             } finally {
                 button.stop();
             }
@@ -2227,10 +2227,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
                 console.log('this.requestList ', this.requestList);
-                let tableObject = this.createTableObject(this.requestList);
+                /*let tableObject = this.createTableObject(this.requestList);
                 this.dispatchRequestsTable.setData(tableObject);
                 this.dispatchRequestsTable.setLocale(this.lang);
-                this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
+                this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');*/
             } else {
                 //TODO error handling
                 if (responseBody.status === 500) {
