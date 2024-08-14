@@ -576,10 +576,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         }
 
-        let tableObject = this.createTableObject(this.createdRequestsList);
+        /*let tableObject = this.createTableObject(this.createdRequestsList);
         this.dispatchRequestsTable.replaceData(tableObject);
         this.dispatchRequestsTable.setLocale(this.lang);
-        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
+        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');*/
         this.tableLoading = false;
 
         this.createRequestsLoading = false;
@@ -588,7 +588,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // this.requestCreated ? this.showListView = true : this.showListView = false;
         this.showListView = true;
 
-        //console.log('createdRequestsList ', this.createdRequestsList);
+        console.log('createdRequestsList ', this.createdRequestsList);
         return this.createdRequestsList;
     }
 
@@ -640,6 +640,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async onFileSelected(event) {
+        console.log('file selected');
         this.tableLoading = true;
         this.fileUploadFinished = false;
         if (!this.singleFileProcessing && !this.requestCreated) {
@@ -654,7 +655,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 await this.addFile(event.detail.file);
                 this.filesAdded = true;
-                this.setTabulatorData(this.newRequests);
+                //let table = this._('#tabulator-table-orders');
+                //table.setData(this.currentItem);
+                console.log('this.newRequests ', this.newRequests);
+                console.log('this.newRequests ', this.currentItem);
             });
         } else {
             await this.addFile(event.detail.file);
@@ -666,9 +670,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         try {
             let id = this.currentItem.identifier;
             await this.addFileToRequest(id, file);
-            let table = this._('#tabulator-table-orders');
+            /*let table = this._('#tabulator-table-orders');
             let row = this.currentRow;
-            table.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
+            table.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});*/
         } catch (e) {
             //console.error(`${e.name}: ${e.message}`);
             send({
@@ -747,9 +751,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
             this.currentFileIndex++;
 
-            if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
+            /*if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
+                console.log('am here');
                 this.newRequests = await this.getCreatedDispatchRequests();
-            }
+                console.log('here this.newRequests ');
+            }*/
+
+            this.newRequests = await this.getCreatedDispatchRequests();
         } else {
             // TODO error handling
             if (this.singleFileProcessing) {

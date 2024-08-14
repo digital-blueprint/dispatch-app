@@ -216,7 +216,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
 
             // see: http://tabulator.info/docs/5.1
-            this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
+            /*this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
                 layout: 'fitColumns',
                 placeholder: i18n.t('show-requests.no-table-data'),
                 selectableRows: true,
@@ -429,7 +429,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             this.dispatchRequestsTable.on('rowClick', this.rowClickFunction.bind(this));
             this.dispatchRequestsTable.on('dataLoaded', this.dataLoadedFunction.bind(this));
-            this.dispatchRequestsTable.on('pageLoaded', this.pageLoadedFunction.bind(this));
+            this.dispatchRequestsTable.on('pageLoaded', this.pageLoadedFunction.bind(this));*/
         });
     }
 
