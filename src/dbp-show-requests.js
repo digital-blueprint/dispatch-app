@@ -206,7 +206,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let paginationElement = this._('.tabulator-paginator');
 
             const i18n = this._i18n;
-            const that = this;
 
             // see: http://tabulator.info/docs/5.1
             this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {

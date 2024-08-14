@@ -20,7 +20,6 @@ import * as dispatchStyles from './styles';
 import {FileSource} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
 import {name as pkgName} from './../package.json';
-import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 
@@ -206,10 +205,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
 
         this.updateComplete.then(() => {
-            let paginationElement = this._('.tabulator-paginator');
-
-            const i18n = this._i18n;
-            const that = this;
 
             this._a('.tabulator-table').forEach((table) => {
                 table.buildTable();
@@ -465,8 +460,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_edit = this.createScopedElement('dbp-icon-button');
             btn_edit.setAttribute('icon-name', 'pencil');
             btn_edit.addEventListener('click', async (event) => {
-                this.currentRow = row;
-                this.editRequest(event, this.requestList[index]);
 
                 event.stopPropagation();
             });
@@ -476,8 +469,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
             btn_delete.addEventListener("click", async (event) => {
-                this.currentRow = row;
-                this.deleteRequest(event, this.requestList[index]);
                 event.stopPropagation();
             });
             controls_div.appendChild(btn_delete);
@@ -485,8 +476,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             btn_submit.addEventListener('click', async (event) => {
-                this.currentRow = row;
-                this.submitRequest(event, this.requestList[index]);
                 event.stopPropagation();
             });
             controls_div.appendChild(btn_submit);

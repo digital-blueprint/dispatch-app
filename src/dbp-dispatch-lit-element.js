@@ -565,7 +565,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         }
                     }
                 } catch (e) {
-                    //console.error(`${e.name}: ${e.message}`);
+                    console.error(`${e.name}: ${e.message}`);
                     send({
                         summary: 'Error!',
                         body: 'Could not fetch dispatch requests.',
@@ -674,7 +674,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let row = this.currentRow;
             table.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});*/
         } catch (e) {
-            //console.error(`${e.name}: ${e.message}`);
+            console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'There was an error.',
@@ -965,7 +965,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } catch (e) {
-            //console.error(`${e.name}: ${e.message}`);
+            console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'Could not add recipient.',
@@ -1083,7 +1083,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 hasError = true;
             }
         } catch (e) {
-            //console.error(`${e.name}: ${e.message}`);
+            console.error(`${e.name}: ${e.message}`);
             send({
                 summary: 'Error!',
                 body: 'Could not add recipient.',
@@ -1262,7 +1262,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                 }
             } catch (e) {
-                //console.error(`${e.name}: ${e.message}`);
+                console.error(`${e.name}: ${e.message}`);
             } finally {
                 button.stop();
             }
@@ -1792,7 +1792,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let somethingWentWrong = false;
 
             for (let i = 0; i < selectedItems2.length; i++) {
-                let data = selectedItems2[i].getData();
                 let id = selectedItems2[i].getData()['requestId'];
                 let response = await this.getDispatchRequest(id);
                 let result = await response.json();
@@ -2026,7 +2025,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this._('#select_all').checked = false;
     }
 
-    dataLoadedFunction(data) {
+    dataLoadedFunction() {
         if (this.dispatchRequestsTable !== null) {
             const that = this;
             setTimeout(function () {
@@ -2045,7 +2044,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    toggleCollapse(e) {
+    toggleCollapse() {
         const table = this.dispatchRequestsTable;
         // give a chance to draw the table
         // this is for getting more height in tabulator table, when toggle is called
