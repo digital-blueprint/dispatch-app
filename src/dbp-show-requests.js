@@ -744,6 +744,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     }
 
+    deleteSelectedRows(){
+        let table = this._('#tabulator-table-orders');
+        table.deleteSelectedRows();
+    }
+
     static get styles() {
         // language=css
         // noinspection CssUnresolvedCustomProperty
@@ -1122,10 +1127,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 }}'></dbp-icon-button>
                                             <ul class='extended-menu hidden' id='searchbar-menu'>
                                                 <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
-                                                <!--<select id='search-select' class='button dropdown-menu'
+                                                <select id='search-select' class='button dropdown-menu'
                                                         title='${i18n.t('show-requests.search-in-column')}:'>
                                                     ${this.getTableHeaderOptions()}
-                                                </select>-->
+                                                </select>
 
                                                 <label for='search-operator'>${i18n.t('show-requests.search-operator')}
                                                     :</label>

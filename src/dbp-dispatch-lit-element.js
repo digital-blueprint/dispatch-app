@@ -1686,7 +1686,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this._('#submit-all-btn').start();
 
         try {
-            let selectedItems = this.dispatchRequestsTable.getSelectedRows();
+            let table = this._('#tabulator-table-orders');
+            let selectedItems = table.getSelectedRows();
             let somethingWentWrong = false;
 
             for (let i = 0; i < selectedItems.length; i++) {
@@ -1708,6 +1709,26 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     break;
                 }
             }
+
+            /*for (let i = 0; i < selectedItems.length; i++) {
+                let id = selectedItems[i].getData()['requestId'];
+                let response = await this.getDispatchRequest(id);
+                let result = await response.json();
+                if (result.dateSubmitted) {
+                    send({
+                        summary: i18n.t('show-requests.submit-not-allowed-title'),
+                        body: i18n.t('show-requests.submit-not-allowed-text'),
+                        type: 'danger',
+                        timeout: 5,
+                    });
+                    somethingWentWrong = true;
+                    break;
+                }
+                if (!this.checkCanSubmit(result)) {
+                    somethingWentWrong = true;
+                    break;
+                }
+            }*/
 
             if (somethingWentWrong) {
                 return;
@@ -1787,32 +1808,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         try {
             let table = this._('#tabulator-table-orders');
-            let selectedItems = this.dispatchRequestsTable.getSelectedRows();
-            let selectedItems2 = table.getSelectedRows();
+            let selectedItems = table.getSelectedRows();
             let somethingWentWrong = false;
-
-            for (let i = 0; i < selectedItems2.length; i++) {
-                let id = selectedItems2[i].getData()['requestId'];
-                let response = await this.getDispatchRequest(id);
-                let result = await response.json();
-
-                if (result.dateSubmitted) {
-                    send({
-                        summary: i18n.t('show-requests.delete-not-allowed-title'),
-                        body: i18n.t('show-requests.delete-not-allowed-text'),
-                        type: 'danger',
-                        timeout: 5,
-                    });
-                    somethingWentWrong = true;
-                    break;
-                }
-
-            }
 
             for (let i = 0; i < selectedItems.length; i++) {
                 let id = selectedItems[i].getData()['requestId'];
                 let response = await this.getDispatchRequest(id);
                 let result = await response.json();
+
                 if (result.dateSubmitted) {
                     send({
                         summary: i18n.t('show-requests.delete-not-allowed-title'),
@@ -1823,6 +1826,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     somethingWentWrong = true;
                     break;
                 }
+
             }
 
             if (somethingWentWrong) {
@@ -1837,8 +1841,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let ids = [];
 
             if (confirm(dialogText)) {
-                for (let i = 0; i < selectedItems2.length; i++) {
-                    let id = selectedItems2[i].getData()['requestId'];
+                for (let i = 0; i < selectedItems.length; i++) {
+                    let id = selectedItems[i].getData()['requestId'];
 
                     ids.push(id);
 
