@@ -1255,9 +1255,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
                             <a href="#" title="${i18n.t('show-requests.back-to-list')}"
                                @click="${() => {
-                                   let currentPage = this.dispatchRequestsTable ? this.dispatchRequestsTable.getPage() : 1;
+                                   /*let currentPage = this.dispatchRequestsTable ? this.dispatchRequestsTable.getPage() : 1;
                                    this.getListOfRequests().then(() => {
                                        this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
+                                   });*/
+                                   let table = this._('#tabulator-table-orders');
+                                   let currentPage = table ? table.getPage() : 1;
+                                   this.getListOfRequests().then(() => {
+                                       this.dispatchRequestsTable ? table.setPage(currentPage) : null;
                                    });
                                    this.showListView = true;
                                    this.showDetailsView = false;
