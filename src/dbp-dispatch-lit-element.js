@@ -796,7 +796,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.currentItem = responseBody;
                         let table = this._('#tabulator-table-orders');
                         let row = this.currentRow;
-                        table.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
+                        this.currentTable.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
                     }
                 } else {
                     // TODO error handling
@@ -926,7 +926,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient = {};
                     let table = this._('#tabulator-table-orders');
                     let row = this.currentRow;
-                    table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
+                    this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                 }
                 this.currentRecipient.personIdentifier = '';
                 this.currentRecipient.givenName = '';
@@ -1051,7 +1051,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.currentRecipient = {};
                         let table = this._('#tabulator-table-orders');
                         let row = this.currentRow;
-                        table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
+                        this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
 
                     this.currentRecipient.personIdentifier = '';
@@ -1130,7 +1130,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.requestCreated = false;
                         let table = this._('#tabulator-table-orders');
                         let row = this.currentRow;
-                        table.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
+                        this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
                 } else {
                     send({
@@ -1187,6 +1187,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async deleteRequest(table, event, item) {
         const i18n = this._i18n;
         let button = event.target;
+
+        console.log('item ', item);
 
         if (item.dateSubmitted) {
             send({
@@ -1395,9 +1397,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let responseBody = await response.json();
                     let row = this.currentRow;
                     let Recipientstatus = i18n.t('show-requests.pending');
-                    table.updateRow(row, {status: Recipientstatus});
                     let submitted = this.convertToReadableDate(responseBody['dateSubmitted']);
-                    table.updateRow(row, {dateSubmitted: submitted});
+                    this.currentTable.updateRow(row, {status: Recipientstatus, dateSubmitted: submitted});
                     //table.updateRow(row, {subject: 'sent'});
 
                 } else if (response.status === 400) {
@@ -1583,16 +1584,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         let subject = this._('#tf-edit-subject-fn-dialog').value;
         let table = this._('#tabulator-table-orders');
         let row = this.currentRow;
-        table.updateRow(row, {subject: subject});
+        this.currentTable.updateRow(row, {subject: subject});
         let id = this.currentItem.identifier;
         await this.changeSubjectRequest(id, subject);
     }
 
     async confirmEditReferenceNumber() {
         let referenceNumber = this._('#tf-edit-reference-number-fn-dialog').value;
-        let table = this._('#tabulator-table-orders');
         let row = this.currentRow;
-        table.updateRow(row, {gz: referenceNumber});
+        this.currentTable.updateRow(row, {gz: referenceNumber});
         let id = this.currentItem.identifier;
         await this.changeReferenceNumberRequest(id, referenceNumber);
     }
@@ -2187,7 +2187,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.addEventListener('click', async (event) => {
-                this.submitRequest(event, item);
+                //this.submitRequest(event, item);
                 event.stopPropagation();
             });
             btn_submit.setAttribute('icon-name', 'send-diagonal');

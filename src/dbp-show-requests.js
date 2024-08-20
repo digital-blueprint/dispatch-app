@@ -66,6 +66,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderBuildingNumber = '';
 
         this.currentRow = {};
+        this.currentTable = {};
 
         this.lastModifiedName = '';
         this.expanded = false;
@@ -127,6 +128,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             showDetailsView: {type: Boolean, attribute: false},
             currentItem: {type: Object, attribute: false},
             currentRow: {type: Object, attribute: false},
+            currentTable: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
             totalNumberOfItems: {type: Number, attribute: false},
             subject: {type: String, attribute: false},
@@ -670,6 +672,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     btn_edit.setAttribute('icon-name', 'pencil');
                     btn_edit.addEventListener('click', async (event) => {
                         this.currentRow = table.getRowFromPosition(index + 1);
+                        this.currentTable = table;
                         this.editRequest(event, item);
                         event.stopPropagation();
                     });
@@ -1298,7 +1301,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         <dbp-loading-button id="delete-btn"
                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                             value="${i18n.t('show-requests.delete-button-text')}"
-                                                            @click="${(event) => { this.deleteRequest(event, this.currentItem); }}"
+                                                            @click="${(event) => { this.deleteRequest(this.currentTable, event, this.currentItem); }}"
                                                             title="${i18n.t('show-requests.delete-button-text')}"
                                         >
                                             ${i18n.t('show-requests.delete-button-text')}
@@ -1309,7 +1312,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             id="submit-btn"
                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                             value="${i18n.t('show-requests.submit-button-text')}"
-                                                            @click="${(event) => { this.submitRequest(event, this.currentItem); }}"
+                                                            @click="${(event) => { this.submitRequest(this.currentTable, event, this.currentItem); }}"
                                                             title="${i18n.t('show-requests.submit-button-text')}"
                                         >
                                             ${i18n.t('show-requests.submit-button-text')}
