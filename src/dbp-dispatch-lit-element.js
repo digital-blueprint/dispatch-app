@@ -666,6 +666,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async addFile(file) {
+        console.log('addFIle');
         this._('#add-files-btn').start();
         try {
             let id = this.currentItem.identifier;
