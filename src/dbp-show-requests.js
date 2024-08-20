@@ -671,7 +671,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     btn_edit.addEventListener('click', async (event) => {
                         this.currentRow = table.getRowFromPosition(index + 1);
                         this.editRequest(event, item);
-
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_edit);
@@ -681,7 +680,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     btn_delete.setAttribute('icon-name', 'trash');
                     btn_delete.addEventListener("click", async (event) => {
                         this.currentRow = table.getRowFromPosition(index + 1);
-                        this.deleteRequest(event, item);
+                        this.deleteRequest(table, event, item);
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_delete);
@@ -690,9 +689,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     btn_submit.setAttribute('icon-name', 'send-diagonal');
                     btn_submit.addEventListener('click', async (event) => {
                         this.currentRow = table.getRowFromPosition(index + 1);
-                        console.log('item ', item);
                         this.currentItem = item;
-                        this.submitRequest(event, item, index + 1);
+                        this.submitRequest(table, event, item, index + 1);
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_submit);

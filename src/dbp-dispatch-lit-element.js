@@ -1184,7 +1184,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    async deleteRequest(event, item) {
+    async deleteRequest(table, event, item) {
         const i18n = this._i18n;
         let button = event.target;
 
@@ -1250,7 +1250,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         type: 'success',
                         timeout: 5,
                     });
-                    let table = this._('#tabulator-table-orders');
                     let row = this.currentRow;
                     table.deleteRow(row);
                 } else {
@@ -1324,7 +1323,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return true;
     }
 
-    async submitRequest(event, item) {
+    async submitRequest(table, event, item) {
         const i18n = this._i18n;
         let button = event.target;
 
@@ -1394,7 +1393,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         timeout: 5,
                     });
                     let responseBody = await response.json();
-                    let table = this._('#tabulator-table-orders');
                     let row = this.currentRow;
                     let Recipientstatus = i18n.t('show-requests.pending');
                     table.updateRow(row, {status: Recipientstatus});
