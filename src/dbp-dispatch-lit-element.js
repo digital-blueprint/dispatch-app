@@ -729,6 +729,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 201) {
+            console.log('response 201');
             if (this.singleFileProcessing) {
                 //TODO
                 send({
@@ -755,6 +756,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if(this.newRequests !== null) {
                         this.setTabulatorData(this.newRequests);
                     }
+                } else {
+                    console.log('this.currentRow ', this.currentRow);
+                    this.currentTable.updateRow(this.currentRow, {files:this.createFormattedFilesList(this.currentItem.files)});
                 }
 
 
