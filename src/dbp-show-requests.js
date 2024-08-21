@@ -750,6 +750,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         table.deleteSelectedRows();
     }
 
+    setTabulatorData() {
+
+    }
+
     static get styles() {
         // language=css
         // noinspection CssUnresolvedCustomProperty

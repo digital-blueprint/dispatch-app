@@ -640,7 +640,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async onFileSelected(event) {
-        console.log('file selected');
         this.tableLoading = true;
         this.fileUploadFinished = false;
         if (!this.singleFileProcessing && !this.requestCreated) {
@@ -655,10 +654,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 await this.addFile(event.detail.file);
                 this.filesAdded = true;
-                //let table = this._('#tabulator-table-orders');
-                //table.setData(this.currentItem);
-                console.log('this.newRequests ', this.newRequests);
-                console.log('this.newRequests ', this.currentItem);
+                /*let table = this._('#tabulator-table-orders');
+                table.setData(this.currentItem);*/
             });
         } else {
             await this.addFile(event.detail.file);
@@ -666,14 +663,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async addFile(file) {
-        console.log('addFIle');
         this._('#add-files-btn').start();
+
         try {
             let id = this.currentItem.identifier;
             await this.addFileToRequest(id, file);
-            /*let table = this._('#tabulator-table-orders');
-            let row = this.currentRow;
-            table.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});*/
         } catch (e) {
             console.error(`${e.name}: ${e.message}`);
             send({
@@ -747,19 +741,34 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let resp = await this.getDispatchRequest(id);
             let responseBody = await resp.json();
+            console.log('responseBody ', responseBody);
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.currentItem = responseBody;
             }
             this.currentFileIndex++;
 
+
+            //if(this.currentTable['@id'] === 'tabulator-table-created-requests') {
+                if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
+                    this.newRequests = await this.getCreatedDispatchRequests();
+                    console.log('this.newRequests ', this.newRequests);
+                    if(this.newRequests !== null) {
+                        this.setTabulatorData(this.newRequests);
+                    }
+                }
+
+
+
+            //}
+            //call this only when you create a request
+            //update show requests tabulator
             /*if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
-                console.log('am here');
                 this.newRequests = await this.getCreatedDispatchRequests();
-                console.log('here this.newRequests ');
-            }*/
+
+            }
 
             this.newRequests = await this.getCreatedDispatchRequests();
-            this.setTabulatorData(this.newRequests);
+            this.setTabulatorData(this.newRequests);*/
         } else {
             // TODO error handling
             if (this.singleFileProcessing) {

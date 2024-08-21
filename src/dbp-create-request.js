@@ -49,6 +49,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderStreetAddress = '';
         this.currentItem.senderBuildingNumber = '';
 
+        this.currentTable = {};
+
         this.subject = '';
         this.groupId = '';
 
@@ -121,6 +123,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             newRequests: {type: Array, attribute: false},
 
             currentItem: {type: Object, attribute: false},
+            currentTable: {type: Object, attribute: false},
             currentItemTabulator: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
 
