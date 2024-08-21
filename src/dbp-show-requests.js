@@ -1260,10 +1260,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                    this.getListOfRequests().then(() => {
                                        this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
                                    });*/
-                                   let table = this._('#tabulator-table-orders');
-                                   let currentPage = table ? table.getPage() : 1;
+                                   let currentPage = this.currentTable ? this.currentTable.getPage() : 1;
                                    this.getListOfRequests().then(() => {
-                                       this.dispatchRequestsTable ? table.setPage(currentPage) : null;
+                                       this.currentTable ? this.currentTable.setPage(currentPage) : null;
                                    });
                                    this.showListView = true;
                                    this.showDetailsView = false;
