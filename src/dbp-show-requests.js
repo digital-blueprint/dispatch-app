@@ -93,7 +93,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.langDir = undefined;
         this.loadingTranslations = false;
         this.tableLoading = false;
-        this.expandedTabulator = true;
+        this.expandedTabulator = false;
     }
 
     static get scopedElements() {
@@ -754,6 +754,18 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     }
 
+    expandAll(){
+        this.expanded = true;
+        let table = this._('#tabulator-table-orders');
+        table.expandAll();
+    }
+
+    collapseAll(){
+        this.expanded = false;
+        let table = this._('#tabulator-table-orders');
+        table.collapseAll();
+    }
+
     static get styles() {
         // language=css
         // noinspection CssUnresolvedCustomProperty
@@ -1183,6 +1195,26 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 ${
                                     this.mayWrite
                                         ? html`
+                                             <dbp-loading-button id="expand-all-btn"
+                                                         class="${classMap({hidden: this.expanded})}"
+                                                         ?disabled="${this.loading}"
+                                                         value="${i18n.t('show-requests.expand-all')}"
+                                                         @click="${() => {
+                                                            this.expandAll();
+                                                        }}"
+                                                        title="${i18n.t('show-requests.expand-all')}"
+                                                >${i18n.t('show-requests.expand-all')}</dbp-loading-button>
+                                                
+                                                <dbp-loading-button id="collapse-all-btn"
+                                                         class="${classMap({hidden: !this.expanded})}"
+                                                         ?disabled="${this.loading}"
+                                                         value="${i18n.t('show-requests.collapse-all')}"
+                                                         @click="${() => {
+                                                            this.collapseAll();
+                                                        }}"
+                                                        title="${i18n.t('show-requests.collapse-all')}"
+                                                >${i18n.t('show-requests.collapse-all')}</dbp-loading-button>
+                                             
                                               <dbp-loading-button
                                                   id="delete-all-btn"
                                                   disabled

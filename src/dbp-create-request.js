@@ -511,6 +511,18 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     }
 
+    expandAll(){
+        this.expanded = true;
+        let table = this._('#tabulator-table-created-requests');
+        table.expandAll();
+    }
+
+    collapseAll(){
+        this.expanded = false;
+        let table = this._('#tabulator-table-created-requests');
+        table.collapseAll();
+    }
+
     static get styles() {
         // language=css
         return css`
@@ -907,7 +919,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     ?disabled="${this.loading}"
                                     value="${i18n.t('show-requests.expand-all')}"
                                     @click="${(event) => {
-                                        this.expandAll(event);
+                                        this.expandAll();
                                     }}"
                                     title="${i18n.t('show-requests.expand-all')}">
                                     ${i18n.t('show-requests.expand-all')}
@@ -979,14 +991,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     this.createRequestsLoading ||
                                     this.tableLoading,
                             })}">
-                            <div id="dispatch-requests-table" class=""></div>
-                            <div class="tabulator" id="custom-pagination">
-                                <div class="tabulator-footer">
-                                    <div class="tabulator-footer-contents">
-                                        <span class="tabulator-paginator"></span>
-                                    </div>
-                                </div>
-                            </div>
+                            
 
                             <div class="container">
                                 <dbp-tabulator-table
