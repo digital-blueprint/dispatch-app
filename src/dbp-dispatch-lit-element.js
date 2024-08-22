@@ -1819,8 +1819,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this._('#delete-all-btn').start();
 
         try {
-            let table = this._('#tabulator-table-orders');
-            let selectedItems = table.getSelectedRows();
+            let selectedItems = this.currentTable.getSelectedRows();
             let somethingWentWrong = false;
 
             for (let i = 0; i < selectedItems.length; i++) {
@@ -1847,7 +1846,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let dialogText = i18n.t('show-requests.delete-dialog-text_other', {
                 //count: this.dispatchRequestsTable.getSelectedRows().length,
-                count: table.getSelectedRows().length,
+                count: this.currentTable.getSelectedRows().length,
             });
 
             let ids = [];
@@ -1872,7 +1871,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 if (!somethingWentWrong) {
                     //if (this.dispatchRequestsTable) {
-                    if (table) {
+                    if (this.currentTable) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
                             for (let i = 0; i < ids.length; i++) {
                                 this.createdRequestsIds = this.createdRequestsIds.filter(
@@ -1905,7 +1904,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         timeout: 5,
                     });
 
-                    table.deleteSelectedRows();
+                    this.currentTable.deleteSelectedRows();
                 } else {
                     // TODO error handling
                     send({

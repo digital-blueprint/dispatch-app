@@ -97,6 +97,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.langDir = undefined;
         this.loadingTranslations = false;
         this.tableLoading = false;
+
+        this.selectedRow = this.rowClick.bind(this);
     }
 
     static get scopedElements() {
@@ -183,7 +185,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        this.dispatchRequestsTable.off('rowClick');
+        let table = this._('#tabulator-table-created-requests');
+        table.off('rowClick');
         this.dispatchRequestsTable.off('dataLoaded');
         this.dispatchRequestsTable.off('pageLoaded');
 
@@ -211,7 +214,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             this._a('.tabulator-table').forEach((table) => {
                 table.buildTable();
+                if(table.id == 'tabulator-table-created-requests')
+                    table.addEventListener('click', this.selectedRow);
             });
+
+            this.rowClickFunction.bind(this);
 
             // see: http://tabulator.info/docs/5.1
             /*this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
@@ -521,6 +528,23 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.expanded = false;
         let table = this._('#tabulator-table-created-requests');
         table.collapseAll();
+    }
+
+    rowClick(event) {
+        this.selected = true;
+        let deleteButton = this._('#delete-all-btn');
+        let submitButton = this._('#submit-all-btn');
+        let table = this._('#tabulator-table-created-requests');
+        this.currentTable = table;
+        console.log('table ', table);
+        if(table.getSelectedRows().length !== 0) {
+            deleteButton.disabled = false;
+            submitButton.disabled = false;
+        }
+        else {
+            deleteButton.disabled = true;
+            submitButton.disabled = true;
+        }
     }
 
     static get styles() {
@@ -941,7 +965,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     ? html`
                                           <dbp-loading-button
                                               id="delete-all-btn"
-                                              ?disabled="${this.loading || !this.rowsSelected}"
+                                              disabled
                                               value="${i18n.t('show-requests.delete-button-text')}"
                                               @click="${(event) => {
                                                   this.deleteSelected(event);
