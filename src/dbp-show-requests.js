@@ -492,6 +492,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             table.setFilter([filter_object]);
             return;
         }
+        else {
+            const columns = table.getColumnsFields();
+            let listOfFilters = [];
+
+            for (let col of columns) {
+                let filter_object = {field: col, type: operator, value: filter};
+                listOfFilters.push(filter_object);
+            }
+            table.setFilter([listOfFilters]);
+        }
 
         /*
 
@@ -613,7 +623,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             <option value="all">${i18n.t('show-requests.all-columns')}</option>
         `;
 
-        let langs = [
+        /*let langs = [
             i18n.t('show-requests.table-header-details'),
             i18n.t('show-requests.table-header-gz'),
             i18n.t('show-requests.table-header-subject'),
@@ -630,6 +640,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     <option value="${col}">${col}</option>
                 `;
             }
+        });*/
+
+        let lang = table.getLang().columns;
+        console.log('lang ', lang);
+        Object.entries(lang).forEach(([key, value], counter) => {
+            console.log(`${counter}: ${key} = ${value}`);
+            options[counter + 1] = html`
+                    <option value="${key}">${value}</option>
+                `;
         });
         /*this.dispatchRequestsTable.getColumns().forEach((col, counter) => {
             let name = col.getDefinition().title;
