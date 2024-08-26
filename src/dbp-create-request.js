@@ -493,7 +493,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_submit.addEventListener('click', async (event) => {
                 this.currentRow = table.getRowFromPosition(index + 1);
                 this.currentItem = item;
-                this.submitRequest(this.currentTable, event, item);
+                this.submitRequest(table, event, item);
                 event.stopPropagation();
             });
             controls_div.appendChild(btn_submit);

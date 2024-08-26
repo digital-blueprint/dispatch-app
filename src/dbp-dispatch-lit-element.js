@@ -808,7 +808,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let responseBody = await resp.json();
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
-                        let table = this._('#tabulator-table-orders');
                         let row = this.currentRow;
                         this.currentTable.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
                     }
@@ -1358,9 +1357,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
         let button = event.target;
 
-        let rows = table.getRows();
-        console.log('rows ', rows[1].getData().recipients);
-
         if (item.dateSubmitted) {
             send({
                 summary: i18n.t('show-requests.submit-not-allowed-title'),
@@ -1371,7 +1367,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
         console.log('item ', this.currentItem);
-        if (!this.checkCanSubmit(this.currentItem, rows[1].getData().recipients)) {
+        if (!this.checkCanSubmit(this.currentItem, this.currentRow.getData().recipients)) {
             return;
         }
 
