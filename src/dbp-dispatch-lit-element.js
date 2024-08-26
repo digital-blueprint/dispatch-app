@@ -937,10 +937,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 let responseBody = await resp.json();
                 if (responseBody !== undefined && responseBody.status !== 403) {
                     this.currentItem = responseBody;
+                    console.log('HERE CURRENT ITEM ', this.currentItem);
                     this.currentRecipient = {};
                     let table = this._('#tabulator-table-orders');
                     let row = this.currentRow;
-                    this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
+                    row.update({recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                 }
                 this.currentRecipient.personIdentifier = '';
                 this.currentRecipient.givenName = '';
@@ -1289,7 +1290,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param {object} request
      * @returns {boolean} if the request can be submitted or not
      */
-    checkCanSubmit(request) {
+    checkCanSubmit(request, recipients) {
         const i18n = this._i18n;
 
         // No files attached
@@ -1304,7 +1305,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         // No recipients
-        if (!request.recipients || request.recipients.length === 0) {
+        /*if (!request.recipients || request.recipients.length === 0) {
+            send({
+                summary: i18n.t('show-requests.missing-recipients.title'),
+                body: i18n.t('show-requests.missing-recipients.text'),
+                type: 'danger',
+                timeout: 5,
+            });
+            return false;
+        }*/
+
+        console.log('comp ', recipients === i18n.t('show-requests.no-recipients-added'));
+        console.log('comp recipients', recipients);
+        console.log('comp title', i18n.t('show-requests.no-recipients-added'));
+
+        if (!recipients || recipients.length === 0 || recipients === i18n.t('show-requests.no-recipients-added')) {
             send({
                 summary: i18n.t('show-requests.missing-recipients.title'),
                 body: i18n.t('show-requests.missing-recipients.text'),
@@ -1343,6 +1358,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
         let button = event.target;
 
+        let rows = table.getRows();
+        console.log('rows ', rows[1].getData().recipients);
+
         if (item.dateSubmitted) {
             send({
                 summary: i18n.t('show-requests.submit-not-allowed-title'),
@@ -1352,8 +1370,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             });
             return;
         }
-
-        if (!this.checkCanSubmit(item)) {
+        console.log('item ', this.currentItem);
+        if (!this.checkCanSubmit(this.currentItem, rows[1].getData().recipients)) {
             return;
         }
 
@@ -1412,7 +1430,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let row = this.currentRow;
                     let Recipientstatus = i18n.t('show-requests.pending');
                     let submitted = this.convertToReadableDate(responseBody['dateSubmitted']);
-                    this.currentTable.updateRow(row, {status: Recipientstatus, dateSubmitted: submitted});
+
+                    let controls_div = this.createScopedElement('div');
+                    let btn_research = this.createScopedElement('dbp-icon-button');
+                    btn_research.setAttribute('icon-name', 'keyword-research');
+                    btn_research.addEventListener('click', async (event) => {
+                        this.editRequest(event, item);
+                        event.stopPropagation();
+                    });
+                    controls_div.appendChild(btn_research);
+                    table.updateRow(row, {status: Recipientstatus, dateSubmitted: submitted, controls: controls_div});
                     //table.updateRow(row, {subject: 'sent'});
 
                 } else if (response.status === 400) {
@@ -1693,12 +1720,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async submitSelected() {
+        //TO change edit buttons immediately after sending
         const i18n = this._i18n;
 
         this._('#submit-all-btn').start();
 
         try {
-            let table = this._('#tabulator-table-orders');
+            let table = this.currentTable;
             let selectedItems = table.getSelectedRows();
             let somethingWentWrong = false;
 
@@ -1747,7 +1775,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
 
             let dialogText = i18n.t('show-requests.submit-dialog-text_other', {
-                count: this.dispatchRequestsTable.getSelectedRows().length,
+                count: this.currentTable.getSelectedRows().length,
             });
 
             let ids = [];
@@ -1768,7 +1796,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
 
                 if (!somethingWentWrong) {
-                    if (this.dispatchRequestsTable) {
+                    if (this.currentTable) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
                             for (let i = 0; i < ids.length; i++) {
                                 this.createdRequestsIds = this.createdRequestsIds.filter(
