@@ -474,8 +474,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let filter = this._('#searchbar');
         let search = this._('#search-select');
         let operator = this._('#search-operator');
+        let table = this._('#tabulator-table-orders');
 
-        if (!filter || !operator || !search || !this.dispatchRequestsTable) return;
+        if (!filter || !operator || !search || !table) return;
 
         if (filter.value === '') {
             this.dispatchRequestsTable.clearFilter();
@@ -487,18 +488,21 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         operator = operator.value;
 
         if (search !== 'all') {
-            this.dispatchRequestsTable.setFilter(search, operator, filter);
+            let filter_object = {field: search, type: operator, value: filter};
+            table.setFilter([filter_object]);
             return;
         }
 
+        /*
+
         let filterArray = [];
-        /*this.dispatchRequestsTable.getColumns().forEach((col) => {
+        this.dispatchRequestsTable.getColumns().forEach((col) => {
             let field = col.getDefinition().field;
             filterArray.push({field: field, type: operator, value: filter});
-        });*/
+        });
 
         this.dispatchRequestsTable.setFilter([filterArray]);
-        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
+        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');*/
     }
 
     /**
@@ -601,13 +605,32 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      */
     getTableHeaderOptions() {
         const i18n = this._i18n;
-        if (!this.dispatchRequestsTable) return [];
+        let table = this._('#tabulator-table-orders');
+        if (!table) return [];
 
         let options = [];
         options[0] = html`
             <option value="all">${i18n.t('show-requests.all-columns')}</option>
         `;
 
+        let langs = [
+            i18n.t('show-requests.table-header-details'),
+            i18n.t('show-requests.table-header-gz'),
+            i18n.t('show-requests.table-header-subject'),
+            i18n.t('show-requests.table-header-status'),
+            i18n.t('show-requests.table-header-files'),
+            i18n.t('show-requests.table-header-recipients'),
+            i18n.t('show-requests.date-submitted'),
+            i18n.t('show-requests.table-header-id')
+        ];
+
+        langs.forEach((col, counter) => {
+            {
+                options[counter + 1] = html`
+                    <option value="${col}">${col}</option>
+                `;
+            }
+        });
         /*this.dispatchRequestsTable.getColumns().forEach((col, counter) => {
             let name = col.getDefinition().title;
             let field = col.getDefinition().field;
