@@ -576,18 +576,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         }
 
-        /*let tableObject = this.createTableObject(this.createdRequestsList);
-        this.dispatchRequestsTable.replaceData(tableObject);
-        this.dispatchRequestsTable.setLocale(this.lang);
-        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');*/
         this.tableLoading = false;
-
         this.createRequestsLoading = false;
         this._initialFetchDone = true;
-
-        // this.requestCreated ? this.showListView = true : this.showListView = false;
         this.showListView = true;
-
         return this.createdRequestsList;
     }
 
@@ -1721,26 +1713,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
             }
 
-            /*for (let i = 0; i < selectedItems.length; i++) {
-                let id = selectedItems[i].getData()['requestId'];
-                let response = await this.getDispatchRequest(id);
-                let result = await response.json();
-                if (result.dateSubmitted) {
-                    send({
-                        summary: i18n.t('show-requests.submit-not-allowed-title'),
-                        body: i18n.t('show-requests.submit-not-allowed-text'),
-                        type: 'danger',
-                        timeout: 5,
-                    });
-                    somethingWentWrong = true;
-                    break;
-                }
-                if (!this.checkCanSubmit(result)) {
-                    somethingWentWrong = true;
-                    break;
-                }
-            }*/
-
             if (somethingWentWrong) {
                 return;
             }
@@ -2080,25 +2052,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }, 0);
     }
 
-    rowClickFunction(e, row) {
-        /*if (
-            this.dispatchRequestsTable !== null &&
-            this.dispatchRequestsTable.getSelectedRows().length ===
-                this.dispatchRequestsTable.getRows('visible').length
-        ) {
-            this._('#select_all').checked = true;
-        } else {
-            this._('#select_all').checked = false;
-        }
-        if (
-            this.dispatchRequestsTable !== null &&
-            this.dispatchRequestsTable.getSelectedRows().length > 0
-        ) {
-            this.rowsSelected = true;
-        } else {
-            this.rowsSelected = false;
-        }*/
-    }
 
     /**
      * Select or deselect all files from tabulator table
@@ -2111,7 +2064,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.dispatchRequestsTable.getSelectedRows().forEach((row) => row.deselect());
         } else {
             this.dispatchRequestsTable.getRows().forEach((row) => row.select());
-            // this.dispatchRequestsTable.selectRow();
         }
     }
 
@@ -2274,10 +2226,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let responseBody = await response.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
-                /*let tableObject = this.createTableObject(this.requestList);
-                this.dispatchRequestsTable.setData(tableObject);
-                this.dispatchRequestsTable.setLocale(this.lang);
-                this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');*/
             } else {
                 //TODO error handling
                 if (responseBody.status === 500) {

@@ -241,21 +241,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         headerSort: false,
                         responsive: 0,
                         widthGrow: 1,
-                        /*headerClick: (e) => {
-                            let allSelected = that.checkAllSelected();
-
-                            if (allSelected) {
-                                // that.dispatchRequestsTable.deselectRow("visible"));
-                                this.dispatchRequestsTable.deselectRow();
-                                this._('#select_all').checked = false;
-                                this.rowsSelected = false;
-                            } else {
-                                that.dispatchRequestsTable.selectRow('visible');
-                                this._('#select_all').checked = true;
-                                this.rowsSelected = true;
-                            }
-                            e.preventDefault();
-                        },*/
                     },
                     {
                         title: i18n.t('show-requests.table-header-details'),
@@ -423,15 +408,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     // { column: 'status', dir: 'desc' },
                 ],
             });
-
-            //this.dispatchRequestsTable.on('rowClick', this.rowClickFunction.bind(this));
-            //let table = this._('#tabulator-table-orders');
-            //table.on('rowClick', this.rowClickFunction.bind(this))
             this.rowClickFunction.bind(this);
-            //this.dispatchRequestsTable.on("rowAdded", this.rowAddedFunction.bind(this));
-            //this.dispatchRequestsTable.on('dataLoaded', this.dataLoadedFunction.bind(this));
-            //this.dispatchRequestsTable.on('pageLoaded', this.pageLoadedFunction.bind(this));
-
             document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
         });
     }
@@ -502,17 +479,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
             table.setFilter([listOfFilters]);
         }
-
-        /*
-
-        let filterArray = [];
-        this.dispatchRequestsTable.getColumns().forEach((col) => {
-            let field = col.getDefinition().field;
-            filterArray.push({field: field, type: operator, value: filter});
-        });
-
-        this.dispatchRequestsTable.setFilter([filterArray]);
-        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');*/
     }
 
     /**
@@ -622,48 +588,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         options[0] = html`
             <option value="all">${i18n.t('show-requests.all-columns')}</option>
         `;
-
-        /*let langs = [
-            i18n.t('show-requests.table-header-details'),
-            i18n.t('show-requests.table-header-gz'),
-            i18n.t('show-requests.table-header-subject'),
-            i18n.t('show-requests.table-header-status'),
-            i18n.t('show-requests.table-header-files'),
-            i18n.t('show-requests.table-header-recipients'),
-            i18n.t('show-requests.date-submitted'),
-            i18n.t('show-requests.table-header-id')
-        ];
-
-        langs.forEach((col, counter) => {
-            {
-                options[counter + 1] = html`
-                    <option value="${col}">${col}</option>
-                `;
-            }
-        });*/
-
         let lang = table.getLang().columns;
         Object.entries(lang).forEach(([key, value], counter) => {
             options[counter + 1] = html`
                     <option value="${key}">${value}</option>
                 `;
         });
-        /*this.dispatchRequestsTable.getColumns().forEach((col, counter) => {
-            let name = col.getDefinition().title;
-            let field = col.getDefinition().field;
-            if (
-                field &&
-                !field.includes('no_display') &&
-                field !== 'details' &&
-                field !== 'requestId' &&
-                field !== 'type' &&
-                field !== 'controls'
-            ) {
-                options[counter + 1] = html`
-                    <option value="${field}">${name}</option>
-                `;
-            }
-        });*/
 
         return options;
     }
@@ -695,16 +625,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.mayWrite = event.target.valueObject.accessRights.includes('w');
         }
         this.organizationSet = true;
-        //await this.getListOfRequests();
 
         this.getListOfRequests(event).then(() => {
             let table = this._('#tabulator-table-orders');
             let data = [];
             this.requestList.forEach((item, index) => {
 
-                //let Recipientstatus = item['dateSubmitted'] ? this.checkRecipientStatus(item['recipients'])[1] : i18n.t('show-requests.empty-date-submitted');
                 let recipientStatus = item['dateSubmitted'] ? this.checkRecipientStatus(item.recipients)[1] : i18n.t('show-requests.empty-date-submitted');
-                //let recipientStatus = this.checkRecipientStatus(item.recipients);
                 let controls_div = this.createScopedElement('div');
                 if(recipientStatus === i18n.t('show-requests.empty-date-submitted')) {
                     let btn_edit = this.createScopedElement('dbp-icon-button');
@@ -787,8 +714,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     static get styles() {
-        // language=css
-        // noinspection CssUnresolvedCustomProperty
         return css`
             ${commonStyles.getThemeCSS()}
             ${commonStyles.getGeneralCSS(false)}
@@ -1010,9 +935,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         ) {
             this.getListOfRequests();
         }
-        //look at toolkit for better tabulator format
-        //the problem with collapsed tabulator was probably the lack of id
-
         let langs  = {
             'en': {
                 columns: {
@@ -1283,27 +1205,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 select-rows-enabled
                                 options=${JSON.stringify(options)}>
                         </dbp-tabulator-table>
-                    </div>
-
-
+                        
+                        </div>
                             <div class="control table ${classMap({hidden: !this.initialRequestsLoading && !this.tableLoading})}">
                                 <span class="loading">
                                     <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
                                 </span>
                             </div>
                     
-                            
-
-                            <!--<div class="dispatch-table ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || this.initialRequestsLoading || this.tableLoading})}">
-                                <div id="dispatch-requests-table" class=""></div>
-                                <div class='tabulator' id='custom-pagination'>
-                                    <div class='tabulator-footer'>
-                                        <div class='tabulator-footer-contents'>
-                                            <span class='tabulator-paginator'></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>-->
                         </div>
                     </div>
                 ${ this.mayRead || this.mayReadMetadata ? html`
