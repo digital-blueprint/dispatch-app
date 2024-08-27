@@ -412,7 +412,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.organizationSet = true;
 
         this.getListOfRequests(event).then(() => {
-            console.log('getlistof req');
             let table = this._('#tabulator-table-orders');
             this.currentTable = table;
             let data = [];

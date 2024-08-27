@@ -1623,7 +1623,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     somethingWentWrong = true;
                     break;
                 }
-                if (!this.checkCanSubmit(result)) {
+                let recipients = selectedItems[i].getData()['recipients'];
+                if (!this.checkCanSubmit(result, recipients)) {
                     somethingWentWrong = true;
                     break;
                 }
@@ -1652,6 +1653,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         somethingWentWrong = true;
                         break;
                     }
+
+                    let responseBody = await submitResponse.json();
+
+                    let Recipientstatus = i18n.t('show-requests.pending');
+                    let submitted = this.convertToReadableDate(responseBody['dateSubmitted']);
+
+                    let controls_div = this.createScopedElement('div');
+                    let btn_research = this.createScopedElement('dbp-icon-button');
+                    btn_research.setAttribute('icon-name', 'keyword-research');
+                    btn_research.addEventListener('click', async (event) => {
+                        this.editRequest(event, item);
+                        event.stopPropagation();
+                    });
+                    controls_div.appendChild(btn_research);
+                    table.updateRow(selectedItems[i], {status: Recipientstatus, dateSubmitted: submitted, controls: controls_div});
                 }
 
                 if (!somethingWentWrong) {
@@ -1706,7 +1722,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this._('#delete-all-btn').start();
 
         try {
-            console.log('this.currentTable ', this.currentTable);
             let selectedItems = this.currentTable.getSelectedRows();
             let somethingWentWrong = false;
 
