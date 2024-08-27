@@ -29,7 +29,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.groupId = '';
         this.groupValue = this.loadGroupValue();
         this.personSelectorIsDisabled = false;
-        this.dispatchRequestsTable = null;
 
         this.createdRequestsList = [];
 
@@ -645,8 +644,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 await this.addFile(event.detail.file);
                 this.filesAdded = true;
-                /*let table = this._('#tabulator-table-orders');
-                table.setData(this.currentItem);*/
             });
         } else {
             await this.addFile(event.detail.file);
@@ -1201,46 +1198,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             try {
                 let response = await this.sendDeleteDispatchRequest(item.identifier);
                 if (response.status === 204) {
-                    if (this.dispatchRequestsTable) {
-                        if (this.createdRequestsList && this.createdRequestsList.length > 0) {
-                            this.createdRequestsIds = this.createdRequestsIds.filter(
-                                (id) => id !== item.identifier,
-                            );
-                            await this.getCreatedDispatchRequests();
-                            this.currentItem = {};
-
-                            this.currentItem.senderOrganizationName = '';
-                            this.currentItem.senderFullName = '';
-                            this.currentItem.senderAddressCountry = '';
-                            this.currentItem.senderPostalCode = '';
-                            this.currentItem.senderAddressLocality = '';
-                            this.currentItem.senderStreetAddress = '';
-                            this.currentItem.senderBuildingNumber = '';
-
-                            this.currentItem.files = [];
-                            this.currentItem.recipients = [];
-
-                            this.currentRecipient = {};
-
-                            this.subject = i18n.t('create-request.default-subject');
-
-                            if (this.createdRequestsList.length !== 0) {
-                                this.showListView = true;
-                                this.hasSubject = true;
-                                this.hasSender = true;
-                            } else {
-                                this.showListView = false;
-                                this.requestCreated = false;
-                                this.hasSubject = false;
-                                this.hasSender = false;
-                            }
-                            this.hasRecipients = false;
-                            this.showDetailsView = false;
-                        } else {
-                            this.getListOfRequests();
-                            this.clearAll();
-                        }
-                    }
                     send({
                         summary: i18n.t('show-requests.successfully-deleted-title'),
                         body: i18n.t('show-requests.successfully-deleted-text'),
@@ -1346,44 +1303,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 let response = await this.sendSubmitDispatchRequest(item.identifier);
                 if (response.status === 201) {
-                    if (this.dispatchRequestsTable) {
-                        if (this.createdRequestsList && this.createdRequestsList.length > 0) {
-                            this.createdRequestsIds = this.createdRequestsIds.filter(
-                                (id) => id !== item.identifier,
-                            );
-                            await this.getCreatedDispatchRequests();
-                            this.currentItem = {};
-
-                            this.currentItem.senderOrganizationName = '';
-                            this.currentItem.senderFullName = '';
-                            this.currentItem.senderAddressCountry = '';
-                            this.currentItem.senderPostalCode = '';
-                            this.currentItem.senderAddressLocality = '';
-                            this.currentItem.senderStreetAddress = '';
-                            this.currentItem.senderBuildingNumber = '';
-
-                            this.currentItem.files = [];
-                            this.currentItem.recipients = [];
-
-                            this.currentRecipient = {};
-
-                            this.subject = i18n.t('create-request.default-subject');
-
-                            if (this.createdRequestsList.length !== 0) {
-                                this.showListView = true;
-                            } else {
-                                this.showListView = false;
-                                this.requestCreated = false;
-                                this.hasSubject = false;
-                                this.hasSender = false;
-                            }
-                            this.hasRecipients = false;
-                            this.showDetailsView = false;
-                        } else {
-                            this.getListOfRequests();
-                            this.clearAll();
-                        }
-                    }
                     send({
                         summary: i18n.t('show-requests.successfully-submitted-title'),
                         body: i18n.t('show-requests.successfully-submitted-text'),
@@ -1559,9 +1478,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
 
                 this.currentItem = responseBody;
-                if (this.dispatchRequestsTable) {
-                    this.getListOfRequests();
-                }
             } else if (response.status === 403) {
                 send({
                     summary: i18n.t('create-request.error-requested-title'),
@@ -1816,7 +1732,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
 
             let dialogText = i18n.t('show-requests.delete-dialog-text_other', {
-                //count: this.dispatchRequestsTable.getSelectedRows().length,
                 count: this.currentTable.getSelectedRows().length,
             });
 
@@ -1841,7 +1756,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
 
                 if (!somethingWentWrong) {
-                    //if (this.dispatchRequestsTable) {
                     if (this.currentTable) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
                             for (let i = 0; i < ids.length; i++) {
@@ -1965,120 +1879,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    expandAll(event) {
-        this.dispatchRequestsTable.getRows('visible').forEach((row) => {
-            const item = row.getElement().lastChild;
-
-            if (item.classList.contains('tabulator-responsive-collapse')) {
-                item.style.display = 'block';
-            }
-            row.getElement()
-                .getElementsByClassName('tabulator-responsive-collapse-toggle')[0]
-                .classList.add('open');
-        });
-
-        const that = this;
-
-        setTimeout(function () {
-            that.dispatchRequestsTable.redraw();
-        }, 0);
-
-        this.expanded = true;
-    }
-
-    collapseAll(event) {
-        this.dispatchRequestsTable.getRows('visible').forEach((row) => {
-            const item = row.getElement().lastChild;
-
-            if (item.classList.contains('tabulator-responsive-collapse')) {
-                item.style.display = 'none';
-            }
-            row.getElement()
-                .getElementsByClassName('tabulator-responsive-collapse-toggle')[0]
-                .classList.remove('open');
-        });
-
-        const that = this;
-
-        setTimeout(function () {
-            that.dispatchRequestsTable.redraw();
-        }, 0);
-
-        this.expanded = false;
-    }
-
-    pageLoadedFunction(currentPageNumber) {
-        this._('#select_all').checked = false;
-    }
-
-    dataLoadedFunction() {
-        if (this.dispatchRequestsTable !== null) {
-            const that = this;
-            setTimeout(function () {
-                if (that._('.tabulator-responsive-collapse-toggle-open')) {
-                    that._a('.tabulator-responsive-collapse-toggle-open').forEach((element) =>
-                        element.addEventListener('click', that.toggleCollapse.bind(that)),
-                    );
-                }
-
-                if (that._('.tabulator-responsive-collapse-toggle-close')) {
-                    that._a('.tabulator-responsive-collapse-toggle-close').forEach((element) =>
-                        element.addEventListener('click', that.toggleCollapse.bind(that)),
-                    );
-                }
-            }, 0);
-        }
-    }
-
-    toggleCollapse() {
-        const table = this.dispatchRequestsTable;
-        // give a chance to draw the table
-        // this is for getting more height in tabulator table, when toggle is called
-        // const that = this;
-
-        setTimeout(function () {
-            // table.toggleColumn('sender');
-            // table.toggleColumn('files');
-            // table.toggleColumn('recipients');
-
-            // if (table && that._('.tabulator-responsive-collapse-toggle')) {
-            //     that._a('.tabulator-responsive-collapse-toggle').forEach((element) => {
-            //         element.classList.toggle('dbp-open');
-            //         console.log(e);
-            //     });
-            // }
-
-            table.redraw();
-        }, 0);
-    }
-
-
-    /**
-     * Select or deselect all files from tabulator table
-     *
-     */
-    selectAllFiles() {
-        let allSelected = this.checkAllSelected();
-
-        if (allSelected) {
-            this.dispatchRequestsTable.getSelectedRows().forEach((row) => row.deselect());
-        } else {
-            this.dispatchRequestsTable.getRows().forEach((row) => row.select());
-        }
-    }
-
-    checkAllSelected() {
-        if (this.dispatchRequestsTable) {
-            let maxSelected = this.dispatchRequestsTable.getRows('visible').length;
-            let selected = this.dispatchRequestsTable.getSelectedRows().length;
-
-            if (selected === maxSelected) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     createFormattedFilesList(list) {
         const i18n = this._i18n;
         let output = '';
@@ -2110,108 +1910,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } else {
             return i18n.t('show-requests.no-recipients-added');
         }
-    }
-
-    setControlsHtml(item) {
-        const i18n = this._i18n;
-        let div = this.createScopedElement('div');
-        div.classList.add('tabulator-icon-buttons');
-
-        if (item.dateSubmitted || !this.mayWrite) {
-            let btn = this.createScopedElement('dbp-icon-button');
-            btn.addEventListener('click', async (event) => {
-                this.editRequest(event, item);
-                event.stopPropagation();
-            });
-            btn.setAttribute('icon-name', 'keyword-research');
-            btn.setAttribute('aria-label', i18n.t('show-requests.show-detailed-dispatch-order'));
-            btn.setAttribute('title', i18n.t('show-requests.show-detailed-dispatch-order'));
-            div.appendChild(btn);
-        } else {
-            let btn_edit = this.createScopedElement('dbp-icon-button');
-            btn_edit.addEventListener('click', async (event) => {
-                this.editRequest(event, item);
-                event.stopPropagation();
-            });
-            btn_edit.setAttribute('icon-name', 'pencil');
-            btn_edit.setAttribute('aria-label', i18n.t('show-requests.edit-request-button-text'));
-            btn_edit.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
-            div.appendChild(btn_edit);
-
-            let btn_delete = this.createScopedElement('dbp-icon-button');
-            btn_delete.addEventListener('click', async (event) => {
-                this.deleteRequest(event, item);
-                event.stopPropagation();
-            });
-            btn_delete.setAttribute('icon-name', 'trash');
-            btn_delete.setAttribute('aria-label', i18n.t('show-requests.delete-request-button-text'));
-            btn_delete.setAttribute('title', i18n.t('show-requests.delete-request-button-text'));
-
-            div.appendChild(btn_delete);
-
-            let btn_submit = this.createScopedElement('dbp-icon-button');
-            btn_submit.addEventListener('click', async (event) => {
-                //this.submitRequest(event, item);
-                event.stopPropagation();
-            });
-            btn_submit.setAttribute('icon-name', 'send-diagonal');
-            btn_submit.setAttribute('aria-label', i18n.t('show-requests.send-request-button-text'));
-            btn_submit.setAttribute('title', i18n.t('show-requests.send-request-button-text'));
-
-            div.appendChild(btn_submit);
-        }
-
-        return div;
-    }
-
-    createTableObject(list) {
-        const i18n = this._i18n;
-        let tableObject = [];
-
-        list.forEach((item) => {
-            // let span = this.createScopedElement('span');
-            // span.classList.add('muted');
-            // span.textContent = this.mayReadMetadata && !this.mayRead && !this.mayWrite ?
-            //     i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found');
-
-            let recipientStatus = this.checkRecipientStatus(item.recipients);
-
-            // let tooltip = this.createScopedElement('dbp-tooltip');
-            // tooltip.classList.add('info-tooltip');
-            // tooltip.setAttribute('icon-name', 'info-icon');
-            // tooltip.setAttribute('text-content', recipientStatus[0]);
-            // tooltip.setAttribute('interactive');
-            // let spanStatus = this.createScopedElement('span');
-            // spanStatus.textContent = recipientStatus[1];
-            // spanStatus.appendChild(tooltip);
-
-            let content = {
-                requestId: item.identifier,
-                subject:
-                    item.name && item.name !== ''
-                        ? item.name
-                        : this.mayReadMetadata && !this.mayRead && !this.mayWrite
-                          ? i18n.t('show-requests.metadata-subject-text')
-                          : i18n.t('show-requests.no-subject-found'), //span
-                status: item.dateSubmitted
-                    ? recipientStatus[1]
-                    : i18n.t('show-requests.empty-date-submitted'),
-                gz: item.referenceNumber
-                    ? item.referenceNumber
-                    : i18n.t('show-requests.empty-reference-number'),
-                dateCreated: item.dateCreated,
-                details: 'Details',
-                files: this.createFormattedFilesList(item.files),
-                recipients: this.createFormattedRecipientsList(item.recipients),
-                dateSubmitted: item.dateSubmitted
-                    ? this.convertToReadableDate(item.dateSubmitted)
-                    : i18n.t('show-requests.date-submitted-not-submitted'),
-                controls: this.setControlsHtml(item),
-            };
-            tableObject.push(content);
-        });
-
-        return tableObject;
     }
 
     /**
@@ -2254,10 +1952,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         if (this.createdRequestsList.length > 0) {
             this.tableLoading = true;
             this.requestList = this.parseListOfRequests(this.createdRequestsList);
-            let tableObject = this.createTableObject(this.requestList);
-            this.dispatchRequestsTable.setData(tableObject);
-            this.dispatchRequestsTable.setLocale(this.lang);
-            this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
             this.tableLoading = false;
         }
     }

@@ -85,7 +85,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.nextcloudFileURL = '';
         this.nextcloudAuthInfo = '';
 
-        this.dispatchRequestsTable = null;
         this.totalNumberOfItems = 0;
         this.rowsSelected = false;
 
@@ -174,9 +173,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             switch (propName) {
                 case 'lang':
                     this._i18n.changeLanguage(this.lang);
-                    if (this.dispatchRequestsTable) {
-                        this.dispatchRequestsTable.setLocale(this.lang);
-                    }
                     break;
             }
         });
@@ -187,8 +183,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     disconnectedCallback() {
         let table = this._('#tabulator-table-created-requests');
         table.off('rowClick');
-        this.dispatchRequestsTable.off('dataLoaded');
-        this.dispatchRequestsTable.off('pageLoaded');
 
         super.disconnectedCallback();
     }
@@ -220,221 +214,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             this.rowClickFunction.bind(this);
 
-            // see: http://tabulator.info/docs/5.1
-            /*this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
-                layout: 'fitColumns',
-                placeholder: i18n.t('show-requests.no-table-data'),
-                selectableRows: true,
-                selectableRowsPersistence: false, // disable persistent selections
-                responsiveLayout: 'collapse',
-                responsiveLayoutCollapseStartOpen: false,
-                pagination: true,
-                paginationSize: 10,
-                paginationSizeSelector: true,
-                paginationElement: paginationElement,
-                columnHeaderVertAlign: 'bottom', // align header contents to bottom of cell
-                columnDefaults: {
-                    vertAlign: 'middle',
-                    hozAlign: 'left',
-                    resizable: false,
-                },
-                columns: [
-                    {
-                        title:
-                            '<label id="select_all_wrapper" class="button-container select-all-icon">' +
-                            '<input type="checkbox" id="select_all" name="select_all" value="select_all">' +
-                            '<span class="checkmark" id="select_all_checkmark"></span>' +
-                            '</label>',
-
-                        field: 'type',
-                        hozAlign: 'center',
-                        width: 40,
-                        headerSort: false,
-                        responsive: 0,
-                        widthGrow: 1,
-                        headerClick: (e) => {
-                            let allSelected = that.checkAllSelected();
-
-                            if (allSelected) {
-                                // that.dispatchRequestsTable.deselectRow("visible"));
-                                this.dispatchRequestsTable.deselectRow();
-                                this._('#select_all').checked = false;
-                                this.rowsSelected = false;
-                            } else {
-                                that.dispatchRequestsTable.selectRow('visible');
-                                this._('#select_all').checked = true;
-                                this.rowsSelected = true;
-                            }
-                            e.preventDefault();
-                        },
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-details'),
-                        field: 'details',
-                        hozAlign: 'center',
-                        width: 60,
-                        headerSort: false,
-                        responsive: 0,
-                        widthGrow: 1,
-                        formatter: 'responsiveCollapse',
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-date-created'),
-                        field: 'dateCreated',
-                        responsive: 1,
-                        widthGrow: 1,
-                        minWidth: 160,
-                        sorter: (a, b) => {
-                            const a_timestamp = Date.parse(a);
-                            const b_timestamp = Date.parse(b);
-                            return a_timestamp - b_timestamp;
-                        },
-                        formatter: function (cell) {
-                            const d = Date.parse(cell.getValue());
-                            const timestamp = new Date(d);
-                            const year = timestamp.getFullYear();
-                            const month = ('0' + (timestamp.getMonth() + 1)).slice(-2);
-                            const date = ('0' + timestamp.getDate()).slice(-2);
-                            const hours = ('0' + timestamp.getHours()).slice(-2);
-                            const minutes = ('0' + timestamp.getMinutes()).slice(-2);
-                            return date + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
-                        },
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-gz'),
-                        field: 'gz',
-                        responsive: 2,
-                        widthGrow: 3,
-                        minWidth: 100,
-                        formatter: 'html',
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-subject'),
-                        field: 'subject',
-                        responsive: 2,
-                        widthGrow: 3,
-                        minWidth: 150,
-                        formatter: 'html',
-                    },
-                    {
-                        title: 'Status',
-                        field: 'status',
-                        responsive: 2,
-                        widthGrow: 1,
-                        minWidth: 120,
-                        formatter: 'html',
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-files'),
-                        field: 'files',
-                        // visible: false,
-                        responsive: 8,
-                        minWidth: 800,
-                        formatter: function (cell) {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-recipients'),
-                        field: 'recipients',
-                        // visible: false,
-                        responsive: 8,
-                        minWidth: 800,
-                        formatter: function (cell) {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                    {
-                        title: i18n.t('show-requests.date-submitted'),
-                        field: 'dateSubmitted',
-                        responsive: 8,
-                        minWidth: 150,
-                        formatter: function (cell) {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-id'),
-                        field: 'requestId',
-                        responsive: 8,
-                        minWidth: 150,
-                        formatter: function (cell) {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                    {
-                        title: '',
-                        field: 'controls',
-                        // hozAlign: 'center',
-                        minWidth: 140,
-                        widthGrow: 1,
-                        headerSort: false,
-                        responsive: 1,
-                        formatter: (cell) => {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                ],
-                langs: {
-                    en: {
-                        columns: {
-                            dateCreated: 'Date created',
-                            subject: 'Subject',
-                            gz: 'Reference number',
-                            files: 'Files',
-                            recipients: 'Recipients',
-                            requestId: 'Request-ID',
-                        },
-                        pagination: {
-                            page_size: 'Page size',
-                            page_size_title: 'Page size',
-                            first: '<span class="mobile-hidden">First</span>',
-                            first_title: 'First Page',
-                            last: '<span class="mobile-hidden">Last</span>',
-                            last_title: 'Last Page',
-                            prev: '<span class="mobile-hidden">Prev</span>',
-                            prev_title: 'Prev Page',
-                            next: '<span class="mobile-hidden">Next</span>',
-                            next_title: 'Next Page',
-                        },
-                    },
-                    de: {
-                        columns: {
-                            dateCreated: 'Erstelldatum',
-                            subject: 'Betreff',
-                            gz: 'Geschäftszahl',
-                            files: 'Angehängte Dateien',
-                            recipients: 'Empfänger',
-                            requestId: 'Auftrags-ID',
-                        },
-                        pagination: {
-                            page_size: 'Einträge pro Seite',
-                            page_size_title: 'Einträge pro Seite',
-                            first: '<span class="mobile-hidden">Erste</span>',
-                            first_title: 'Erste Seite',
-                            last: '<span class="mobile-hidden">Letzte</span>',
-                            last_title: 'Letzte Seite',
-                            prev: '<span class="mobile-hidden">Vorherige</span>',
-                            prev_title: 'Vorherige Seite',
-                            next: '<span class="mobile-hidden">Nächste</span>',
-                            next_title: 'Nächste Seite',
-                        },
-                    },
-                },
-                initialSort: [
-                    {column: 'dateCreated', dir: 'desc'},
-                    // { column: 'status', dir: 'desc' },
-                ],
-            });
-
-            this.dispatchRequestsTable.on('rowClick', this.rowClickFunction.bind(this));
-            this.dispatchRequestsTable.on('dataLoaded', this.dataLoadedFunction.bind(this));
-            this.dispatchRequestsTable.on('pageLoaded', this.pageLoadedFunction.bind(this));*/
         });
     }
 

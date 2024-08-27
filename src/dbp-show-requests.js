@@ -78,11 +78,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.nextcloudFileURL = '';
         this.nextcloudAuthInfo = '';
 
-        this.dispatchRequestsTable = null;
-        this.totalNumberOfItems = 0;
         this.selectedRow = this.rowClick.bind(this);
 
-        this.boundSelectHandler = this.selectAllFiles.bind(this);
 
         this.initateOpenAdditionalMenu = false;
         this.initateOpenAdditionalSearchMenu = false;
@@ -130,7 +127,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             currentRow: {type: Object, attribute: false},
             currentTable: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
-            totalNumberOfItems: {type: Number, attribute: false},
             subject: {type: String, attribute: false},
             organizationSet: {type: Boolean, attribute: false},
             mayWrite: {type: Boolean, attribute: false},
@@ -155,10 +151,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             switch (propName) {
                 case 'lang':
                     this._i18n.changeLanguage(this.lang);
-                    if (this.dispatchRequestsTable) {
-                        this.dispatchRequestsTable.setLocale(this.lang);
-                        this.expanded = false;
-                    }
                     break;
 
             }
@@ -168,11 +160,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        //this.dispatchRequestsTable.off('rowClick');
         let table = this._('#tabulator-table-orders');
         table.off('rowClick');
-        this.dispatchRequestsTable.off('dataLoaded');
-        this.dispatchRequestsTable.off('pageLoaded');
 
         document.removeEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
 
@@ -210,204 +199,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             const i18n = this._i18n;
 
             // see: http://tabulator.info/docs/5.1
-            this.dispatchRequestsTable = new Tabulator(this._('#dispatch-requests-table'), {
-                layout: 'fitColumns',
-                placeholder: i18n.t('show-requests.no-table-data'),
-                selectableRows: true,
-                selectableRowsPersistence: false, // disable persistent selections
-                responsiveLayout: 'collapse',
-                responsiveLayoutCollapseStartOpen: false,
-                pagination: true,
-                paginationSize: 10,
-                paginationSizeSelector: true,
-                paginationElement: paginationElement,
-                columnHeaderVertAlign: 'bottom', // align header contents to bottom of cell
-                columnDefaults: {
-                    vertAlign: 'middle',
-                    hozAlign: 'left',
-                    resizable: false,
-                },
-                columns: [
-                    {
-                        title:
-                            '<label id="select_all_wrapper" class="button-container select-all-icon">' +
-                            '<input type="checkbox" id="select_all" name="select_all" value="select_all">' +
-                            '<span class="checkmark" id="select_all_checkmark"></span>' +
-                            '</label>',
-
-                        field: 'type',
-                        hozAlign: 'center',
-                        width: 40,
-                        headerSort: false,
-                        responsive: 0,
-                        widthGrow: 1,
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-details'),
-                        field: 'details',
-                        hozAlign: 'center',
-                        width: 60,
-                        headerSort: false,
-                        responsive: 0,
-                        widthGrow: 1,
-                        formatter: 'responsiveCollapse',
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-date-created'),
-                        field: 'dateCreated',
-                        responsive: 0,
-                        widthGrow: 1,
-                        hozAlign: 'center',
-                        minWidth: 140,
-                        sorter: (a, b) => {
-                            const a_timestamp = Date.parse(a);
-                            const b_timestamp = Date.parse(b);
-                            return a_timestamp - b_timestamp;
-                        },
-                        formatter: function (cell) {
-                            const d = Date.parse(cell.getValue());
-                            const timestamp = new Date(d);
-                            const year = timestamp.getFullYear();
-                            const month = ('0' + (timestamp.getMonth() + 1)).slice(-2);
-                            const date = ('0' + timestamp.getDate()).slice(-2);
-                            const hours = ('0' + timestamp.getHours()).slice(-2);
-                            const minutes = ('0' + timestamp.getMinutes()).slice(-2);
-                            return date + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
-                        },
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-gz'),
-                        field: 'gz',
-                        responsive: 2,
-                        widthGrow: 3,
-                        minWidth: 100,
-                        formatter: 'html',
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-subject'),
-                        field: 'subject',
-                        responsive: 3,
-                        widthGrow: 3,
-                        minWidth: 100,
-                        formatter: 'html',
-                    },
-                    {
-                        title: 'Status',
-                        field: 'status',
-                        responsive: 2,
-                        widthGrow: 1,
-                        minWidth: 120,
-                        formatter: 'html',
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-files'),
-                        field: 'files',
-                        // visible: false,
-                        responsive: 8,
-                        minWidth: 800,
-                        formatter: function (cell) {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-recipients'),
-                        field: 'recipients',
-                        // visible: false,
-                        responsive: 8,
-                        minWidth: 800,
-                        formatter: function (cell) {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                    {
-                        title: i18n.t('show-requests.date-submitted'),
-                        field: 'dateSubmitted',
-                        responsive: 8,
-                        minWidth: 150,
-                        formatter: function (cell) {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                    {
-                        title: i18n.t('show-requests.table-header-id'),
-                        field: 'requestId',
-                        responsive: 8,
-                        minWidth: 150,
-                        formatter: function (cell) {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                    {
-                        title: '',
-                        field: 'controls',
-                        // hozAlign: 'center',
-                        minWidth: 140,
-                        widthGrow: 1,
-                        headerSort: false,
-                        responsive: 0,
-                        formatter: (cell) => {
-                            let value = cell.getValue();
-                            return value;
-                        },
-                    },
-                ],
-                langs: {
-                    en: {
-                        columns: {
-                            dateCreated: 'Date created',
-                            subject: 'Subject',
-                            gz: 'Reference number',
-                            files: 'Files',
-                            recipients: 'Recipients',
-                            dateSubmitted: 'Date submitted',
-                            requestId: 'Request-ID',
-                        },
-                        pagination: {
-                            page_size: 'Page size',
-                            page_size_title: 'Page size',
-                            first: '<span class="mobile-hidden">First</span>',
-                            first_title: 'First Page',
-                            last: '<span class="mobile-hidden">Last</span>',
-                            last_title: 'Last Page',
-                            prev: '<span class="mobile-hidden">Prev</span>',
-                            prev_title: 'Prev Page',
-                            next: '<span class="mobile-hidden">Next</span>',
-                            next_title: 'Next Page',
-                        },
-                    },
-                    de: {
-                        columns: {
-                            dateCreated: 'Erstelldatum',
-                            subject: 'Betreff',
-                            gz: 'Geschäftszahl',
-                            files: 'Angehängte Dateien',
-                            recipients: 'Empfänger',
-                            dateSubmitted: 'Freigabedatum',
-                            requestId: 'Auftrags-ID',
-                        },
-                        pagination: {
-                            page_size: 'Einträge pro Seite',
-                            page_size_title: 'Einträge pro Seite',
-                            first: '<span class="mobile-hidden">Erste</span>',
-                            first_title: 'Erste Seite',
-                            last: '<span class="mobile-hidden">Letzte</span>',
-                            last_title: 'Letzte Seite',
-                            prev: '<span class="mobile-hidden">Vorherige</span>',
-                            prev_title: 'Vorherige Seite',
-                            next: '<span class="mobile-hidden">Nächste</span>',
-                            next_title: 'Nächste Seite',
-                        },
-                    },
-                },
-                initialSort: [
-                    {column: 'dateCreated', dir: 'desc'},
-                    // { column: 'status', dir: 'desc' },
-                ],
-            });
             this.rowClickFunction.bind(this);
             document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
         });
@@ -434,13 +225,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     clearFilter() {
         let filter = this._('#searchbar');
         let search = this._('#search-select');
+        let table = this._('#tabulator-table-orders');
 
-        if (!filter || !search || !this.dispatchRequestsTable) return;
+        if (!filter || !search || !table) return;
 
         filter.value = '';
         search.value = 'all';
-        this.dispatchRequestsTable.clearFilter();
-        this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
+        table.clearFilter();
     }
 
     /**
@@ -456,8 +247,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         if (!filter || !operator || !search || !table) return;
 
         if (filter.value === '') {
-            this.dispatchRequestsTable.clearFilter();
-            this.totalNumberOfItems = this.dispatchRequestsTable.getDataCount('active');
+            table.clearFilter();
             return;
         }
         filter = filter.value;
