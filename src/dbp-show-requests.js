@@ -1389,7 +1389,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             id="submit-btn"
                                                             ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                             value="${i18n.t('show-requests.submit-button-text')}"
-                                                            @click="${(event) => { this.submitRequest(table, event, this.currentItem); }}"
+                                                            @click="${(event) => { this.submitRequest(this.currentTable, event, this.currentItem); }}"
                                                             title="${i18n.t('show-requests.submit-button-text')}"
                                         >
                                             ${i18n.t('show-requests.submit-button-text')}
