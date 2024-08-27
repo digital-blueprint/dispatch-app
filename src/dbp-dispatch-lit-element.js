@@ -938,7 +938,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentItem = responseBody;
                     console.log('HERE CURRENT ITEM ', this.currentItem);
                     this.currentRecipient = {};
-                    let table = this._('#tabulator-table-orders');
                     let row = this.currentRow;
                     row.update({recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                 }
@@ -1063,7 +1062,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
                         this.currentRecipient = {};
-                        let table = this._('#tabulator-table-orders');
                         let row = this.currentRow;
                         this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
@@ -1142,7 +1140,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
                         this.requestCreated = false;
-                        let table = this._('#tabulator-table-orders');
                         let row = this.currentRow;
                         this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
@@ -1619,7 +1616,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async confirmEditSubject() {
         let subject = this._('#tf-edit-subject-fn-dialog').value;
-        let table = this._('#tabulator-table-orders');
         let row = this.currentRow;
         this.currentTable.updateRow(row, {subject: subject});
         let id = this.currentItem.identifier;
