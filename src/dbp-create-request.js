@@ -91,7 +91,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.fileUploadFinished = true;
         this.uploadedNumberOfFiles = 0;
 
-        this.boundSelectHandler = this.selectAllFiles.bind(this);
+        //this.boundSelectHandler = this.selectAllFiles.bind(this);
 
         this.langDir = undefined;
         this.loadingTranslations = false;
@@ -181,8 +181,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        let table = this._('#tabulator-table-created-requests');
-        table.off('rowClick');
+        //let table = this._('#tabulator-table-created-requests');
+        //table.off('rowClick');
 
         super.disconnectedCallback();
     }
@@ -212,7 +212,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     table.addEventListener('click', this.selectedRow);
             });
 
-            this.rowClickFunction.bind(this);
+            //this.rowClickFunction.bind(this);
 
         });
     }

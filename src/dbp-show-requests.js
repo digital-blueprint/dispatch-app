@@ -160,8 +160,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        let table = this._('#tabulator-table-orders');
-        table.off('rowClick');
+        //let table = this._('#tabulator-table-orders');
+        //table.off('rowClick');
 
         document.removeEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
 
@@ -199,7 +199,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             const i18n = this._i18n;
 
             // see: http://tabulator.info/docs/5.1
-            this.rowClickFunction.bind(this);
+            //this.rowClickFunction.bind(this);
             document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
         });
     }
