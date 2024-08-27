@@ -1663,7 +1663,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let btn_research = this.createScopedElement('dbp-icon-button');
                     btn_research.setAttribute('icon-name', 'keyword-research');
                     btn_research.addEventListener('click', async (event) => {
-                        this.editRequest(event, item);
+                        this.editRequest(event, selectedItems[i]);
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_research);
