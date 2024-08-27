@@ -16,7 +16,6 @@ import {Activity} from './activity.js';
 import metadata from './dbp-show-requests.metadata.json';
 import MicroModal from './micromodal.es';
 import {FileSource} from '@dbp-toolkit/file-handling';
-import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import * as dispatchStyles from './styles';
 import {name as pkgName} from './../package.json';
@@ -193,10 +192,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 if(table.id == 'tabulator-table-orders')
                     table.addEventListener('click', this.selectedRow);
             });
-
-            let paginationElement = this._('.tabulator-paginator');
-
-            const i18n = this._i18n;
 
             // see: http://tabulator.info/docs/5.1
             //this.rowClickFunction.bind(this);
