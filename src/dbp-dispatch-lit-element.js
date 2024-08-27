@@ -588,7 +588,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // this.requestCreated ? this.showListView = true : this.showListView = false;
         this.showListView = true;
 
-        console.log('createdRequestsList ', this.createdRequestsList);
         return this.createdRequestsList;
     }
 
@@ -729,7 +728,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let responseBody = await response.json();
         if (responseBody !== undefined && response.status === 201) {
-            console.log('response 201');
             if (this.singleFileProcessing) {
                 //TODO
                 send({
@@ -742,7 +740,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let resp = await this.getDispatchRequest(id);
             let responseBody = await resp.json();
-            console.log('responseBody ', responseBody);
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.currentItem = responseBody;
             }
@@ -752,12 +749,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             //if(this.currentTable['@id'] === 'tabulator-table-created-requests') {
                 if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
                     this.newRequests = await this.getCreatedDispatchRequests();
-                    console.log('this.newRequests ', this.newRequests);
                     if(this.newRequests !== null) {
                         this.setTabulatorData(this.newRequests);
                     }
                 } else {
-                    console.log('this.currentRow ', this.currentRow);
                     this.currentTable.updateRow(this.currentRow, {files:this.createFormattedFilesList(this.currentItem.files)});
                 }
 
@@ -936,7 +931,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 let responseBody = await resp.json();
                 if (responseBody !== undefined && responseBody.status !== 403) {
                     this.currentItem = responseBody;
-                    console.log('HERE CURRENT ITEM ', this.currentItem);
                     this.currentRecipient = {};
                     let row = this.currentRow;
                     row.update({recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
@@ -1199,8 +1193,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const i18n = this._i18n;
         let button = event.target;
 
-        console.log('item ', item);
-
         if (item.dateSubmitted) {
             send({
                 summary: i18n.t('show-requests.delete-not-allowed-title'),
@@ -1301,19 +1293,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         // No recipients
-        /*if (!request.recipients || request.recipients.length === 0) {
-            send({
-                summary: i18n.t('show-requests.missing-recipients.title'),
-                body: i18n.t('show-requests.missing-recipients.text'),
-                type: 'danger',
-                timeout: 5,
-            });
-            return false;
-        }*/
-
-        console.log('comp ', recipients === i18n.t('show-requests.no-recipients-added'));
-        console.log('comp recipients', recipients);
-        console.log('comp title', i18n.t('show-requests.no-recipients-added'));
 
         if (!recipients || recipients.length === 0 || recipients === i18n.t('show-requests.no-recipients-added')) {
             send({
@@ -1363,7 +1342,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             });
             return;
         }
-        console.log('item ', this.currentItem);
+
         if (!this.checkCanSubmit(this.currentItem, this.currentRow.getData().recipients)) {
             return;
         }
@@ -2295,7 +2274,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             let responseBody = await response.json();
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
-                console.log('this.requestList ', this.requestList);
                 /*let tableObject = this.createTableObject(this.requestList);
                 this.dispatchRequestsTable.setData(tableObject);
                 this.dispatchRequestsTable.setLocale(this.lang);
@@ -2768,7 +2746,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addEditSenderModal() {
         const i18n = this._i18n;
-        //console.log('edit sender modal');
+
         return html`
             <div class="modal micromodal-slide" id="edit-sender-modal" aria-hidden="true">
                 <div class="modal-overlay" tabindex="-2" data-micromodal-close>

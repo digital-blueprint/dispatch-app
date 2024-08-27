@@ -482,7 +482,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_delete.setAttribute('icon-name', 'trash');
             btn_delete.addEventListener("click", async (event) => {
                 this.currentRow = table.getRowFromPosition(index + 1);
-                console.log('this.currentRow ', this.currentRow );
                 this.deleteRequest(table, event, item);
                 event.stopPropagation();
             });
@@ -536,7 +535,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         let submitButton = this._('#submit-all-btn');
         let table = this._('#tabulator-table-created-requests');
         this.currentTable = table;
-        console.log('table ', table);
         if(table.getSelectedRows().length !== 0) {
             deleteButton.disabled = false;
             submitButton.disabled = false;

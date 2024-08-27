@@ -643,9 +643,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         });*/
 
         let lang = table.getLang().columns;
-        console.log('lang ', lang);
         Object.entries(lang).forEach(([key, value], counter) => {
-            console.log(`${counter}: ${key} = ${value}`);
             options[counter + 1] = html`
                     <option value="${key}">${value}</option>
                 `;
@@ -707,7 +705,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 //let Recipientstatus = item['dateSubmitted'] ? this.checkRecipientStatus(item['recipients'])[1] : i18n.t('show-requests.empty-date-submitted');
                 let recipientStatus = item['dateSubmitted'] ? this.checkRecipientStatus(item.recipients)[1] : i18n.t('show-requests.empty-date-submitted');
                 //let recipientStatus = this.checkRecipientStatus(item.recipients);
-                console.log('Recipientstatus ', recipientStatus);
                 let controls_div = this.createScopedElement('div');
                 if(recipientStatus === i18n.t('show-requests.empty-date-submitted')) {
                     let btn_edit = this.createScopedElement('dbp-icon-button');
@@ -740,7 +737,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     });
                     controls_div.appendChild(btn_submit);
                 } else {
-                    console.log('got here ');
                     let btn_research = this.createScopedElement('dbp-icon-button');
                     btn_research.setAttribute('icon-name', 'keyword-research');
                     btn_research.addEventListener('click', async (event) => {
@@ -767,24 +763,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
             table.setData(data);
         });
-
-
-
-
-
-
-        /*let rows = table.getRows();
-
-        rows.forEach((row, index) =>{
-
-            let data = row.getData();
-            console.log('data ', data);
-
-            let newData = {controls: controls_div};
-
-            table.updateRow(row, newData);
-    });*/
-
     }
 
     deleteSelectedRows(){
@@ -1142,7 +1120,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     @change=${(event) => {
                                         if (this.isLoggedIn() && !this.isLoading()) {
                                             this.processSelectedOrganization(event).then(() => {
-                                                console.log('fsdfsdaf');
                                             });
                                         }
                                     }}
@@ -1334,13 +1311,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
                             <a href="#" title="${i18n.t('show-requests.back-to-list')}"
                                @click="${() => {
-                                   /*let currentPage = this.dispatchRequestsTable ? this.dispatchRequestsTable.getPage() : 1;
+                                   let table = this._('#tabulator-table-orders');
+                                   let currentPage = table ? table.getPage() : 1;
                                    this.getListOfRequests().then(() => {
-                                       this.dispatchRequestsTable ? this.dispatchRequestsTable.setPage(currentPage) : null;
-                                   });*/
-                                   let currentPage = this.currentTable ? this.currentTable.getPage() : 1;
-                                   this.getListOfRequests().then(() => {
-                                       this.currentTable ? this.currentTable.setPage(currentPage) : null;
+                                       table ? table.setPage(currentPage) : null;
                                    });
                                    this.showListView = true;
                                    this.showDetailsView = false;
