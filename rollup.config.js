@@ -272,9 +272,8 @@ Dependencies:
                 thirdParty: {
                     allow(dependency) {
                         let licenses = [
-                            'BSD-3-Clause', 'LGPL-2.1-or-later', 'MIT', 'Apache-2.0',
-                            '(MIT OR GPL-3.0-or-later)', '(MPL-2.0 OR Apache-2.0)',
-                            'MIT OR SEE LICENSE IN FEEL-FREE.md'
+                            'LGPL-2.1-or-later', 'MIT', 'BSD-3-Clause', 'Apache-2.0', 'BSD',
+                            '(MIT OR GPL-3.0-or-later)'
                         ];
                         if (!licenses.includes(dependency.license)) {
                             throw new Error(`Unknown license for ${dependency.name}: ${dependency.license}`);
