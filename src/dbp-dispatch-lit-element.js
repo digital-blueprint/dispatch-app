@@ -1706,6 +1706,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this._('#delete-all-btn').start();
 
         try {
+            console.log('this.currentTable ', this.currentTable);
             let selectedItems = this.currentTable.getSelectedRows();
             let somethingWentWrong = false;
 

@@ -412,7 +412,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.organizationSet = true;
 
         this.getListOfRequests(event).then(() => {
+            console.log('getlistof req');
             let table = this._('#tabulator-table-orders');
+            this.currentTable = table;
             let data = [];
             this.requestList.forEach((item, index) => {
 
@@ -423,7 +425,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     btn_edit.setAttribute('icon-name', 'pencil');
                     btn_edit.addEventListener('click', async (event) => {
                         this.currentRow = table.getRowFromPosition(index + 1);
-                        this.currentTable = table;
                         this.editRequest(event, item);
                         event.stopPropagation();
                     });
