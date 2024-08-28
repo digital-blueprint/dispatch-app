@@ -537,7 +537,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async getCreatedDispatchRequests() {
-        // const i18n = this._i18n;
         this.createRequestsLoading = !this._initialFetchDone;
         this.tableLoading = true;
 
@@ -735,7 +734,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentFileIndex++;
 
 
-            //if(this.currentTable['@id'] === 'tabulator-table-created-requests') {
+            //call this only when you create a request
+            //update show requests tabulator
                 if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
                     this.newRequests = await this.getCreatedDispatchRequests();
                     if(this.newRequests !== null) {
@@ -746,18 +746,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentTable.updateRow(rows[this.currentRowIndex], {files:this.createFormattedFilesList(this.currentItem.files)});
                 }
 
-
-
-            //}
-            //call this only when you create a request
-            //update show requests tabulator
-            /*if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
-                this.newRequests = await this.getCreatedDispatchRequests();
-
-            }
-
-            this.newRequests = await this.getCreatedDispatchRequests();
-            this.setTabulatorData(this.newRequests);*/
         } else {
             // TODO error handling
             if (this.singleFileProcessing) {
@@ -795,8 +783,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.currentItem = responseBody;
                         let rows = this.currentTable.getRows();
                         this.currentTable.updateRow(rows[this.currentRowIndex], {files:this.createFormattedFilesList(this.currentItem.files)});
-                        //let row = this.currentRow;
-                        //this.currentTable.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
                     }
                 } else {
                     // TODO error handling
@@ -926,8 +912,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient = {};
                     let rows = this.currentTable.getRows();
                     this.currentTable.updateRow(rows[this.currentRowIndex], {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
-                    //let row = this.currentRow;
-                    //row.update({recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                 }
                 this.currentRecipient.personIdentifier = '';
                 this.currentRecipient.givenName = '';
@@ -1052,8 +1036,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.currentRecipient = {};
                         let rows = this.currentTable.getRows();
                         this.currentTable.updateRow(rows[this.currentRowIndex], {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
-                        //let row = this.currentRow;
-                        //this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
 
                     this.currentRecipient.personIdentifier = '';
@@ -1132,8 +1114,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.requestCreated = false;
                         let rows = this.currentTable.getRows();
                         this.currentTable.updateRow(rows[this.currentRowIndex], {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
-                        //let row = this.currentRow;
-                        //this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
                 } else {
                     send({
@@ -1311,12 +1291,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
 
-        /*console.log('this.currentRow ', this.currentRow);
-
-        if (!this.checkCanSubmit(this.currentItem, this.currentRow.getData().recipients)) {
-            return;
-        }*/
-
         if (confirm(i18n.t('show-requests.submit-dialog-text_one'))) {
             try {
                 this._('#submit-btn').start(); //TODO
@@ -1331,7 +1305,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         timeout: 5,
                     });
                     let responseBody = await response.json();
-                    //let row = this.currentRow;
                     let Recipientstatus = i18n.t('show-requests.pending');
                     let submitted = this.convertToReadableDate(responseBody['dateSubmitted']);
 
@@ -1344,7 +1317,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                     controls_div.appendChild(btn_research);
                     table.updateRow(row, {status: Recipientstatus, dateSubmitted: submitted, controls: controls_div});
-                    //table.updateRow(row, {subject: 'sent'});
 
                 } else if (response.status === 400) {
                     send({
@@ -1524,7 +1496,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async confirmEditSubject() {
         let subject = this._('#tf-edit-subject-fn-dialog').value;
-        //let row = this.currentRow;
         let rows = this.currentTable.getRows();
         this.currentTable.updateRow(rows[this.currentRowIndex], {subject: subject});
         let id = this.currentItem.identifier;
@@ -1533,7 +1504,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async confirmEditReferenceNumber() {
         let referenceNumber = this._('#tf-edit-reference-number-fn-dialog').value;
-        //let row = this.currentRow;
         let rows = this.currentTable.getRows();
         this.currentTable.updateRow(rows[this.currentRowIndex], {gz: referenceNumber});
         let id = this.currentItem.identifier;
@@ -1622,7 +1592,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async submitSelected() {
-        //TO change edit buttons immediately after sending
         const i18n = this._i18n;
 
         this._('#submit-all-btn').start();
@@ -3770,7 +3739,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     class="button select-button is-primary"
                                     id="edit-subject-confirm-btn"
                                     @click="${() => {
-                                        // this._('#edit-subject-confirm-btn').start();
                                         this.confirmEditSubject().then((r) => {
                                             MicroModal.close(this._('#edit-subject-modal'));
                                         });

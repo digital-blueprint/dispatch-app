@@ -91,8 +91,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.fileUploadFinished = true;
         this.uploadedNumberOfFiles = 0;
 
-        //this.boundSelectHandler = this.selectAllFiles.bind(this);
-
         this.langDir = undefined;
         this.loadingTranslations = false;
         this.tableLoading = false;
@@ -181,8 +179,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        //let table = this._('#tabulator-table-created-requests');
-        //table.off('rowClick');
 
         super.disconnectedCallback();
     }
@@ -211,9 +207,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 if(table.id == 'tabulator-table-created-requests')
                     table.addEventListener('click', this.selectedRow);
             });
-
-            //this.rowClickFunction.bind(this);
-
         });
     }
 
@@ -249,7 +242,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_edit = this.createScopedElement('dbp-icon-button');
             btn_edit.setAttribute('icon-name', 'pencil');
             btn_edit.addEventListener('click', async (event) => {
-                //this.currentRow = table.getRowFromPosition(index + 1);
                 this.currentTable = table;
                 this.currentRowIndex = index;
                 this.editRequest(event, item);
@@ -261,7 +253,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
             btn_delete.addEventListener("click", async (event) => {
-                //this.currentRow = table.getRowFromPosition(index + 1);
                 this.deleteRequest(table, event, item, index);
                 event.stopPropagation();
             });
@@ -270,7 +261,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             btn_submit.addEventListener('click', async (event) => {
-                //this.currentRow = table.getRowFromPosition(index + 1);
                 this.currentItem = item;
                 this.submitRequest(table, event, item);
                 event.stopPropagation();
@@ -1317,7 +1307,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     class="button select-button is-primary"
                                     id="add-subject-confirm-btn"
                                     @click="${() => {
-                                        // this._('#add-subject-confirm-btn').disabled = true;
+                                        this._('#add-subject-confirm-btn').disabled = true;
                                         MicroModal.close(this._('#add-subject-modal'));
                                         this.confirmAddSubject();
                                     }}">

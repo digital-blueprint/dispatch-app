@@ -63,7 +63,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderStreetAddress = '';
         this.currentItem.senderBuildingNumber = '';
 
-        //this.currentRow = {};
         this.currentRowIndex = '';
         this.currentTable = {};
 
@@ -82,7 +81,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.initateOpenAdditionalMenu = false;
         this.initateOpenAdditionalSearchMenu = false;
-        // this.boundCloseAdditionalMenuHandler = this.hideAdditionalMenu.bind(this);
         this.boundCloseAdditionalSearchMenuHandler = this.hideAdditionalSearchMenu.bind(this);
         this.boundPressEnterAndSubmitSearchHandler = this.pressEnterAndSubmitSearch.bind(this);
 
@@ -159,11 +157,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-        //let table = this._('#tabulator-table-orders');
-        //table.off('rowClick');
-
         document.removeEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
-
         super.disconnectedCallback();
     }
 
@@ -193,8 +187,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     table.addEventListener('click', this.selectedRow);
             });
 
-            // see: http://tabulator.info/docs/5.1
-            //this.rowClickFunction.bind(this);
             document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
         });
     }
@@ -425,7 +417,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     let btn_edit = this.createScopedElement('dbp-icon-button');
                     btn_edit.setAttribute('icon-name', 'pencil');
                     btn_edit.addEventListener('click', async (event) => {
-                        //this.currentRow = rows[index];
                         this.currentRowIndex = index;
                         this.editRequest(event, item);
                         event.stopPropagation();
@@ -436,8 +427,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     let btn_delete = this.createScopedElement('dbp-icon-button');
                     btn_delete.setAttribute('icon-name', 'trash');
                     btn_delete.addEventListener("click", async (event) => {
-                        //this.currentRow = rows[index];
-                        //console.log('here this.currentRow ', this.currentRow);
                         this.deleteRequest(table, event, item, index);
                         event.stopPropagation();
                     });
@@ -446,8 +435,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     let btn_submit = this.createScopedElement('dbp-icon-button');
                     btn_submit.setAttribute('icon-name', 'send-diagonal');
                     btn_submit.addEventListener('click', async (event) => {
-                        //this.currentRow = rows[index];
-                        //console.log('here this.currentRow ', this.currentRow);
                         this.currentItem = item;
                         this.submitRequest(table, event, item, index);
                         event.stopPropagation();
@@ -954,7 +941,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                   )}"
                                                   @click="${(event) => {
                                                 this.deleteSelected(event);
-                                                //this.deleteSelectedRows();
                                                   }}"
                                                   title="${i18n.t(
                                                     'show-requests.delete-button-text',
