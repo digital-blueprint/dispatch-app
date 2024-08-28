@@ -37,7 +37,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.loading = false;
         this._initialFetchDone = false;
         this.requestList = [];
-        this.editTable = false;
 
         this.showListView = true;
         this.showDetailsView = false;
@@ -118,7 +117,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             initialRequestsLoading: {type: Boolean, attribute: false},
             tableLoading: {type: Boolean, attribute: false},
             requestList: {type: Array, attribute: false},
-            editTable: {type: Boolean, attribute: false},
 
             showListView: {type: Boolean, attribute: false},
             showDetailsView: {type: Boolean, attribute: false},
