@@ -407,7 +407,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let table = this._('#tabulator-table-orders');
             this.currentTable = table;
             let data = [];
-            let rows = table.getRows()
+            let rows = table.getRows();
             console.log('rows ', rows);
             this.requestList.forEach((item, index) => {
 
