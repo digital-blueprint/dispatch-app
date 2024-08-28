@@ -742,7 +742,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.setTabulatorData(this.newRequests);
                     }
                 } else {
-                    //this.currentTable.updateRow(this.currentRow, {files:this.createFormattedFilesList(this.currentItem.files)});
+                    let rows = this.currentTable.getRows();
+                    this.currentTable.updateRow(rows[this.currentRowIndex], {files:this.createFormattedFilesList(this.currentItem.files)});
                 }
 
 
@@ -792,6 +793,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let responseBody = await resp.json();
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
+                        let rows = this.currentTable.getRows();
+                        this.currentTable.updateRow(rows[this.currentRowIndex], {files:this.createFormattedFilesList(this.currentItem.files)});
                         //let row = this.currentRow;
                         //this.currentTable.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
                     }
@@ -921,6 +924,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 if (responseBody !== undefined && responseBody.status !== 403) {
                     this.currentItem = responseBody;
                     this.currentRecipient = {};
+                    let rows = this.currentTable.getRows();
+                    this.currentTable.updateRow(rows[this.currentRowIndex], {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     //let row = this.currentRow;
                     //row.update({recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                 }
@@ -1045,6 +1050,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
                         this.currentRecipient = {};
+                        let rows = this.currentTable.getRows();
+                        this.currentTable.updateRow(rows[this.currentRowIndex], {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                         //let row = this.currentRow;
                         //this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
@@ -1123,6 +1130,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
                         this.requestCreated = false;
+                        let rows = this.currentTable.getRows();
+                        this.currentTable.updateRow(rows[this.currentRowIndex], {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                         //let row = this.currentRow;
                         //this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
@@ -1151,7 +1160,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    async editRequest(event, item) {
+    async editRequest(event, item, index = 0) {
         let button = event.target;
         button.start();
 
@@ -1173,6 +1182,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.showListView = false;
             this.showDetailsView = true;
             this.expanded = false;
+
         } finally {
             button.stop();
         }
@@ -1329,7 +1339,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let btn_research = this.createScopedElement('dbp-icon-button');
                     btn_research.setAttribute('icon-name', 'keyword-research');
                     btn_research.addEventListener('click', async (event) => {
-                        this.editRequest(event, item);
+                        this.editRequest(event, item, index);
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_research);
@@ -1515,7 +1525,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async confirmEditSubject() {
         let subject = this._('#tf-edit-subject-fn-dialog').value;
         //let row = this.currentRow;
-        //this.currentTable.updateRow(row, {subject: subject});
+        let rows = this.currentTable.getRows();
+        this.currentTable.updateRow(rows[this.currentRowIndex], {subject: subject});
         let id = this.currentItem.identifier;
         await this.changeSubjectRequest(id, subject);
     }
@@ -1523,7 +1534,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async confirmEditReferenceNumber() {
         let referenceNumber = this._('#tf-edit-reference-number-fn-dialog').value;
         //let row = this.currentRow;
-        //this.currentTable.updateRow(row, {gz: referenceNumber});
+        let rows = this.currentTable.getRows();
+        this.currentTable.updateRow(rows[this.currentRowIndex], {gz: referenceNumber});
         let id = this.currentItem.identifier;
         await this.changeReferenceNumberRequest(id, referenceNumber);
     }

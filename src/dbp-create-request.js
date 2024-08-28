@@ -251,6 +251,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_edit.addEventListener('click', async (event) => {
                 //this.currentRow = table.getRowFromPosition(index + 1);
                 this.currentTable = table;
+                this.currentRowIndex = index;
                 this.editRequest(event, item);
                 event.stopPropagation();
             });

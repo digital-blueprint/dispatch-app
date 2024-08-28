@@ -64,6 +64,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.currentItem.senderBuildingNumber = '';
 
         //this.currentRow = {};
+        this.currentRowIndex = '';
         this.currentTable = {};
 
         this.lastModifiedName = '';
@@ -122,6 +123,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             showDetailsView: {type: Boolean, attribute: false},
             currentItem: {type: Object, attribute: false},
             currentRow: {type: Object, attribute: false},
+            currentRowIndex: {type: String, attribute: false},
             currentTable: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
             subject: {type: String, attribute: false},
@@ -424,6 +426,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     btn_edit.setAttribute('icon-name', 'pencil');
                     btn_edit.addEventListener('click', async (event) => {
                         //this.currentRow = rows[index];
+                        this.currentRowIndex = index;
                         this.editRequest(event, item);
                         event.stopPropagation();
                     });
