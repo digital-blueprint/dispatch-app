@@ -249,7 +249,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_edit = this.createScopedElement('dbp-icon-button');
             btn_edit.setAttribute('icon-name', 'pencil');
             btn_edit.addEventListener('click', async (event) => {
-                this.currentRow = table.getRowFromPosition(index + 1);
+                //this.currentRow = table.getRowFromPosition(index + 1);
                 this.currentTable = table;
                 this.editRequest(event, item);
                 event.stopPropagation();
@@ -260,8 +260,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
             btn_delete.addEventListener("click", async (event) => {
-                this.currentRow = table.getRowFromPosition(index + 1);
-                this.deleteRequest(table, event, item);
+                //this.currentRow = table.getRowFromPosition(index + 1);
+                this.deleteRequest(table, event, item, index);
                 event.stopPropagation();
             });
             controls_div.appendChild(btn_delete);
@@ -269,7 +269,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             btn_submit.addEventListener('click', async (event) => {
-                this.currentRow = table.getRowFromPosition(index + 1);
+                //this.currentRow = table.getRowFromPosition(index + 1);
                 this.currentItem = item;
                 this.submitRequest(table, event, item);
                 event.stopPropagation();

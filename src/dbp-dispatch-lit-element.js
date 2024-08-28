@@ -742,7 +742,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         this.setTabulatorData(this.newRequests);
                     }
                 } else {
-                    this.currentTable.updateRow(this.currentRow, {files:this.createFormattedFilesList(this.currentItem.files)});
+                    //this.currentTable.updateRow(this.currentRow, {files:this.createFormattedFilesList(this.currentItem.files)});
                 }
 
 
@@ -792,8 +792,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let responseBody = await resp.json();
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
-                        let row = this.currentRow;
-                        this.currentTable.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
+                        //let row = this.currentRow;
+                        //this.currentTable.updateRow(row, {files:this.createFormattedFilesList(this.currentItem.files)});
                     }
                 } else {
                     // TODO error handling
@@ -921,8 +921,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 if (responseBody !== undefined && responseBody.status !== 403) {
                     this.currentItem = responseBody;
                     this.currentRecipient = {};
-                    let row = this.currentRow;
-                    row.update({recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
+                    //let row = this.currentRow;
+                    //row.update({recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                 }
                 this.currentRecipient.personIdentifier = '';
                 this.currentRecipient.givenName = '';
@@ -1045,8 +1045,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
                         this.currentRecipient = {};
-                        let row = this.currentRow;
-                        this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
+                        //let row = this.currentRow;
+                        //this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
 
                     this.currentRecipient.personIdentifier = '';
@@ -1123,8 +1123,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
                         this.requestCreated = false;
-                        let row = this.currentRow;
-                        this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
+                        //let row = this.currentRow;
+                        //this.currentTable.updateRow(row, {recipients: this.createFormattedRecipientsList(this.currentItem.recipients)});
                     }
                 } else {
                     send({
@@ -1178,7 +1178,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    async deleteRequest(table, event, item) {
+
+    async deleteRequest(table, event, item, index = 0) {
         const i18n = this._i18n;
         let button = event.target;
 
@@ -1204,8 +1205,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         type: 'success',
                         timeout: 5,
                     });
-                    let row = this.currentRow;
-                    table.deleteRow(row);
+                    let rows = table.getRows();
+                    table.deleteRow(rows[index]);
                 } else {
                     send({
                         summary: 'Error!',
@@ -1278,7 +1279,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return true;
     }
 
-    async submitRequest(table, event, item) {
+    async submitRequest(table, event, item, index = 0) {
         const i18n = this._i18n;
         let button = event.target;
 
@@ -1292,9 +1293,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
 
-        if (!this.checkCanSubmit(this.currentItem, this.currentRow.getData().recipients)) {
+        let rows = table.getRows();
+        let row = rows[index];
+        let recipients = row.getData().recipients;
+
+        if (!this.checkCanSubmit(this.currentItem, recipients)) {
             return;
         }
+
+        /*console.log('this.currentRow ', this.currentRow);
+
+        if (!this.checkCanSubmit(this.currentItem, this.currentRow.getData().recipients)) {
+            return;
+        }*/
 
         if (confirm(i18n.t('show-requests.submit-dialog-text_one'))) {
             try {
@@ -1310,7 +1321,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         timeout: 5,
                     });
                     let responseBody = await response.json();
-                    let row = this.currentRow;
+                    //let row = this.currentRow;
                     let Recipientstatus = i18n.t('show-requests.pending');
                     let submitted = this.convertToReadableDate(responseBody['dateSubmitted']);
 
@@ -1503,16 +1514,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     async confirmEditSubject() {
         let subject = this._('#tf-edit-subject-fn-dialog').value;
-        let row = this.currentRow;
-        this.currentTable.updateRow(row, {subject: subject});
+        //let row = this.currentRow;
+        //this.currentTable.updateRow(row, {subject: subject});
         let id = this.currentItem.identifier;
         await this.changeSubjectRequest(id, subject);
     }
 
     async confirmEditReferenceNumber() {
         let referenceNumber = this._('#tf-edit-reference-number-fn-dialog').value;
-        let row = this.currentRow;
-        this.currentTable.updateRow(row, {gz: referenceNumber});
+        //let row = this.currentRow;
+        //this.currentTable.updateRow(row, {gz: referenceNumber});
         let id = this.currentItem.identifier;
         await this.changeReferenceNumberRequest(id, referenceNumber);
     }
