@@ -1532,63 +1532,63 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async fetchDetailedRecipientInformation(identifier) {
-        // if (this.mayReadAddress) {
-        let response = await this.getDispatchRecipient(identifier);
+        if (this.mayReadAddress) {
+            let response = await this.getDispatchRecipient(identifier);
 
-        let responseBody = await response.json();
-        if (responseBody !== undefined && response.status === 200) {
-            this.currentRecipient = responseBody;
+            let responseBody = await response.json();
+            if (responseBody !== undefined && response.status === 200) {
+                this.currentRecipient = responseBody;
 
-            this.currentRecipient.personIdentifier =
-                responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
-            let birthDate =
-                responseBody['birthDate'] && responseBody['birthDate'] !== ''
-                    ? this.convertToBirthDateTuple(responseBody['birthDate'])
+                this.currentRecipient.personIdentifier =
+                    responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
+                let birthDate =
+                    responseBody['birthDate'] && responseBody['birthDate'] !== ''
+                        ? this.convertToBirthDateTuple(responseBody['birthDate'])
+                        : '';
+
+                if (birthDate !== '') {
+                    this.currentRecipient.birthDateDay = birthDate.day;
+                    this.currentRecipient.birthDateMonth = birthDate.month;
+                    this.currentRecipient.birthDateYear = birthDate.year;
+                } else {
+                    this.currentRecipient.birthDateDay = '';
+                    this.currentRecipient.birthDateMonth = '';
+                    this.currentRecipient.birthDateYear = '';
+                }
+
+                this.currentRecipient.statusChanges = responseBody['statusChanges'];
+                if (this.currentRecipient.statusChanges.length > 0) {
+                    this.currentRecipient.statusDescription =
+                        this.currentRecipient.statusChanges[0].description;
+                    this.currentRecipient.statusType =
+                        this.currentRecipient.statusChanges[0].statusType;
+                } else {
+                    this.currentRecipient.statusDescription = null;
+                    this.currentRecipient.statusType = null;
+                }
+                this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate']
+                    ? responseBody['deliveryEndDate']
+                    : '';
+                this.currentRecipient.appDeliveryId = responseBody['appDeliveryID']
+                    ? responseBody['appDeliveryID']
+                    : '';
+                this.currentRecipient.postalDeliverable = responseBody['postalDeliverable']
+                    ? responseBody['postalDeliverable']
+                    : '';
+                this.currentRecipient.electronicallyDeliverable = responseBody[
+                    'electronicallyDeliverable'
+                ]
+                    ? responseBody['electronicallyDeliverable']
+                    : '';
+                this.currentRecipient.lastStatusChange = responseBody['lastStatusChange']
+                    ? responseBody['lastStatusChange']
                     : '';
 
-            if (birthDate !== '') {
-                this.currentRecipient.birthDateDay = birthDate.day;
-                this.currentRecipient.birthDateMonth = birthDate.month;
-                this.currentRecipient.birthDateYear = birthDate.year;
+                // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
             } else {
-                this.currentRecipient.birthDateDay = '';
-                this.currentRecipient.birthDateMonth = '';
-                this.currentRecipient.birthDateYear = '';
+                // TODO error handling
             }
-
-            this.currentRecipient.statusChanges = responseBody['statusChanges'];
-            if (this.currentRecipient.statusChanges.length > 0) {
-                this.currentRecipient.statusDescription =
-                    this.currentRecipient.statusChanges[0].description;
-                this.currentRecipient.statusType =
-                    this.currentRecipient.statusChanges[0].statusType;
-            } else {
-                this.currentRecipient.statusDescription = null;
-                this.currentRecipient.statusType = null;
-            }
-            this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate']
-                ? responseBody['deliveryEndDate']
-                : '';
-            this.currentRecipient.appDeliveryId = responseBody['appDeliveryID']
-                ? responseBody['appDeliveryID']
-                : '';
-            this.currentRecipient.postalDeliverable = responseBody['postalDeliverable']
-                ? responseBody['postalDeliverable']
-                : '';
-            this.currentRecipient.electronicallyDeliverable = responseBody[
-                'electronicallyDeliverable'
-            ]
-                ? responseBody['electronicallyDeliverable']
-                : '';
-            this.currentRecipient.lastStatusChange = responseBody['lastStatusChange']
-                ? responseBody['lastStatusChange']
-                : '';
-
-            // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
-        } else {
-            // TODO error handling
         }
-        // }
     }
 
     async submitSelected() {
