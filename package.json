@@ -67,7 +67,7 @@
         "@tugraz/web-components": "^0.3.6",
         "@webcomponents/scoped-custom-element-registry": "^0.0.9",
         "lit": "^3.0.0",
-        "pdfjs-dist": "^4.3"
+        "pdfjs-dist": "^4.3 <4.6"
     },
     "scripts": {
         "build": "rollup -c",
