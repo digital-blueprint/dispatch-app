@@ -29,6 +29,7 @@ const buildFull = (!watch && appEnv !== 'test') || process.env.FORCE_FULL !== un
 let useTerser = buildFull;
 let useBabel = buildFull;
 let checkLicenses = buildFull;
+let treeshake = buildFull;
 
 // if true, app assets and configs are whitelabel
 let whitelabel;
@@ -166,8 +167,7 @@ export default (async () => {
             format: 'esm',
             sourcemap: true,
         },
-        //preserveEntrySignatures: false,
-        // external: ['zlib', 'http', 'fs', 'https', 'url'],
+        treeshake: treeshake,
         onwarn: function (warning, warn) {
             // more eval
             if (warning.code === 'EVAL' && warning.id.includes('pdfAnnotate.js')) {
