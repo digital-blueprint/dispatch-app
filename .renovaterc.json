@@ -14,10 +14,6 @@
         {
             "matchPackageNames": ["pdfjs-dist"],
             "allowedVersions": "<4.6"
-        },
-        {
-            "matchPackageNames": ["@rollup/plugin-commonjs"],
-            "allowedVersions": "<27"
         }
     ]
 }
