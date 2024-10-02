@@ -4,6 +4,7 @@
     nativeBuildInputs = with pkgs; [
       nodejs_20
       zellij # smart terminal workspace
+      lazygit # git terminal
     ];
 }
 
