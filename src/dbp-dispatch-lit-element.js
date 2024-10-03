@@ -640,7 +640,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
                 this.createdRequestsIds.push(this.currentItem.identifier);
                 this.totalNumberOfCreatedRequestItems++;
-
                 await this.addFile(event.detail.file);
                 this.filesAdded = true;
             });
@@ -736,15 +735,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             //call this only when you create a request
             //update show requests tabulator
-                if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
-                    this.newRequests = await this.getCreatedDispatchRequests();
-                    if(this.newRequests !== null) {
-                        this.setTabulatorData(this.newRequests);
-                    }
-                } else {
-                    let rows = this.currentTable.getRows();
-                    this.currentTable.updateRow(rows[this.currentRowIndex], {files:this.createFormattedFilesList(this.currentItem.files)});
+            if (this.uploadedNumberOfFiles === this.currentFileIndex && !this.addFileViaButton) {
+                this.newRequests = await this.getCreatedDispatchRequests();
+                if(this.newRequests !== null) {
+                    this.setTabulatorData(this.newRequests);
                 }
+            } else {
+                let rows = this.currentTable.getRows();
+                this.currentTable.updateRow(rows[this.currentRowIndex], {files:this.createFormattedFilesList(this.currentItem.files)});
+            }
 
         } else {
             // TODO error handling
@@ -1197,6 +1196,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                     let rows = table.getRows();
                     table.deleteRow(rows[index]);
+                    this.clearAll();
                 } else {
                     send({
                         summary: 'Error!',
@@ -1297,13 +1297,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 button.start();
 
                 let response = await this.sendSubmitDispatchRequest(item.identifier);
+
                 if (response.status === 201) {
-                    send({
-                        summary: i18n.t('show-requests.successfully-submitted-title'),
-                        body: i18n.t('show-requests.successfully-submitted-text'),
-                        type: 'success',
-                        timeout: 5,
-                    });
+
                     let responseBody = await response.json();
                     let Recipientstatus = i18n.t('show-requests.pending');
                     let submitted = this.convertToReadableDate(responseBody['dateSubmitted']);
@@ -1317,6 +1313,37 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
                     controls_div.appendChild(btn_research);
                     table.updateRow(row, {status: Recipientstatus, dateSubmitted: submitted, controls: controls_div});
+
+                    if (this.currentTable) {
+                        if (this.createdRequestsList && this.createdRequestsList.length > 0) {
+                            this.createdRequestsIds = this.createdRequestsIds.filter(
+                                (id) => id !== item.identifier,
+                            );
+
+                            await this.getCreatedDispatchRequests();
+
+                            if (this.createdRequestsList.length !== 0) {
+                                this.showListView = true;
+                                this.requestCreated = true;
+                            } else {
+                                this.showListView = false;
+                                this.requestCreated = false;
+                                this.hasSubject = false;
+                                this.hasSender = false;
+                            }
+                            this.hasRecipients = false;
+                            this.showDetailsView = false;
+                        } else {
+                            this.getListOfRequests();
+                            this.clearAll();
+                        }
+                    }
+                    send({
+                        summary: i18n.t('show-requests.successfully-submitted-title'),
+                        body: i18n.t('show-requests.successfully-submitted-text'),
+                        type: 'success',
+                        timeout: 5,
+                    });
 
                 } else if (response.status === 400) {
                     send({

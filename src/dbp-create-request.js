@@ -238,9 +238,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             let recipientStatus = item['dateSubmitted'] ? this.checkRecipientStatus(item.recipients)[1] : i18n.t('show-requests.empty-date-submitted');
 
             let controls_div = this.createScopedElement('div');
-
+            controls_div.classList.add('tabulator-icon-buttons');
             let btn_edit = this.createScopedElement('dbp-icon-button');
             btn_edit.setAttribute('icon-name', 'pencil');
+            btn_edit.setAttribute('aria-label', i18n.t('show-requests.edit-request-button-text'));
+            btn_edit.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
             btn_edit.addEventListener('click', async (event) => {
                 this.currentTable = table;
                 this.currentRowIndex = index;
@@ -249,9 +251,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
             controls_div.appendChild(btn_edit);
 
-
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
+            btn_delete.setAttribute('aria-label', i18n.t('show-requests.delete-request-button-text'));
+            btn_delete.setAttribute('title', i18n.t('show-requests.delete-request-button-text'));
             btn_delete.addEventListener("click", async (event) => {
                 this.deleteRequest(table, event, item, index);
                 event.stopPropagation();
@@ -260,6 +263,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             let btn_submit = this.createScopedElement('dbp-icon-button');
             btn_submit.setAttribute('icon-name', 'send-diagonal');
+            btn_submit.setAttribute('aria-label', i18n.t('show-requests.send-request-button-text'));
+            btn_submit.setAttribute('title', i18n.t('show-requests.send-request-button-text'));
             btn_submit.addEventListener('click', async (event) => {
                 this.currentItem = item;
                 this.submitRequest(table, event, item);
@@ -503,16 +508,16 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayout: 'collapse',
             responsiveLayoutCollapseStartOpen: false,
             columns: [
-                {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center"},
-                {title: 'dateCreated', field: 'dateCreated', width: 200, hozAlign: 'left'},
+                {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center", headerSort:false},
+                {title: 'dateCreated', field: 'dateCreated', width: 200, hozAlign: 'left', responsive:0},
                 {title: 'gz', field: 'gz', width: 200},
                 {title: 'subject', field: 'subject', width: 250},
                 {title: 'status', field: 'status', width: 200},
-                {title: '', field: 'controls', formatter: 'html'},
-                {title: 'files', field: 'files', width: 150, formatter: 'html'},
-                {title: 'recipients', field: 'recipients', width: 150, formatter: 'html'},
-                {title: 'dateSubmitted', field: 'dateSubmitted', width: 150},
-                {title: 'requestId', field: 'requestId', width: 150}
+                {title: '', field: 'controls', formatter: 'html', headerSort:false, responsive:0},
+                {title: 'files', field: 'files', width: 150, formatter: 'html', responsive:8},
+                {title: 'recipients', field: 'recipients', width: 150, formatter: 'html', responsive:8},
+                {title: 'dateSubmitted', field: 'dateSubmitted', width: 150, responsive:8},
+                {title: 'requestId', field: 'requestId', width: 150, responsive:8}
             ],
             columnDefaults: {
                 vertAlign: 'middle',
@@ -783,7 +788,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     this.createRequestsLoading ||
                                     this.tableLoading,
                             })}">
-                            
+
 
                             <div class="container">
                                 <dbp-tabulator-table
@@ -799,7 +804,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 </dbp-tabulator-table>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
 
@@ -817,7 +822,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                           this.currentItem.dateSubmitted}"
                                           value="${i18n.t('show-requests.delete-button-text')}"
                                           @click="${(event) => {
-                                              this.deleteRequest(event, this.currentItem);
+                                              let table = this._('#tabulator-table-created-requests');
+                                              this.deleteRequest(table, event, this.currentItem);
                                           }}"
                                           title="${i18n.t('show-requests.delete-button-text')}">
                                           ${i18n.t('show-requests.delete-button-text')}
@@ -831,7 +837,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                           this.currentItem.dateSubmitted}"
                                           value="${i18n.t('show-requests.submit-button-text')}"
                                           @click="${(event) => {
-                                              this.submitRequest(event, this.currentItem);
+                                              this.submitRequest(this.currentTable, event, this.currentItem);
                                           }}"
                                           title="${i18n.t('show-requests.submit-button-text')}">
                                           ${i18n.t('show-requests.submit-button-text')}

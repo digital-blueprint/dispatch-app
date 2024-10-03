@@ -413,9 +413,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                 let recipientStatus = item['dateSubmitted'] ? this.checkRecipientStatus(item.recipients)[1] : i18n.t('show-requests.empty-date-submitted');
                 let controls_div = this.createScopedElement('div');
+                controls_div.classList.add('tabulator-icon-buttons');
                 if(recipientStatus === i18n.t('show-requests.empty-date-submitted')) {
                     let btn_edit = this.createScopedElement('dbp-icon-button');
                     btn_edit.setAttribute('icon-name', 'pencil');
+                    btn_edit.setAttribute('aria-label', i18n.t('show-requests.edit-request-button-text'));
+                    btn_edit.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
                     btn_edit.addEventListener('click', async (event) => {
                         this.currentRowIndex = index;
                         this.editRequest(event, item);
@@ -426,6 +429,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                     let btn_delete = this.createScopedElement('dbp-icon-button');
                     btn_delete.setAttribute('icon-name', 'trash');
+                    btn_delete.setAttribute('aria-label', i18n.t('show-requests.delete-request-button-text'));
+                    btn_delete.setAttribute('title', i18n.t('show-requests.delete-request-button-text'));
                     btn_delete.addEventListener("click", async (event) => {
                         this.deleteRequest(table, event, item, index);
                         event.stopPropagation();
@@ -434,6 +439,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                     let btn_submit = this.createScopedElement('dbp-icon-button');
                     btn_submit.setAttribute('icon-name', 'send-diagonal');
+                    btn_submit.setAttribute('aria-label', i18n.t('show-requests.send-request-button-text'));
+                    btn_submit.setAttribute('title', i18n.t('show-requests.send-request-button-text'));
                     btn_submit.addEventListener('click', async (event) => {
                         this.currentItem = item;
                         this.submitRequest(table, event, item, index);
@@ -443,6 +450,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 } else {
                     let btn_research = this.createScopedElement('dbp-icon-button');
                     btn_research.setAttribute('icon-name', 'keyword-research');
+                    btn_research.setAttribute('aria-label', i18n.t('show-requests.show-detailed-dispatch-order'));
+                    btn_research.setAttribute('title', i18n.t('show-requests.show-detailed-dispatch-order'));
                     btn_research.addEventListener('click', async (event) => {
                         this.editRequest(event, item);
                         event.stopPropagation();
@@ -748,15 +757,15 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayoutCollapseStartOpen: false,
             columns: [
                 {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center", sorter:"string", headerSort:false},
-                {title: 'dateCreated', field: 'dateCreated', width: 200, hozAlign: 'left'},
+                {title: 'dateCreated', field: 'dateCreated', width: 200, hozAlign: 'left', responsive:0},
                 {title: 'gz', field: 'gz', width: 200},
                 {title: 'subject', field: 'subject', width: 250},
                 {title: 'status', field: 'status', width: 200},
-                {title: '', field: 'controls', formatter: 'html', headerSort:false},
-                {title: 'files', field: 'files', width: 150, formatter: 'html'},
-                {title: 'recipients', field: 'recipients', width: 150, formatter: 'html'},
-                {title: 'dateSubmitted', field: 'dateSubmitted', width: 150},
-                {title: 'requestId', field: 'requestId', width: 150}
+                {title: '', field: 'controls', formatter: 'html', headerSort:false, responsive:0},
+                {title: 'files', field: 'files', width: 150, formatter: 'html', responsive:3},
+                {title: 'recipients', field: 'recipients', width: 150, formatter: 'html', responsive:4},
+                {title: 'dateSubmitted', field: 'dateSubmitted', width: 150, responsive:5},
+                {title: 'requestId', field: 'requestId', width: 150, responsive:6}
             ],
             columnDefaults: {
                 vertAlign: 'middle',
@@ -837,7 +846,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     ${i18n.t('show-requests.dispatch-orders')}
                 </h3>
 
-                
+
 
 
                 <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet || (!this.mayRead && !this.mayReadMetadata)})}">
@@ -901,7 +910,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}" id="open-settings-btn"
                                                      ?disabled="${this.loading}"
                                                      @click="${() => {
-                                                         
+
                                                      }}"
                                                      title="TODO"
                                                      icon-name="iconoir_settings"></dbp-icon-button>
@@ -922,7 +931,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         }}"
                                                         title="${i18n.t('show-requests.expand-all')}"
                                                 >${i18n.t('show-requests.expand-all')}</dbp-loading-button>
-                                                
+
                                                 <dbp-loading-button id="collapse-all-btn"
                                                          class="${classMap({hidden: !this.expanded})}"
                                                          ?disabled="${this.loading}"
@@ -932,7 +941,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         }}"
                                                         title="${i18n.t('show-requests.collapse-all')}"
                                                 >${i18n.t('show-requests.collapse-all')}</dbp-loading-button>
-                                             
+
                                               <dbp-loading-button
                                                   id="delete-all-btn"
                                                   disabled
@@ -968,7 +977,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                             </div>
                         </div>
-                        
+
                     <div class="container">
                         <dbp-tabulator-table
                                 lang="${this.lang}"
@@ -981,14 +990,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 select-rows-enabled
                                 options=${JSON.stringify(options)}>
                         </dbp-tabulator-table>
-                        
+
                         </div>
                             <div class="control table ${classMap({hidden: !this.initialRequestsLoading && !this.tableLoading})}">
                                 <span class="loading">
                                     <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
                                 </span>
                             </div>
-                    
+
                         </div>
                     </div>
                 ${ this.mayRead || this.mayReadMetadata ? html`
