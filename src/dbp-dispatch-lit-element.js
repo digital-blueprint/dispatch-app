@@ -1218,7 +1218,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param {object} request
      * @returns {boolean} if the request can be submitted or not
      */
-    checkCanSubmit(request, recipients) {
+    checkCanSubmit(request) {
         const i18n = this._i18n;
 
         // No files attached
@@ -1233,8 +1233,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         // No recipients
-
-        if (!recipients || recipients.length === 0 || recipients === i18n.t('show-requests.no-recipients-added')) {
+        // if (!recipients || recipients.length === 0 || recipients === i18n.t('show-requests.no-recipients-added')) {
+        if (!request.recipients || request.recipients.length === 0) {
             send({
                 summary: i18n.t('show-requests.missing-recipients.title'),
                 body: i18n.t('show-requests.missing-recipients.text'),
@@ -1285,9 +1285,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let rows = table.getRows();
         let row = rows[index];
-        let recipients = row.getData().recipients;
-
-        if (!this.checkCanSubmit(this.currentItem, recipients)) {
+        if (!this.checkCanSubmit(this.currentItem)) {
             return;
         }
 
@@ -1360,8 +1358,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         timeout: 5,
                     });
                 } else {
-                    // TODO error handling
-
                     send({
                         summary: 'Error!',
                         body: 'Could not submit request. Response code: ' + response.status,
@@ -1559,62 +1555,59 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async fetchDetailedRecipientInformation(identifier) {
-        if (this.mayReadAddress) {
-            let response = await this.getDispatchRecipient(identifier);
+        let response = await this.getDispatchRecipient(identifier);
 
-            let responseBody = await response.json();
-            if (responseBody !== undefined && response.status === 200) {
-                this.currentRecipient = responseBody;
+        let responseBody = await response.json();
+        if (responseBody !== undefined && response.status === 200) {
+            this.currentRecipient = responseBody;
 
-                this.currentRecipient.personIdentifier =
-                    responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
-                let birthDate =
-                    responseBody['birthDate'] && responseBody['birthDate'] !== ''
-                        ? this.convertToBirthDateTuple(responseBody['birthDate'])
-                        : '';
-
-                if (birthDate !== '') {
-                    this.currentRecipient.birthDateDay = birthDate.day;
-                    this.currentRecipient.birthDateMonth = birthDate.month;
-                    this.currentRecipient.birthDateYear = birthDate.year;
-                } else {
-                    this.currentRecipient.birthDateDay = '';
-                    this.currentRecipient.birthDateMonth = '';
-                    this.currentRecipient.birthDateYear = '';
-                }
-
-                this.currentRecipient.statusChanges = responseBody['statusChanges'];
-                if (this.currentRecipient.statusChanges.length > 0) {
-                    this.currentRecipient.statusDescription =
-                        this.currentRecipient.statusChanges[0].description;
-                    this.currentRecipient.statusType =
-                        this.currentRecipient.statusChanges[0].statusType;
-                } else {
-                    this.currentRecipient.statusDescription = null;
-                    this.currentRecipient.statusType = null;
-                }
-                this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate']
-                    ? responseBody['deliveryEndDate']
-                    : '';
-                this.currentRecipient.appDeliveryId = responseBody['appDeliveryID']
-                    ? responseBody['appDeliveryID']
-                    : '';
-                this.currentRecipient.postalDeliverable = responseBody['postalDeliverable']
-                    ? responseBody['postalDeliverable']
-                    : '';
-                this.currentRecipient.electronicallyDeliverable = responseBody[
-                    'electronicallyDeliverable'
-                ]
-                    ? responseBody['electronicallyDeliverable']
-                    : '';
-                this.currentRecipient.lastStatusChange = responseBody['lastStatusChange']
-                    ? responseBody['lastStatusChange']
+            this.currentRecipient.personIdentifier =
+                responseBody['personIdentifier'] !== '' ? responseBody['personIdentifier'] : null;
+            let birthDate =
+                responseBody['birthDate'] && responseBody['birthDate'] !== ''
+                    ? this.convertToBirthDateTuple(responseBody['birthDate'])
                     : '';
 
-                // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
+            if (birthDate !== '') {
+                this.currentRecipient.birthDateDay = birthDate.day;
+                this.currentRecipient.birthDateMonth = birthDate.month;
+                this.currentRecipient.birthDateYear = birthDate.year;
             } else {
-                // TODO error handling
+                this.currentRecipient.birthDateDay = '';
+                this.currentRecipient.birthDateMonth = '';
+                this.currentRecipient.birthDateYear = '';
             }
+
+            this.currentRecipient.statusChanges = responseBody['statusChanges'];
+            if (this.currentRecipient.statusChanges.length > 0) {
+                this.currentRecipient.statusDescription =
+                    this.currentRecipient.statusChanges[0].description;
+                this.currentRecipient.statusType =
+                    this.currentRecipient.statusChanges[0].statusType;
+            } else {
+                this.currentRecipient.statusDescription = null;
+                this.currentRecipient.statusType = null;
+            }
+            this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate']
+                ? responseBody['deliveryEndDate']
+                : '';
+            this.currentRecipient.appDeliveryId = responseBody['appDeliveryID']
+                ? responseBody['appDeliveryID']
+                : '';
+            this.currentRecipient.postalDeliverable = responseBody['postalDeliverable']
+                ? responseBody['postalDeliverable']
+                : '';
+            this.currentRecipient.electronicallyDeliverable = responseBody[
+                'electronicallyDeliverable'
+            ]
+                ? responseBody['electronicallyDeliverable']
+                : '';
+            this.currentRecipient.lastStatusChange = responseBody['lastStatusChange']
+                ? responseBody['lastStatusChange']
+                : '';
+            // this.currentRecipient.deliveryEndDate = responseBody['deliveryEndDate'] ? responseBody['deliveryEndDate'] : '';
+        } else {
+            // TODO error handling
         }
     }
 
@@ -1642,8 +1635,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     somethingWentWrong = true;
                     break;
                 }
-                let recipients = selectedItems[i].getData()['recipients'];
-                if (!this.checkCanSubmit(result, recipients)) {
+                // let recipients = selectedItems[i].getData()['recipients'];
+                if (!this.checkCanSubmit(result)) {
                     somethingWentWrong = true;
                     break;
                 }
@@ -3385,7 +3378,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                       `
                                     : ``}
                             </div>
-
                             ${this.currentRecipient &&
                             this.currentRecipient.statusChanges &&
                             this.currentRecipient.statusChanges.length > 0
