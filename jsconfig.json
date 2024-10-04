@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "checkJs": true,
+        "maxNodeModuleJsDepth": 0,
         "resolveJsonModule": true,
         "module": "esnext",
         "moduleResolution": "bundler",
