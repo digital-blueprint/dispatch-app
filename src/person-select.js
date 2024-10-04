@@ -37,6 +37,6 @@ export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
      * @returns {boolean}
      */
     isValidMatriculationNumber(mat) {
-        return mat.match(/^[0-9]{8}$/g);
+        return /^[0-9]{8}$/g.test(mat);
     }
 }

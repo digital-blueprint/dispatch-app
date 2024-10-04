@@ -17,7 +17,7 @@ import {classMap} from 'lit/directives/class-map.js';
 import {Activity} from './activity.js';
 import metadata from './dbp-create-request.metadata.json';
 import * as dispatchStyles from './styles';
-import {FileSource} from '@dbp-toolkit/file-handling';
+import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
 import {name as pkgName} from './../package.json';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
@@ -106,6 +106,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-icon-button': IconButton,
             'dbp-inline-notification': InlineNotification,
             'dbp-file-source': FileSource,
+            'dbp-file-sink': FileSink,
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-pdf-viewer': PdfViewer,
@@ -203,9 +204,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.updateComplete.then(() => {
 
             this._a('.tabulator-table').forEach((table) => {
-                table.buildTable();
-                if(table.id == 'tabulator-table-created-requests')
-                    table.addEventListener('click', this.selectedRow);
+                const tabulatorTable = /** @type {TabulatorTable} */(table);
+                tabulatorTable.buildTable();
+                if(tabulatorTable.id == 'tabulator-table-created-requests')
+                    tabulatorTable.addEventListener('click', this.selectedRow);
             });
         });
     }
@@ -224,14 +226,14 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     checkMultipleRequestsCheckmark() {
         this.singleFileProcessing = !(
-            this._('#multiple-requests-button') && this._('#multiple-requests-button').checked
+            this._('#multiple-requests-button') && /** @type {HTMLInputElement} */(this._('#multiple-requests-button')).checked
         );
     }
 
     setTabulatorData(createdRequests) {
         const i18n = this._i18n;
         let data = [];
-        let table = this._('#tabulator-table-created-requests');
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-created-requests'));
 
         createdRequests.forEach((item, index) => {
 
@@ -294,21 +296,21 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     expandAll(){
         this.expanded = true;
-        let table = this._('#tabulator-table-created-requests');
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-created-requests'));
         table.expandAll();
     }
 
     collapseAll(){
         this.expanded = false;
-        let table = this._('#tabulator-table-created-requests');
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-created-requests'));
         table.collapseAll();
     }
 
-    rowClick(event) {
+    rowClick() {
         this.selected = true;
-        let deleteButton = this._('#delete-all-btn');
-        let submitButton = this._('#submit-all-btn');
-        let table = this._('#tabulator-table-created-requests');
+        let deleteButton = /** @type {HTMLButtonElement} */(this._('#delete-all-btn'));
+        let submitButton = /** @type {HTMLButtonElement} */(this._('#submit-all-btn'));
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-created-requests'));
         this.currentTable = table;
         if(table.getSelectedRows().length !== 0) {
             deleteButton.disabled = false;
@@ -727,8 +729,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     class="${classMap({hidden: !this.expanded})}"
                                     ?disabled="${this.loading}"
                                     value="${i18n.t('show-requests.collapse-all')}"
-                                    @click="${(event) => {
-                                        this.collapseAll(event);
+                                    @click="${() => {
+                                        this.collapseAll();
                                     }}"
                                     title="${i18n.t('show-requests.collapse-all')}">
                                     ${i18n.t('show-requests.collapse-all')}
@@ -740,8 +742,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               id="delete-all-btn"
                                               disabled
                                               value="${i18n.t('show-requests.delete-button-text')}"
-                                              @click="${(event) => {
-                                                  this.deleteSelected(event);
+                                              @click="${() => {
+                                                  this.deleteSelected();
                                               }}"
                                               title="${i18n.t('show-requests.delete-button-text')}">
                                               ${i18n.t('show-requests.delete-button-text')}
@@ -753,7 +755,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               ?disabled="${this.loading || !this.rowsSelected}"
                                               value="${i18n.t('show-requests.submit-button-text')}"
                                               @click="${(event) => {
-                                                  this.submitSelected(event);
+                                                  this.submitSelected();
                                               }}"
                                               title="${i18n.t('show-requests.submit-button-text')}">
                                               ${i18n.t('show-requests.submit-button-text')}
@@ -866,12 +868,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 this.subject = this.currentItem.name
                                                                     ? this.currentItem.name
                                                                     : '';
-                                                                this._(
-                                                                    '#tf-edit-subject-fn-dialog',
-                                                                ).value = this.currentItem.name
+                                                                /** @type {HTMLInputElement} */(this._('#tf-edit-subject-fn-dialog')).value = this.currentItem.name
                                                                     ? this.currentItem.name
                                                                     : ``;
                                                                 MicroModal.show(
+                                                                    // @ts-ignore
                                                                     this._('#edit-subject-modal'),
                                                                     {
                                                                         disableScroll: true,
@@ -942,15 +943,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             this.currentItem.dateSubmitted ||
                                                             !this.mayWrite}"
                                                             @click="${(event) => {
-                                                                this._(
-                                                                    '#tf-edit-reference-number-fn-dialog',
-                                                                ).value =
-                                                                    this.currentItem
-                                                                        .referenceNumber ?? ``;
+                                                                /** @type {HTMLInputElement} */(this._('#tf-edit-reference-number-fn-dialog')).value = this.currentItem.referenceNumber ?? ``;
                                                                 MicroModal.show(
-                                                                    this._(
-                                                                        '#edit-reference-number-modal',
-                                                                    ),
+                                                                    // @ts-ignore
+                                                                    this._('#edit-reference-number-modal'),
                                                                     {
                                                                         disableScroll: true,
                                                                         onClose: (modal) => {
@@ -959,12 +955,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                     },
                                                                 );
                                                             }}"
-                                                            aria-label="${i18n.t(
-                                                                'show-requests.edit-reference-number-button-text',
-                                                            )}"
-                                                            title="${i18n.t(
-                                                                'show-requests.edit-reference-number-button-text',
-                                                            )}"
+                                                            aria-label="${i18n.t('show-requests.edit-reference-number-button-text')}"
+                                                            title="${i18n.t('show-requests.edit-reference-number-button-text')}"
                                                             icon-name="pencil"></dbp-icon-button>
                                                     `
                                                   : ``}
@@ -975,9 +967,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         ${this.currentItem.referenceNumber}
                                                     `
                                                   : html`
-                                                        ${i18n.t(
-                                                            'show-requests.empty-reference-number',
-                                                        )}
+                                                        ${i18n.t('show-requests.empty-reference-number')}
                                                     `}
                                           </div>
                                       </div>
@@ -994,9 +984,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               ${i18n.t('show-requests.recipients')}
                                               <span class="section-title-counts">
                                                   ${this.currentItem.recipients.length !== 0
-                                                      ? `(` +
-                                                        this.currentItem.recipients.length +
-                                                        `)`
+                                                      ? `(` + this.currentItem.recipients.length + `)`
                                                       : ``}
                                               </span>
                                           </div>
@@ -1004,38 +992,28 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               ? html`
                                                     <dbp-loading-button
                                                         id="add-recipient-btn"
-                                                        ?disabled="${this.loading ||
-                                                        this.currentItem.dateSubmitted}"
-                                                        value="${i18n.t(
-                                                            'show-requests.add-recipient-button-text',
-                                                        )}"
+                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted}"
+                                                        value="${i18n.t('show-requests.add-recipient-button-text')}"
                                                         @click="${(event) => {
                                                             this.preloadSelectedRecipient().then(
                                                                 () => {
                                                                     MicroModal.show(
-                                                                        this._(
-                                                                            '#add-recipient-modal',
-                                                                        ),
+                                                                        // @ts-ignore
+                                                                        this._('#add-recipient-modal'),
                                                                         {
                                                                             disableScroll: true,
                                                                             disableFocus: false,
                                                                             onClose: (modal) => {
                                                                                 this.loading = false;
-                                                                                this._(
-                                                                                    '#add-recipient-btn',
-                                                                                ).stop();
+                                                                                /** @type {LoadingButton} */(this._('#add-recipient-btn')).stop();
                                                                             },
                                                                         },
                                                                     );
                                                                 },
                                                             );
                                                         }}"
-                                                        title="${i18n.t(
-                                                            'show-requests.add-recipient-button-text',
-                                                        )}">
-                                                        ${i18n.t(
-                                                            'show-requests.add-recipient-button-text',
-                                                        )}
+                                                        title="${i18n.t('show-requests.add-recipient-button-text')}">
+                                                        ${i18n.t('show-requests.add-recipient-button-text')}
                                                     </dbp-loading-button>
                                                 `
                                               : ``}
@@ -1057,35 +1035,26 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  button.start();
                                                                  this.currentRecipient = recipient;
                                                                  try {
-                                                                     this.fetchDetailedRecipientInformation(
-                                                                         recipient.identifier,
-                                                                     ).then(() => {
-                                                                         MicroModal.show(
-                                                                             this._(
-                                                                                 '#show-recipient-modal',
-                                                                             ),
-                                                                             {
-                                                                                 disableScroll: true,
-                                                                                 onShow: (
-                                                                                     modal,
-                                                                                 ) => {
-                                                                                     this.button =
-                                                                                         button;
-                                                                                 },
-                                                                                 onClose: (
-                                                                                     modal,
-                                                                                 ) => {
-                                                                                     this.loading = false;
-                                                                                     this.currentRecipient =
-                                                                                         {};
-                                                                                     button.stop();
-                                                                                 },
-                                                                             },
-                                                                         );
-                                                                     });
-                                                                 } catch {
-                                                                     button.stop();
-                                                                 }
+                                                                    this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                        MicroModal.show(
+                                                                             // @ts-ignore
+                                                                            this._('#show-recipient-modal'),
+                                                                            {
+                                                                                disableScroll: true,
+                                                                                onShow: (modal) => {
+                                                                                    this.button = button;
+                                                                                },
+                                                                                onClose: (modal) => {
+                                                                                    this.loading = false;
+                                                                                    this.currentRecipient = {};
+                                                                                    button.stop();
+                                                                                },
+                                                                            },
+                                                                        );
+                                                                    });
+                                                                } catch {
+                                                                    button.stop();
+                                                                }
                                                             }}"
                                                             title="${i18n.t('show-requests.show-recipient-button-text')}"
                                                             aria-label="${i18n.t(
@@ -1110,76 +1079,34 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                       this.fetchDetailedRecipientInformation(
                                                                           recipient.identifier,
                                                                       ).then(() => {
-                                                                          this._(
-                                                                              '#edit-recipient-country-select',
-                                                                          ).value =
-                                                                              this.currentRecipient.addressCountry;
-                                                                          this._(
-                                                                              '#tf-edit-recipient-birthdate-day',
-                                                                          ).value =
-                                                                              this.currentRecipient.birthDateDay;
-                                                                          this._(
-                                                                              '#tf-edit-recipient-birthdate-month',
-                                                                          ).value =
-                                                                              this.currentRecipient.birthDateMonth;
-                                                                          this._(
-                                                                              '#tf-edit-recipient-birthdate-year',
-                                                                          ).value =
-                                                                              this.currentRecipient.birthDateYear;
-                                                                          this._(
-                                                                              '#tf-edit-recipient-gn-dialog',
-                                                                          ).value =
-                                                                              this.currentRecipient.givenName;
-                                                                          this._(
-                                                                              '#tf-edit-recipient-fn-dialog',
-                                                                          ).value =
-                                                                              this.currentRecipient.familyName;
-                                                                          this._(
-                                                                              '#tf-edit-recipient-pc-dialog',
-                                                                          ).value = this
-                                                                              .currentRecipient
-                                                                              .postalCode
-                                                                              ? this
-                                                                                    .currentRecipient
-                                                                                    .postalCode
+                                                                          /** @type {HTMLInputElement} */(this._('#edit-recipient-country-select')).value = this.currentRecipient.addressCountry;
+                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-birthdate-day')).value = this.currentRecipient.birthDateDay;
+                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-birthdate-month')).value = this.currentRecipient.birthDateMonth;
+                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-birthdate-year')).value = this.currentRecipient.birthDateYear;
+                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-gn-dialog')).value = this.currentRecipient.givenName;
+                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-fn-dialog')).value = this.currentRecipient.familyName;
+                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-pc-dialog')).value = this.currentRecipient.postalCode
+                                                                              ? this.currentRecipient.postalCode
                                                                               : '';
-                                                                          this._(
-                                                                              '#tf-edit-recipient-al-dialog',
-                                                                          ).value = this
-                                                                              .currentRecipient
-                                                                              .addressLocality
-                                                                              ? this
-                                                                                    .currentRecipient
-                                                                                    .addressLocality
+                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-al-dialog')).value = this.currentRecipient.addressLocality
+                                                                              ? this.currentRecipient.addressLocality
                                                                               : '';
-                                                                          this._(
-                                                                              '#tf-edit-recipient-sa-dialog',
-                                                                          ).value = this
-                                                                              .currentRecipient
-                                                                              .streetAddress
-                                                                              ? this
-                                                                                    .currentRecipient
-                                                                                    .streetAddress
+                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-sa-dialog')).value = this.currentRecipient.streetAddress
+                                                                              ? this.currentRecipient.streetAddress
                                                                               : '';
 
                                                                         MicroModal.show(
-                                                                            this._(
-                                                                                '#edit-recipient-modal',
-                                                                            ),
+                                                                            // @ts-ignore
+                                                                            this._('#edit-recipient-modal'),
                                                                             {
                                                                                 disableScroll: true,
-                                                                                onShow: (
-                                                                                    modal,
-                                                                                ) => {
+                                                                                onShow: (modal) => {
                                                                                     this.button =
                                                                                         button;
                                                                                 },
-                                                                                onClose: (
-                                                                                    modal,
-                                                                                ) => {
+                                                                                onClose: (modal) => {
                                                                                     this.loading = false;
-                                                                                    this.currentRecipient =
-                                                                                        {};
+                                                                                    this.currentRecipient = {};
                                                                                 },
                                                                             },
                                                                           );
@@ -1188,12 +1115,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                       button.stop();
                                                                   }
                                                               }}"
-                                                            title="${i18n.t(
-                                                                'show-requests.edit-recipients-button-text',
-                                                            )}"
-                                                            aria-label="${i18n.t(
-                                                                'show-requests.show-recipient-button-text',
-                                                            )}"
+                                                            title="${i18n.t('show-requests.edit-recipients-button-text',)}"
+                                                            aria-label="${i18n.t('show-requests.show-recipient-button-text',)}"
                                                             icon-name="pencil"></dbp-icon-button>
                                                         <dbp-icon-button
                                                             id="delete-recipient-btn"
@@ -1205,12 +1128,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                     recipient,
                                                                 );
                                                             }}"
-                                                            aria-label="${i18n.t(
-                                                                'show-requests.delete-recipient-button-text',
-                                                            )}"
-                                                            title="${i18n.t(
-                                                                'show-requests.delete-recipient-button-text',
-                                                            )}"
+                                                            aria-label="${i18n.t('show-requests.delete-recipient-button-text',)}"
+                                                            title="${i18n.t('show-requests.delete-recipient-button-text',)}"
                                                             icon-name="trash"></dbp-icon-button>
                                                       `
                                                     : ``
@@ -1241,7 +1160,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             ${this.addFilePicker()}
 
-            ${this.addEditSenderModal(this.currentItem)}
+            ${this.addEditSenderModal()}
 
             ${this.addAddRecipientModal()}
 
@@ -1272,6 +1191,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 class="modal-close"
                                 aria-label="Close modal"
                                 @click="${() => {
+                                    // @ts-ignore
                                     MicroModal.close(this._('#add-subject-modal'));
                                 }}">
                                 <dbp-icon
@@ -1305,6 +1225,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     data-micromodal-close
                                     aria-label="Close this dialog window"
                                     @click="${() => {
+                                        // @ts-ignore
                                         MicroModal.close(this._('#add-subject-modal'));
                                     }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
@@ -1313,7 +1234,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     class="button select-button is-primary"
                                     id="add-subject-confirm-btn"
                                     @click="${() => {
-                                        this._('#add-subject-confirm-btn').disabled = true;
+                                        /** @type {HTMLButtonElement} */(this._('#add-subject-confirm-btn')).disabled = true;
+                                        // @ts-ignore
                                         MicroModal.close(this._('#add-subject-modal'));
                                         this.confirmAddSubject();
                                     }}">

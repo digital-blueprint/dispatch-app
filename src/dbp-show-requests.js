@@ -15,7 +15,7 @@ import {classMap} from 'lit/directives/class-map.js';
 import {Activity} from './activity.js';
 import metadata from './dbp-show-requests.metadata.json';
 import MicroModal from './micromodal.es';
-import {FileSource} from '@dbp-toolkit/file-handling';
+import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import * as dispatchStyles from './styles';
 import {name as pkgName} from './../package.json';
@@ -97,6 +97,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-loading-button': LoadingButton,
             'dbp-icon-button': IconButton,
             'dbp-inline-notification': InlineNotification,
+            'dbp-file-sink': FileSink,
             'dbp-file-source': FileSource,
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
@@ -181,10 +182,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.updateComplete.then(() => {
             // see: http://tabulator.info/docs/5.1
             this._a('.tabulator-table').forEach((table) => {
-                table.buildTable();
+                const tabulatorTable = /** @type {TabulatorTable} */(table);
+                tabulatorTable.buildTable();
                 document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
-                if(table.id == 'tabulator-table-orders')
-                    table.addEventListener('click', this.selectedRow);
+                if(tabulatorTable.id == 'tabulator-table-orders')
+                    tabulatorTable.addEventListener('click', this.selectedRow);
             });
 
             document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
@@ -210,9 +212,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      * Clear Filer
      */
     clearFilter() {
-        let filter = this._('#searchbar');
-        let search = this._('#search-select');
-        let table = this._('#tabulator-table-orders');
+        let filter = /** @type {HTMLInputElement } */(this._('#searchbar'));
+        let search = /** @type {HTMLSelectElement} */(this._('#search-select'));
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
 
         if (!filter || !search || !table) return;
 
@@ -226,10 +228,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      *
      */
     filterTable() {
-        let filter = this._('#searchbar');
-        let search = this._('#search-select');
-        let operator = this._('#search-operator');
-        let table = this._('#tabulator-table-orders');
+        let filter = /** @type {HTMLInputElement } */(this._('#searchbar'));
+        let search = /** @type {HTMLSelectElement} */(this._('#search-select'));
+        let operator = /** @type {HTMLSelectElement} */(this._('#search-operator'));
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
 
         if (!filter || !operator || !search || !table) return;
 
@@ -237,12 +239,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             table.clearFilter();
             return;
         }
-        filter = filter.value;
-        search = search.value;
-        operator = operator.value;
+        const filterValue = filter.value;
+        const searchValue = search.value;
+        const operatorValue = operator.value;
 
-        if (search !== 'all') {
-            let filter_object = {field: search, type: operator, value: filter};
+        if (searchValue !== 'all') {
+            let filter_object = {field: searchValue, type: operatorValue, value: filterValue};
             table.setFilter([filter_object]);
             return;
         }
@@ -251,7 +253,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let listOfFilters = [];
 
             for (let col of columns) {
-                let filter_object = {field: col, type: operator, value: filter};
+                let filter_object = {field: col, type: operatorValue, value: filterValue};
                 listOfFilters.push(filter_object);
             }
             table.setFilter([listOfFilters]);
@@ -274,10 +276,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         if (!menu.classList.contains('hidden')) {
             // add event listener for clicking outside of menu
-            document.addEventListener('click', this.boundCloseAdditionalMenuHandler);
+            document.addEventListener('click', this.boundCloseAdditionalSearchMenuHandler);
             this.initateOpenAdditionalMenu = true;
         } else {
-            document.removeEventListener('click', this.boundCloseAdditionalMenuHandler);
+            document.removeEventListener('click', this.boundCloseAdditionalSearchMenuHandler);
         }
     }
 
@@ -358,18 +360,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      */
     getTableHeaderOptions() {
         const i18n = this._i18n;
-        let table = this._('#tabulator-table-orders');
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
         if (!table) return [];
 
         let options = [];
-        options[0] = html`
-            <option value="all">${i18n.t('show-requests.all-columns')}</option>
-        `;
+        options[0] = html`<option value="all">${i18n.t('show-requests.all-columns')}</option>`;
         let lang = table.getLang().columns;
         Object.entries(lang).forEach(([key, value], counter) => {
-            options[counter + 1] = html`
-                    <option value="${key}">${value}</option>
-                `;
+            options[counter + 1] = html`<option value="${key}">${value}</option>`;
         });
 
         return options;
@@ -377,9 +375,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     rowClick(event) {
         this.selected = true;
-        let deleteButton = this._('#delete-all-btn');
-        let submitButton = this._('#submit-all-btn');
-        let table = this._('#tabulator-table-orders');
+        let deleteButton = /** @type {HTMLButtonElement} */(this._('#delete-all-btn'));
+        let submitButton = /** @type {HTMLButtonElement} */(this._('#submit-all-btn'));
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
         if(table.getSelectedRows().length !== 0) {
             deleteButton.disabled = false;
             submitButton.disabled = false;
@@ -403,12 +401,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
         this.organizationSet = true;
 
-        this.getListOfRequests(event).then(() => {
-            let table = this._('#tabulator-table-orders');
+        this.getListOfRequests().then(() => {
+            let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
             this.currentTable = table;
             let data = [];
-            let rows = table.getRows();
-            console.log('rows ', rows);
             this.requestList.forEach((item, index) => {
 
                 let recipientStatus = item['dateSubmitted'] ? this.checkRecipientStatus(item.recipients)[1] : i18n.t('show-requests.empty-date-submitted');
@@ -420,7 +416,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     btn_edit.setAttribute('aria-label', i18n.t('show-requests.edit-request-button-text'));
                     btn_edit.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
                     btn_edit.addEventListener('click', async (event) => {
-                        this.currentRowIndex = index;
+                        this.currentRowIndex = index.toString();
                         this.editRequest(event, item);
                         event.stopPropagation();
                     });
@@ -479,7 +475,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     deleteSelectedRows(){
-        let table = this._('#tabulator-table-orders');
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
         table.deleteSelectedRows();
     }
 
@@ -489,13 +485,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     expandAll(){
         this.expanded = true;
-        let table = this._('#tabulator-table-orders');
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
         table.expandAll();
     }
 
     collapseAll(){
         this.expanded = false;
-        let table = this._('#tabulator-table-orders');
+        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
         table.collapseAll();
     }
 
@@ -949,7 +945,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     'show-requests.delete-button-text',
                                                   )}"
                                                   @click="${(event) => {
-                                                this.deleteSelected(event);
+                                                this.deleteSelected();
                                                   }}"
                                                   title="${i18n.t(
                                                     'show-requests.delete-button-text',
@@ -964,7 +960,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                       'show-requests.submit-button-text',
                                                   )}"
                                                   @click="${(event) => {
-                                                      this.submitSelected(event);
+                                                      this.submitSelected();
                                                   }}"
                                                   title="${i18n.t(
                                                       'show-requests.submit-button-text',
@@ -1005,7 +1001,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
                             <a href="#" title="${i18n.t('show-requests.back-to-list')}"
                                @click="${() => {
-                                   let table = this._('#tabulator-table-orders');
+                                   let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
                                    let currentPage = table ? table.getPage() : 1;
                                    this.getListOfRequests().then(() => {
                                        table ? table.setPage(currentPage) : null;
@@ -1054,11 +1050,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
                                     <div class="submit-button">
                                         <dbp-loading-button type="is-primary"
-                                                            id="submit-btn"
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                            value="${i18n.t('show-requests.submit-button-text')}"
-                                                            @click="${(event) => { this.submitRequest(this.currentTable, event, this.currentItem); }}"
-                                                            title="${i18n.t('show-requests.submit-button-text')}"
+                                            id="submit-btn"
+                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
+                                            value="${i18n.t('show-requests.submit-button-text')}"
+                                            @click="${(event) => { this.submitRequest(this.currentTable, event, this.currentItem); }}"
+                                            title="${i18n.t('show-requests.submit-button-text')}"
                                         >
                                             ${i18n.t('show-requests.submit-button-text')}
                                         </dbp-loading-button>
@@ -1077,7 +1073,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                     @click="${(event) => {
                                                         this.subject = this.currentItem.name ? this.currentItem.name : '';
-                                                        this._('#tf-edit-subject-fn-dialog').value = this.currentItem.name ? this.currentItem.name : ``;
+                                                        /** @type {HTMLInputElement } */(this._('#tf-edit-subject-fn-dialog')).value = this.currentItem.name ? this.currentItem.name : ``;
+                                                        // @ts-ignore
                                                         MicroModal.show(this._('#edit-subject-modal'), {
                                                             disableScroll: true,
                                                             onClose: (modal) => {
@@ -1104,7 +1101,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 <dbp-icon-button id="edit-reference-number-btn"
                                                     ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
                                                     @click="${(event) => {
-                                                        this._('#tf-edit-reference-number-fn-dialog').value = this.currentItem.referenceNumber ?? ``;
+                                                        /** @type {HTMLInputElement } */(this._('#tf-edit-reference-number-fn-dialog')).value = this.currentItem.referenceNumber ?? ``;
+                                                        // @ts-ignore
                                                         MicroModal.show(this._('#edit-reference-number-modal'), {
                                                         disableScroll: true,
                                                         onClose: (modal) => {
@@ -1136,6 +1134,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             value="${i18n.t('show-requests.add-recipient-button-text')}"
                                                             @click="${(event) => {
                                                                 this.currentRecipient = {};
+                                                                // @ts-ignore
                                                                 MicroModal.show(this._('#add-recipient-modal'), {
                                                                     disableScroll: true,
                                                                     onClose: (modal) => {
@@ -1164,6 +1163,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         this.currentRecipient = recipient;
                                                         try {
                                                             this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                                // @ts-ignore
                                                                 MicroModal.show(this._('#show-recipient-modal'), {
                                                                     disableScroll: true,
                                                                     onShow: modal => { this.button = button; },
@@ -1193,17 +1193,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             this.currentRecipient = recipient;
                                                             try {
                                                                 this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                    this._('#edit-recipient-country-select').value = this.currentRecipient.addressCountry;
-                                                                    this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
-                                                                    this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
-                                                                    this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
+                                                                    /** @type {HTMLInputElement } */(this._('#edit-recipient-country-select')).value = this.currentRecipient.addressCountry;
+                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-birthdate-day')).value = this.currentRecipient.birthDateDay;
+                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-birthdate-month')).value = this.currentRecipient.birthDateMonth;
+                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-birthdate-year')).value = this.currentRecipient.birthDateYear;
 
-                                                                    this._('#tf-edit-recipient-gn-dialog').value = this.currentRecipient.givenName;
-                                                                    this._('#tf-edit-recipient-fn-dialog').value = this.currentRecipient.familyName;
-                                                                    this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode ? this.currentRecipient.postalCode : '';
-                                                                    this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : '';
-                                                                    this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : '';
-
+                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-gn-dialog')).value = this.currentRecipient.givenName;
+                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-fn-dialog')).value = this.currentRecipient.familyName;
+                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-pc-dialog')).value = this.currentRecipient.postalCode ? this.currentRecipient.postalCode : '';
+                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-al-dialog')).value = this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : '';
+                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-sa-dialog')).value = this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : '';
+                                                                    // @ts-ignore
                                                                     MicroModal.show(this._('#edit-recipient-modal'), {
                                                                         disableScroll: true,
                                                                         onShow: modal => { this.button = button; },

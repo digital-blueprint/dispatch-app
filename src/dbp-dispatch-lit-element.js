@@ -8,7 +8,7 @@ import {html} from 'lit';
 import * as dispatchHelper from './utils';
 import {CustomPersonSelect} from './person-select';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
-import {IconButton} from '@dbp-toolkit/common';
+import {IconButton, LoadingButton} from '@dbp-toolkit/common';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
@@ -21,6 +21,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.auth = {};
         this._i18n = createInstance();
         this.lang = this._i18n.language;
+        this.entryPointUrl = '';
+
+        this.fileHandlingEnabledTargets = 'local';
+        this.nextcloudWebAppPasswordURL = '';
+        this.nextcloudWebDavURL = '';
+        this.nextcloudName = '';
+        this.nextcloudFileURL = '';
+        this.nextcloudAuthInfo = '';
 
         this.currentItem = {};
         this.currentItemTabulator = {};
@@ -29,6 +37,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.groupId = '';
         this.groupValue = this.loadGroupValue();
         this.personSelectorIsDisabled = false;
+        this.singleFileProcessing = false;
+        this.totalNumberOfCreatedRequestItems = 0;
+
+        this.currentTable = {};
+        this.currentRowIndex = '';
 
         this.createdRequestsList = [];
 
@@ -126,7 +139,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * Send a fetch to given url with given options
      * @param url
      * @param options
-     * @returns {object} response (error or result)
+     * @returns {Promise<object>} response (error or result)
      */
     async httpGetAsync(url, options) {
         let response = await fetch(url, options)
@@ -144,7 +157,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Gets the list of all dispatch requests of the current logged-in user
      * @param groupId
-     * @returns {object} response
+     * @returns {Promise<object>} response
      */
     async getListOfDispatchRequests(groupId) {
         const options = {
@@ -163,7 +176,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Gets the dispatch request of the current logged-in user with the given identifier
      * @param identifier
-     * @returns {object} response
+     * @returns {Promise<object>} response
      */
     async getDispatchRequest(identifier) {
         const options = {
@@ -182,7 +195,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Gets the dispatch recipient of the given ID
      * @param identifier
-     * @returns {object} response
+     * @returns {Promise<object>} response
      */
     async getDispatchRecipient(identifier) {
         const options = {
@@ -208,7 +221,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a dispatch post request
-     * @returns {object} response
+     * @returns {Promise<object>} response
      */
     async sendCreateDispatchRequest() {
         const i18n = this._i18n;
@@ -244,7 +257,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Sends a delete dispatch request
      * @param identifier
-     * @returns {object} response
+     * @returns {Promise<object>} response
      */
     async sendDeleteDispatchRequest(identifier) {
         const options = {
@@ -265,7 +278,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * Updates (PATCHes) a dispatch request
      * @param identifier
      * @param body
-     * @returns {object} response
+     * @returns {Promise<object>} response
      */
     async sendPatchDispatchRequest(identifier, body) {
         const options = {
@@ -294,7 +307,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param senderStreetAddress
      * @param senderBuildingNumber
      * @param groupId
-     * @returns {object} response
+     * @returns {Promise<object>} response
      */
     async sendEditDispatchRequest(
         identifier,
@@ -324,7 +337,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Sends a submit dispatch request
      * @param identifier
-     * @returns {object} response
+     * @returns {Promise<object>} response
      */
     async sendSubmitDispatchRequest(identifier) {
         let body = {};
@@ -355,7 +368,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param postalCode
      * @param addressLocality
      * @param streetAddress
-     * @returns {object} response
+     * @returns {Promise<object>} response
      */
     async sendAddRequestRecipientsRequest(
         id,
@@ -587,9 +600,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      */
     openFileSource() {
         this.fileUploadFinished = false;
-        const fileSource = this._('#file-source');
+        const fileSource = /** @type {FileSource} */(this._('#file-source'));
         if (fileSource) {
-            this._('#file-source').openDialog();
+            fileSource.openDialog();
         }
 
         if (this.singleFileProcessing && !this.requestCreated) {
@@ -649,7 +662,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async addFile(file) {
-        this._('#add-files-btn').start();
+        const addFileButton = /** @type {LoadingButton} */(this._('#add-files-btn'));
+        addFileButton.start();
 
         try {
             let id = this.currentItem.identifier;
@@ -664,7 +678,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             });
         } finally {
             this.tableLoading = false;
-            this._('#add-files-btn').stop();
+            addFileButton.stop();
         }
     }
 
@@ -812,7 +826,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         });
         files.push(binaryFile);
         // this.signedFilesToDownload = files.length;
-        this._('#file-sink').files = [...files];
+        /** @type {FileSink} */(this._('#file-sink')).files = [...files];
     }
 
     async _onDownloadFileClicked(event, statusRequestId) {
@@ -852,7 +866,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async addRecipientToRequest(button) {
-        this._('#add-recipient-btn').start();
+        const addRecipientButton = /** @type {LoadingButton} */(this._('#add-recipient-btn'));
+        addRecipientButton.start();
         try {
             const i18n = this._i18n;
             let id = this.currentItem.identifier;
@@ -922,20 +937,17 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateMonth = '';
                 this.currentRecipient.birthDateYear = '';
 
-                this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping('AT');
+                this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping();
 
-                this._('#tf-add-recipient-gn-dialog').value = this.currentRecipient.givenName;
-                this._('#tf-add-recipient-fn-dialog').value = this.currentRecipient.familyName;
-                this._('#tf-add-recipient-pc-dialog').value = this.currentRecipient.postalCode;
-                this._('#tf-add-recipient-al-dialog').value = this.currentRecipient.addressLocality;
-                this._('#tf-add-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
-                this._('#tf-add-recipient-birthdate-day').value =
-                    this.currentRecipient.birthDateDay;
-                this._('#tf-add-recipient-birthdate-month').value =
-                    this.currentRecipient.birthDateMonth;
-                this._('#tf-add-recipient-birthdate-year').value =
-                    this.currentRecipient.birthDateYear;
-                this._('#add-recipient-country-select').value = 'AT';
+                /** @type {HTMLInputElement} */(this._('#tf-add-recipient-gn-dialog')).value = this.currentRecipient.givenName;
+                /** @type {HTMLInputElement} */(this._('#tf-add-recipient-fn-dialog')).value = this.currentRecipient.familyName;
+                /** @type {HTMLInputElement} */(this._('#tf-add-recipient-pc-dialog')).value = this.currentRecipient.postalCode;
+                /** @type {HTMLInputElement} */(this._('#tf-add-recipient-al-dialog')).value = this.currentRecipient.addressLocality;
+                /** @type {HTMLInputElement} */(this._('#tf-add-recipient-sa-dialog')).value = this.currentRecipient.streetAddress;
+                /** @type {HTMLInputElement} */(this._('#tf-add-recipient-birthdate-day')).value = this.currentRecipient.birthDateDay;
+                /** @type {HTMLInputElement} */(this._('#tf-add-recipient-birthdate-month')).value =this.currentRecipient.birthDateMonth;
+                /** @type {HTMLInputElement} */(this._('#tf-add-recipient-birthdate-year')).value =this.currentRecipient.birthDateYear;
+                /** @type {HTMLInputElement} */(this._('#add-recipient-country-select')).value = 'AT';
 
                 this.requestUpdate();
             } else {
@@ -957,14 +969,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 timeout: 5,
             });
         } finally {
-            this._('#recipient-selector').clear();
-            this._('#add-recipient-btn').stop();
+            /** @type {CustomPersonSelect} */(this._('#recipient-selector')).clear();
+            addRecipientButton.stop();
             button.disabled = false;
         }
     }
 
-    async updateRecipient(button) {
-        button.start();
+    async updateRecipient() {
         const i18n = this._i18n;
         let hasError = false;
 
@@ -1046,22 +1057,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateDay = '';
                     this.currentRecipient.birthDateMonth = '';
                     this.currentRecipient.birthDateYear = '';
-                    this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping('AT');
+                    this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping();
 
-                    this._('#tf-edit-recipient-gn-dialog').value = this.currentRecipient.givenName;
-                    this._('#tf-edit-recipient-fn-dialog').value = this.currentRecipient.familyName;
-                    this._('#tf-edit-recipient-pc-dialog').value = this.currentRecipient.postalCode;
-                    this._('#tf-edit-recipient-al-dialog').value = this.currentRecipient.addressLocality;
-                    this._('#tf-edit-recipient-sa-dialog').value = this.currentRecipient.streetAddress;
-                    this._('#tf-edit-recipient-birthdate-day').value = this.currentRecipient.birthDateDay;
-                    this._('#tf-edit-recipient-birthdate-month').value = this.currentRecipient.birthDateMonth;
-                    this._('#tf-edit-recipient-birthdate-year').value = this.currentRecipient.birthDateYear;
-                    this._('#edit-recipient-country-select').value = 'AT';
+                    /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-gn-dialog')).value = this.currentRecipient.givenName;
+                    /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-fn-dialog')).value = this.currentRecipient.familyName;
+                    /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-pc-dialog')).value = this.currentRecipient.postalCode;
+                    /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-al-dialog')).value = this.currentRecipient.addressLocality;
+                    /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-sa-dialog')).value = this.currentRecipient.streetAddress;
+                    /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-birthdate-day')).value = this.currentRecipient.birthDateDay;
+                    /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-birthdate-month')).value = this.currentRecipient.birthDateMonth;
+                    /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-birthdate-year')).value = this.currentRecipient.birthDateYear;
+                    /** @type {HTMLInputElement} */(this._('#edit-recipient-country-select')).value = 'AT';
                 } else {
                     hasError = true;
                 }
-
-
             } else {
                 hasError = true;
             }
@@ -1083,7 +1092,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
             this.requestUpdate();
-            button.stop();
         }
 
     }
@@ -1291,7 +1299,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         if (confirm(i18n.t('show-requests.submit-dialog-text_one'))) {
             try {
-                this._('#submit-btn').start(); //TODO
                 button.start();
 
                 let response = await this.sendSubmitDispatchRequest(item.identifier);
@@ -1368,15 +1375,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             } catch (e) {
                 console.error(`${e.name}: ${e.message}`);
             } finally {
-                this._('#submit-btn').stop();
                 button.stop();
             }
         }
     }
 
     async changeSubjectRequest(id, subject) {
-        this._('#edit-subject-btn').start();
         const i18n = this._i18n;
+        const editSubjectButton = /** @type {IconButton} */(this._('#edit-subject-btn'));
+        editSubjectButton.start();
         try {
             let response = await this.sendChangeSubjectRequest(id, subject);
             let responseBody = await response.json();
@@ -1407,14 +1414,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     timeout: 5,
                 });
             }
-        } finally {
-            this._('#edit-subject-btn').stop();
+        }  finally {
+            editSubjectButton.stop();
         }
     }
 
     async changeReferenceNumberRequest(id, referenceNumber) {
-        this._('#edit-reference-number-btn').start();
         const i18n = this._i18n;
+        const editReferenceButton = /** @type {IconButton} */(this._('#edit-reference-number-btn'));
+        editReferenceButton.start();
         try {
             let response = await this.sendChangeReferenceNumberRequest(id, referenceNumber);
             let responseBody = await response.json();
@@ -1445,29 +1453,27 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } finally {
-            this._('#edit-reference-number-btn').stop();
+            editReferenceButton.stop();
         }
     }
 
     async confirmEditSender() {
         const i18n = this._i18n;
-
+        const editSenderButton = /** @type {IconButton} */(this._('#edit-sender-btn'));
+        editSenderButton.start();
         try {
-            this._('#edit-sender-btn').start();
             let id = this.currentItem.identifier;
-            let senderOrganizationName = this._('#tf-edit-sender-gn-dialog').value;
-            let senderFullName = this._('#tf-edit-sender-fn-dialog').value;
-            let senderPostalCode = this._('#tf-edit-sender-pc-dialog').value;
-            let senderAddressLocality = this._('#tf-edit-sender-al-dialog').value;
-            let senderStreetAddress = this._('#tf-edit-sender-sa-dialog').value;
-            let senderBuildingNumber =
-                this._('#tf-edit-sender-bn-dialog') && this._('#tf-edit-sender-bn-dialog').value
-                    ? this._('#tf-edit-sender-bn-dialog').value
-                    : '';
+            let senderOrganizationName = /** @type {HTMLInputElement } */(this._('#tf-edit-sender-gn-dialog')).value;
+            let senderFullName = /** @type {HTMLInputElement } */(this._('#tf-edit-sender-fn-dialog')).value;
+            let senderPostalCode = /** @type {HTMLInputElement } */(this._('#tf-edit-sender-pc-dialog')).value;
+            let senderAddressLocality = /** @type {HTMLInputElement } */(this._('#tf-edit-sender-al-dialog')).value;
+            let senderStreetAddress = /** @type {HTMLInputElement } */(this._('#tf-edit-sender-sa-dialog')).value;
+            let senderBuildingNumberHTML = /** @type {HTMLInputElement } */(this._('#tf-edit-sender-bn-dialog'));
+            let senderBuildingNumber = senderBuildingNumberHTML && senderBuildingNumberHTML.value ? senderBuildingNumberHTML.value : '';
 
             let groupId = this.groupId;
 
-            let e = this._('#edit-sender-country-select');
+            let e = /** @type {HTMLSelectElement} */(this._('#edit-sender-country-select'));
             let value = e.value;
             let text = e.options[e.selectedIndex].text;
             let senderAddressCountry = [value, text];
@@ -1502,8 +1508,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     timeout: 5,
                 });
             } else {
-                // TODO error handling
-
                 send({
                     summary: 'Error!',
                     body: 'Could not edit sender. Response code: ' + response.status,
@@ -1512,13 +1516,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
             }
         } finally {
-            this._('#edit-sender-btn').stop();
+            editSenderButton.stop();
         }
-
     }
 
     async confirmEditSubject() {
-        let subject = this._('#tf-edit-subject-fn-dialog').value;
+        let subject = /** @type {HTMLInputElement } */(this._('#tf-edit-subject-fn-dialog')).value;
         let rows = this.currentTable.getRows();
         this.currentTable.updateRow(rows[this.currentRowIndex], {subject: subject});
         let id = this.currentItem.identifier;
@@ -1526,7 +1529,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmEditReferenceNumber() {
-        let referenceNumber = this._('#tf-edit-reference-number-fn-dialog').value;
+        let referenceNumber = /** @type {HTMLInputElement } */(this._('#tf-edit-reference-number-fn-dialog')).value;
         let rows = this.currentTable.getRows();
         this.currentTable.updateRow(rows[this.currentRowIndex], {gz: referenceNumber});
         let id = this.currentItem.identifier;
@@ -1534,24 +1537,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmAddSubject() {
-        this._('#add-subject-confirm-btn').disabled = true;
-
-        this.subject =
-            this._('#tf-add-subject-fn-dialog').value &&
-            this._('#tf-add-subject-fn-dialog').value !== ''
-                ? this._('#tf-add-subject-fn-dialog').value
+        /** @type {HTMLButtonElement} */(this._('#add-subject-confirm-btn')).disabled = true;
+        const subjectHtml = /** @type {HTMLInputElement } */(this._('#tf-add-subject-fn-dialog'));
+        this.subject = subjectHtml.value && subjectHtml.value !== ''
+                ? subjectHtml.value
                 : this._i18n.t('create-request.default-subject');
 
         await this.processCreateDispatchRequest();
 
-        this._('#tf-add-subject-fn-dialog').value = '';
+        /** @type {HTMLInputElement } */(this._('#tf-add-subject-fn-dialog')).value = '';
 
         this.showDetailsView = true;
         this.hasSubject = true;
 
         this.hasSender = true;
 
-        this._('#add-subject-confirm-btn').disabled = false;
+        /** @type {HTMLButtonElement} */(this._('#add-subject-confirm-btn')).disabled = false;
     }
 
     async fetchDetailedRecipientInformation(identifier) {
@@ -1568,7 +1569,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     ? this.convertToBirthDateTuple(responseBody['birthDate'])
                     : '';
 
-            if (birthDate !== '') {
+            if (typeof birthDate === 'object') {
                 this.currentRecipient.birthDateDay = birthDate.day;
                 this.currentRecipient.birthDateMonth = birthDate.month;
                 this.currentRecipient.birthDateYear = birthDate.year;
@@ -1614,7 +1615,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async submitSelected() {
         const i18n = this._i18n;
 
-        this._('#submit-all-btn').start();
+        const submitAllButton = /** @type {LoadingButton} */(this._('#submit-all-btn'));
+        submitAllButton.start();
 
         try {
             let table = this.currentTable;
@@ -1724,14 +1726,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
             }
         } finally {
-            this._('#submit-all-btn').stop();
+            submitAllButton.stop();
         }
     }
 
     async deleteSelected() {
         const i18n = this._i18n;
 
-        this._('#delete-all-btn').start();
+        const deleteAllButton = /** @type {LoadingButton} */(this._('#delete-all-btn'));
+        deleteAllButton.start();
 
         try {
             let selectedItems = this.currentTable.getSelectedRows();
@@ -1829,7 +1832,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
             }
         } finally {
-            this._('#delete-all-btn').stop();
+            deleteAllButton.stop();
         }
     }
 
@@ -1848,7 +1851,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 const binaryFile = new File([arr], fileName, {
                     type: dispatchHelper.getDataURIContentType(fileContentUrl),
                 });
-                this._('#file-viewer').showPDF(binaryFile);
+                /** @type {PdfViewer} */(this._('#file-viewer')).showPDF(binaryFile);
+                // @ts-ignore
                 MicroModal.show(this._('#file-viewer-modal'), {
                     disableScroll: true,
                     onClose: (modal) => {
@@ -1890,7 +1894,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async processCreateDispatchRequest() {
-        this._('#create-btn').start();
+        const createButton = /** @type  {LoadingButton} */(this._('#create-btn'));
+        createButton.start();
 
         try {
             let response = await this.sendCreateDispatchRequest();
@@ -1903,7 +1908,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.errorCreatingRequest = true;
             }
         } finally {
-            this._('#create-btn').stop();
+            createButton.stop();
         }
     }
 
@@ -1942,7 +1947,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Get a list of all requests
-     * @returns {Array} list
+     * @returns {Promise<void>}
      */
     async getListOfRequests() {
         const i18n = this._i18n;
@@ -1953,7 +1958,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && responseBody.status !== 403) {
                 this.requestList = this.parseListOfRequests(responseBody);
             } else {
-                //TODO error handling
                 if (responseBody.status === 500) {
                     send({
                         summary: 'Error!',
@@ -1976,6 +1980,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
+    // @TODO: never called?
     async getCreatedRequests() {
         if (this.createdRequestsList.length > 0) {
             this.tableLoading = true;
@@ -2034,29 +2039,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmEditRecipient() {
-        let button = this.button;
-
-        let validcountry = this.checkValidity(
-            this._('#edit-recipient-country-select'),
-        );
-        let validal = this.checkValidity(
-            this._('#tf-edit-recipient-al-dialog'),
-        );
-        let validpc = this.checkValidity(
-            this._('#tf-edit-recipient-pc-dialog'),
-        );
-        let validsa = this.checkValidity(
-            this._('#tf-edit-recipient-sa-dialog'),
-        );
+        let validcountry = this.checkValidity(this._('#edit-recipient-country-select'),);
+        let validal = this.checkValidity(this._('#tf-edit-recipient-al-dialog'),);
+        let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'),);
+        let validsa = this.checkValidity(this._('#tf-edit-recipient-sa-dialog'),);
         let validbirthday = this.checkValidity(this._('#tf-edit-recipient-birthdate-day'));
         let validbirthmonth = this.checkValidity(this._('#tf-edit-recipient-birthdate-month'));
         let validbirthyear = this.checkValidity(this._('#tf-edit-recipient-birthdate-year'));
-        let validfn = this.checkValidity(
-            this._('#tf-edit-recipient-fn-dialog'),
-        );
-        let validgn = this.checkValidity(
-            this._('#tf-edit-recipient-gn-dialog'),
-        );
+        let validfn = this.checkValidity(this._('#tf-edit-recipient-fn-dialog'),);
+        let validgn = this.checkValidity(this._('#tf-edit-recipient-gn-dialog'),);
 
         if (
             validgn &&
@@ -2066,36 +2057,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             validal &&
             validsa && validbirthday && validbirthmonth && validbirthyear
         ) {
-            this.currentRecipient.givenName = this._(
-                '#tf-edit-recipient-gn-dialog',
-            ).value;
-            this.currentRecipient.familyName = this._(
-                '#tf-edit-recipient-fn-dialog',
-            ).value;
-            this.currentRecipient.addressCountry = this._(
-                '#edit-recipient-country-select',
-            ).value;
-            this.currentRecipient.postalCode = this._(
-                '#tf-edit-recipient-pc-dialog',
-            ).value;
-            this.currentRecipient.addressLocality = this._(
-                '#tf-edit-recipient-al-dialog',
-            ).value;
-            this.currentRecipient.streetAddress = this._(
-                '#tf-edit-recipient-sa-dialog',
-            ).value;
-            this.currentRecipient.birthDateDay = this._(
-                '#tf-edit-recipient-birthdate-day',
-            ).value;
-            this.currentRecipient.birthDateMonth = this._(
-                '#tf-edit-recipient-birthdate-month',
-            ).value;
-            this.currentRecipient.birthDateYear = this._(
-                '#tf-edit-recipient-birthdate-year',
-            ).value;
-            this.updateRecipient(button);
+            this.currentRecipient.givenName = /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-gn-dialog')).value;
+            this.currentRecipient.familyName = /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-fn-dialog')).value;
+            this.currentRecipient.addressCountry = /** @type {HTMLInputElement } */(this._('#edit-recipient-country-select')).value;
+            this.currentRecipient.postalCode = /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-pc-dialog')).value;
+            this.currentRecipient.addressLocality = /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-al-dialog')).value;
+            this.currentRecipient.streetAddress = /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-sa-dialog')).value;
+            this.currentRecipient.birthDateDay = /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-birthdate-day')).value;
+            this.currentRecipient.birthDateMonth = /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-birthdate-month')).value;
+            this.currentRecipient.birthDateYear = /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-birthdate-year')).value;
+            this.updateRecipient();
         } else {
-            button.stop();
+            return false;
         }
     }
 
@@ -2116,7 +2089,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 if (Object.keys(this.tempItem).length !== 0) {
                     this.currentItem = this.tempItem;
                     this.tempChange = true;
-                    this._('#create-resource-select').value = this.tempValue;
+                    /** @type {ResourceSelect} */(this._('#create-resource-select')).value = this.tempValue;
 
                     send({
                         summary: i18n.t('create-request.create-not-allowed-title'),
@@ -2172,7 +2145,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.mayWrite = mayWrite;
 
                     this.tempItem = this.currentItem;
-                    this.tempValue = this._('#create-resource-select').value;
+                    this.tempValue = /** @type {ResourceSelect} */(this._('#create-resource-select')).value;
                 } else if (response.status === 403) {
                     send({
                         summary: i18n.t('create-request.error-requested-title'),
@@ -2202,7 +2175,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.mayWrite = event.target.valueObject.accessRights.includes('w');
 
                 this.tempItem = this.currentItem;
-                this.tempValue = this._('#create-resource-select').value;
+                this.tempValue = /** @type {ResourceSelect} */(this._('#create-resource-select')).value;
             }
         }
 
@@ -2243,13 +2216,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.streetAddress = responseBody['localData']['streetAddress']
                         ? responseBody['localData']['streetAddress']
                         : '';
-                    this.currentRecipient.addressCountry = responseBody['localData'][
-                        'addressCountry'
-                    ]
-                        ? dispatchHelper.getCountryMapping(
-                              responseBody['localData']['addressCountry'],
-                          )
-                        : dispatchHelper.getCountryMapping('AT');
+                    this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping();
                 }
             } else {
                 // TODO error handling
@@ -2291,7 +2258,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     resetRecipientFields() {
-        this._('#recipient-selector').clear();
+        /** @type {CustomPersonSelect} */(this._('#recipient-selector')).clear();
         this.currentRecipient = {};
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
         elements.forEach((element) => {
@@ -2302,13 +2269,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.personSelectorIsDisabled = false;
 
         // Clear values and re-enable all input fields.
-        const ManualElements = this.shadowRoot.querySelectorAll('.modal-content-right .input');
-        ManualElements.forEach((element) => {
-            element.value = '';
-            element.disabled = false;
+        const manualElements = this.shadowRoot.querySelectorAll('.modal-content-right .input');
+        manualElements.forEach((element) => {
+            const input = /** @type {HTMLInputElement} */(element);
+            input.value = '';
+            input.disabled = false;
         });
 
         // Reset country selector.
+        /** @type {HTMLSelectElement} */
         const CountrySelectElement = this.shadowRoot.querySelector('#add-recipient-country-select');
         const options = CountrySelectElement.options;
 
@@ -2435,6 +2404,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 class="modal-close"
                                 aria-label="Close modal"
                                 @click="${() => {
+                                    // @ts-ignore
                                     MicroModal.close(this._('#edit-sender-modal'));
                                 }}">
                                 <dbp-icon
@@ -2576,6 +2546,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     data-micromodal-close
                                     aria-label="Close this dialog window"
                                     @click="${() => {
+                                        // @ts-ignore
                                         MicroModal.close(this._('#edit-sender-modal'));
                                     }}">
                                     ${i18n.t('show-requests.edit-sender-dialog-button-cancel')}
@@ -2612,6 +2583,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             validbirthday
                                         ) {
                                             this.confirmEditSender().then((r) => {
+                                                // @TODO: Add Error checking
+                                                // @ts-ignore
                                                 MicroModal.close(this._('#edit-sender-modal'));
                                             });
                                         }
@@ -2647,8 +2620,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 class="modal-close"
                                 aria-label="Close modal"
                                 @click="${() => {
-                                    this._('#add-recipient-btn').stop();
                                     this.resetRecipientFields();
+                                    // @ts-ignore
                                     MicroModal.close(this._('#add-recipient-modal'));
                                 }}">
                                 <dbp-icon
@@ -2891,6 +2864,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     aria-label="Close this dialog window"
                                     @click="${() => {
                                         this.resetRecipientFields();
+                                        // @ts-ignore
                                         MicroModal.close(this._('#add-recipient-modal'));
                                     }}">
                                     ${i18n.t('show-requests.add-recipient-dialog-button-cancel')}
@@ -2899,7 +2873,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     class="button is-warning ${classMap({
                                         nothidden:
                                             this._('#recipient-selector') &&
-                                            this._('#recipient-selector').value === '',
+                                            /** @type {CustomPersonSelect} */(this._('#recipient-selector')).value === '',
                                     })}"
                                     @click="${() => {
                                         this.resetRecipientFields();
@@ -2913,27 +2887,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         let button = event.target;
                                         button.disabled = true;
 
-                                        let validcountry = this.checkValidity(
-                                            this._('#add-recipient-country-select'),
-                                        );
-                                        let validal = this.checkValidity(
-                                            this._('#tf-add-recipient-al-dialog'),
-                                        );
-                                        let validpc = this.checkValidity(
-                                            this._('#tf-add-recipient-pc-dialog'),
-                                        );
-                                        let validsa = this.checkValidity(
-                                            this._('#tf-add-recipient-sa-dialog'),
-                                        );
+                                        let validcountry = this.checkValidity(this._('#add-recipient-country-select'));
+                                        let validal = this.checkValidity(this._('#tf-add-recipient-al-dialog'));
+                                        let validpc = this.checkValidity(this._('#tf-add-recipient-pc-dialog'));
+                                        let validsa = this.checkValidity(this._('#tf-add-recipient-sa-dialog'));
                                         let validbirthday = this.checkValidity(this._('#tf-add-recipient-birthdate-day'));
                                         let validbirthmonth = this.checkValidity(this._('#tf-add-recipient-birthdate-month'));
                                         let validbirthyear = this.checkValidity(this._('#tf-add-recipient-birthdate-year'));
-                                        let validfn = this.checkValidity(
-                                            this._('#tf-add-recipient-fn-dialog'),
-                                        );
-                                        let validgn = this.checkValidity(
-                                            this._('#tf-add-recipient-gn-dialog'),
-                                        );
+                                        let validfn = this.checkValidity(this._('#tf-add-recipient-fn-dialog'));
+                                        let validgn = this.checkValidity(this._('#tf-add-recipient-gn-dialog'));
 
                                         if (
                                             validgn &&
@@ -2943,38 +2905,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             validal &&
                                             validsa && validbirthday && validbirthmonth && validbirthyear
                                         ) {
-                                            this.currentRecipient.givenName = this._(
-                                                '#tf-add-recipient-gn-dialog',
-                                            ).value;
-                                            this.currentRecipient.familyName = this._(
-                                                '#tf-add-recipient-fn-dialog',
-                                            ).value;
-                                            this.currentRecipient.addressCountry = this._(
-                                                '#add-recipient-country-select',
-                                            ).value;
-                                            this.currentRecipient.postalCode = this._(
-                                                '#tf-add-recipient-pc-dialog',
-                                            ).value;
-                                            this.currentRecipient.addressLocality = this._(
-                                                '#tf-add-recipient-al-dialog',
-                                            ).value;
-                                            this.currentRecipient.streetAddress = this._(
-                                                '#tf-add-recipient-sa-dialog',
-                                            ).value;
-                                            this.currentRecipient.birthDateDay = this._(
-                                                '#tf-add-recipient-birthdate-day',
-                                            ).value;
-                                            this.currentRecipient.birthDateMonth = this._(
-                                                '#tf-add-recipient-birthdate-month',
-                                            ).value;
-                                            this.currentRecipient.birthDateYear = this._(
-                                                '#tf-add-recipient-birthdate-year',
-                                            ).value;
+                                            this.currentRecipient.givenName = /** @type {HTMLInputElement } */(this._('#tf-add-recipient-gn-dialog')).value;
+                                            this.currentRecipient.familyName = /** @type {HTMLInputElement } */(this._('#tf-add-recipient-fn-dialog')).value;
+                                            this.currentRecipient.addressCountry = /** @type {HTMLInputElement } */(this._('#add-recipient-country-select')).value;
+                                            this.currentRecipient.postalCode = /** @type {HTMLInputElement } */(this._('#tf-add-recipient-pc-dialog')).value;
+                                            this.currentRecipient.addressLocality = /** @type {HTMLInputElement } */(this._('#tf-add-recipient-al-dialog')).value;
+                                            this.currentRecipient.streetAddress = /** @type {HTMLInputElement } */(this._('#tf-add-recipient-sa-dialog')).value;
+                                            this.currentRecipient.birthDateDay = /** @type {HTMLInputElement } */(this._('#tf-add-recipient-birthdate-day')).value;
+                                            this.currentRecipient.birthDateMonth = /** @type {HTMLInputElement } */(this._('#tf-add-recipient-birthdate-month')).value;
+                                            this.currentRecipient.birthDateYear = /** @type {HTMLInputElement } */(this._('#tf-add-recipient-birthdate-year')).value;
 
                                             this.addRecipientToRequest(button).then((r) => {
                                                 button.disabled = false;
+                                                // @ts-ignore
                                                 MicroModal.close(this._('#add-recipient-modal'));
-                                                this._('#recipient-selector').value = '';
+                                                /** @type {CustomPersonSelect} */(this._('#recipient-selector')).value = '';
                                                 // Re-enable manual recipient fields.
                                                 const elements =
                                                     this.shadowRoot.querySelectorAll(
@@ -3021,8 +2966,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 class="modal-close"
                                 aria-label="Close modal"
                                 @click="${() => {
-                                    let button = this.button;
-                                    button.stop();
+                                    // @ts-ignore
                                     MicroModal.close(this._('#edit-recipient-modal'));
                                 }}">
                                 <dbp-icon
@@ -3190,8 +3134,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     class="button"
                                     aria-label="Close this dialog window"
                                     @click="${() => {
-                                        let button = this.button;
-                                        button.stop();
+                                        // @ts-ignore
                                         MicroModal.close(this._('#edit-recipient-modal'));
                                     }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
@@ -3199,9 +3142,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <button
                                     class="button select-button is-primary"
                                     id="edit-recipient-confirm-btn"
-                                    @click="${() => {
-                                        this.confirmEditRecipient().then((r) => {
-                                            MicroModal.close(this._('#edit-recipient-modal'));
+                                    @click="${(event) => {
+                                        this.confirmEditRecipient().then((response) => {
+                                            if (response !== false) {
+                                                // @ts-ignore
+                                                MicroModal.close(this._('#edit-recipient-modal'));
+                                            }
                                         });
                                     }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-ok')}
@@ -3235,6 +3181,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 class="modal-close"
                                 aria-label="Close modal"
                                 @click="${() => {
+                                    // @ts-ignore
                                     MicroModal.close(this._('#show-recipient-modal'));
                                 }}">
                                 <dbp-icon
@@ -3527,8 +3474,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     type: dispatchHelper.getDataURIContentType(fileContentUrl),
                 });
 
-                this._('#file-viewer').showPDF(binaryFile);
+                /** @type {PdfViewer} */(this._('#file-viewer')).showPDF(binaryFile);
 
+                // @ts-ignore
                 MicroModal.show(this._('#file-viewer-modal'), {
                     disableScroll: true,
                     onClose: (modal) => {
@@ -3654,7 +3602,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         statusChangeFormData.append('dispatchRequestIdentifier', this.currentItem.identifier);
         statusChangeFormData.append('dispatchRequestRecipientIdentifier', this.currentRecipient.identifier);
         statusChangeFormData.append('file', event.detail.file);
-        statusChangeFormData.append('statusType', 26);
+        statusChangeFormData.append('statusType', '26');
         statusChangeFormData.append('description', 'Rückschein uploaded');
         statusChangeFormData.append('fileUploaderIdentifier', this.auth['user-id']);
 
@@ -3718,6 +3666,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 class="modal-close"
                                 aria-label="Close modal"
                                 @click="${() => {
+                                    // @ts-ignore
                                     MicroModal.close(this._('#edit-subject-modal'));
                                 }}">
                                 <dbp-icon
@@ -3750,6 +3699,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     data-micromodal-close
                                     aria-label="Close this dialog window"
                                     @click="${() => {
+                                        // @ts-ignore
                                         MicroModal.close(this._('#edit-subject-modal'));
                                     }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
@@ -3759,6 +3709,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     id="edit-subject-confirm-btn"
                                     @click="${() => {
                                         this.confirmEditSubject().then((r) => {
+                                            // @ts-ignore
                                             MicroModal.close(this._('#edit-subject-modal'));
                                         });
                                     }}">
@@ -3793,6 +3744,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 class="modal-close"
                                 aria-label="Close modal"
                                 @click="${() => {
+                                    // @ts-ignore
                                     MicroModal.close(this._('#edit-reference-number-modal'));
                                 }}">
                                 <dbp-icon
@@ -3820,6 +3772,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     data-micromodal-close
                                     aria-label="Close this dialog window"
                                     @click="${() => {
+                                        // @ts-ignore
                                         MicroModal.close(this._('#edit-reference-number-modal'));
                                     }}">
                                     ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
@@ -3830,6 +3783,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     @click="${() => {
                                         this.confirmEditReferenceNumber().then((r) => {
                                             MicroModal.close(
+                                                // @ts-ignore
                                                 this._('#edit-reference-number-modal'),
                                             );
                                         });
@@ -3867,6 +3821,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 class="modal-close"
                                 aria-label="Close modal"
                                 @click="${() => {
+                                    // @ts-ignore
                                     MicroModal.close(this._('#file-viewer-modal'));
                                 }}">
                                 <dbp-icon
@@ -4039,9 +3994,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 !this.mayWrite}"
                                 @click="${(event) => {
                                     if (this.currentItem.senderAddressCountry !== '') {
-                                        this._('#edit-sender-country-select').value =
-                                            this.currentItem.senderAddressCountry;
+                                        /** @type {HTMLSelectElement} */(this._('#edit-sender-country-select')).value = this.currentItem.senderAddressCountry;
                                     }
+                                    // @ts-ignore
                                     MicroModal.show(this._('#edit-sender-modal'), {
                                         disableScroll: true,
                                         onClose: (modal) => {
