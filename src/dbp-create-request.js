@@ -21,6 +21,7 @@ import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
 import {name as pkgName} from './../package.json';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
+import * as tabulatorStyles from '@dbp-toolkit/tabulator-table/src/tabulator-table-styles';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
@@ -332,7 +333,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getActivityCSS()}
             ${commonStyles.getModalDialogCSS()}
             ${commonStyles.getButtonCSS()}
-            ${commonStyles.getTabulatorStyles()}
+            ${tabulatorStyles.getTabulatorStyles()}
             ${commonStyles.getRadioAndCheckboxCss()}
             ${dispatchStyles.getDispatchRequestTableStyles()}
             ${dispatchStyles.getDispatchRequestStyles()}

@@ -22,7 +22,7 @@ import {name as pkgName} from './../package.json';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
 import {CustomPersonSelect} from './person-select.js';
-import * as tabulatorStyles from './tabulator-table-styles';
+import * as tabulatorStyles from '@dbp-toolkit/tabulator-table/src/tabulator-table-styles';
 
 // NOTE: pdf-viewer is loading the pdfjs worker also for getBusinessNumberFromPDF!
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
@@ -504,15 +504,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getActivityCSS()}
             ${commonStyles.getModalDialogCSS()}
             ${commonStyles.getButtonCSS()}
-            ${commonStyles.getTabulatorStyles()}
-            /*${commonStyles.getRadioAndCheckboxCss()}*/
             ${dispatchStyles.getDispatchRequestTableStyles()}
             ${dispatchStyles.getDispatchRequestStyles()}
-            ${tabulatorStyles.getTabulatorStyles()}
 
-            .tabulator .tabulator-placeholder-contents {
-                margin-bottom: auto;
-            }
+            ${tabulatorStyles.getTabulatorStyles()}
+           /* no styles from here are applies to the tabulator table component */
 
             .control.table {
                 padding-top: 1.5rem;
@@ -752,7 +748,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayout: 'collapse',
             responsiveLayoutCollapseStartOpen: false,
             columns: [
-                {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center", sorter:"string", headerSort:false},
+                {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center", sorter:"string", headerSort:false, responsive:0},
                 {title: 'dateCreated', field: 'dateCreated', width: 200, hozAlign: 'left', responsive:0},
                 {title: 'gz', field: 'gz', width: 200},
                 {title: 'subject', field: 'subject', width: 250},
