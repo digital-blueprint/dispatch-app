@@ -18,11 +18,9 @@ import MicroModal from './micromodal.es';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import * as dispatchStyles from './styles';
-import {name as pkgName} from './../package.json';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
 import {CustomPersonSelect} from './person-select.js';
-import * as tabulatorStyles from '@dbp-toolkit/tabulator-table/src/tabulator-table-styles';
 
 // NOTE: pdf-viewer is loading the pdfjs worker also for getBusinessNumberFromPDF!
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
@@ -504,11 +502,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getActivityCSS()}
             ${commonStyles.getModalDialogCSS()}
             ${commonStyles.getButtonCSS()}
-            ${dispatchStyles.getDispatchRequestTableStyles()}
             ${dispatchStyles.getDispatchRequestStyles()}
-
-            ${tabulatorStyles.getTabulatorStyles()}
-           /* no styles from here are applies to the tabulator table component */
 
             .control.table {
                 padding-top: 1.5rem;
@@ -699,10 +693,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     render() {
         const i18n = this._i18n;
-        const tabulatorCss = commonUtils.getAssetURL(
-            pkgName,
-            'tabulator-tables/css/tabulator.min.css',
-        );
+        // const tabulatorCss = commonUtils.getAssetURL(
+        //     pkgName,
+        //     'tabulator-tables/css/tabulator.min.css',
+        // );
 
         if (
             this.isLoggedIn() &&
@@ -768,8 +762,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
 
         return html`
-            <link rel="stylesheet" href="${tabulatorCss}"/>
-
             <div class="control ${classMap({hidden: this.isLoggedIn() || !this.isLoading() || !this.loadingTranslations})}">
                 <span class="loading">
                     <dbp-mini-spinner text=${i18n.t('loading-message')}></dbp-mini-spinner>

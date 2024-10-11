@@ -19,9 +19,7 @@ import metadata from './dbp-create-request.metadata.json';
 import * as dispatchStyles from './styles';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
-import {name as pkgName} from './../package.json';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
-import * as tabulatorStyles from '@dbp-toolkit/tabulator-table/src/tabulator-table-styles';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
@@ -333,9 +331,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getActivityCSS()}
             ${commonStyles.getModalDialogCSS()}
             ${commonStyles.getButtonCSS()}
-            ${tabulatorStyles.getTabulatorStyles()}
+            /* tabulatorStyles.getTabulatorStyles() */
             ${commonStyles.getRadioAndCheckboxCss()}
-            ${dispatchStyles.getDispatchRequestTableStyles()}
+            /* dispatchStyles.getDispatchRequestTableStyles() */
             ${dispatchStyles.getDispatchRequestStyles()}
 
             h2:first-child {
@@ -471,10 +469,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     render() {
         const i18n = this._i18n;
-        const tabulatorCss = commonUtils.getAssetURL(
-            pkgName,
-            'tabulator-tables/css/tabulator.min.css',
-        );
+        // const tabulatorCss = commonUtils.getAssetURL(
+        //     pkgName,
+        //     'tabulator-tables/css/tabulator.min.css',
+        // );
 
         let langs  = {
             'en': {
@@ -530,8 +528,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         };
 
         return html`
-            <link rel="stylesheet" href="${tabulatorCss}" />
-
             <div
                 class="control ${classMap({
                     hidden: this.isLoggedIn() || !this.isLoading() || !this.loadingTranslations,
