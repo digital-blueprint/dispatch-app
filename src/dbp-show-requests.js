@@ -742,16 +742,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayout: 'collapse',
             responsiveLayoutCollapseStartOpen: false,
             columns: [
-                {title: 'details', field: 'details', width: 100, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center", sorter:"string", headerSort:false, responsive:0},
-                {title: 'dateCreated', field: 'dateCreated', width: 200, hozAlign: 'left', responsive:0},
-                {title: 'gz', field: 'gz', width: 200},
-                {title: 'subject', field: 'subject', width: 250},
-                {title: 'status', field: 'status', width: 200},
-                {title: '', field: 'controls', formatter: 'html', headerSort:false, responsive:0},
+                {title: 'details', field: 'details', width: 60, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center", sorter:"string", headerSort:false, responsive:0},
+                {title: 'dateCreated', field: 'dateCreated', width: 140, hozAlign: 'left', responsive:0},
+                {title: 'gz', field: 'gz', width: 315},
+                {title: 'subject', field: 'subject', width: 315},
+                {title: 'status', field: 'status', width: 120},
                 {title: 'files', field: 'files', width: 150, formatter: 'html', responsive:3},
                 {title: 'recipients', field: 'recipients', width: 150, formatter: 'html', responsive:4},
                 {title: 'dateSubmitted', field: 'dateSubmitted', width: 150, responsive:5},
-                {title: 'requestId', field: 'requestId', width: 150, responsive:6}
+                {title: 'requestId', field: 'requestId', width: 150, responsive:6},
+                {title: '', field: 'controls', width: 140, formatter: 'html', headerSort:false, responsive:0},
             ],
             columnDefaults: {
                 vertAlign: 'middle',
