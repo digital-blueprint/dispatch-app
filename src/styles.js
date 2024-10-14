@@ -1,5 +1,5 @@
-import {css, unsafeCSS} from 'lit';
-import {getIconSVGURL} from '@dbp-toolkit/common';
+import {css} from 'lit';
+// import {getIconSVGURL} from '@dbp-toolkit/common';
 
 // export function getDispatchRequestTableStyles() {
 //     // language=css
