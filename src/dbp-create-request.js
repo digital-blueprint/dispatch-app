@@ -1186,7 +1186,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             <button
                                 title="${i18n.t('show-requests.modal-close')}"
                                 class="modal-close"
-                                aria-label="Close modal"
+                                aria-label="${i18n.t('show-requests.modal-close')}"
                                 @click="${() => {
                                     // @ts-ignore
                                     MicroModal.close(this._('#add-subject-modal'));

@@ -2402,7 +2402,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <button
                                 title="${i18n.t('show-requests.modal-close')}"
                                 class="modal-close"
-                                aria-label="Close modal"
+                                aria-label="${i18n.t('show-requests.modal-close')}"
                                 @click="${() => {
                                     // @ts-ignore
                                     MicroModal.close(this._('#edit-sender-modal'));
@@ -2618,7 +2618,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <button
                                 title="${i18n.t('show-requests.modal-close')}"
                                 class="modal-close"
-                                aria-label="Close modal"
+                                aria-label="${i18n.t('show-requests.modal-close')}"
                                 @click="${() => {
                                     this.resetRecipientFields();
                                     // @ts-ignore
@@ -2964,7 +2964,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <button
                                 title="${i18n.t('show-requests.modal-close')}"
                                 class="modal-close"
-                                aria-label="Close modal"
+                                aria-label="${i18n.t('show-requests.modal-close')}"
                                 @click="${() => {
                                     // @ts-ignore
                                     MicroModal.close(this._('#edit-recipient-modal'));
@@ -3179,7 +3179,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <button
                                 title="${i18n.t('show-requests.modal-close')}"
                                 class="modal-close"
-                                aria-label="Close modal"
+                                aria-label="${i18n.t('show-requests.modal-close')}"
                                 @click="${() => {
                                     // @ts-ignore
                                     MicroModal.close(this._('#show-recipient-modal'));
@@ -3664,7 +3664,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <button
                                 title="${i18n.t('show-requests.modal-close')}"
                                 class="modal-close"
-                                aria-label="Close modal"
+                                aria-label="${i18n.t('show-requests.modal-close')}"
                                 @click="${() => {
                                     // @ts-ignore
                                     MicroModal.close(this._('#edit-subject-modal'));
@@ -3742,7 +3742,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <button
                                 title="${i18n.t('show-requests.modal-close')}"
                                 class="modal-close"
-                                aria-label="Close modal"
+                                aria-label="${i18n.t('show-requests.modal-close')}"
                                 @click="${() => {
                                     // @ts-ignore
                                     MicroModal.close(this._('#edit-reference-number-modal'));
@@ -3819,7 +3819,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             <button
                                 title="${i18n.t('show-requests.modal-close')}"
                                 class="modal-close"
-                                aria-label="Close modal"
+                                aria-label="${i18n.t('show-requests.modal-close')}"
                                 @click="${() => {
                                     // @ts-ignore
                                     MicroModal.close(this._('#file-viewer-modal'));
