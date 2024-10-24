@@ -727,7 +727,6 @@ export function getDispatchRequestStyles() {
 
         #show-recipient-modal-box {
             height: auto;
-            min-height: fit-content;
             max-width: 800px;
         }
 
