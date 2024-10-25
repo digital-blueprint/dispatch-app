@@ -93,6 +93,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.langDir = undefined;
         this.loadingTranslations = false;
         this.tableLoading = false;
+        this.allSelected = false;
 
         this.selectedRow = this.rowClick.bind(this);
     }
@@ -150,6 +151,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             createRequestsLoading: {type: Boolean, attribute: false},
             createdRequestsList: {type:Array, attribute: false},
             expanded: {type: Boolean, attribute: false},
+            allSelected: {type: Boolean, attribute: false},
 
             fileUploadFinished: {type: Boolean, attribute: false},
             uploadedNumberOfFiles: {type: Number, attribute: false},
@@ -709,6 +711,29 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         this.isLoading() ||
                                         this.showDetailsView,
                                 })}">
+                                <dbp-loading-button id="select-all-btn"
+                                    class="${classMap({hidden: this.allSelected})}"
+                                    value="${i18n.t('show-requests.select-all')}"
+                                    @click="${() => {
+                                        // this.selectAll();
+                                        this.allSelected = true;
+                                        const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
+                                        table.selectAllRows();
+                                    }}"
+                                    title="${i18n.t('show-requests.select-all')}"
+                                    >${i18n.t('show-requests.select-all')}</dbp-loading-button>
+
+                                <dbp-loading-button id="deselect-all-btn"
+                                    class="${classMap({hidden: !this.allSelected})}"
+                                    value="${i18n.t('show-requests.deselect-all')}"
+                                    @click="${() => {
+                                        // this.deSelectAll();
+                                        this.allSelected = false;
+                                        const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
+                                        table.deselectAllRows();
+                                    }}"
+                                    title="${i18n.t('show-requests.deselect-all')}"
+                                    >${i18n.t('show-requests.deselect-all')}</dbp-loading-button>
                                 <dbp-loading-button
                                     id="expand-all-btn"
                                     class="${classMap({hidden: this.expanded})}"
@@ -797,7 +822,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         collapse-enabled
                                         pagination-size="10"
                                         pagination-enabled
-                                        select-all-enabled
                                         select-rows-enabled
                                         options=${JSON.stringify(options)}>
                                 </dbp-tabulator-table>

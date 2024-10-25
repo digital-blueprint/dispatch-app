@@ -86,6 +86,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.loadingTranslations = false;
         this.tableLoading = false;
         this.expandedTabulator = false;
+        this.allSelected = false;
     }
 
     static get scopedElements() {
@@ -130,6 +131,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             mayReadMetadata: {type: Boolean, attribute: false},
             lastModifiedName: {type: String, attribute: false},
             expanded: {type: Boolean, attribute: false},
+            allSelected: {type: Boolean, attribute: false},
 
             fileHandlingEnabledTargets: {type: String, attribute: 'file-handling-enabled-targets'},
             nextcloudWebAppPasswordURL: {type: String, attribute: 'nextcloud-web-app-password-url'},
@@ -908,6 +910,28 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 ${
                                     this.mayWrite
                                         ? html`
+                                            <dbp-loading-button id="select-all-btn"
+                                                class="${classMap({hidden: this.allSelected})}"
+                                                value="${i18n.t('show-requests.select-all')}"
+                                                @click="${() => {
+                                                    this.allSelected = true;
+                                                    const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
+                                                    table.selectAllRows();
+                                                }}"
+                                                title="${i18n.t('show-requests.select-all')}"
+                                                >${i18n.t('show-requests.select-all')}</dbp-loading-button>
+
+                                            <dbp-loading-button id="deselect-all-btn"
+                                                class="${classMap({hidden: !this.allSelected})}"
+                                                value="${i18n.t('show-requests.deselect-all')}"
+                                                @click="${() => {
+                                                    this.allSelected = false;
+                                                    const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
+                                                    table.deselectAllRows();
+                                                }}"
+                                                title="${i18n.t('show-requests.deselect-all')}"
+                                                >${i18n.t('show-requests.deselect-all')}</dbp-loading-button>
+
                                              <dbp-loading-button id="expand-all-btn"
                                                          class="${classMap({hidden: this.expanded})}"
                                                          ?disabled="${this.loading}"
@@ -972,7 +996,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 collapse-enabled
                                 pagination-size="10"
                                 pagination-enabled
-                                select-all-enabled
                                 select-rows-enabled
                                 options=${JSON.stringify(options)}>
                         </dbp-tabulator-table>
