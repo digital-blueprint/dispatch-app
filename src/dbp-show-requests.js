@@ -80,6 +80,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.initateOpenAdditionalMenu = false;
         this.initateOpenAdditionalSearchMenu = false;
         this.boundCloseAdditionalSearchMenuHandler = this.hideAdditionalSearchMenu.bind(this);
+        this.boundCloseAdditionalSearchMenuHandlerInner = this.hideAdditionalSearchMenuInner.bind(this);
         this.boundPressEnterAndSubmitSearchHandler = this.pressEnterAndSubmitSearch.bind(this);
 
         this.langDir = undefined;
@@ -306,6 +307,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      */
     toggleSearchMenu() {
         const menu = this._('#extendable-searchbar .extended-menu');
+        const searchBarMenu = this._('#searchbar-menu');
 
         if (menu === null) {
             return;
@@ -316,7 +318,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         if (!menu.classList.contains('hidden')) {
             // add event listener for clicking outside of menu
             document.addEventListener('click', this.boundCloseAdditionalSearchMenuHandler);
+            // add event listener for clicking *inside* of menu
+            searchBarMenu.addEventListener('click', this.boundCloseAdditionalSearchMenuHandlerInner);
             this.initateOpenAdditionalSearchMenu = true;
+        }
+    }
+
+    hideAdditionalSearchMenuInner(event) {
+        const searchBarMenu = this._('#searchbar-menu');
+        // Don't close the search widget if clicking inside
+        if (searchBarMenu.contains(event.target)) {
+            event.stopPropagation();
+            this.initateOpenAdditionalSearchMenu = false;
+            return;
         }
     }
 
@@ -330,26 +344,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             return;
         }
 
-        if (
-            (e.type !== 'keyup' &&
-                e.keyCode !== 13 &&
-                e.originalTarget &&
-                e.originalTarget.parentElement &&
-                (e.originalTarget.parentElement.classList.contains('extended-menu') ||
-                    e.originalTarget.parentElement.id === 'search-operator')) ||
-            (e.originalTarget &&
-                e.originalTarget.parentElement &&
-                e.originalTarget.parentElement.id === 'search-select') ||
-            (e.originalTarget && e.originalTarget.id === 'searchbar-menu') ||
-            (e.originalTarget && e.originalTarget.id === 'searchbar')
-        ) {
-            return;
-        }
-
         const menu = this._('#extendable-searchbar .extended-menu');
+        const searchBarMenu = this._('#searchbar-menu');
         if (menu && !menu.classList.contains('hidden')) {
             menu.classList.add('hidden');
             document.removeEventListener('click', this.boundCloseAdditionalSearchMenuHandler);
+            searchBarMenu.removeEventListener('click', this.boundCloseAdditionalSearchMenuHandlerInner);
         }
     }
 
