@@ -741,7 +741,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let resp = await this.getDispatchRequest(id);
             let responseBody = await resp.json();
-            if (responseBody !== undefined && responseBody.status !== 403) {
+            if (responseBody !== undefined && response.status !== 403) {
                 this.currentItem = responseBody;
             }
             this.currentFileIndex++;
