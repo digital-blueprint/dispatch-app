@@ -902,11 +902,6 @@ export function getDispatchRequestStyles() {
             flex-direction: row;
         }
 
-        #expand-all-btn,
-        #collapse-all-btn {
-            padding: 0.25em 0 0 0.5em;
-        }
-
         .card {
             display: grid;
             grid-template-columns: 4fr min-content;

@@ -598,6 +598,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 font-size: 1rem;
             }
 
+            .edit-selection-buttons {
+                display: flex;
+                gap: 1em;
+                margin-left: 1em;
+            }
+
             .edit-items {
                 font-size: 1.6rem;
             }
@@ -629,7 +635,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             }
 
             .sender-data {
-                /*margin: 0.5em 0 0.5em 16px;*/
                 margin: 0 0 0.5em 1px;
                 line-height: 1.5;
             }
@@ -644,16 +649,45 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 font-size: 1.3em;
             }
 
-            @media only screen and (orientation: portrait) and (max-width: 768px) {
-                .edit-selection-buttons {
-                    display: flex;
-                    gap: 5px;
+            @media only screen and (max-width: 1150px) {
+                .table-wrapper {
+                    flex-direction: column;
+                    gap: 1em;
+
+                }
+
+                .selected-buttons,
+                .filter-buttons {
                     width: 100%;
                 }
 
-                #expand-all-btn,
-                #collapse-all-btn {
-                    padding: 0;
+                #extendable-searchbar {
+                    width: 100%;
+                }
+
+                .edit-selection-buttons {
+                    margin-left: 0;
+                    width: 100%;
+                }
+
+                .edit-selection-buttons dbp-loading-button {
+                    flex-grow: 1;
+                    flex-shrink: 1;
+                    /* flex-basis: 25%; */
+                }
+            }
+
+            @media only screen and (max-width: 800px) {
+                .edit-selection-buttons {
+                    gap: 6px;
+                }
+            }
+
+            @media only screen and (orientation: portrait) and (max-width: 768px) {
+                .edit-selection-buttons {
+                    display: flex;
+                    gap: 1em;
+                    width: 100%;
                 }
 
                 #searchbar {
