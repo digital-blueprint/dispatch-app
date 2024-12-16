@@ -511,16 +511,18 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayout: 'collapse',
             responsiveLayoutCollapseStartOpen: false,
             columns: [
-                {title: 'details', field: 'details', width: 60, hozAlign: 'center', formatter:"responsiveCollapse", headerHozAlign:"center", headerSort:false},
-                {title: 'dateCreated', field: 'dateCreated', width: 140, hozAlign: 'left', responsive:0},
-                {title: 'gz', field: 'gz', width: 315},
-                {title: 'subject', field: 'subject', width: 315},
-                {title: 'status', field: 'status', width: 120},
-                {title: 'files', field: 'files', width: 150, formatter: 'html', responsive:8},
-                {title: 'recipients', field: 'recipients', width: 150, formatter: 'html', responsive:8},
-                {title: 'dateSubmitted', field: 'dateSubmitted', width: 150, responsive:8},
-                {title: 'requestId', field: 'requestId', width: 150, responsive:8},
-                {title: '', field: 'controls', width: 140, formatter: 'html', headerSort:false, responsive:0},
+                {title: 'details', field: 'details', hozAlign: 'center', width: 65, formatter:"responsiveCollapse", headerHozAlign:"center", sorter:"string", headerSort:false, responsive:0},
+                {title: 'dateCreated', field: 'dateCreated', minWidth: 140, hozAlign: 'left', widthGrow: 1, responsive:0},
+                {title: 'gz', field: 'gz', responsive: 2, widthGrow: 3, minWidth: 100, formatter: 'html'},
+                {title: 'subject', field: 'subject', minWidth: 140, responsive: 3, widthGrow: 3, formatter: 'html'},
+                {title: 'status', field: 'status', minWidth: 120, responsive: 2, widthGrow: 1, hozAlign: 'center', formatter: 'html'},
+
+                {title: 'files', field: 'files', minWidth: 800, formatter: 'html', responsive: 8},
+                {title: 'recipients', field: 'recipients', minWidth: 800, formatter: 'html', responsive: 8},
+                {title: 'dateSubmitted', field: 'dateSubmitted', minWidth: 150, responsive: 8},
+                {title: 'requestId', field: 'requestId', minWidth: 150, responsive: 8},
+
+                {title: '', field: 'controls', minWidth: 140, formatter: 'html', hozAlign: 'right', widthGrow: 1, headerSort:false, responsive:0},
             ],
             columnDefaults: {
                 vertAlign: 'middle',
