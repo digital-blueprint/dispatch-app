@@ -755,10 +755,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.setTabulatorData(this.newRequests);
                 }
             } else {
+                // If added via "Edit request" "add Files" button
+                this.currentTable = this._('#tabulator-table-created-requests');
                 let rows = this.currentTable.getRows();
-                this.currentTable.updateRow(rows[this.currentRowIndex], {files:this.createFormattedFilesList(this.currentItem.files)});
+                if (Array.isArray(rows) && rows.length > 0) {
+                    this.currentTable.updateRow(rows[this.currentRowIndex], {files:this.createFormattedFilesList(this.currentItem.files)});
+                }
             }
-
         } else {
             // TODO error handling
             if (this.singleFileProcessing) {
