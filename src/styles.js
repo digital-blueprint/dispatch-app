@@ -727,6 +727,7 @@ export function getDispatchRequestStyles() {
 
         #show-recipient-modal-box {
             height: auto;
+            width: 90vw;
             max-width: 800px;
         }
 
@@ -1119,34 +1120,37 @@ export function getDispatchRequestStyles() {
 
             #show-recipient-modal-box .detailed-recipient-modal-content-wrapper {
                 grid-template-columns: unset;
-                max-height: calc(100vh - 70px);
+                max-height: 100%;
             }
 
             .mobile-hidden {
                 display: none;
             }
 
+            /* inputs */
             .element-right {
-                margin-left: 12px;
-                padding: 0 0 12px 0;
+                border: 1px solid var(--dbp-muted);
+                padding: 5px;
+                margin: 0;
             }
 
             .element-right.first {
-                padding-top: 0;
+                padding-top: 5px;
             }
 
+            /* labels */
             .element-left {
+                margin-top: 8px;
+                font-weight: bold;
                 text-align: left;
-                padding: 10px 5px 10px 5px;
-                background-color: inherit;
-                color: inherit;
-                font-weight: 400;
-                border-top: 1px solid #3333;
+                padding: 5px 5px 5px 0;
+                background: initial;
+                color: var(--dbp-content);
+                border: 0 none;
             }
 
             .element-left.first {
-                margin-top: 10px;
-                border-top: 0;
+                padding-top: 5px;
             }
 
             .btn-row-left {
