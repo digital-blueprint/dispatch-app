@@ -621,7 +621,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.currentFileIndex = 0;
 
         const i18n = this._i18n;
-        if (!this.errorCreatingRequest) {
+        if (!this.errorCreatingRequest && this.uploadedNumberOfFiles > 0) {
             send({
                 summary: i18n.t('create-request.successfully-requested-title'),
                 body: this.singleFileProcessing
