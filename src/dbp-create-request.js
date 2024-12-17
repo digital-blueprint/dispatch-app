@@ -270,7 +270,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_submit.setAttribute('title', i18n.t('show-requests.send-request-button-text'));
             btn_submit.addEventListener('click', async (event) => {
                 this.currentItem = item;
-                this.submitRequest(table, event, item);
+                this.submitRequest(table, event, item, index);
                 event.stopPropagation();
             });
             controls_div.appendChild(btn_submit);
@@ -292,7 +292,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         });
 
         table.setData(data);
-
     }
 
     expandAll(){
@@ -677,8 +676,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         <a
                             href="#"
                             title="${i18n.t('show-requests.back-to-list')}"
-                            @click="${(e) => {
-                                this.getCreatedDispatchRequests();
+                            @click="${async (e) => {
+                                let updatedRequests = await this.getCreatedDispatchRequests();
+                                // Update requests in tabulator table
+                                this.setTabulatorData(updatedRequests);
                                 this.showDetailsView = false;
                                 this.showListView = true;
                                 this.subject = '';
