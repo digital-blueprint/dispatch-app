@@ -511,7 +511,17 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayoutCollapseStartOpen: false,
             columns: [
                 {title: 'details', field: 'details', hozAlign: 'center', width: 65, formatter:"responsiveCollapse", headerHozAlign:"center", sorter:"string", headerSort:false, responsive:0},
-                {title: 'dateCreated', field: 'dateCreated', minWidth: 140, hozAlign: 'left', widthGrow: 1, responsive:0},
+                {title: 'dateCreated', field: 'dateCreated', minWidth: 140, hozAlign: 'left', widthGrow: 1, responsive:0, sorter: (a, b, aRow, bRow, column, dir, sorterParams) => {
+                    //a, b - the two values being compared
+                    //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
+                    //column - the column component for the column being sorted
+                    //dir - the direction of the sort ("asc" or "desc")
+                    //sorterParams - sorterParams object from column definition array
+                    const timeStampA = this.dateToTimestamp(a);
+                    const timeStampB = this.dateToTimestamp(b);
+
+                    return timeStampA - timeStampB;
+                }},
                 {title: 'gz', field: 'gz', responsive: 2, widthGrow: 3, minWidth: 100, formatter: 'html'},
                 {title: 'subject', field: 'subject', minWidth: 140, responsive: 3, widthGrow: 3, formatter: 'html'},
                 {title: 'status', field: 'status', minWidth: 120, responsive: 2, widthGrow: 1, hozAlign: 'center', formatter: 'html'},
@@ -826,7 +836,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         pagination-size="10"
                                         pagination-enabled
                                         select-rows-enabled
-                                        options=${JSON.stringify(options)}>
+                                        .options=${options}>
                                 </dbp-tabulator-table>
                             </div>
                         </div>

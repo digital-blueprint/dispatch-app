@@ -4238,4 +4238,27 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         return this.groupValue;
     }
+
+    /**
+     * @param {string} dateTimeString in 'dd.mm.yyyy hh:mm' format
+     * @returns {number} unix timestamp
+     */
+    dateToTimestamp(dateTimeString) {
+        if (!dateTimeString) {
+            return -Infinity;
+        }
+       // Split the date and time parts
+       const [datePart, timePart] = dateTimeString.split(' ');
+
+       // Split the date into day, month, and year
+       const [day, month, year] = datePart.split('.');
+
+       // Split the time into hours and minutes
+       const [hours, minutes] = timePart.split(':');
+
+       const dateObject = new Date(year, month - 1, day, hours, minutes);
+       const timestamp = dateObject.getTime();
+
+       return timestamp;
+    }
 }
