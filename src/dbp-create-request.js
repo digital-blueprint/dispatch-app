@@ -538,6 +538,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 hozAlign: 'left',
                 resizable: false,
             },
+            initialSort: [
+                {column:"dateCreated", dir:"desc"}
+            ]
         };
 
         return html`
