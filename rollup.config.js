@@ -167,7 +167,6 @@ export default (async () => {
             format: 'esm',
             sourcemap: true,
         },
-        preserveEntrySignatures: false,
         treeshake: treeshake,
         onwarn: function (warning, warn) {
             // more eval
