@@ -94,7 +94,7 @@
       }
     ],
     "client": {
-      "dbp-dual-delivery": [],
+      "dbp-dispatch": [],
       "dbp-plan": [],
       "dbp-wl-sublibrary": [],
       "dbp-cloud": [],
@@ -1233,7 +1233,7 @@
     },
     {
       "id": "c5a3db54-7cd0-445d-a702-f7bb185fbfc6",
-      "clientId": "dbp-dual-delivery",
+      "clientId": "dbp-dispatch",
       "name": "",
       "description": "",
       "rootUrl": "",
