@@ -8,10 +8,6 @@
     "cloneSubmodules": true,
     "packageRules": [
         {
-          "matchPackageNames": ["@open-wc/scoped-elements"],
-          "allowedVersions": "<3"
-        },
-        {
             "matchPackageNames": ["pdfjs-dist"],
             "allowedVersions": "<4.6"
         }

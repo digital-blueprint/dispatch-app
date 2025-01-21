@@ -1,5 +1,5 @@
 import {PersonSelect} from '@dbp-toolkit/person-select';
-import {ScopedElementsMixin} from '@open-wc/scoped-elements';
+import {ScopedElementsMixin} from '@dbp-toolkit/common';
 
 export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
     // If the search term matches a matriculationNumber, we search for that,
