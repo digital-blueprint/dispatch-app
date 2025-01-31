@@ -835,6 +835,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         lang="${this.lang}"
                                         class="tabulator-table"
                                         id="tabulator-table-created-requests"
+                                        identifier="create-requests-table"
                                         collapse-enabled
                                         pagination-size="10"
                                         pagination-enabled

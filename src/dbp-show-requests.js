@@ -1040,10 +1040,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 lang="${this.lang}"
                                 class="tabulator-table"
                                 id="tabulator-table-orders"
+                                identifier="orders-table"
                                 collapse-enabled
                                 pagination-size="10"
                                 pagination-enabled
                                 select-rows-enabled
+                                sticky-header
                                 .options=${options}>
                         </dbp-tabulator-table>
 
