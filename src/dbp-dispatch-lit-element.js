@@ -4187,7 +4187,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 status = 'unknown';
             }
             if (status === 'success') {
-                if (recipient.addressCountry === 'AT') {
+                // Check if recipient is from Austria or if the addressCountry is empty (empty can mean electronic delivery)
+                if (recipient.addressCountry === 'AT' || recipient.addressCountry === '') {
                     countSuccess++;
                 } else {
                     countSuccessForeignCountries++;
