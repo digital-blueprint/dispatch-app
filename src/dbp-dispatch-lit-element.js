@@ -4179,6 +4179,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         for (let i = 0; i < recipients.length; i++) {
             let recipient = recipients[i];
+            console.log('checkRecipientStatus recipient', recipient);
 
             let status;
             if (recipient.lastStatusChange) {
@@ -4188,7 +4189,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
             if (status === 'success') {
                 // Check if recipient is from Austria or if the addressCountry is empty (empty can mean electronic delivery)
-                if (recipient.addressCountry === 'AT' || recipient.addressCountry === '') {
+                if (recipient.addressCountry === 'AT' || recipient.addressCountry === '' || !recipient.addressCountry) {
                     countSuccess++;
                 } else {
                     countSuccessForeignCountries++;
