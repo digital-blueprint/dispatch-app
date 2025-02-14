@@ -4137,7 +4137,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                               <span class="status-title">
                                   ${i18n.t('show-requests.dispatch-status')}
                               </span>
-                              <span class="status-green">${i18n.t(recipient.addressCountry === 'AT' ? 'show-requests.success' : 'show-requests.success-foreign-countries')}</span>
+                              <span class="status-green">${i18n.t(DBPDispatchLitElement.isRecipientNotInForeignCountry(recipient) ?
+                                      'show-requests.success' : 'show-requests.success-foreign-countries')}</span>
                           </div>
                       `
                     : ``}
@@ -4169,6 +4170,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         `;
     }
 
+    /**
+     * Check if recipient is from Austria or if the addressCountry is empty (empty will most likely mean electronic delivery)
+     * @param recipient
+     * @returns {boolean}
+     */
+    static isRecipientNotInForeignCountry(recipient) {
+        return recipient.addressCountry === 'AT' || recipient.addressCountry === '' || !recipient.addressCountry;
+    }
+
     checkRecipientStatus(recipients) {
         const i18n = this._i18n;
 
@@ -4188,8 +4198,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 status = 'unknown';
             }
             if (status === 'success') {
-                // Check if recipient is from Austria or if the addressCountry is empty (empty can mean electronic delivery)
-                if (recipient.addressCountry === 'AT' || recipient.addressCountry === '' || !recipient.addressCountry) {
+                if (DBPDispatchLitElement.isRecipientNotInForeignCountry(recipient)) {
                     countSuccess++;
                 } else {
                     countSuccessForeignCountries++;
