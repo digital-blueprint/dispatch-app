@@ -34,7 +34,7 @@
         "eslint": "^9.0.0",
         "eslint-plugin-jsdoc": "^50.0.0",
         "glob": "^11.0.0",
-        "globals": "^15.3.0",
+        "globals": "^16.0.0",
         "i18next-parser": "^9.0.0",
         "karma": "^6.0.0",
         "karma-chrome-launcher": "^3.1.0",
