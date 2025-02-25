@@ -890,7 +890,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet})}"
                                     <div class="search-wrapper ">
                                         <div id="extendable-searchbar">
-                                            <input type="text" id="searchbar" placeholder="Suchen" @click='${() => {
+                                            <input type="text" id="searchbar" placeholder="${i18n.t('show-requests.search-box-text')}" @click='${() => {
                                                 this.toggleSearchMenu();
                                             }}'>
                                             <dbp-icon-button id="search-button"
