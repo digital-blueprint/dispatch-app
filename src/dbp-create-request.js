@@ -734,7 +734,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         this.allSelected = true;
                                         const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
                                         table.selectAllVisibleRows();
-                                        super.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
+                                        this.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
                                     }}"
                                     title="${i18n.t('show-requests.select-all')}"
                                     >${i18n.t('show-requests.select-all')}</dbp-loading-button>
@@ -746,7 +746,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         this.allSelected = false;
                                         const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
                                         table.deselectAllRows();
-                                        super.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
+                                        this.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
                                     }}"
                                     title="${i18n.t('show-requests.deselect-all')}"
                                     >${i18n.t('show-requests.deselect-all')}</dbp-loading-button>
@@ -782,7 +782,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               value="${i18n.t('show-requests.delete-button-text')}"
                                               @click="${async () => {
                                                   await this.deleteSelected();
-                                                  super.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
+                                                  this.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
                                               }}"
                                               title="${i18n.t('show-requests.delete-button-text')}">
                                               ${i18n.t('show-requests.delete-button-text')}
@@ -795,7 +795,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               value="${i18n.t('show-requests.submit-button-text')}"
                                               @click="${async (event) => {
                                                   await this.submitSelected();
-                                                  super.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
+                                                  this.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
                                               }}"
                                               title="${i18n.t('show-requests.submit-button-text')}">
                                               ${i18n.t('show-requests.submit-button-text')}

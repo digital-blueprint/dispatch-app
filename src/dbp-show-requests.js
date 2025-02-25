@@ -961,7 +961,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     this.allSelected = true;
                                                     const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
                                                     table.selectAllVisibleRows();
-                                                    super.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
+                                                    this.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
                                                 }}"
                                                 title="${i18n.t('show-requests.select-all')}"
                                                 >${i18n.t('show-requests.select-all')}</dbp-loading-button>
@@ -972,7 +972,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     this.allSelected = false;
                                                     const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
                                                     table.deselectAllRows();
-                                                    super.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
+                                                    this.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
                                                 }}"
                                                 title="${i18n.t('show-requests.deselect-all')}"
                                                 >${i18n.t('show-requests.deselect-all')}</dbp-loading-button>
@@ -1002,7 +1002,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 )}"
                                                 @click="${async (event) => {
                                                     await this.deleteSelected();
-                                                    super.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
+                                                    this.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
                                                 }}"
                                                 title="${i18n.t(
                                                     'show-requests.delete-button-text',
@@ -1016,7 +1016,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 )}"
                                                 @click="${async (event) => {
                                                     await this.submitSelected();
-                                                    super.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
+                                                    this.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
                                                 }}"
                                                 title="${i18n.t(
                                                     'show-requests.submit-button-text',
