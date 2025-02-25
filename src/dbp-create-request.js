@@ -731,10 +731,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     class="${classMap({hidden: this.allSelected})}"
                                     value="${i18n.t('show-requests.select-all')}"
                                     @click="${() => {
-                                        // this.selectAll();
                                         this.allSelected = true;
                                         const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
-                                        table.selectAllRows();
+                                        table.selectAllVisibleRows();
+                                        super.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
                                     }}"
                                     title="${i18n.t('show-requests.select-all')}"
                                     >${i18n.t('show-requests.select-all')}</dbp-loading-button>
@@ -743,10 +743,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     class="${classMap({hidden: !this.allSelected})}"
                                     value="${i18n.t('show-requests.deselect-all')}"
                                     @click="${() => {
-                                        // this.deSelectAll();
                                         this.allSelected = false;
                                         const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
                                         table.deselectAllRows();
+                                        super.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
                                     }}"
                                     title="${i18n.t('show-requests.deselect-all')}"
                                     >${i18n.t('show-requests.deselect-all')}</dbp-loading-button>

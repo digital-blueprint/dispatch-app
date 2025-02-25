@@ -13,6 +13,7 @@ import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 import {getReferenceNumberFromPDF} from './utils';
+import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 
 export default class DBPDispatchLitElement extends DBPLitElement {
     constructor() {
@@ -1824,6 +1825,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     });
 
                     this.currentTable.deleteSelectedRows();
+                    // Re-enable select-all button
+                    this.allSelected = false;
                 } else {
                     // TODO error handling
                     send({
@@ -1836,6 +1839,24 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
         } finally {
             deleteAllButton.stop();
+        }
+    }
+
+    /**
+     * Toggles delete and submit buttons based on table row selection
+     * @param {string} tableId - The ID of the Tabulator table
+     */
+    toggleDeleteAndSubmitButtons(tableId) {
+        let deleteButton = /** @type {HTMLButtonElement} */(this._('#delete-all-btn'));
+        let submitButton = /** @type {HTMLButtonElement} */(this._('#submit-all-btn'));
+        let table = /** @type {TabulatorTable} */(this._(tableId));
+        if(table.getSelectedRows().length !== 0) {
+            deleteButton.disabled = false;
+            submitButton.disabled = false;
+        }
+        else {
+            deleteButton.disabled = true;
+            submitButton.disabled = true;
         }
     }
 

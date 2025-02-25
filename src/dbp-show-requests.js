@@ -943,17 +943,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     </div>
 
                                     <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}" id="open-settings-btn"
-                                                     ?disabled="${this.loading}"
-                                                     @click="${() => {
+                                        ?disabled="${this.loading}"
+                                        @click="${() => {
 
-                                                     }}"
-                                                     title="TODO"
-                                                     icon-name="iconoir_settings"></dbp-icon-button>
-
-
+                                        }}"
+                                        title="TODO"
+                                        icon-name="iconoir_settings"></dbp-icon-button>
                                 </div>
                                 <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}">
-
                                 ${
                                     this.mayWrite
                                         ? html`
@@ -963,11 +960,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 @click="${() => {
                                                     this.allSelected = true;
                                                     const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
-                                                    table.selectAllRows();
+                                                    table.selectAllVisibleRows();
+                                                    super.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
                                                 }}"
                                                 title="${i18n.t('show-requests.select-all')}"
                                                 >${i18n.t('show-requests.select-all')}</dbp-loading-button>
-
                                             <dbp-loading-button id="deselect-all-btn"
                                                 class="${classMap({hidden: !this.allSelected})}"
                                                 value="${i18n.t('show-requests.deselect-all')}"
@@ -975,59 +972,54 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     this.allSelected = false;
                                                     const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
                                                     table.deselectAllRows();
+                                                    super.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
                                                 }}"
                                                 title="${i18n.t('show-requests.deselect-all')}"
                                                 >${i18n.t('show-requests.deselect-all')}</dbp-loading-button>
-
-                                             <dbp-loading-button id="expand-all-btn"
-                                                         class="${classMap({hidden: this.expanded})}"
-                                                         ?disabled="${this.loading}"
-                                                         value="${i18n.t('show-requests.expand-all')}"
-                                                         @click="${() => {
-                                                            this.expandAll();
-                                                        }}"
-                                                        title="${i18n.t('show-requests.expand-all')}"
+                                            <dbp-loading-button id="expand-all-btn"
+                                                class="${classMap({hidden: this.expanded})}"
+                                                ?disabled="${this.loading}"
+                                                value="${i18n.t('show-requests.expand-all')}"
+                                                @click="${() => {
+                                                    this.expandAll();
+                                                }}"
+                                                title="${i18n.t('show-requests.expand-all')}"
                                                 >${i18n.t('show-requests.expand-all')}</dbp-loading-button>
-
-                                                <dbp-loading-button id="collapse-all-btn"
-                                                         class="${classMap({hidden: !this.expanded})}"
-                                                         ?disabled="${this.loading}"
-                                                         value="${i18n.t('show-requests.collapse-all')}"
-                                                         @click="${() => {
-                                                            this.collapseAll();
-                                                        }}"
-                                                        title="${i18n.t('show-requests.collapse-all')}"
+                                            <dbp-loading-button id="collapse-all-btn"
+                                                class="${classMap({hidden: !this.expanded})}"
+                                                ?disabled="${this.loading}"
+                                                value="${i18n.t('show-requests.collapse-all')}"
+                                                @click="${() => {
+                                                    this.collapseAll();
+                                                }}"
+                                                title="${i18n.t('show-requests.collapse-all')}"
                                                 >${i18n.t('show-requests.collapse-all')}</dbp-loading-button>
-
-                                              <dbp-loading-button
-                                                  id="delete-all-btn"
-                                                  disabled
-                                                  value="${i18n.t(
+                                            <dbp-loading-button
+                                                id="delete-all-btn"
+                                                disabled
+                                                value="${i18n.t(
+                                                'show-requests.delete-button-text',
+                                                )}"
+                                                @click="${(event) => {
+                                                    this.deleteSelected();
+                                                }}"
+                                                title="${i18n.t(
                                                     'show-requests.delete-button-text',
-                                                  )}"
-                                                  @click="${(event) => {
-                                                this.deleteSelected();
-                                                  }}"
-                                                  title="${i18n.t(
-                                                    'show-requests.delete-button-text',
-                                                  )}">
-                                                  ${i18n.t('show-requests.delete-button-text')}
-                                              </dbp-loading-button>
-                                              <dbp-loading-button
-                                                  id="submit-all-btn"
-                                                  disabled
-                                                  type="is-primary"
-                                                  value="${i18n.t(
-                                                      'show-requests.submit-button-text',
-                                                  )}"
-                                                  @click="${(event) => {
-                                                      this.submitSelected();
-                                                  }}"
-                                                  title="${i18n.t(
-                                                      'show-requests.submit-button-text',
-                                                  )}">
-                                                  ${i18n.t('show-requests.submit-button-text')}
-                                              </dbp-loading-button>
+                                                )}">${i18n.t('show-requests.delete-button-text')}</dbp-loading-button>
+                                            <dbp-loading-button
+                                                id="submit-all-btn"
+                                                disabled
+                                                type="is-primary"
+                                                value="${i18n.t(
+                                                    'show-requests.submit-button-text',
+                                                )}"
+                                                @click="${(event) => {
+                                                    this.submitSelected();
+                                                }}"
+                                                title="${i18n.t(
+                                                    'show-requests.submit-button-text',
+                                                )}">${i18n.t('show-requests.submit-button-text')}
+                                            </dbp-loading-button>
                                           `
                                         : ``
                                 }
