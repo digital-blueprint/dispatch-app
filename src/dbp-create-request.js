@@ -780,8 +780,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               id="delete-all-btn"
                                               disabled
                                               value="${i18n.t('show-requests.delete-button-text')}"
-                                              @click="${() => {
-                                                  this.deleteSelected();
+                                              @click="${async () => {
+                                                  await this.deleteSelected();
+                                                  super.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
                                               }}"
                                               title="${i18n.t('show-requests.delete-button-text')}">
                                               ${i18n.t('show-requests.delete-button-text')}
@@ -792,8 +793,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               type="is-primary"
                                               ?disabled="${this.loading || !this.rowsSelected}"
                                               value="${i18n.t('show-requests.submit-button-text')}"
-                                              @click="${(event) => {
-                                                  this.submitSelected();
+                                              @click="${async (event) => {
+                                                  await this.submitSelected();
+                                                  super.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
                                               }}"
                                               title="${i18n.t('show-requests.submit-button-text')}">
                                               ${i18n.t('show-requests.submit-button-text')}

@@ -1719,8 +1719,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         type: 'success',
                         timeout: 5,
                     });
+                    this.currentTable.deselectAllRows();
                 } else {
-                    // TODO error handling
                     send({
                         summary: 'Error!',
                         body: 'Could not submit request.',

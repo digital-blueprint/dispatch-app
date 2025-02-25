@@ -1000,8 +1000,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 value="${i18n.t(
                                                 'show-requests.delete-button-text',
                                                 )}"
-                                                @click="${(event) => {
-                                                    this.deleteSelected();
+                                                @click="${async (event) => {
+                                                    await this.deleteSelected();
+                                                    super.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
                                                 }}"
                                                 title="${i18n.t(
                                                     'show-requests.delete-button-text',
@@ -1013,8 +1014,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 value="${i18n.t(
                                                     'show-requests.submit-button-text',
                                                 )}"
-                                                @click="${(event) => {
-                                                    this.submitSelected();
+                                                @click="${async (event) => {
+                                                    await this.submitSelected();
+                                                    super.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
                                                 }}"
                                                 title="${i18n.t(
                                                     'show-requests.submit-button-text',
