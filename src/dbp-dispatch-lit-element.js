@@ -757,7 +757,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
             } else {
                 // If added via "Edit request" "add Files" button
-                this.currentTable = this._('#tabulator-table-created-requests');
                 let rows = this.currentTable.getRows();
                 if (Array.isArray(rows) && rows.length > 0) {
                     this.currentTable.updateRow(rows[this.currentRowIndex], {files:this.createFormattedFilesList(this.currentItem.files)});
