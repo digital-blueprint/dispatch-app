@@ -792,7 +792,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 }},
                 {title: 'gz', field: 'gz', responsive: 2, widthGrow: 3, minWidth: 100, formatter: 'html'},
                 {title: 'subject', field: 'subject', minWidth: 140, responsive: 3, widthGrow: 3, formatter: 'html'},
-                {title: 'status', field: 'status', minWidth: 120, responsive: 2, widthGrow: 1, hozAlign: 'center', formatter: 'html'},
+                {title: 'status', field: 'status', minWidth: 120, responsive: 2, widthGrow: 1, hozAlign: 'center',
+                    formatter: function(cell, formatterParams, onRendered) {
+                        onRendered(function() {
+                            var element = cell.getElement();
+
+                            if (element.scrollWidth > element.clientWidth) {
+                                element.style.whiteSpace = 'wrap';
+                            }
+                        });
+
+                        return cell.getValue();
+                    }
+                },
 
                 {title: 'files', field: 'files', minWidth: 800, formatter: 'html', responsive: 8},
                 {title: 'recipients', field: 'recipients', minWidth: 800, formatter: 'html', responsive: 8},
