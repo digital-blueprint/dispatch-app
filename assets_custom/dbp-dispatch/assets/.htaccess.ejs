@@ -10,3 +10,12 @@ Header set Content-Security-Policy "<%- CSP %>"
 # take that into account when receiving requests.
 # See https://bz.apache.org/bugzilla/show_bug.cgi?id=45023
 RequestHeader edit "If-None-Match" '^"((.*)-(gzip|br))"$' '"$1", "$2"'
+
+# CORS: allow *.tugraz.at and localhost for development
+SetEnvIf Origin "^(https://[^.]+\.tugraz\.at|https://127\.0\.0\.1:8001)$" ALLOWED_ORIGIN=$0
+Header always set Access-Control-Allow-Origin %{ALLOWED_ORIGIN}e env=ALLOWED_ORIGIN
+Header always set Access-Control-Allow-Methods "GET, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type"
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
