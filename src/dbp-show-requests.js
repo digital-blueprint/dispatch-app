@@ -495,6 +495,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         table.collapseAll();
     }
 
+    _onLoginClicked(e) {
+        this.sendSetPropertyEvent('requested-login-status', "logged-in");
+        e.preventDefault();
+    }
+
     static get styles() {
         return css`
             ${commonStyles.getThemeCSS()}
@@ -831,10 +836,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </span>
             </div>
 
-            <dbp-inline-notification class=" ${classMap({hidden: this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}"
-                            type="warning"
-                            body="${i18n.t('error-login-message')}">
-            </dbp-inline-notification>
+            <div
+                    class="notification is-warning ${classMap({
+                        hidden: this.isLoggedIn() || this.isLoading(),
+                    })}">
+                ${i18n.t('error-login-message')} <a href="#" @click="${this._onLoginClicked}">${i18n.t('error-login-link')}</a>
+            </div>
 
             <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}">
 
