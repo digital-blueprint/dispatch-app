@@ -104,7 +104,7 @@
         "edit-sender-dialog-button-cancel": "Cancel",
         "edit-sender-dialog-button-ok": "Confirm",
         "edit-sender-dialog-title": "Edit sender",
-        "edit-sender-fn-dialog-label": "Personal name",
+        "edit-sender-fn-dialog-label": "Sender Name",
         "edit-sender-gn-dialog-label": "Organization name",
         "edit-sender-pc-dialog-label": "Postal code",
         "edit-sender-sa-dialog-label": "Street address",

@@ -5,7 +5,7 @@
     "dbp-create-request": {
         "show-requests": {
             "organization-select-description": "Bitte wählen Sie Ihre Organisation:",
-            "edit-sender-fn-dialog-label": "Vollständiger Personenname",
+            "edit-sender-fn-dialog-label": "Absender",
             "edit-sender-gn-dialog-label": "Organisationsname",
             "edit-sender-organization-title": "Bitte wählen Sie Ihre Organisation",
             "edit-sender-org-dialog-label": "Organisation"
@@ -23,7 +23,7 @@
     "dbp-show-requests": {
         "show-requests": {
             "organization-select-description": "Bitte wählen Sie Ihre Organisation:",
-            "edit-sender-fn-dialog-label": "Vollständiger Personenname",
+            "edit-sender-fn-dialog-label": "Absender",
             "edit-sender-gn-dialog-label": "Organisationsname",
             "edit-sender-organization-title": "Bitte wählen Sie Ihre Organisation",
             "edit-sender-org-dialog-label": "Organisation"
