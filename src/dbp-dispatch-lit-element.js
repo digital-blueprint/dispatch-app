@@ -2447,8 +2447,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="input"
                                         name="tf-edit-sender-fn-dialog"
                                         id="tf-edit-sender-fn-dialog"
-                                        value="${this.currentItem &&
-                                        this.currentItem.senderFullName}"
+                                        .value="${this.currentItem?.senderFullName || 'Technische Universität Graz'}"
                                         @input="${() => {
                                             // TODO
                                         }}" />
