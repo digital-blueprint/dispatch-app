@@ -2125,7 +2125,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.mayWrite = mayWrite;
                 return;
             } else if (mayWrite && this.requestCreated && !this.tempChange) {
-                let senderFullName = this.currentItem.senderFullName ? this.currentItem.senderFullName :'';
+                let senderFullName = this.currentItem.senderFullName ? this.currentItem.senderFullName : (i18n.t('create-request.sender-full-name') ? i18n.t('create-request.sender-full-name') : '');
                 let senderOrganizationName = event.target.valueObject.name;
                 let senderAddressCountry = event.target.valueObject.country;
                 let senderStreetAddress = event.target.valueObject.street;
@@ -2186,7 +2186,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     // });
                 }
             } else {
-                this.currentItem.senderFullName = this.currentItem.senderFullName ? this.currentItem.senderFullName :'';
+                this.currentItem.senderFullName = this.currentItem.senderFullName ? this.currentItem.senderFullName : (i18n.t('create-request.sender-full-name') ? i18n.t('create-request.sender-full-name') : '');
                 this.currentItem.senderOrganizationName = event.target.valueObject.name;
                 this.currentItem.senderAddressCountry = event.target.valueObject.country;
                 this.currentItem.senderStreetAddress = event.target.valueObject.street;
@@ -2447,7 +2447,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="input"
                                         name="tf-edit-sender-fn-dialog"
                                         id="tf-edit-sender-fn-dialog"
-                                        .value="${this.currentItem?.senderFullName || 'Technische Universität Graz'}"
+                                        value="${this.currentItem.senderFullName}"
                                         @input="${() => {
                                             // TODO
                                         }}" />
