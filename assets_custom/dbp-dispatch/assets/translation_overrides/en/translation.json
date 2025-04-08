@@ -13,7 +13,7 @@
         "create-request": {
             "error-no-writes": "You only have read rights for shipping orders in this organization, and therefore cannot create new orders.",
             "create-not-allowed-text": "You only have read rights for dispatch orders in the selected organization and therefore cannot change the sender.",
-            "sender-full-name": "Technische Universität Graz",
+            "sender-full-name": "Graz University of Technology",
             "default-subject": "Message from TU Graz",
             "default-reference-number": "-"
         },
