@@ -1,8 +1,11 @@
 module.exports = async function (config) {
-    const {installBrowsersForNpmInstall, registry} = require('playwright-core/lib/server');
-    await installBrowsersForNpmInstall(['firefox', 'chromium']);
-    process.env.FIREFOX_BIN = registry.findExecutable('firefox').executablePath();
-    process.env.CHROMIUM_BIN = registry.findExecutable('chromium').executablePath();
+    // Only install browsers if they are not already installed by nix
+    if (!process.env.FIREFOX_BIN || !process.env.CHROMIUM_BIN) {
+        const {installBrowsersForNpmInstall, registry} = require('playwright-core/lib/server');
+        await installBrowsersForNpmInstall(['firefox', 'chromium']);
+        process.env.FIREFOX_BIN = registry.findExecutable('firefox').executablePath();
+        process.env.CHROMIUM_BIN = registry.findExecutable('chromium').executablePath();
+    }
 
     config.set({
         basePath: 'dist',
