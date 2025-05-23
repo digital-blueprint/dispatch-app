@@ -6,12 +6,12 @@ layout {
     }
     pane size="60%" {
       command "lazygit"
-      focus true
     }
     pane split_direction="vertical" size="40%" {
       pane {
-        command "npm"
-        args "run" "watch"
+        command "just "
+        args "watch"
+        focus true
       }
       pane {
         command "npm"
