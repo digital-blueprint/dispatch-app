@@ -50,11 +50,11 @@ To use the Nextcloud functionality you need a running Nextcloud server with the
 ```yaml
 version: '3'
 services:
-  web:
-    image: ghcr.io/digital-blueprint/dispatch-app:latest
-    restart: always
-    ports:
-      - "8000:80"
+    web:
+        image: ghcr.io/digital-blueprint/dispatch-app:latest
+        restart: always
+        ports:
+            - '8000:80'
 ```
 
 ## Using this app as pre-built package
@@ -98,6 +98,7 @@ Note that you will need a Keycloak server along with a client id for the domain 
 ## Activities
 
 This app has the following activities:
+
 - `dbp-dd-activity`
 - `dbp-qualified-signature-pdf-upload`
 - `dbp-official-signature-pdf-upload`
@@ -110,17 +111,17 @@ You can find the documentation of these activities in the [qualified dispatch ac
 
 You can add multiple attributes to the `<dbp-greenlight>` tag.
 
-| attribute name | value | Link to description                                                                                                                 |
-|----------------|-------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `provider-root` | Boolean | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
-| `lang`         | String | [language-select](https://github.com/digital-blueprint/toolkit/tree/main/packages/language-select#attributes)              |
-| `entry-point-url` | String | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
-| `keycloak-config` | Object | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
-| `base-path` | String | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
-| `src` | String | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
-| `html-overrides` | String | [common](https://github.com/digital-blueprint/toolkit/tree/main/packages/common#overriding-slots-in-nested-web-components) |
-| `themes` | Array | [theme-switcher](https://github.com/digital-blueprint/toolkit/tree/main/packages/theme-switcher#themes-attribute)          |
-| `darkModeThemeOverride` | String | [theme-switcher](https://github.com/digital-blueprint/toolkit/tree/main/packages/theme-switcher#themes-attribute)          |
+| attribute name          | value   | Link to description                                                                                                        |
+| ----------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `provider-root`         | Boolean | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `lang`                  | String  | [language-select](https://github.com/digital-blueprint/toolkit/tree/main/packages/language-select#attributes)              |
+| `entry-point-url`       | String  | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `keycloak-config`       | Object  | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `base-path`             | String  | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `src`                   | String  | [app-shell](https://github.com/digital-blueprint/toolkit/tree/main/packages/app-shell#attributes)                          |
+| `html-overrides`        | String  | [common](https://github.com/digital-blueprint/toolkit/tree/main/packages/common#overriding-slots-in-nested-web-components) |
+| `themes`                | Array   | [theme-switcher](https://github.com/digital-blueprint/toolkit/tree/main/packages/theme-switcher#themes-attribute)          |
+| `darkModeThemeOverride` | String  | [theme-switcher](https://github.com/digital-blueprint/toolkit/tree/main/packages/theme-switcher#themes-attribute)          |
 
 #### Mandatory attributes
 
@@ -129,13 +130,11 @@ you need to manually add these attributes so that the topic will work properly:
 
 ```html
 <dbp-dispatch
-  auth
-  requested-login-status
-  analytics-event
-  initial-file-handling-state
-  clipboard-files
->
-</dbp-dispatch>
+    auth
+    requested-login-status
+    analytics-event
+    initial-file-handling-state
+    clipboard-files></dbp-dispatch>
 ```
 
 ### Design

@@ -76,11 +76,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
         this.selectedRow = this.rowClick.bind(this);
 
-
         this.initateOpenAdditionalMenu = false;
         this.initateOpenAdditionalSearchMenu = false;
         this.boundCloseAdditionalSearchMenuHandler = this.hideAdditionalSearchMenu.bind(this);
-        this.boundCloseAdditionalSearchMenuHandlerInner = this.hideAdditionalSearchMenuInner.bind(this);
+        this.boundCloseAdditionalSearchMenuHandlerInner =
+            this.hideAdditionalSearchMenuInner.bind(this);
         this.boundPressEnterAndSubmitSearchHandler = this.pressEnterAndSubmitSearch.bind(this);
 
         this.langDir = undefined;
@@ -151,7 +151,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 case 'lang':
                     this._i18n.changeLanguage(this.lang);
                     break;
-
             }
         });
 
@@ -183,10 +182,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.updateComplete.then(() => {
             // see: http://tabulator.info/docs/5.1
             this._a('.tabulator-table').forEach((table) => {
-                const tabulatorTable = /** @type {TabulatorTable} */(table);
+                const tabulatorTable = /** @type {TabulatorTable} */ (table);
                 tabulatorTable.buildTable();
                 document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
-                if(tabulatorTable.id == 'tabulator-table-orders')
+                if (tabulatorTable.id == 'tabulator-table-orders')
                     tabulatorTable.addEventListener('click', this.selectedRow);
             });
 
@@ -213,9 +212,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      * Clear Filer
      */
     clearFilter() {
-        let filter = /** @type {HTMLInputElement } */(this._('#searchbar'));
-        let search = /** @type {HTMLSelectElement} */(this._('#search-select'));
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
+        let filter = /** @type {HTMLInputElement } */ (this._('#searchbar'));
+        let search = /** @type {HTMLSelectElement} */ (this._('#search-select'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
 
         if (!filter || !search || !table) return;
 
@@ -229,10 +228,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      *
      */
     filterTable() {
-        let filter = /** @type {HTMLInputElement } */(this._('#searchbar'));
-        let search = /** @type {HTMLSelectElement} */(this._('#search-select'));
-        let operator = /** @type {HTMLSelectElement} */(this._('#search-operator'));
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
+        let filter = /** @type {HTMLInputElement } */ (this._('#searchbar'));
+        let search = /** @type {HTMLSelectElement} */ (this._('#search-select'));
+        let operator = /** @type {HTMLSelectElement} */ (this._('#search-operator'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
 
         if (!filter || !operator || !search || !table) return;
 
@@ -248,8 +247,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             let filter_object = {field: searchValue, type: operatorValue, value: filterValue};
             table.setFilter([filter_object]);
             return;
-        }
-        else {
+        } else {
             const columns = table.getColumnsFields();
             let listOfFilters = [];
 
@@ -319,7 +317,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             // add event listener for clicking outside of menu
             document.addEventListener('click', this.boundCloseAdditionalSearchMenuHandler);
             // add event listener for clicking *inside* of menu
-            searchBarMenu.addEventListener('click', this.boundCloseAdditionalSearchMenuHandlerInner);
+            searchBarMenu.addEventListener(
+                'click',
+                this.boundCloseAdditionalSearchMenuHandlerInner,
+            );
             this.initateOpenAdditionalSearchMenu = true;
         }
     }
@@ -349,7 +350,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         if (menu && !menu.classList.contains('hidden')) {
             menu.classList.add('hidden');
             document.removeEventListener('click', this.boundCloseAdditionalSearchMenuHandler);
-            searchBarMenu.removeEventListener('click', this.boundCloseAdditionalSearchMenuHandlerInner);
+            searchBarMenu.removeEventListener(
+                'click',
+                this.boundCloseAdditionalSearchMenuHandlerInner,
+            );
         }
     }
 
@@ -360,14 +364,18 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      */
     getTableHeaderOptions() {
         const i18n = this._i18n;
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
         if (!table) return [];
 
         let options = [];
-        options[0] = html`<option value="all">${i18n.t('show-requests.all-columns')}</option>`;
+        options[0] = html`
+            <option value="all">${i18n.t('show-requests.all-columns')}</option>
+        `;
         let lang = table.getLang().columns;
         Object.entries(lang).forEach(([key, value], counter) => {
-            options[counter + 1] = html`<option value="${key}">${value}</option>`;
+            options[counter + 1] = html`
+                <option value="${key}">${value}</option>
+            `;
         });
 
         return options;
@@ -375,14 +383,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     rowClick(event) {
         this.selected = true;
-        let deleteButton = /** @type {HTMLButtonElement} */(this._('#delete-all-btn'));
-        let submitButton = /** @type {HTMLButtonElement} */(this._('#submit-all-btn'));
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
-        if(table.getSelectedRows().length !== 0) {
+        let deleteButton = /** @type {HTMLButtonElement} */ (this._('#delete-all-btn'));
+        let submitButton = /** @type {HTMLButtonElement} */ (this._('#submit-all-btn'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
+        if (table.getSelectedRows().length !== 0) {
             deleteButton.disabled = false;
             submitButton.disabled = false;
-        }
-        else {
+        } else {
             deleteButton.disabled = true;
             submitButton.disabled = true;
         }
@@ -402,19 +409,26 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.organizationSet = true;
 
         this.getListOfRequests().then(() => {
-            let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
+            let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
             this.currentTable = table;
             let data = [];
             this.requestList.forEach((item, index) => {
-
-                let recipientStatus = item['dateSubmitted'] ? this.checkRecipientStatus(item.recipients)[1] : i18n.t('show-requests.empty-date-submitted');
+                let recipientStatus = item['dateSubmitted']
+                    ? this.checkRecipientStatus(item.recipients)[1]
+                    : i18n.t('show-requests.empty-date-submitted');
                 let controls_div = this.createScopedElement('div');
                 controls_div.classList.add('tabulator-icon-buttons');
-                if(recipientStatus === i18n.t('show-requests.empty-date-submitted')) {
+                if (recipientStatus === i18n.t('show-requests.empty-date-submitted')) {
                     let btn_edit = this.createScopedElement('dbp-icon-button');
                     btn_edit.setAttribute('icon-name', 'pencil');
-                    btn_edit.setAttribute('aria-label', i18n.t('show-requests.edit-request-button-text'));
-                    btn_edit.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
+                    btn_edit.setAttribute(
+                        'aria-label',
+                        i18n.t('show-requests.edit-request-button-text'),
+                    );
+                    btn_edit.setAttribute(
+                        'title',
+                        i18n.t('show-requests.edit-request-button-text'),
+                    );
                     btn_edit.addEventListener('click', async (event) => {
                         this.currentRowIndex = index.toString();
                         this.editRequest(event, item);
@@ -422,12 +436,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     });
                     controls_div.appendChild(btn_edit);
 
-
                     let btn_delete = this.createScopedElement('dbp-icon-button');
                     btn_delete.setAttribute('icon-name', 'trash');
-                    btn_delete.setAttribute('aria-label', i18n.t('show-requests.delete-request-button-text'));
-                    btn_delete.setAttribute('title', i18n.t('show-requests.delete-request-button-text'));
-                    btn_delete.addEventListener("click", async (event) => {
+                    btn_delete.setAttribute(
+                        'aria-label',
+                        i18n.t('show-requests.delete-request-button-text'),
+                    );
+                    btn_delete.setAttribute(
+                        'title',
+                        i18n.t('show-requests.delete-request-button-text'),
+                    );
+                    btn_delete.addEventListener('click', async (event) => {
                         this.deleteRequest(table, event, item, index);
                         event.stopPropagation();
                     });
@@ -435,8 +454,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                     let btn_submit = this.createScopedElement('dbp-icon-button');
                     btn_submit.setAttribute('icon-name', 'send-diagonal');
-                    btn_submit.setAttribute('aria-label', i18n.t('show-requests.send-request-button-text'));
-                    btn_submit.setAttribute('title', i18n.t('show-requests.send-request-button-text'));
+                    btn_submit.setAttribute(
+                        'aria-label',
+                        i18n.t('show-requests.send-request-button-text'),
+                    );
+                    btn_submit.setAttribute(
+                        'title',
+                        i18n.t('show-requests.send-request-button-text'),
+                    );
                     btn_submit.addEventListener('click', async (event) => {
                         this.currentItem = item;
                         this.submitRequest(table, event, item, index);
@@ -446,57 +471,62 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 } else {
                     let btn_research = this.createScopedElement('dbp-icon-button');
                     btn_research.setAttribute('icon-name', 'keyword-research');
-                    btn_research.setAttribute('aria-label', i18n.t('show-requests.show-detailed-dispatch-order'));
-                    btn_research.setAttribute('title', i18n.t('show-requests.show-detailed-dispatch-order'));
+                    btn_research.setAttribute(
+                        'aria-label',
+                        i18n.t('show-requests.show-detailed-dispatch-order'),
+                    );
+                    btn_research.setAttribute(
+                        'title',
+                        i18n.t('show-requests.show-detailed-dispatch-order'),
+                    );
                     btn_research.addEventListener('click', async (event) => {
                         this.editRequest(event, item);
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_research);
                 }
-                let order = { dateCreated: this.convertToReadableDate(item['dateCreated']),
+                let order = {
+                    dateCreated: this.convertToReadableDate(item['dateCreated']),
                     gz: item['referenceNumber']
                         ? item['referenceNumber']
                         : i18n.t('show-requests.empty-reference-number'),
                     subject: item['name'],
                     status: recipientStatus,
-                    files:this.createFormattedFilesList(item['files']),
+                    files: this.createFormattedFilesList(item['files']),
                     recipients: this.createFormattedRecipientsList(item['recipients']),
                     dateSubmitted: item['dateSubmitted']
                         ? this.convertToReadableDate(item['dateSubmitted'])
                         : i18n.t('show-requests.date-submitted-not-submitted'),
                     requestId: item['identifier'],
-                    controls: controls_div};
+                    controls: controls_div,
+                };
                 data.push(order);
-
             });
             table.setData(data);
         });
     }
 
-    deleteSelectedRows(){
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
+    deleteSelectedRows() {
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
         table.deleteSelectedRows();
     }
 
-    setTabulatorData() {
+    setTabulatorData() {}
 
-    }
-
-    expandAll(){
+    expandAll() {
         this.expanded = true;
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
         table.expandAll();
     }
 
-    collapseAll(){
+    collapseAll() {
         this.expanded = false;
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
         table.collapseAll();
     }
 
     _onLoginClicked(e) {
-        this.sendSetPropertyEvent('requested-login-status', "logged-in");
+        this.sendSetPropertyEvent('requested-login-status', 'logged-in');
         e.preventDefault();
     }
 
@@ -658,7 +688,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 .table-wrapper {
                     flex-direction: column;
                     gap: 1em;
-
                 }
 
                 .selected-buttons,
@@ -748,31 +777,31 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         ) {
             this.getListOfRequests();
         }
-        let langs  = {
-            'en': {
+        let langs = {
+            en: {
                 columns: {
-                    'details': i18n.t('show-requests.table-header-details', {lng: 'en'}),
-                    'dateCreated': i18n.t('show-requests.table-header-date-created', {lng: 'en'}),
-                    'gz': i18n.t('show-requests.table-header-gz', {lng: 'en'}),
-                    'subject': i18n.t('show-requests.table-header-subject', {lng: 'en'}),
-                    'status': i18n.t('show-requests.table-header-status', {lng: 'en'}),
-                    'files': i18n.t('show-requests.table-header-files', {lng: 'en'}),
-                    'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'en'}),
-                    'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'en'}),
-                    'requestId': i18n.t('show-requests.table-header-id', {lng: 'en'}),
+                    details: i18n.t('show-requests.table-header-details', {lng: 'en'}),
+                    dateCreated: i18n.t('show-requests.table-header-date-created', {lng: 'en'}),
+                    gz: i18n.t('show-requests.table-header-gz', {lng: 'en'}),
+                    subject: i18n.t('show-requests.table-header-subject', {lng: 'en'}),
+                    status: i18n.t('show-requests.table-header-status', {lng: 'en'}),
+                    files: i18n.t('show-requests.table-header-files', {lng: 'en'}),
+                    recipients: i18n.t('show-requests.table-header-recipients', {lng: 'en'}),
+                    dateSubmitted: i18n.t('show-requests.date-submitted', {lng: 'en'}),
+                    requestId: i18n.t('show-requests.table-header-id', {lng: 'en'}),
                 },
             },
-            'de': {
+            de: {
                 columns: {
-                    'details': i18n.t('show-requests.table-header-details', {lng: 'de'}),
-                    'dateCreated': i18n.t('show-requests.table-header-date-created', {lng: 'de'}),
-                    'gz': i18n.t('show-requests.table-header-gz', {lng: 'de'}),
-                    'subject': i18n.t('show-requests.table-header-subject', {lng: 'de'}),
-                    'status': i18n.t('show-requests.table-header-status', {lng: 'de'}),
-                    'files': i18n.t('show-requests.table-header-files', {lng: 'de'}),
-                    'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'de'}),
-                    'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'de'}),
-                    'requestId': i18n.t('show-requests.table-header-id', {lng: 'de'}),
+                    details: i18n.t('show-requests.table-header-details', {lng: 'de'}),
+                    dateCreated: i18n.t('show-requests.table-header-date-created', {lng: 'de'}),
+                    gz: i18n.t('show-requests.table-header-gz', {lng: 'de'}),
+                    subject: i18n.t('show-requests.table-header-subject', {lng: 'de'}),
+                    status: i18n.t('show-requests.table-header-status', {lng: 'de'}),
+                    files: i18n.t('show-requests.table-header-files', {lng: 'de'}),
+                    recipients: i18n.t('show-requests.table-header-recipients', {lng: 'de'}),
+                    dateSubmitted: i18n.t('show-requests.date-submitted', {lng: 'de'}),
+                    requestId: i18n.t('show-requests.table-header-id', {lng: 'de'}),
                 },
             },
         };
@@ -783,23 +812,61 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayout: 'collapse',
             responsiveLayoutCollapseStartOpen: false,
             columns: [
-                {title: 'details', field: 'details', hozAlign: 'center', width: 65, formatter:"responsiveCollapse", headerHozAlign:"center", sorter:"string", headerSort:false, responsive:0},
-                {title: 'dateCreated', field: 'dateCreated', minWidth: 140, hozAlign: 'left', widthGrow: 1, responsive:0, sorter: (a, b, aRow, bRow, column, dir, sorterParams) => {
-                    //a, b - the two values being compared
-                    //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
-                    //column - the column component for the column being sorted
-                    //dir - the direction of the sort ("asc" or "desc")
-                    //sorterParams - sorterParams object from column definition array
-                    const timeStampA = this.dateToTimestamp(a);
-                    const timeStampB = this.dateToTimestamp(b);
+                {
+                    title: 'details',
+                    field: 'details',
+                    hozAlign: 'center',
+                    width: 65,
+                    formatter: 'responsiveCollapse',
+                    headerHozAlign: 'center',
+                    sorter: 'string',
+                    headerSort: false,
+                    responsive: 0,
+                },
+                {
+                    title: 'dateCreated',
+                    field: 'dateCreated',
+                    minWidth: 140,
+                    hozAlign: 'left',
+                    widthGrow: 1,
+                    responsive: 0,
+                    sorter: (a, b, aRow, bRow, column, dir, sorterParams) => {
+                        //a, b - the two values being compared
+                        //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
+                        //column - the column component for the column being sorted
+                        //dir - the direction of the sort ("asc" or "desc")
+                        //sorterParams - sorterParams object from column definition array
+                        const timeStampA = this.dateToTimestamp(a);
+                        const timeStampB = this.dateToTimestamp(b);
 
-                    return timeStampA - timeStampB;
-                }},
-                {title: 'gz', field: 'gz', responsive: 2, widthGrow: 3, minWidth: 100, formatter: 'html'},
-                {title: 'subject', field: 'subject', minWidth: 140, responsive: 3, widthGrow: 3, formatter: 'html'},
-                {title: 'status', field: 'status', minWidth: 120, responsive: 2, widthGrow: 1, hozAlign: 'center',
-                    formatter: function(cell, formatterParams, onRendered) {
-                        onRendered(function() {
+                        return timeStampA - timeStampB;
+                    },
+                },
+                {
+                    title: 'gz',
+                    field: 'gz',
+                    responsive: 2,
+                    widthGrow: 3,
+                    minWidth: 100,
+                    formatter: 'html',
+                },
+                {
+                    title: 'subject',
+                    field: 'subject',
+                    minWidth: 140,
+                    responsive: 3,
+                    widthGrow: 3,
+                    formatter: 'html',
+                },
+                {
+                    title: 'status',
+                    field: 'status',
+                    minWidth: 120,
+                    responsive: 2,
+                    widthGrow: 1,
+                    hozAlign: 'center',
+                    formatter: function (cell, formatterParams, onRendered) {
+                        onRendered(function () {
                             var element = cell.getElement();
 
                             if (element.scrollWidth > element.clientWidth) {
@@ -808,26 +875,38 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         });
 
                         return cell.getValue();
-                    }
+                    },
                 },
 
                 {title: 'files', field: 'files', minWidth: 800, formatter: 'html', responsive: 8},
-                {title: 'recipients', field: 'recipients', minWidth: 800, formatter: 'html', responsive: 8},
+                {
+                    title: 'recipients',
+                    field: 'recipients',
+                    minWidth: 800,
+                    formatter: 'html',
+                    responsive: 8,
+                },
                 {title: 'dateSubmitted', field: 'dateSubmitted', minWidth: 150, responsive: 8},
                 {title: 'requestId', field: 'requestId', minWidth: 150, responsive: 8},
 
-                {title: '', field: 'controls', minWidth: 140, formatter: 'html', hozAlign: 'right', widthGrow: 1, headerSort:false, responsive:0},
+                {
+                    title: '',
+                    field: 'controls',
+                    minWidth: 140,
+                    formatter: 'html',
+                    hozAlign: 'right',
+                    widthGrow: 1,
+                    headerSort: false,
+                    responsive: 0,
+                },
             ],
             columnDefaults: {
                 vertAlign: 'middle',
                 hozAlign: 'left',
                 resizable: false,
             },
-            initialSort: [
-                {column:"dateCreated", dir:"desc"}
-            ]
+            initialSort: [{column: 'dateCreated', dir: 'desc'}],
         };
-
 
         return html`
             <div class="control ${classMap({hidden: this.isLoggedIn() || !this.isLoading() || !this.loadingTranslations})}">
@@ -881,8 +960,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     value="${this.groupValue}"
                                     @change=${(event) => {
                                         if (this.isLoggedIn() && !this.isLoading()) {
-                                            this.processSelectedOrganization(event).then(() => {
-                                            });
+                                            this.processSelectedOrganization(event).then(() => {});
                                         }
                                     }}
                         ></dbp-resource-select>
@@ -913,9 +991,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                 this.toggleSearchMenu();
                                             }}'>
                                             <dbp-icon-button id="search-button"
-                                                title="${i18n.t(
-                                                    'show-requests.search-box-text',
-                                                )}"
+                                                title="${i18n.t('show-requests.search-box-text')}"
                                                 icon-name="search"
                                                 aria-label="${i18n.t(
                                                     'show-requests.search-box-text',
@@ -963,9 +1039,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                                     <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}" id="open-settings-btn"
                                         ?disabled="${this.loading}"
-                                        @click="${() => {
-
-                                        }}"
+                                        @click="${() => {}}"
                                         title="TODO"
                                         icon-name="iconoir_settings"></dbp-icon-button>
                                 </div>
@@ -973,74 +1047,97 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 ${
                                     this.mayWrite
                                         ? html`
-                                            <dbp-loading-button id="select-all-btn"
-                                                class="${classMap({hidden: this.allSelected})}"
-                                                value="${i18n.t('show-requests.select-all')}"
-                                                @click="${() => {
-                                                    this.allSelected = true;
-                                                    const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
-                                                    table.selectAllVisibleRows();
-                                                    this.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
-                                                }}"
-                                                title="${i18n.t('show-requests.select-all')}"
-                                                >${i18n.t('show-requests.select-all')}</dbp-loading-button>
-                                            <dbp-loading-button id="deselect-all-btn"
-                                                class="${classMap({hidden: !this.allSelected})}"
-                                                value="${i18n.t('show-requests.deselect-all')}"
-                                                @click="${() => {
-                                                    this.allSelected = false;
-                                                    const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
-                                                    table.deselectAllRows();
-                                                    this.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
-                                                }}"
-                                                title="${i18n.t('show-requests.deselect-all')}"
-                                                >${i18n.t('show-requests.deselect-all')}</dbp-loading-button>
-                                            <dbp-loading-button id="expand-all-btn"
-                                                class="${classMap({hidden: this.expanded})}"
-                                                ?disabled="${this.loading}"
-                                                value="${i18n.t('show-requests.expand-all')}"
-                                                @click="${() => {
-                                                    this.expandAll();
-                                                }}"
-                                                title="${i18n.t('show-requests.expand-all')}"
-                                                >${i18n.t('show-requests.expand-all')}</dbp-loading-button>
-                                            <dbp-loading-button id="collapse-all-btn"
-                                                class="${classMap({hidden: !this.expanded})}"
-                                                ?disabled="${this.loading}"
-                                                value="${i18n.t('show-requests.collapse-all')}"
-                                                @click="${() => {
-                                                    this.collapseAll();
-                                                }}"
-                                                title="${i18n.t('show-requests.collapse-all')}"
-                                                >${i18n.t('show-requests.collapse-all')}</dbp-loading-button>
-                                            <dbp-loading-button
-                                                id="delete-all-btn"
-                                                disabled
-                                                value="${i18n.t(
-                                                'show-requests.delete-button-text',
-                                                )}"
-                                                @click="${async (event) => {
-                                                    await this.deleteSelected();
-                                                    this.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
-                                                }}"
-                                                title="${i18n.t(
-                                                    'show-requests.delete-button-text',
-                                                )}">${i18n.t('show-requests.delete-button-text')}</dbp-loading-button>
-                                            <dbp-loading-button
-                                                id="submit-all-btn"
-                                                disabled
-                                                type="is-primary"
-                                                value="${i18n.t(
-                                                    'show-requests.submit-button-text',
-                                                )}"
-                                                @click="${async (event) => {
-                                                    await this.submitSelected();
-                                                    this.toggleDeleteAndSubmitButtons('#tabulator-table-orders');
-                                                }}"
-                                                title="${i18n.t(
-                                                    'show-requests.submit-button-text',
-                                                )}">${i18n.t('show-requests.submit-button-text')}
-                                            </dbp-loading-button>
+                                              <dbp-loading-button
+                                                  id="select-all-btn"
+                                                  class="${classMap({hidden: this.allSelected})}"
+                                                  value="${i18n.t('show-requests.select-all')}"
+                                                  @click="${() => {
+                                                      this.allSelected = true;
+                                                      const table = /** @type {TabulatorTable} */ (
+                                                          this._('#tabulator-table-orders')
+                                                      );
+                                                      table.selectAllVisibleRows();
+                                                      this.toggleDeleteAndSubmitButtons(
+                                                          '#tabulator-table-orders',
+                                                      );
+                                                  }}"
+                                                  title="${i18n.t('show-requests.select-all')}">
+                                                  ${i18n.t('show-requests.select-all')}
+                                              </dbp-loading-button>
+                                              <dbp-loading-button
+                                                  id="deselect-all-btn"
+                                                  class="${classMap({hidden: !this.allSelected})}"
+                                                  value="${i18n.t('show-requests.deselect-all')}"
+                                                  @click="${() => {
+                                                      this.allSelected = false;
+                                                      const table = /** @type {TabulatorTable} */ (
+                                                          this._('#tabulator-table-orders')
+                                                      );
+                                                      table.deselectAllRows();
+                                                      this.toggleDeleteAndSubmitButtons(
+                                                          '#tabulator-table-orders',
+                                                      );
+                                                  }}"
+                                                  title="${i18n.t('show-requests.deselect-all')}">
+                                                  ${i18n.t('show-requests.deselect-all')}
+                                              </dbp-loading-button>
+                                              <dbp-loading-button
+                                                  id="expand-all-btn"
+                                                  class="${classMap({hidden: this.expanded})}"
+                                                  ?disabled="${this.loading}"
+                                                  value="${i18n.t('show-requests.expand-all')}"
+                                                  @click="${() => {
+                                                      this.expandAll();
+                                                  }}"
+                                                  title="${i18n.t('show-requests.expand-all')}">
+                                                  ${i18n.t('show-requests.expand-all')}
+                                              </dbp-loading-button>
+                                              <dbp-loading-button
+                                                  id="collapse-all-btn"
+                                                  class="${classMap({hidden: !this.expanded})}"
+                                                  ?disabled="${this.loading}"
+                                                  value="${i18n.t('show-requests.collapse-all')}"
+                                                  @click="${() => {
+                                                      this.collapseAll();
+                                                  }}"
+                                                  title="${i18n.t('show-requests.collapse-all')}">
+                                                  ${i18n.t('show-requests.collapse-all')}
+                                              </dbp-loading-button>
+                                              <dbp-loading-button
+                                                  id="delete-all-btn"
+                                                  disabled
+                                                  value="${i18n.t(
+                                                      'show-requests.delete-button-text',
+                                                  )}"
+                                                  @click="${async (event) => {
+                                                      await this.deleteSelected();
+                                                      this.toggleDeleteAndSubmitButtons(
+                                                          '#tabulator-table-orders',
+                                                      );
+                                                  }}"
+                                                  title="${i18n.t(
+                                                      'show-requests.delete-button-text',
+                                                  )}">
+                                                  ${i18n.t('show-requests.delete-button-text')}
+                                              </dbp-loading-button>
+                                              <dbp-loading-button
+                                                  id="submit-all-btn"
+                                                  disabled
+                                                  type="is-primary"
+                                                  value="${i18n.t(
+                                                      'show-requests.submit-button-text',
+                                                  )}"
+                                                  @click="${async (event) => {
+                                                      await this.submitSelected();
+                                                      this.toggleDeleteAndSubmitButtons(
+                                                          '#tabulator-table-orders',
+                                                      );
+                                                  }}"
+                                                  title="${i18n.t(
+                                                      'show-requests.submit-button-text',
+                                                  )}">
+                                                  ${i18n.t('show-requests.submit-button-text')}
+                                              </dbp-loading-button>
                                           `
                                         : ``
                                 }
@@ -1071,160 +1168,355 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                         </div>
                     </div>
-                ${ this.mayRead || this.mayReadMetadata ? html`
-                    <div class="back-container">
-                        <span class="back-navigation ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
-                            <a href="#" title="${i18n.t('show-requests.back-to-list')}"
-                               @click="${() => {
-                                   let table = /** @type {TabulatorTable} */(this._('#tabulator-table-orders'));
-                                   let currentPage = table ? table.getPage() : 1;
-                                   this.getListOfRequests().then(() => {
-                                       table ? table.setPage(currentPage) : null;
-                                   });
-                                   this.showListView = true;
-                                   this.showDetailsView = false;
-                                   this.currentItem = {};
-                                   this.currentItem.files = [];
-                                   this.currentItem.recipients = [];
-                                   this.currentRecipient = {};
-                                   this.currentItem.senderOrganizationName = "";
-                                   this.currentItem.senderFullName = "";
-                                   this.currentItem.senderAddressCountry = "";
-                                   this.currentItem.senderPostalCode = "";
-                                   this.currentItem.senderAddressLocality = "";
-                                   this.currentItem.senderStreetAddress = "";
-                                   this.currentItem.senderBuildingNumber = "";
-                               }}"
-                            >
-                                <dbp-icon name="chevron-left"></dbp-icon>
-                                ${i18n.t('show-requests.back-to-list')}
-                            </a>
-                        </span>
-                    </div>
+                ${
+                    this.mayRead || this.mayReadMetadata
+                        ? html`
+                              <div class="back-container">
+                                  <span
+                                      class="back-navigation ${classMap({
+                                          hidden:
+                                              !this.isLoggedIn() ||
+                                              this.isLoading() ||
+                                              this.loadingTranslations ||
+                                              this.showListView ||
+                                              !this.organizationSet,
+                                      })}">
+                                      <a
+                                          href="#"
+                                          title="${i18n.t('show-requests.back-to-list')}"
+                                          @click="${() => {
+                                              let table = /** @type {TabulatorTable} */ (
+                                                  this._('#tabulator-table-orders')
+                                              );
+                                              let currentPage = table ? table.getPage() : 1;
+                                              this.getListOfRequests().then(() => {
+                                                  table ? table.setPage(currentPage) : null;
+                                              });
+                                              this.showListView = true;
+                                              this.showDetailsView = false;
+                                              this.currentItem = {};
+                                              this.currentItem.files = [];
+                                              this.currentItem.recipients = [];
+                                              this.currentRecipient = {};
+                                              this.currentItem.senderOrganizationName = '';
+                                              this.currentItem.senderFullName = '';
+                                              this.currentItem.senderAddressCountry = '';
+                                              this.currentItem.senderPostalCode = '';
+                                              this.currentItem.senderAddressLocality = '';
+                                              this.currentItem.senderStreetAddress = '';
+                                              this.currentItem.senderBuildingNumber = '';
+                                          }}">
+                                          <dbp-icon name="chevron-left"></dbp-icon>
+                                          ${i18n.t('show-requests.back-to-list')}
+                                      </a>
+                                  </span>
+                              </div>
 
-                    <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
-                        ${(this.currentItem && this.currentItem.dateSubmitted) || !this.mayWrite ?
-                               i18n.t('show-requests.show-detailed-dispatch-order', { id: this.currentItem.identifier })
-                               : i18n.t('show-requests.detailed-dispatch-order', { id: this.currentItem.identifier })
-                        }:
-                    </h3>
+                              <h3
+                                  class="${classMap({
+                                      hidden:
+                                          !this.isLoggedIn() ||
+                                          this.isLoading() ||
+                                          this.loadingTranslations ||
+                                          this.showListView ||
+                                          !this.organizationSet,
+                                  })}">
+                                  ${(this.currentItem && this.currentItem.dateSubmitted) ||
+                                  !this.mayWrite
+                                      ? i18n.t('show-requests.show-detailed-dispatch-order', {
+                                            id: this.currentItem.identifier,
+                                        })
+                                      : i18n.t('show-requests.detailed-dispatch-order', {
+                                            id: this.currentItem.identifier,
+                                        })}:
+                              </h3>
 
-                    <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showListView || !this.organizationSet })}">
+                              <div
+                                  class="${classMap({
+                                      hidden:
+                                          !this.isLoggedIn() ||
+                                          this.isLoading() ||
+                                          this.loadingTranslations ||
+                                          this.showListView ||
+                                          !this.organizationSet,
+                                  })}">
+                                  ${this.currentItem && !this.currentItem.dateSubmitted
+                                      ? html`
+                                            <div class="request-buttons">
+                                                <div class="edit-buttons">
+                                                    <dbp-loading-button
+                                                        id="delete-btn"
+                                                        ?disabled="${this.loading ||
+                                                        this.currentItem.dateSubmitted ||
+                                                        !this.mayWrite}"
+                                                        value="${i18n.t(
+                                                            'show-requests.delete-button-text',
+                                                        )}"
+                                                        @click="${(event) => {
+                                                            this.deleteRequest(
+                                                                this.currentTable,
+                                                                event,
+                                                                this.currentItem,
+                                                            );
+                                                        }}"
+                                                        title="${i18n.t(
+                                                            'show-requests.delete-button-text',
+                                                        )}">
+                                                        ${i18n.t(
+                                                            'show-requests.delete-button-text',
+                                                        )}
+                                                    </dbp-loading-button>
+                                                </div>
+                                                <div class="submit-button">
+                                                    <dbp-loading-button
+                                                        type="is-primary"
+                                                        id="submit-btn"
+                                                        ?disabled="${this.loading ||
+                                                        this.currentItem.dateSubmitted ||
+                                                        !this.mayWrite}"
+                                                        value="${i18n.t(
+                                                            'show-requests.submit-button-text',
+                                                        )}"
+                                                        @click="${(event) => {
+                                                            this.submitRequest(
+                                                                this.currentTable,
+                                                                event,
+                                                                this.currentItem,
+                                                            );
+                                                        }}"
+                                                        title="${i18n.t(
+                                                            'show-requests.submit-button-text',
+                                                        )}">
+                                                        ${i18n.t(
+                                                            'show-requests.submit-button-text',
+                                                        )}
+                                                    </dbp-loading-button>
+                                                </div>
+                                            </div>
+                                        `
+                                      : ``}
+                                  ${this.currentItem
+                                      ? html`
+                                            <div class="request-item details">
+                                                <div class="details header">
+                                                    <div>
+                                                        <div class="section-titles">
+                                                            ${i18n.t('show-requests.id')}
+                                                            ${!this.currentItem.dateSubmitted
+                                                                ? html`
+                                                                      <dbp-icon-button
+                                                                          id="edit-subject-btn"
+                                                                          ?disabled="${this
+                                                                              .loading ||
+                                                                          this.currentItem
+                                                                              .dateSubmitted ||
+                                                                          !this.mayWrite}"
+                                                                          @click="${(event) => {
+                                                                              this.subject = this
+                                                                                  .currentItem.name
+                                                                                  ? this.currentItem
+                                                                                        .name
+                                                                                  : '';
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-subject-fn-dialog',
+                                                                                  )
+                                                                              ).value = this
+                                                                                  .currentItem.name
+                                                                                  ? this.currentItem
+                                                                                        .name
+                                                                                  : ``;
+                                                                              // @ts-ignore
+                                                                              MicroModal.show(
+                                                                                  this._(
+                                                                                      '#edit-subject-modal',
+                                                                                  ),
+                                                                                  {
+                                                                                      disableScroll: true,
+                                                                                      onClose: (
+                                                                                          modal,
+                                                                                      ) => {
+                                                                                          //this.loading = false;
+                                                                                      },
+                                                                                  },
+                                                                              );
+                                                                          }}"
+                                                                          aria-label="${i18n.t(
+                                                                              'show-requests.edit-subject-button-text',
+                                                                          )}"
+                                                                          title="${i18n.t(
+                                                                              'show-requests.edit-subject-button-text',
+                                                                          )}"
+                                                                          icon-name="pencil"></dbp-icon-button>
+                                                                  `
+                                                                : ``}
+                                                        </div>
+                                                        <div>
+                                                            ${this.currentItem.name
+                                                                ? html`
+                                                                      ${this.currentItem.name}
+                                                                  `
+                                                                : html`
+                                                                      ${this.mayReadMetadata &&
+                                                                      !this.mayRead &&
+                                                                      !this.mayWrite
+                                                                          ? i18n.t(
+                                                                                'show-requests.metadata-subject-text',
+                                                                            )
+                                                                          : i18n.t(
+                                                                                'show-requests.no-subject-found',
+                                                                            )}
+                                                                  `}
+                                                        </div>
+                                                    </div>
+                                                    <div class="line"></div>
+                                                    <div>
+                                                        <div class="section-titles">
+                                                            ${i18n.t('show-requests.submit-status')}
+                                                        </div>
+                                                        <div>
+                                                            ${this.currentItem.dateSubmitted
+                                                                ? html`
+                                                                      ${this.checkRecipientStatus(
+                                                                          this.currentItem
+                                                                              .recipients,
+                                                                      )[0]}
+                                                                  `
+                                                                : html`
+                                                                      <span class="status-orange">
+                                                                          ●
+                                                                      </span>
+                                                                      ${i18n.t(
+                                                                          'show-requests.empty-date-submitted',
+                                                                      )}
+                                                                  `}
+                                                        </div>
+                                                    </div>
+                                                    <div class="line"></div>
+                                                    <div>
+                                                        <div class="section-titles">
+                                                            ${i18n.t(
+                                                                'show-requests.reference-number',
+                                                            )}
+                                                            ${!this.currentItem.dateSubmitted
+                                                                ? html`
+                                                                      <dbp-icon-button
+                                                                          id="edit-reference-number-btn"
+                                                                          ?disabled="${this
+                                                                              .loading ||
+                                                                          this.currentItem
+                                                                              .dateSubmitted ||
+                                                                          !this.mayWrite}"
+                                                                          @click="${(event) => {
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-reference-number-fn-dialog',
+                                                                                  )
+                                                                              ).value =
+                                                                                  this.currentItem
+                                                                                      .referenceNumber ??
+                                                                                  ``;
+                                                                              // @ts-ignore
+                                                                              MicroModal.show(
+                                                                                  this._(
+                                                                                      '#edit-reference-number-modal',
+                                                                                  ),
+                                                                                  {
+                                                                                      disableScroll: true,
+                                                                                      onClose: (
+                                                                                          modal,
+                                                                                      ) => {
+                                                                                          //this.loading = false;
+                                                                                      },
+                                                                                  },
+                                                                              );
+                                                                          }}"
+                                                                          aria-label="${i18n.t(
+                                                                              'show-requests.edit-reference-number-button-text',
+                                                                          )}"
+                                                                          title="${i18n.t(
+                                                                              'show-requests.edit-reference-number-button-text',
+                                                                          )}"
+                                                                          icon-name="pencil"></dbp-icon-button>
+                                                                  `
+                                                                : ``}
+                                                        </div>
+                                                        <div>
+                                                            ${this.currentItem.referenceNumber
+                                                                ? html`
+                                                                      ${this.currentItem
+                                                                          .referenceNumber}
+                                                                  `
+                                                                : html`
+                                                                      ${i18n.t(
+                                                                          'show-requests.empty-reference-number',
+                                                                      )}
+                                                                  `}
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                        ${ this.currentItem && !this.currentItem.dateSubmitted ? html`
-                                <div class="request-buttons">
-                                    <div class="edit-buttons">
-                                        <dbp-loading-button id="delete-btn"
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                            value="${i18n.t('show-requests.delete-button-text')}"
-                                                            @click="${(event) => { this.deleteRequest(this.currentTable, event, this.currentItem); }}"
-                                                            title="${i18n.t('show-requests.delete-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.delete-button-text')}
-                                        </dbp-loading-button>
-                                    </div>
-                                    <div class="submit-button">
-                                        <dbp-loading-button type="is-primary"
-                                            id="submit-btn"
-                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                            value="${i18n.t('show-requests.submit-button-text')}"
-                                            @click="${(event) => { this.submitRequest(this.currentTable, event, this.currentItem); }}"
-                                            title="${i18n.t('show-requests.submit-button-text')}"
-                                        >
-                                            ${i18n.t('show-requests.submit-button-text')}
-                                        </dbp-loading-button>
-                                    </div>
-                                </div>` : ``
-                        }
+                                                ${this.addSubHeader()} ${this.addSenderDetails()}
 
-                        ${ this.currentItem ? html`
-                            <div class="request-item details">
-                                <div class="details header">
-                                    <div>
-                                        <div class="section-titles">
-                                            ${i18n.t('show-requests.id')}
-                                            ${!this.currentItem.dateSubmitted ? html`
-                                                <dbp-icon-button id="edit-subject-btn"
-                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                    @click="${(event) => {
-                                                        this.subject = this.currentItem.name ? this.currentItem.name : '';
-                                                        /** @type {HTMLInputElement } */(this._('#tf-edit-subject-fn-dialog')).value = this.currentItem.name ? this.currentItem.name : ``;
-                                                        // @ts-ignore
-                                                        MicroModal.show(this._('#edit-subject-modal'), {
-                                                            disableScroll: true,
-                                                            onClose: (modal) => {
-                                                                //this.loading = false;
-                                                            },
-                                                        });
-                                                    }}"
-                                                    aria-label="${i18n.t('show-requests.edit-subject-button-text')}"
-                                                    title="${i18n.t('show-requests.edit-subject-button-text')}"
-                                                    icon-name="pencil"></dbp-icon-button>` : ``}
-                                        </div>
-                                        <div>${this.currentItem.name ? html`${this.currentItem.name}` : html`${this.mayReadMetadata && !this.mayRead && !this.mayWrite ? i18n.t('show-requests.metadata-subject-text') : i18n.t('show-requests.no-subject-found')}`}</div>
-                                    </div>
-                                    <div class="line"></div>
-                                    <div>
-                                        <div class="section-titles">${i18n.t('show-requests.submit-status')}</div>
-                                        <div>${this.currentItem.dateSubmitted ? html`${this.checkRecipientStatus(this.currentItem.recipients)[0]}` : html`<span class="status-orange">●</span> ${i18n.t('show-requests.empty-date-submitted')}`}</div>
-                                    </div>
-                                    <div class="line"></div>
-                                    <div>
-                                        <div class="section-titles">
-                                            ${i18n.t('show-requests.reference-number')}
-                                            ${!this.currentItem.dateSubmitted ? html`
-                                                <dbp-icon-button id="edit-reference-number-btn"
-                                                    ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                    @click="${(event) => {
-                                                        /** @type {HTMLInputElement } */(this._('#tf-edit-reference-number-fn-dialog')).value = this.currentItem.referenceNumber ?? ``;
-                                                        // @ts-ignore
-                                                        MicroModal.show(this._('#edit-reference-number-modal'), {
-                                                        disableScroll: true,
-                                                        onClose: (modal) => {
-                                                            //this.loading = false;
-                                                        },
-                                                    });
-                                                    }}"
-                                                    aria-label="${i18n.t('show-requests.edit-reference-number-button-text')}"
-                                                    title="${i18n.t('show-requests.edit-reference-number-button-text')}"
-                                                    icon-name="pencil"></dbp-icon-button>`
-                                                : ``}
-                                        </div>
-                                        <div>${this.currentItem.referenceNumber ? html`${this.currentItem.referenceNumber}` : html`${i18n.t('show-requests.empty-reference-number')}`}</div>
-                                    </div>
-                                </div>
+                                                <div class="details recipients">
+                                                    <div class="header-btn">
+                                                        <div class="section-titles">
+                                                            ${i18n.t('show-requests.recipients')}
+                                                            <span class="section-title-counts">
+                                                                ${this.currentItem.recipients
+                                                                    .length !== 0
+                                                                    ? `(` +
+                                                                      this.currentItem.recipients
+                                                                          .length +
+                                                                      `)`
+                                                                    : ``}
+                                                            </span>
+                                                        </div>
+                                                        ${!this.currentItem.dateSubmitted
+                                                            ? html`
+                                                                  <dbp-loading-button
+                                                                      id="add-recipient-btn"
+                                                                      ?disabled="${this.loading ||
+                                                                      this.currentItem
+                                                                          .dateSubmitted ||
+                                                                      !this.mayWrite}"
+                                                                      value="${i18n.t(
+                                                                          'show-requests.add-recipient-button-text',
+                                                                      )}"
+                                                                      @click="${(event) => {
+                                                                          this.currentRecipient =
+                                                                              {};
+                                                                          // @ts-ignore
+                                                                          MicroModal.show(
+                                                                              this._(
+                                                                                  '#add-recipient-modal',
+                                                                              ),
+                                                                              {
+                                                                                  disableScroll: true,
+                                                                                  onClose: (
+                                                                                      modal,
+                                                                                  ) => {
+                                                                                      //this.loading = false;
+                                                                                  },
+                                                                              },
+                                                                          );
+                                                                      }}"
+                                                                      title="${i18n.t(
+                                                                          'show-requests.add-recipient-button-text',
+                                                                      )}">
+                                                                      ${i18n.t(
+                                                                          'show-requests.add-recipient-button-text',
+                                                                      )}
+                                                                  </dbp-loading-button>
+                                                              `
+                                                            : ``}
+                                                    </div>
 
-                                ${this.addSubHeader()}
-
-                                ${this.addSenderDetails()}
-
-                                <div class="details recipients">
-                                    <div class="header-btn">
-                                        <div class="section-titles">${i18n.t('show-requests.recipients')} <span class="section-title-counts">
-                                                ${this.currentItem.recipients.length !== 0 ? `(` + this.currentItem.recipients.length + `)` : ``}</span>
-                                        </div>
-                                        ${!this.currentItem.dateSubmitted ? html`
-                                            <dbp-loading-button id="add-recipient-btn"
-                                                            ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                            value="${i18n.t('show-requests.add-recipient-button-text')}"
-                                                            @click="${(event) => {
-                                                                this.currentRecipient = {};
-                                                                // @ts-ignore
-                                                                MicroModal.show(this._('#add-recipient-modal'), {
-                                                                    disableScroll: true,
-                                                                    onClose: (modal) => {
-                                                                        //this.loading = false;
-                                                                    },
-                                                                });
-                                                            }}"
-                                                            title="${i18n.t('show-requests.add-recipient-button-text')}">
-                                                ${i18n.t('show-requests.add-recipient-button-text')}
-                                            </dbp-loading-button>` : ``
-                                        }
-                                    </div>
-
-                                    <div class="recipients-data">
-                                        ${this.sortRecipients(this.currentItem.recipients).map(recipient => html`
+                                                    <div class="recipients-data">
+                                                        ${this.sortRecipients(
+                                                            this.currentItem.recipients,
+                                                        ).map(
+                                                            (recipient) => html`
 
                                         <div class="recipient card">
 
@@ -1237,17 +1529,25 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         button.start();
                                                         this.currentRecipient = recipient;
                                                         try {
-                                                            this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
+                                                            this.fetchDetailedRecipientInformation(
+                                                                recipient.identifier,
+                                                            ).then(() => {
                                                                 // @ts-ignore
-                                                                MicroModal.show(this._('#show-recipient-modal'), {
-                                                                    disableScroll: true,
-                                                                    onShow: modal => { this.button = button; },
-                                                                    onClose: (modal) => {
-                                                                        //this.loading = false;
-                                                                        this.currentRecipient = {};
-                                                                        button.stop();
+                                                                MicroModal.show(
+                                                                    this._('#show-recipient-modal'),
+                                                                    {
+                                                                        disableScroll: true,
+                                                                        onShow: (modal) => {
+                                                                            this.button = button;
+                                                                        },
+                                                                        onClose: (modal) => {
+                                                                            //this.loading = false;
+                                                                            this.currentRecipient =
+                                                                                {};
+                                                                            button.stop();
+                                                                        },
                                                                     },
-                                                                });
+                                                                );
                                                             });
                                                         } catch {
                                                             button.stop();
@@ -1258,66 +1558,176 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     aria-label="${i18n.t('show-requests.show-recipient-button-text')}"
                                                     title="${i18n.t('show-requests.show-recipient-button-text')}"
                                                     icon-name="keyword-research"></dbp-icon></dbp-icon-button>
-                                                ${!this.currentItem.dateSubmitted ? html`
-                                                    <dbp-icon-button id="edit-recipient-btn"
-                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite ||
-                                                            (recipient.personIdentifier && (recipient.electronicallyDeliverable || recipient.postalDeliverable))}"
-                                                        @click="${(event) => {
-                                                            let button = event.target;
-                                                            button.start();
-                                                            this.currentRecipient = recipient;
-                                                            try {
-                                                                this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                    /** @type {HTMLInputElement } */(this._('#edit-recipient-country-select')).value = this.currentRecipient.addressCountry;
-                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-birthdate-day')).value = this.currentRecipient.birthDateDay;
-                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-birthdate-month')).value = this.currentRecipient.birthDateMonth;
-                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-birthdate-year')).value = this.currentRecipient.birthDateYear;
+                                                ${
+                                                    !this.currentItem.dateSubmitted
+                                                        ? html`
+                                                              <dbp-icon-button
+                                                                  id="edit-recipient-btn"
+                                                                  ?disabled="${this.loading ||
+                                                                  this.currentItem.dateSubmitted ||
+                                                                  !this.mayWrite ||
+                                                                  (recipient.personIdentifier &&
+                                                                      (recipient.electronicallyDeliverable ||
+                                                                          recipient.postalDeliverable))}"
+                                                                  @click="${(event) => {
+                                                                      let button = event.target;
+                                                                      button.start();
+                                                                      this.currentRecipient =
+                                                                          recipient;
+                                                                      try {
+                                                                          this.fetchDetailedRecipientInformation(
+                                                                              recipient.identifier,
+                                                                          ).then(() => {
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#edit-recipient-country-select',
+                                                                                  )
+                                                                              ).value =
+                                                                                  this.currentRecipient.addressCountry;
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-recipient-birthdate-day',
+                                                                                  )
+                                                                              ).value =
+                                                                                  this.currentRecipient.birthDateDay;
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-recipient-birthdate-month',
+                                                                                  )
+                                                                              ).value =
+                                                                                  this.currentRecipient.birthDateMonth;
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-recipient-birthdate-year',
+                                                                                  )
+                                                                              ).value =
+                                                                                  this.currentRecipient.birthDateYear;
 
-                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-gn-dialog')).value = this.currentRecipient.givenName;
-                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-fn-dialog')).value = this.currentRecipient.familyName;
-                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-pc-dialog')).value = this.currentRecipient.postalCode ? this.currentRecipient.postalCode : '';
-                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-al-dialog')).value = this.currentRecipient.addressLocality ? this.currentRecipient.addressLocality : '';
-                                                                    /** @type {HTMLInputElement } */(this._('#tf-edit-recipient-sa-dialog')).value = this.currentRecipient.streetAddress ? this.currentRecipient.streetAddress : '';
-                                                                    // @ts-ignore
-                                                                    MicroModal.show(this._('#edit-recipient-modal'), {
-                                                                        disableScroll: true,
-                                                                        onShow: modal => { this.button = button; },
-                                                                        onClose: (modal) => {
-                                                                            //this.loading = false;
-                                                                            this.currentRecipient = {};
-                                                                        }
-                                                                    });
-                                                                });
-                                                            } finally {
-                                                                button.stop();
-                                                            }
-                                                        }}"
-                                                        aria-label="${i18n.t('show-requests.edit-recipients-button-text')}"
-                                                        title="${i18n.t('show-requests.edit-recipients-button-text')}"
-                                                        icon-name="pencil"></dbp-icon-button>
-                                                    <dbp-icon-button id="delete-recipient-btn"
-                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted || !this.mayWrite}"
-                                                        @click="${(event) => {
-                                                            this.deleteRecipient(event, recipient);
-                                                        }}"
-                                                        aria-label="${i18n.t('show-requests.delete-recipient-button-text')}"
-                                                        title="${i18n.t('show-requests.delete-recipient-button-text')}"
-                                                        icon-name="trash"></dbp-icon-button>
-                                                ` : `` }
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-recipient-gn-dialog',
+                                                                                  )
+                                                                              ).value =
+                                                                                  this.currentRecipient.givenName;
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-recipient-fn-dialog',
+                                                                                  )
+                                                                              ).value =
+                                                                                  this.currentRecipient.familyName;
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-recipient-pc-dialog',
+                                                                                  )
+                                                                              ).value = this
+                                                                                  .currentRecipient
+                                                                                  .postalCode
+                                                                                  ? this
+                                                                                        .currentRecipient
+                                                                                        .postalCode
+                                                                                  : '';
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-recipient-al-dialog',
+                                                                                  )
+                                                                              ).value = this
+                                                                                  .currentRecipient
+                                                                                  .addressLocality
+                                                                                  ? this
+                                                                                        .currentRecipient
+                                                                                        .addressLocality
+                                                                                  : '';
+                                                                              /** @type {HTMLInputElement } */ (
+                                                                                  this._(
+                                                                                      '#tf-edit-recipient-sa-dialog',
+                                                                                  )
+                                                                              ).value = this
+                                                                                  .currentRecipient
+                                                                                  .streetAddress
+                                                                                  ? this
+                                                                                        .currentRecipient
+                                                                                        .streetAddress
+                                                                                  : '';
+                                                                              // @ts-ignore
+                                                                              MicroModal.show(
+                                                                                  this._(
+                                                                                      '#edit-recipient-modal',
+                                                                                  ),
+                                                                                  {
+                                                                                      disableScroll: true,
+                                                                                      onShow: (
+                                                                                          modal,
+                                                                                      ) => {
+                                                                                          this.button =
+                                                                                              button;
+                                                                                      },
+                                                                                      onClose: (
+                                                                                          modal,
+                                                                                      ) => {
+                                                                                          //this.loading = false;
+                                                                                          this.currentRecipient =
+                                                                                              {};
+                                                                                      },
+                                                                                  },
+                                                                              );
+                                                                          });
+                                                                      } finally {
+                                                                          button.stop();
+                                                                      }
+                                                                  }}"
+                                                                  aria-label="${i18n.t(
+                                                                      'show-requests.edit-recipients-button-text',
+                                                                  )}"
+                                                                  title="${i18n.t(
+                                                                      'show-requests.edit-recipients-button-text',
+                                                                  )}"
+                                                                  icon-name="pencil"></dbp-icon-button>
+                                                              <dbp-icon-button
+                                                                  id="delete-recipient-btn"
+                                                                  ?disabled="${this.loading ||
+                                                                  this.currentItem.dateSubmitted ||
+                                                                  !this.mayWrite}"
+                                                                  @click="${(event) => {
+                                                                      this.deleteRecipient(
+                                                                          event,
+                                                                          recipient,
+                                                                      );
+                                                                  }}"
+                                                                  aria-label="${i18n.t(
+                                                                      'show-requests.delete-recipient-button-text',
+                                                                  )}"
+                                                                  title="${i18n.t(
+                                                                      'show-requests.delete-recipient-button-text',
+                                                                  )}"
+                                                                  icon-name="trash"></dbp-icon-button>
+                                                          `
+                                                        : ``
+                                                }
                                             </div>
-                                        </div>`)}
-                                        <div class="no-recipients ${classMap({hidden: !this.isLoggedIn() || this.currentItem.recipients.length !== 0})}">
-                                            ${i18n.t('show-requests.no-recipients-text')}
-                                        </div>
+                                        </div>`,
+                                                        )}
+                                                        <div
+                                                            class="no-recipients ${classMap({
+                                                                hidden:
+                                                                    !this.isLoggedIn() ||
+                                                                    this.currentItem.recipients
+                                                                        .length !== 0,
+                                                            })}">
+                                                            ${i18n.t(
+                                                                'show-requests.no-recipients-text',
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                    </div>
-                                </div>
-
-                               ${this.addDetailedFilesView()}
-
-                            </div>
-                        ` : ``}
-                    ` : ``}
+                                                ${this.addDetailedFilesView()}
+                                            </div>
+                                        `
+                                      : ``}
+                              </div>
+                          `
+                        : ``
+                }
                 </div>
             </div>
 

@@ -149,7 +149,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             totalNumberOfCreatedRequestItems: {type: Number, attribute: false},
             filesAdded: {type: Boolean, attribute: false},
             createRequestsLoading: {type: Boolean, attribute: false},
-            createdRequestsList: {type:Array, attribute: false},
+            createdRequestsList: {type: Array, attribute: false},
             expanded: {type: Boolean, attribute: false},
             allSelected: {type: Boolean, attribute: false},
 
@@ -181,7 +181,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     disconnectedCallback() {
-
         super.disconnectedCallback();
     }
 
@@ -203,11 +202,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
 
         this.updateComplete.then(() => {
-
             this._a('.tabulator-table').forEach((table) => {
-                const tabulatorTable = /** @type {TabulatorTable} */(table);
+                const tabulatorTable = /** @type {TabulatorTable} */ (table);
                 tabulatorTable.buildTable();
-                if(tabulatorTable.id == 'tabulator-table-created-requests')
+                if (tabulatorTable.id == 'tabulator-table-created-requests')
                     tabulatorTable.addEventListener('click', this.selectedRow);
             });
         });
@@ -227,18 +225,20 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     checkMultipleRequestsCheckmark() {
         this.singleFileProcessing = !(
-            this._('#multiple-requests-button') && /** @type {HTMLInputElement} */(this._('#multiple-requests-button')).checked
+            this._('#multiple-requests-button') &&
+            /** @type {HTMLInputElement} */ (this._('#multiple-requests-button')).checked
         );
     }
 
     setTabulatorData(createdRequests) {
         const i18n = this._i18n;
         let data = [];
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-created-requests'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
 
         createdRequests.forEach((item, index) => {
-
-            let recipientStatus = item['dateSubmitted'] ? this.checkRecipientStatus(item.recipients)[1] : i18n.t('show-requests.empty-date-submitted');
+            let recipientStatus = item['dateSubmitted']
+                ? this.checkRecipientStatus(item.recipients)[1]
+                : i18n.t('show-requests.empty-date-submitted');
 
             let controls_div = this.createScopedElement('div');
             controls_div.classList.add('tabulator-icon-buttons');
@@ -256,9 +256,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             let btn_delete = this.createScopedElement('dbp-icon-button');
             btn_delete.setAttribute('icon-name', 'trash');
-            btn_delete.setAttribute('aria-label', i18n.t('show-requests.delete-request-button-text'));
+            btn_delete.setAttribute(
+                'aria-label',
+                i18n.t('show-requests.delete-request-button-text'),
+            );
             btn_delete.setAttribute('title', i18n.t('show-requests.delete-request-button-text'));
-            btn_delete.addEventListener("click", async (event) => {
+            btn_delete.addEventListener('click', async (event) => {
                 this.deleteRequest(table, event, item, index);
                 event.stopPropagation();
             });
@@ -275,55 +278,56 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
             controls_div.appendChild(btn_submit);
 
-            let order = { dateCreated: this.convertToReadableDate(item['dateCreated']),
+            let order = {
+                dateCreated: this.convertToReadableDate(item['dateCreated']),
                 gz: item['referenceNumber']
                     ? item['referenceNumber']
                     : i18n.t('show-requests.empty-reference-number'),
                 subject: item['name'],
                 status: recipientStatus,
-                files:this.createFormattedFilesList(item['files']),
+                files: this.createFormattedFilesList(item['files']),
                 recipients: this.createFormattedRecipientsList(item['recipients']),
                 dateSubmitted: item['dateSubmitted']
                     ? this.convertToReadableDate(item['dateSubmitted'])
                     : i18n.t('show-requests.date-submitted-not-submitted'),
                 requestId: item['identifier'],
-                controls: controls_div};
+                controls: controls_div,
+            };
             data.push(order);
         });
 
         table.setData(data);
     }
 
-    expandAll(){
+    expandAll() {
         this.expanded = true;
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-created-requests'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
         table.expandAll();
     }
 
-    collapseAll(){
+    collapseAll() {
         this.expanded = false;
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-created-requests'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
         table.collapseAll();
     }
 
     rowClick() {
         this.selected = true;
-        let deleteButton = /** @type {HTMLButtonElement} */(this._('#delete-all-btn'));
-        let submitButton = /** @type {HTMLButtonElement} */(this._('#submit-all-btn'));
-        let table = /** @type {TabulatorTable} */(this._('#tabulator-table-created-requests'));
+        let deleteButton = /** @type {HTMLButtonElement} */ (this._('#delete-all-btn'));
+        let submitButton = /** @type {HTMLButtonElement} */ (this._('#submit-all-btn'));
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
         this.currentTable = table;
-        if(table.getSelectedRows().length !== 0) {
+        if (table.getSelectedRows().length !== 0) {
             deleteButton.disabled = false;
             submitButton.disabled = false;
-        }
-        else {
+        } else {
             deleteButton.disabled = true;
             submitButton.disabled = true;
         }
     }
 
     _onLoginClicked(e) {
-        this.sendSetPropertyEvent('requested-login-status', "logged-in");
+        this.sendSetPropertyEvent('requested-login-status', 'logged-in');
         e.preventDefault();
     }
 
@@ -480,31 +484,31 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         //     'tabulator-tables/css/tabulator.min.css',
         // );
 
-        let langs  = {
-            'en': {
+        let langs = {
+            en: {
                 columns: {
-                    'details': i18n.t('show-requests.table-header-details', {lng: 'en'}),
-                    'dateCreated': i18n.t('show-requests.table-header-date-created', {lng: 'en'}),
-                    'gz': i18n.t('show-requests.table-header-gz', {lng: 'en'}),
-                    'subject': i18n.t('show-requests.table-header-subject', {lng: 'en'}),
-                    'status': i18n.t('show-requests.table-header-status', {lng: 'en'}),
-                    'files': i18n.t('show-requests.table-header-files', {lng: 'en'}),
-                    'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'en'}),
-                    'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'en'}),
-                    'requestId': i18n.t('show-requests.table-header-id', {lng: 'en'}),
+                    details: i18n.t('show-requests.table-header-details', {lng: 'en'}),
+                    dateCreated: i18n.t('show-requests.table-header-date-created', {lng: 'en'}),
+                    gz: i18n.t('show-requests.table-header-gz', {lng: 'en'}),
+                    subject: i18n.t('show-requests.table-header-subject', {lng: 'en'}),
+                    status: i18n.t('show-requests.table-header-status', {lng: 'en'}),
+                    files: i18n.t('show-requests.table-header-files', {lng: 'en'}),
+                    recipients: i18n.t('show-requests.table-header-recipients', {lng: 'en'}),
+                    dateSubmitted: i18n.t('show-requests.date-submitted', {lng: 'en'}),
+                    requestId: i18n.t('show-requests.table-header-id', {lng: 'en'}),
                 },
             },
-            'de': {
+            de: {
                 columns: {
-                    'details': i18n.t('show-requests.table-header-details', {lng: 'de'}),
-                    'dateCreated': i18n.t('show-requests.table-header-date-created', {lng: 'de'}),
-                    'gz': i18n.t('show-requests.table-header-gz', {lng: 'de'}),
-                    'subject': i18n.t('show-requests.table-header-subject', {lng: 'de'}),
-                    'status': i18n.t('show-requests.table-header-status', {lng: 'de'}),
-                    'files': i18n.t('show-requests.table-header-files', {lng: 'de'}),
-                    'recipients': i18n.t('show-requests.table-header-recipients', {lng: 'de'}),
-                    'dateSubmitted': i18n.t('show-requests.date-submitted', {lng: 'de'}),
-                    'requestId': i18n.t('show-requests.table-header-id', {lng: 'de'}),
+                    details: i18n.t('show-requests.table-header-details', {lng: 'de'}),
+                    dateCreated: i18n.t('show-requests.table-header-date-created', {lng: 'de'}),
+                    gz: i18n.t('show-requests.table-header-gz', {lng: 'de'}),
+                    subject: i18n.t('show-requests.table-header-subject', {lng: 'de'}),
+                    status: i18n.t('show-requests.table-header-status', {lng: 'de'}),
+                    files: i18n.t('show-requests.table-header-files', {lng: 'de'}),
+                    recipients: i18n.t('show-requests.table-header-recipients', {lng: 'de'}),
+                    dateSubmitted: i18n.t('show-requests.date-submitted', {lng: 'de'}),
+                    requestId: i18n.t('show-requests.table-header-id', {lng: 'de'}),
                 },
             },
         };
@@ -515,37 +519,90 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             responsiveLayout: 'collapse',
             responsiveLayoutCollapseStartOpen: false,
             columns: [
-                {title: 'details', field: 'details', hozAlign: 'center', width: 65, formatter:"responsiveCollapse", headerHozAlign:"center", sorter:"string", headerSort:false, responsive:0},
-                {title: 'dateCreated', field: 'dateCreated', minWidth: 140, hozAlign: 'left', widthGrow: 1, responsive:0, sorter: (a, b, aRow, bRow, column, dir, sorterParams) => {
-                    //a, b - the two values being compared
-                    //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
-                    //column - the column component for the column being sorted
-                    //dir - the direction of the sort ("asc" or "desc")
-                    //sorterParams - sorterParams object from column definition array
-                    const timeStampA = this.dateToTimestamp(a);
-                    const timeStampB = this.dateToTimestamp(b);
+                {
+                    title: 'details',
+                    field: 'details',
+                    hozAlign: 'center',
+                    width: 65,
+                    formatter: 'responsiveCollapse',
+                    headerHozAlign: 'center',
+                    sorter: 'string',
+                    headerSort: false,
+                    responsive: 0,
+                },
+                {
+                    title: 'dateCreated',
+                    field: 'dateCreated',
+                    minWidth: 140,
+                    hozAlign: 'left',
+                    widthGrow: 1,
+                    responsive: 0,
+                    sorter: (a, b, aRow, bRow, column, dir, sorterParams) => {
+                        //a, b - the two values being compared
+                        //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
+                        //column - the column component for the column being sorted
+                        //dir - the direction of the sort ("asc" or "desc")
+                        //sorterParams - sorterParams object from column definition array
+                        const timeStampA = this.dateToTimestamp(a);
+                        const timeStampB = this.dateToTimestamp(b);
 
-                    return timeStampA - timeStampB;
-                }},
-                {title: 'gz', field: 'gz', responsive: 2, widthGrow: 3, minWidth: 100, formatter: 'html'},
-                {title: 'subject', field: 'subject', minWidth: 140, responsive: 3, widthGrow: 3, formatter: 'html'},
-                {title: 'status', field: 'status', minWidth: 120, responsive: 2, widthGrow: 1, hozAlign: 'center', formatter: 'html'},
+                        return timeStampA - timeStampB;
+                    },
+                },
+                {
+                    title: 'gz',
+                    field: 'gz',
+                    responsive: 2,
+                    widthGrow: 3,
+                    minWidth: 100,
+                    formatter: 'html',
+                },
+                {
+                    title: 'subject',
+                    field: 'subject',
+                    minWidth: 140,
+                    responsive: 3,
+                    widthGrow: 3,
+                    formatter: 'html',
+                },
+                {
+                    title: 'status',
+                    field: 'status',
+                    minWidth: 120,
+                    responsive: 2,
+                    widthGrow: 1,
+                    hozAlign: 'center',
+                    formatter: 'html',
+                },
 
                 {title: 'files', field: 'files', minWidth: 800, formatter: 'html', responsive: 8},
-                {title: 'recipients', field: 'recipients', minWidth: 800, formatter: 'html', responsive: 8},
+                {
+                    title: 'recipients',
+                    field: 'recipients',
+                    minWidth: 800,
+                    formatter: 'html',
+                    responsive: 8,
+                },
                 {title: 'dateSubmitted', field: 'dateSubmitted', minWidth: 150, responsive: 8},
                 {title: 'requestId', field: 'requestId', minWidth: 150, responsive: 8},
 
-                {title: '', field: 'controls', minWidth: 140, formatter: 'html', hozAlign: 'right', widthGrow: 1, headerSort:false, responsive:0},
+                {
+                    title: '',
+                    field: 'controls',
+                    minWidth: 140,
+                    formatter: 'html',
+                    hozAlign: 'right',
+                    widthGrow: 1,
+                    headerSort: false,
+                    responsive: 0,
+                },
             ],
             columnDefaults: {
                 vertAlign: 'middle',
                 hozAlign: 'left',
                 resizable: false,
             },
-            initialSort: [
-                {column:"dateCreated", dir:"desc"}
-            ]
+            initialSort: [{column: 'dateCreated', dir: 'desc'}],
         };
 
         return html`
@@ -559,10 +616,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             </div>
 
             <div
-                    class="notification is-warning ${classMap({
-                        hidden: this.isLoggedIn() || this.isLoading(),
-                    })}">
-                ${i18n.t('error-login-message')} <a href="#" @click="${this._onLoginClicked}">${i18n.t('error-login-link')}</a>
+                class="notification is-warning ${classMap({
+                    hidden: this.isLoggedIn() || this.isLoading(),
+                })}">
+                ${i18n.t('error-login-message')}
+                <a href="#" @click="${this._onLoginClicked}">${i18n.t('error-login-link')}</a>
             </div>
 
             <div
@@ -732,29 +790,41 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         this.isLoading() ||
                                         this.showDetailsView,
                                 })}">
-                                <dbp-loading-button id="select-all-btn"
+                                <dbp-loading-button
+                                    id="select-all-btn"
                                     class="${classMap({hidden: this.allSelected})}"
                                     value="${i18n.t('show-requests.select-all')}"
                                     @click="${() => {
                                         this.allSelected = true;
-                                        const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
+                                        const table = /** @type {TabulatorTable} */ (
+                                            this._('#tabulator-table-created-requests')
+                                        );
                                         table.selectAllVisibleRows();
-                                        this.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
+                                        this.toggleDeleteAndSubmitButtons(
+                                            '#tabulator-table-created-requests',
+                                        );
                                     }}"
-                                    title="${i18n.t('show-requests.select-all')}"
-                                    >${i18n.t('show-requests.select-all')}</dbp-loading-button>
+                                    title="${i18n.t('show-requests.select-all')}">
+                                    ${i18n.t('show-requests.select-all')}
+                                </dbp-loading-button>
 
-                                <dbp-loading-button id="deselect-all-btn"
+                                <dbp-loading-button
+                                    id="deselect-all-btn"
                                     class="${classMap({hidden: !this.allSelected})}"
                                     value="${i18n.t('show-requests.deselect-all')}"
                                     @click="${() => {
                                         this.allSelected = false;
-                                        const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-created-requests'));
+                                        const table = /** @type {TabulatorTable} */ (
+                                            this._('#tabulator-table-created-requests')
+                                        );
                                         table.deselectAllRows();
-                                        this.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
+                                        this.toggleDeleteAndSubmitButtons(
+                                            '#tabulator-table-created-requests',
+                                        );
                                     }}"
-                                    title="${i18n.t('show-requests.deselect-all')}"
-                                    >${i18n.t('show-requests.deselect-all')}</dbp-loading-button>
+                                    title="${i18n.t('show-requests.deselect-all')}">
+                                    ${i18n.t('show-requests.deselect-all')}
+                                </dbp-loading-button>
                                 <dbp-loading-button
                                     id="expand-all-btn"
                                     class="${classMap({hidden: this.expanded})}"
@@ -787,7 +857,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               value="${i18n.t('show-requests.delete-button-text')}"
                                               @click="${async () => {
                                                   await this.deleteSelected();
-                                                  this.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
+                                                  this.toggleDeleteAndSubmitButtons(
+                                                      '#tabulator-table-created-requests',
+                                                  );
                                               }}"
                                               title="${i18n.t('show-requests.delete-button-text')}">
                                               ${i18n.t('show-requests.delete-button-text')}
@@ -800,7 +872,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               value="${i18n.t('show-requests.submit-button-text')}"
                                               @click="${async (event) => {
                                                   await this.submitSelected();
-                                                  this.toggleDeleteAndSubmitButtons('#tabulator-table-created-requests');
+                                                  this.toggleDeleteAndSubmitButtons(
+                                                      '#tabulator-table-created-requests',
+                                                  );
                                               }}"
                                               title="${i18n.t('show-requests.submit-button-text')}">
                                               ${i18n.t('show-requests.submit-button-text')}
@@ -835,23 +909,19 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     this.createRequestsLoading ||
                                     this.tableLoading,
                             })}">
-
-
                             <div class="container">
                                 <dbp-tabulator-table
-                                        lang="${this.lang}"
-                                        class="tabulator-table"
-                                        id="tabulator-table-created-requests"
-                                        identifier="create-requests-table"
-                                        collapse-enabled
-                                        pagination-size="10"
-                                        pagination-enabled
-                                        select-rows-enabled
-                                        .options=${options}>
-                                </dbp-tabulator-table>
+                                    lang="${this.lang}"
+                                    class="tabulator-table"
+                                    id="tabulator-table-created-requests"
+                                    identifier="create-requests-table"
+                                    collapse-enabled
+                                    pagination-size="10"
+                                    pagination-enabled
+                                    select-rows-enabled
+                                    .options=${options}></dbp-tabulator-table>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -869,7 +939,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                           this.currentItem.dateSubmitted}"
                                           value="${i18n.t('show-requests.delete-button-text')}"
                                           @click="${(event) => {
-                                              let table = this._('#tabulator-table-created-requests');
+                                              let table = this._(
+                                                  '#tabulator-table-created-requests',
+                                              );
                                               this.deleteRequest(table, event, this.currentItem);
                                           }}"
                                           title="${i18n.t('show-requests.delete-button-text')}">
@@ -884,7 +956,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                           this.currentItem.dateSubmitted}"
                                           value="${i18n.t('show-requests.submit-button-text')}"
                                           @click="${(event) => {
-                                              this.submitRequest(this.currentTable, event, this.currentItem);
+                                              this.submitRequest(
+                                                  this.currentTable,
+                                                  event,
+                                                  this.currentItem,
+                                              );
                                           }}"
                                           title="${i18n.t('show-requests.submit-button-text')}">
                                           ${i18n.t('show-requests.submit-button-text')}
@@ -913,7 +989,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 this.subject = this.currentItem.name
                                                                     ? this.currentItem.name
                                                                     : '';
-                                                                /** @type {HTMLInputElement} */(this._('#tf-edit-subject-fn-dialog')).value = this.currentItem.name
+                                                                /** @type {HTMLInputElement} */ (
+                                                                    this._(
+                                                                        '#tf-edit-subject-fn-dialog',
+                                                                    )
+                                                                ).value = this.currentItem.name
                                                                     ? this.currentItem.name
                                                                     : ``;
                                                                 MicroModal.show(
@@ -988,10 +1068,18 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             this.currentItem.dateSubmitted ||
                                                             !this.mayWrite}"
                                                             @click="${(event) => {
-                                                                /** @type {HTMLInputElement} */(this._('#tf-edit-reference-number-fn-dialog')).value = this.currentItem.referenceNumber ?? ``;
+                                                                /** @type {HTMLInputElement} */ (
+                                                                    this._(
+                                                                        '#tf-edit-reference-number-fn-dialog',
+                                                                    )
+                                                                ).value =
+                                                                    this.currentItem
+                                                                        .referenceNumber ?? ``;
                                                                 MicroModal.show(
                                                                     // @ts-ignore
-                                                                    this._('#edit-reference-number-modal'),
+                                                                    this._(
+                                                                        '#edit-reference-number-modal',
+                                                                    ),
                                                                     {
                                                                         disableScroll: true,
                                                                         onClose: (modal) => {
@@ -1000,8 +1088,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                     },
                                                                 );
                                                             }}"
-                                                            aria-label="${i18n.t('show-requests.edit-reference-number-button-text')}"
-                                                            title="${i18n.t('show-requests.edit-reference-number-button-text')}"
+                                                            aria-label="${i18n.t(
+                                                                'show-requests.edit-reference-number-button-text',
+                                                            )}"
+                                                            title="${i18n.t(
+                                                                'show-requests.edit-reference-number-button-text',
+                                                            )}"
                                                             icon-name="pencil"></dbp-icon-button>
                                                     `
                                                   : ``}
@@ -1012,7 +1104,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         ${this.currentItem.referenceNumber}
                                                     `
                                                   : html`
-                                                        ${i18n.t('show-requests.empty-reference-number')}
+                                                        ${i18n.t(
+                                                            'show-requests.empty-reference-number',
+                                                        )}
                                                     `}
                                           </div>
                                       </div>
@@ -1029,7 +1123,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               ${i18n.t('show-requests.recipients')}
                                               <span class="section-title-counts">
                                                   ${this.currentItem.recipients.length !== 0
-                                                      ? `(` + this.currentItem.recipients.length + `)`
+                                                      ? `(` +
+                                                        this.currentItem.recipients.length +
+                                                        `)`
                                                       : ``}
                                               </span>
                                           </div>
@@ -1037,28 +1133,41 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               ? html`
                                                     <dbp-loading-button
                                                         id="add-recipient-btn"
-                                                        ?disabled="${this.loading || this.currentItem.dateSubmitted}"
-                                                        value="${i18n.t('show-requests.add-recipient-button-text')}"
+                                                        ?disabled="${this.loading ||
+                                                        this.currentItem.dateSubmitted}"
+                                                        value="${i18n.t(
+                                                            'show-requests.add-recipient-button-text',
+                                                        )}"
                                                         @click="${(event) => {
                                                             this.preloadSelectedRecipient().then(
                                                                 () => {
                                                                     MicroModal.show(
                                                                         // @ts-ignore
-                                                                        this._('#add-recipient-modal'),
+                                                                        this._(
+                                                                            '#add-recipient-modal',
+                                                                        ),
                                                                         {
                                                                             disableScroll: true,
                                                                             disableFocus: false,
                                                                             onClose: (modal) => {
                                                                                 this.loading = false;
-                                                                                /** @type {LoadingButton} */(this._('#add-recipient-btn')).stop();
+                                                                                /** @type {LoadingButton} */ (
+                                                                                    this._(
+                                                                                        '#add-recipient-btn',
+                                                                                    )
+                                                                                ).stop();
                                                                             },
                                                                         },
                                                                     );
                                                                 },
                                                             );
                                                         }}"
-                                                        title="${i18n.t('show-requests.add-recipient-button-text')}">
-                                                        ${i18n.t('show-requests.add-recipient-button-text')}
+                                                        title="${i18n.t(
+                                                            'show-requests.add-recipient-button-text',
+                                                        )}">
+                                                        ${i18n.t(
+                                                            'show-requests.add-recipient-button-text',
+                                                        )}
                                                     </dbp-loading-button>
                                                 `
                                               : ``}
@@ -1080,27 +1189,37 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  button.start();
                                                                  this.currentRecipient = recipient;
                                                                  try {
-                                                                    this.fetchDetailedRecipientInformation(recipient.identifier).then(() => {
-                                                                        MicroModal.show(
+                                                                     this.fetchDetailedRecipientInformation(
+                                                                         recipient.identifier,
+                                                                     ).then(() => {
+                                                                         MicroModal.show(
                                                                              // @ts-ignore
-                                                                            this._('#show-recipient-modal'),
-                                                                            {
-                                                                                disableScroll: true,
-                                                                                onShow: (modal) => {
-                                                                                    this.button = button;
-                                                                                },
-                                                                                onClose: (modal) => {
-                                                                                    this.loading = false;
-                                                                                    this.currentRecipient = {};
-                                                                                    button.stop();
-                                                                                },
-                                                                            },
-                                                                        );
-                                                                    });
-                                                                } catch {
-                                                                    button.stop();
-                                                                }
-                                                            }}"
+                                                                             this._(
+                                                                                 '#show-recipient-modal',
+                                                                             ),
+                                                                             {
+                                                                                 disableScroll: true,
+                                                                                 onShow: (
+                                                                                     modal,
+                                                                                 ) => {
+                                                                                     this.button =
+                                                                                         button;
+                                                                                 },
+                                                                                 onClose: (
+                                                                                     modal,
+                                                                                 ) => {
+                                                                                     this.loading = false;
+                                                                                     this.currentRecipient =
+                                                                                         {};
+                                                                                     button.stop();
+                                                                                 },
+                                                                             },
+                                                                         );
+                                                                     });
+                                                                 } catch {
+                                                                     button.stop();
+                                                                 }
+                                                             }}"
                                                             title="${i18n.t('show-requests.show-recipient-button-text')}"
                                                             aria-label="${i18n.t(
                                                                 'show-requests.show-recipient-button-text',
@@ -1124,58 +1243,127 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                       this.fetchDetailedRecipientInformation(
                                                                           recipient.identifier,
                                                                       ).then(() => {
-                                                                          /** @type {HTMLInputElement} */(this._('#edit-recipient-country-select')).value = this.currentRecipient.addressCountry;
-                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-birthdate-day')).value = this.currentRecipient.birthDateDay;
-                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-birthdate-month')).value = this.currentRecipient.birthDateMonth;
-                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-birthdate-year')).value = this.currentRecipient.birthDateYear;
-                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-gn-dialog')).value = this.currentRecipient.givenName;
-                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-fn-dialog')).value = this.currentRecipient.familyName;
-                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-pc-dialog')).value = this.currentRecipient.postalCode
-                                                                              ? this.currentRecipient.postalCode
+                                                                          /** @type {HTMLInputElement} */ (
+                                                                              this._(
+                                                                                  '#edit-recipient-country-select',
+                                                                              )
+                                                                          ).value =
+                                                                              this.currentRecipient.addressCountry;
+                                                                          /** @type {HTMLInputElement} */ (
+                                                                              this._(
+                                                                                  '#tf-edit-recipient-birthdate-day',
+                                                                              )
+                                                                          ).value =
+                                                                              this.currentRecipient.birthDateDay;
+                                                                          /** @type {HTMLInputElement} */ (
+                                                                              this._(
+                                                                                  '#tf-edit-recipient-birthdate-month',
+                                                                              )
+                                                                          ).value =
+                                                                              this.currentRecipient.birthDateMonth;
+                                                                          /** @type {HTMLInputElement} */ (
+                                                                              this._(
+                                                                                  '#tf-edit-recipient-birthdate-year',
+                                                                              )
+                                                                          ).value =
+                                                                              this.currentRecipient.birthDateYear;
+                                                                          /** @type {HTMLInputElement} */ (
+                                                                              this._(
+                                                                                  '#tf-edit-recipient-gn-dialog',
+                                                                              )
+                                                                          ).value =
+                                                                              this.currentRecipient.givenName;
+                                                                          /** @type {HTMLInputElement} */ (
+                                                                              this._(
+                                                                                  '#tf-edit-recipient-fn-dialog',
+                                                                              )
+                                                                          ).value =
+                                                                              this.currentRecipient.familyName;
+                                                                          /** @type {HTMLInputElement} */ (
+                                                                              this._(
+                                                                                  '#tf-edit-recipient-pc-dialog',
+                                                                              )
+                                                                          ).value = this
+                                                                              .currentRecipient
+                                                                              .postalCode
+                                                                              ? this
+                                                                                    .currentRecipient
+                                                                                    .postalCode
                                                                               : '';
-                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-al-dialog')).value = this.currentRecipient.addressLocality
-                                                                              ? this.currentRecipient.addressLocality
+                                                                          /** @type {HTMLInputElement} */ (
+                                                                              this._(
+                                                                                  '#tf-edit-recipient-al-dialog',
+                                                                              )
+                                                                          ).value = this
+                                                                              .currentRecipient
+                                                                              .addressLocality
+                                                                              ? this
+                                                                                    .currentRecipient
+                                                                                    .addressLocality
                                                                               : '';
-                                                                          /** @type {HTMLInputElement} */(this._('#tf-edit-recipient-sa-dialog')).value = this.currentRecipient.streetAddress
-                                                                              ? this.currentRecipient.streetAddress
+                                                                          /** @type {HTMLInputElement} */ (
+                                                                              this._(
+                                                                                  '#tf-edit-recipient-sa-dialog',
+                                                                              )
+                                                                          ).value = this
+                                                                              .currentRecipient
+                                                                              .streetAddress
+                                                                              ? this
+                                                                                    .currentRecipient
+                                                                                    .streetAddress
                                                                               : '';
 
-                                                                        MicroModal.show(
-                                                                            // @ts-ignore
-                                                                            this._('#edit-recipient-modal'),
-                                                                            {
-                                                                                disableScroll: true,
-                                                                                onShow: (modal) => {
-                                                                                    this.button =
-                                                                                        button;
-                                                                                },
-                                                                                onClose: (modal) => {
-                                                                                    this.loading = false;
-                                                                                    this.currentRecipient = {};
-                                                                                },
-                                                                            },
+                                                                          MicroModal.show(
+                                                                              // @ts-ignore
+                                                                              this._(
+                                                                                  '#edit-recipient-modal',
+                                                                              ),
+                                                                              {
+                                                                                  disableScroll: true,
+                                                                                  onShow: (
+                                                                                      modal,
+                                                                                  ) => {
+                                                                                      this.button =
+                                                                                          button;
+                                                                                  },
+                                                                                  onClose: (
+                                                                                      modal,
+                                                                                  ) => {
+                                                                                      this.loading = false;
+                                                                                      this.currentRecipient =
+                                                                                          {};
+                                                                                  },
+                                                                              },
                                                                           );
                                                                       });
                                                                   } catch {
                                                                       button.stop();
                                                                   }
                                                               }}"
-                                                            title="${i18n.t('show-requests.edit-recipients-button-text',)}"
-                                                            aria-label="${i18n.t('show-requests.show-recipient-button-text',)}"
-                                                            icon-name="pencil"></dbp-icon-button>
-                                                        <dbp-icon-button
-                                                            id="delete-recipient-btn"
-                                                            ?disabled="${this.loading ||
-                                                            this.currentItem.dateSubmitted}"
-                                                            @click="${(event) => {
-                                                                this.deleteRecipient(
-                                                                    event,
-                                                                    recipient,
-                                                                );
-                                                            }}"
-                                                            aria-label="${i18n.t('show-requests.delete-recipient-button-text',)}"
-                                                            title="${i18n.t('show-requests.delete-recipient-button-text',)}"
-                                                            icon-name="trash"></dbp-icon-button>
+                                                              title="${i18n.t(
+                                                                  'show-requests.edit-recipients-button-text',
+                                                              )}"
+                                                              aria-label="${i18n.t(
+                                                                  'show-requests.show-recipient-button-text',
+                                                              )}"
+                                                              icon-name="pencil"></dbp-icon-button>
+                                                          <dbp-icon-button
+                                                              id="delete-recipient-btn"
+                                                              ?disabled="${this.loading ||
+                                                              this.currentItem.dateSubmitted}"
+                                                              @click="${(event) => {
+                                                                  this.deleteRecipient(
+                                                                      event,
+                                                                      recipient,
+                                                                  );
+                                                              }}"
+                                                              aria-label="${i18n.t(
+                                                                  'show-requests.delete-recipient-button-text',
+                                                              )}"
+                                                              title="${i18n.t(
+                                                                  'show-requests.delete-recipient-button-text',
+                                                              )}"
+                                                              icon-name="trash"></dbp-icon-button>
                                                       `
                                                     : ``
                                             }
@@ -1203,20 +1391,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </div>
             </div>
 
-            ${this.addFilePicker()}
-
-            ${this.addEditSenderModal()}
-
-            ${this.addAddRecipientModal()}
-
-            ${this.addEditRecipientModal()}
-
-            ${this.addShowRecipientModal()}
-
-            ${this.addEditSubjectModal()}
-
-            ${this.addEditReferenceNumberModal()}
-
+            ${this.addFilePicker()} ${this.addEditSenderModal()} ${this.addAddRecipientModal()}
+            ${this.addEditRecipientModal()} ${this.addShowRecipientModal()}
+            ${this.addEditSubjectModal()} ${this.addEditReferenceNumberModal()}
             ${this.addFileViewerModal()}
 
             <div class="modal micromodal-slide" id="add-subject-modal" aria-hidden="true">
@@ -1279,7 +1456,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     class="button select-button is-primary"
                                     id="add-subject-confirm-btn"
                                     @click="${() => {
-                                        /** @type {HTMLButtonElement} */(this._('#add-subject-confirm-btn')).disabled = true;
+                                        /** @type {HTMLButtonElement} */ (
+                                            this._('#add-subject-confirm-btn')
+                                        ).disabled = true;
                                         // @ts-ignore
                                         MicroModal.close(this._('#add-subject-modal'));
                                         this.confirmAddSubject();

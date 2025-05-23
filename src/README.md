@@ -26,8 +26,8 @@ These attributes are available for all activities listed here:
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
 #### Attributes
-See [shared attributes](#shared-attributes).
 
+See [shared attributes](#shared-attributes).
 
 ### dbp-qualified-signature-pdf-upload
 
@@ -41,16 +41,13 @@ See [shared attributes](#shared-attributes).
 
 Note that you will need a Keycloak server along with a client id for the domain you are running this html on.
 
-
 #### Attributes
 
 See [shared attributes](#shared-attributes).
 
-
 ## Design Note
 
 To ensure a uniform and responsive design these activities should occupy 100% width of the window when the activities' width are under 768 px.
-
 
 ## Mandatory attributes
 
@@ -59,11 +56,9 @@ you need to manually add these attributes so that the topic will work properly:
 
 ```html
 <dbp-dispatch
-        auth
-        requested-login-status
-        analytics-event
-        initial-file-handling-state
-        clipboard-files
->
-</dbp-dispatch>
+    auth
+    requested-login-status
+    analytics-event
+    initial-file-handling-state
+    clipboard-files></dbp-dispatch>
 ```
