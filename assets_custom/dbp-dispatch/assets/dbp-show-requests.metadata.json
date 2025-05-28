@@ -4,7 +4,7 @@
     "routing_name": "show-requests",
     "name": {
         "de": "Versandaufträge anzeigen",
-        "en": "Show Requests"
+        "en": "Show dispatch orders"
     },
     "short_name": {
         "de": "Versandaufträge anzeigen",
