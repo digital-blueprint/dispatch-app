@@ -34,6 +34,7 @@
     "error-not-permitted": "You do not have the permission to perform this action!",
     "loading-message": "Loading...",
     "show-requests": {
+        "actions": "Actions",
         "add-files-button-text": "Add file(s)",
         "add-recipient-ac-dialog-label": "Country",
         "add-recipient-al-dialog-label": "Locality",

@@ -498,7 +498,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         ? this.convertToReadableDate(item['dateSubmitted'])
                         : i18n.t('show-requests.date-submitted-not-submitted'),
                     requestId: item['identifier'],
-                    controls: controls_div,
+                    actions: controls_div,
                 };
                 data.push(order);
             });
@@ -789,6 +789,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     recipients: i18n.t('show-requests.table-header-recipients', {lng: 'en'}),
                     dateSubmitted: i18n.t('show-requests.date-submitted', {lng: 'en'}),
                     requestId: i18n.t('show-requests.table-header-id', {lng: 'en'}),
+                    actions: i18n.t('show-requests.actions', {lng: 'en'}),
                 },
             },
             de: {
@@ -802,6 +803,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     recipients: i18n.t('show-requests.table-header-recipients', {lng: 'de'}),
                     dateSubmitted: i18n.t('show-requests.date-submitted', {lng: 'de'}),
                     requestId: i18n.t('show-requests.table-header-id', {lng: 'de'}),
+                    actions: i18n.t('show-requests.actions', {lng: 'de'}),
                 },
             },
         };
@@ -890,8 +892,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 {title: 'requestId', field: 'requestId', minWidth: 150, responsive: 8},
 
                 {
-                    title: '',
-                    field: 'controls',
+                    title: 'actions',
+                    field: 'actions',
                     minWidth: 140,
                     formatter: 'html',
                     hozAlign: 'right',

@@ -34,6 +34,7 @@
     "error-not-permitted": "Sie haben nicht die Berechtigung, um diese Aktion durchführen zu Können!",
     "loading-message": "Lädt...",
     "show-requests": {
+        "actions": "Aktionen",
         "add-files-button-text": "Datei hinzufügen",
         "add-recipient-ac-dialog-label": "Land",
         "add-recipient-al-dialog-label": "Ort",
