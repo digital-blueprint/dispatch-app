@@ -2,41 +2,48 @@ import {PersonSelect} from '@dbp-toolkit/person-select';
 import {ScopedElementsMixin} from '@dbp-toolkit/common';
 
 export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
-    // If the search term matches a matriculationNumber, we search for that,
-    // otherwise the name
-    buildUrlData(select, params) {
-        let term = params.term.trim();
-        let data = {
-            includeLocal: 'matriculationNumber',
-        };
-        if (this.isValidMatriculationNumber(term)) {
-            data['queryLocal'] = 'matriculationNumber:' + term;
-        } else {
-            data['search'] = term;
-        }
-        return data;
+    constructor() {
+        super();
+        super.localDataAttributes = ['matriculationNumber'];
     }
 
-    // Includes the matriculationNumber if possible
-    formatPerson(select, person) {
-        let text = person['givenName'] ?? '';
-        if (person['familyName']) {
-            text += ` ${person['familyName']}`;
+    /**
+     * If the search term matches a matriculationNumber, we search for that,
+     * otherwise the name (default behavior)
+     */
+    getFilterQueryParameters(select, searchTerm) {
+        searchTerm = searchTerm.trim();
+        if (CustomPersonSelect.isValidMatriculationNumber(searchTerm)) {
+            return {
+                'filter[localData.matriculationNumber]': searchTerm,
+            };
         }
 
-        let mat = person.localData.matriculationNumber;
-        if (mat !== null && this.isValidMatriculationNumber(mat)) {
-            text += ` (${mat})`;
+        return super.getFilterQueryParameters(select, searchTerm);
+    }
+
+    /**
+     * Should return a string representation of the selected person's local data attributes.
+     * Feel free to override.
+     *
+     * @param {object} select
+     * @param {object} person
+     * @returns {string}
+     */
+    formatLocalData(select, person) {
+        const matriculationNumber = person.localData?.matriculationNumber;
+        if (CustomPersonSelect.isValidMatriculationNumber(matriculationNumber)) {
+            return ` (${matriculationNumber})`;
         }
 
-        return text;
+        return '';
     }
 
     /**
      * @param {string} mat
      * @returns {boolean}
      */
-    isValidMatriculationNumber(mat) {
-        return /^[0-9]{8}$/g.test(mat);
+    static isValidMatriculationNumber(mat) {
+        return mat && /^[0-9]{8}$/g.test(mat);
     }
 }

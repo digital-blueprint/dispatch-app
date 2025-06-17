@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Add download button to request attachments
+- Replace deprecate 'queryLocal' by 'filter' query parameter for person-select
+- Update toolkit and adapt to new PersonSelect signature
 
 ## v1.4.0
 
