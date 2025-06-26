@@ -15,7 +15,7 @@ export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
         searchTerm = searchTerm.trim();
         if (CustomPersonSelect.isValidMatriculationNumber(searchTerm)) {
             return {
-                'filter[localData.matriculationNumber]': searchTerm,
+                'filter[localData.matriculationNumber]': `"${searchTerm}"`,
             };
         }
 
