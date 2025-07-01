@@ -1,144 +1,144 @@
 <!doctype html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="white"/>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="white" />
 
-    <!-- Meta Data for Search Engines -->
-    <meta title="Dispatch | My University">
-    <meta name="description" content="Dispatch description" />
+        <!-- Meta Data for Search Engines -->
+        <meta title="Dispatch | My University" />
+        <meta name="description" content="Dispatch description" />
 
-    <!-- Meta Data for open graph(facebook & co) -->
-    <meta property="og:locale" content="de_DE" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Dispatch | My University" />
-    <meta property="og:description" content="Dispatch description" />
-    <meta property="og:url" content="https://dispatch.my-university.at/" />
-    <meta property="og:site_name" content="dispatch" />
+        <!-- Meta Data for open graph(facebook & co) -->
+        <meta property="og:locale" content="de_DE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Dispatch | My University" />
+        <meta property="og:description" content="Dispatch description" />
+        <meta property="og:url" content="https://dispatch.my-university.at/" />
+        <meta property="og:site_name" content="dispatch" />
 
-    <!-- Favicons -->
-    <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-    <link rel="manifest" href="/app.webmanifest">
-    <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#e4154b">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+        <!-- Favicons -->
+        <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico" />
+        <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
+        <link rel="manifest" href="/app.webmanifest" />
+        <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#e4154b" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="white" />
 
-    <!-- Loading spinner -->
-    <script type="module">
-        import {Spinner} from '/app/local/@digital-blueprint/dispatch-app/spinner.js';
-        customElements.define('dbp-loading-spinner', Spinner);
-    </script>
+        <!-- Loading spinner -->
+        <script type="module">
+            import {Spinner} from '/app/local/@digital-blueprint/dispatch-app/spinner.js';
+            customElements.define('dbp-loading-spinner', Spinner);
+        </script>
 
-    <!-- App bundles-->
-    <script type="module" src="/app/dbp-dispatch.js"></script>
+        <!-- App bundles-->
+        <script type="module" src="/app/dbp-dispatch.js"></script>
 
-    <!-- Prevent Chrome/Edge from suggesting to translate the page -->
-    <meta name="google" content="notranslate">
+        <!-- Prevent Chrome/Edge from suggesting to translate the page -->
+        <meta name="google" content="notranslate" />
 
-    <!-- Font related CSS -->
-    <style>
-        @import "/app/local/@digital-blueprint/dispatch-app/fonts/source-sans-pro/300.css";
-        @import "/app/local/@digital-blueprint/dispatch-app/fonts/source-sans-pro/400.css";
-        @import "/app/local/@digital-blueprint/dispatch-app/fonts/source-sans-pro/600.css";
+        <!-- Font related CSS -->
+        <style>
+            @import '/app/local/@digital-blueprint/dispatch-app/fonts/source-sans-pro/300.css';
+            @import '/app/local/@digital-blueprint/dispatch-app/fonts/source-sans-pro/400.css';
+            @import '/app/local/@digital-blueprint/dispatch-app/fonts/source-sans-pro/600.css';
 
-        body {
-            font-family: 'Source Sans Pro', 'Calibri', 'Arial', 'sans-serif';
-            font-weight: 300;
-            margin: 0;
-        }
+            body {
+                font-family: 'Source Sans Pro', 'Calibri', 'Arial', 'sans-serif';
+                font-weight: 300;
+                margin: 0;
+            }
 
-        /* style override */
-        html {
-        }
+            /* style override */
+            html {
+            }
 
-        .light-theme{
-            --dbp-override-background: white;
-            --dbp-override-content: #222120;
+            .light-theme {
+                --dbp-override-background: white;
+                --dbp-override-content: #222120;
 
-            --dbp-override-primary: #3775c1;
-            --dbp-override-on-primary-surface: white;
-            --dbp-override-secondary: #222120;
-            --dbp-override-secondary-surface: white;
-            --dbp-override-on-secondary-surface: #222120;
-            --dbp-override-secondary-surface-border-color: #222120;
+                --dbp-override-primary: #3775c1;
+                --dbp-override-on-primary-surface: white;
+                --dbp-override-secondary: #222120;
+                --dbp-override-secondary-surface: white;
+                --dbp-override-on-secondary-surface: #222120;
+                --dbp-override-secondary-surface-border-color: #222120;
 
-            --dbp-override-muted: #767676;
-            --dbp-override-accent: #9e1e4d;
-            --dbp-override-info: #38808a;
-            --dbp-override-success: #338555;
-            --dbp-override-success-surface: #5ec189;
-            --dbp-override-on-success-surface: #222120;
-            --dbp-override-warning: #bf8808;
-            --dbp-override-warning-surface: #f9cc66;
-            --dbp-override-on-warning-surface: #222120;
-            --dbp-override-danger: #cc3232;
+                --dbp-override-muted: #767676;
+                --dbp-override-accent: #9e1e4d;
+                --dbp-override-info: #38808a;
+                --dbp-override-success: #338555;
+                --dbp-override-success-surface: #5ec189;
+                --dbp-override-on-success-surface: #222120;
+                --dbp-override-warning: #bf8808;
+                --dbp-override-warning-surface: #f9cc66;
+                --dbp-override-on-warning-surface: #222120;
+                --dbp-override-danger: #cc3232;
 
-            --dbp-override-border: 1px solid #222120;
-        }
+                --dbp-override-border: 1px solid #222120;
+            }
 
-        .dark-theme{
-            --dbp-override-background: #222120;
-            --dbp-override-content: white;
+            .dark-theme {
+                --dbp-override-background: #222120;
+                --dbp-override-content: white;
 
-            --dbp-override-primary: #398BDA;
-            --dbp-override-on-primary-surface: white;
+                --dbp-override-primary: #398bda;
+                --dbp-override-on-primary-surface: white;
 
-            --dbp-override-secondary: white;
-            --dbp-override-secondary-surface: #222120;
-            --dbp-override-on-secondary-surface: white;
-            --dbp-override-secondary-surface-border-color: white;
+                --dbp-override-secondary: white;
+                --dbp-override-secondary-surface: #222120;
+                --dbp-override-on-secondary-surface: white;
+                --dbp-override-secondary-surface-border-color: white;
 
-            --dbp-override-muted: #8D8B8B;
-            --dbp-override-accent: #bc3a62;
-            --dbp-override-info: #3793A5;
-            --dbp-override-success: #5ec189;
-            --dbp-override-warning: #f9cc66;
-            --dbp-override-danger: #EB534E;
+                --dbp-override-muted: #8d8b8b;
+                --dbp-override-accent: #bc3a62;
+                --dbp-override-info: #3793a5;
+                --dbp-override-success: #5ec189;
+                --dbp-override-warning: #f9cc66;
+                --dbp-override-danger: #eb534e;
 
-            --dbp-override-border: 1px solid white;
-        }
-    </style>
-</head>
+                --dbp-override-border: 1px solid white;
+            }
+        </style>
+    </head>
 
-<body>
-<dbp-dispatch
-    provider-root
-    id="app"
-    lang="de" entry-point-url="https://api-demo.tugraz.at"
-    allow-annotating
-    html-overrides="global-override"
-    src="/dbp-dispatch.topic.metadata.json"
-    base-path="/"
-    keycloak-config='{"url": "https://auth-demo.tugraz.at/auth", "realm": "tugraz-vpu", "clientId": "auth-dev-mw-frontend-local", "silentCheckSsoRedirectUri": "/app/silent-check-sso.html"}'
-    env='local'
-    themes='[{"class": "light-theme", "icon": "sun", "name": "Light Mode"},
-            {"class": "dark-theme", "icon": "night", "name": "Dark Mode"}]'
-><dbp-loading-spinner></dbp-loading-spinner>
-</dbp-dispatch>
+    <body>
+        <dbp-dispatch
+            provider-root
+            id="app"
+            lang="de"
+            entry-point-url="https://api-demo.tugraz.at"
+            allow-annotating
+            html-overrides="global-override"
+            src="/dbp-dispatch.topic.metadata.json"
+            base-path="/"
+            keycloak-config='{"url": "https://auth-demo.tugraz.at/auth", "realm": "tugraz-vpu", "clientId": "auth-dev-mw-frontend-local", "silentCheckSsoRedirectUri": "/app/silent-check-sso.html"}'
+            env="local"
+            themes='[{"class": "light-theme", "icon": "sun", "name": "Light Mode"},
+            {"class": "dark-theme", "icon": "night", "name": "Dark Mode"}]'>
+            <dbp-loading-spinner></dbp-loading-spinner>
+        </dbp-dispatch>
 
-<template id="global-override">
-    <template id="dbp-dispatch">
-        <div slot="name">
-            DBP<br />
-            <dbp-translated subscribe="lang">
-                <div slot="de">
-                    Meine Universität
+        <template id="global-override">
+            <template id="dbp-dispatch">
+                <div slot="name">
+                    DBP
+                    <br />
+                    <dbp-translated subscribe="lang">
+                        <div slot="de">Meine Universität</div>
+                        <div slot="en">My University</div>
+                    </dbp-translated>
                 </div>
-                <div slot="en">
-                    My University
-                </div>
-            </dbp-translated>
-        </div>
-    </template>
-</template>
+            </template>
+        </template>
 
-<!-- Error handling for too old browsers -->
-<script src="/app/local/@digital-blueprint/dispatch-app/browser-check.js" defer></script>
-<noscript>Diese Applikation benötigt Javascript / This application requires Javascript</noscript>
-</body>
+        <!-- Error handling for too old browsers -->
+        <script src="/app/local/@digital-blueprint/dispatch-app/browser-check.js" defer></script>
+        <noscript>
+            Diese Applikation benötigt Javascript / This application requires Javascript
+        </noscript>
+    </body>
 </html>

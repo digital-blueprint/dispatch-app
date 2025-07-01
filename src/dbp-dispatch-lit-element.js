@@ -226,7 +226,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      */
     async sendCreateDispatchRequest() {
         const i18n = this._i18n;
-
+        console.log('here');
         let body = {
             name:
                 this.subject && this.subject !== ''
@@ -4244,9 +4244,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     </div>
                     ${this.currentItem.senderAddressCountry
                         ? html`
-                              ${dispatchHelper.getCountryMapping()[
-                                  this.currentItem.senderAddressCountry
-                              ]}
+                              ${this.lang === 'en'
+                                  ? dispatchHelper.getEnglishCountryMapping()[
+                                        this.currentItem.senderAddressCountry
+                                    ]
+                                  : dispatchHelper.getGermanCountryMapping()[
+                                        this.currentItem.senderAddressCountry
+                                    ]}
                           `
                         : ``}
                 </div>
