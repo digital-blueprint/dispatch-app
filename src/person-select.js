@@ -10,6 +10,8 @@ export class CustomPersonSelect extends ScopedElementsMixin(PersonSelect) {
     /**
      * If the search term matches a matriculationNumber, we search for that,
      * otherwise the name (default behavior)
+     * @param select
+     * @param searchTerm
      */
     getFilterQueryParameters(select, searchTerm) {
         searchTerm = searchTerm.trim();
