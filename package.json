@@ -71,11 +71,12 @@
     },
     "scripts": {
         "build": "rollup -c",
-        "i18next": "i18next",
         "fix": "npm run eslint:fix && npm run prettier:fix && npm run i18next:fix",
         "check": "npm run eslint && npm run prettier && npm run i18next",
         "eslint:fix": "eslint \"**/*.{js,ts}\" --fix",
         "eslint": "eslint \"**/*.{js,ts}\"",
+        "i18next:fix": "i18next --silent",
+        "i18next": "i18next --fail-on-update --silent",
         "prettier:fix": "prettier \"**/*.{js,json,ts,md,yaml,yml}\" --write",
         "prettier": "prettier \"**/*.{js,json,ts,md,yaml,yml}\" --check",
         "watch": "rollup -c --watch",
