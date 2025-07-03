@@ -470,6 +470,7 @@ export function getEnglishCountryList() {
         <option value="LT">Lithuania</option>
         <option value="LU">Luxembourg</option>
         <option value="MO">Macao</option>
+        <option value="MK">North Macedonia</option>
         <option value="MG">Madagascar</option>
         <option value="MW">Malawi</option>
         <option value="MY">Malaysia</option>
@@ -502,7 +503,6 @@ export function getEnglishCountryList() {
         <option value="NG">Nigeria</option>
         <option value="NU">Niue</option>
         <option value="NF">Norfolk Island</option>
-        <option value="MK">North Macedonia</option>
         <option value="MP">Northern Mariana Islands</option>
         <option value="NO">Norway</option>
         <option value="OM">Oman</option>
@@ -884,10 +884,10 @@ export function getEnglishCountryMapping() {
         BG: 'Bulgaria',
         BF: 'Burkina Faso',
         BI: 'Burundi',
+        CV: 'Cabo Verde',
         KH: 'Cambodia',
         CM: 'Cameroon',
         CA: 'Canada',
-        CV: 'Cape Verde',
         KY: 'Cayman Islands',
         CF: 'Central African Republic',
         TD: 'Chad',
@@ -906,7 +906,7 @@ export function getEnglishCountryMapping() {
         CU: 'Cuba',
         CW: 'Curaçao',
         CY: 'Cyprus',
-        CZ: 'Czech Republic',
+        CZ: 'Czechia',
         DK: 'Denmark',
         DJ: 'Djibouti',
         DM: 'Dominica',
@@ -917,6 +917,7 @@ export function getEnglishCountryMapping() {
         GQ: 'Equatorial Guinea',
         ER: 'Eritrea',
         EE: 'Estonia',
+        SZ: 'Eswatini',
         ET: 'Ethiopia',
         FK: 'Falkland Islands (Malvinas)',
         FO: 'Faroe Islands',
@@ -944,7 +945,7 @@ export function getEnglishCountryMapping() {
         GY: 'Guyana',
         HT: 'Haiti',
         HM: 'Heard Island and McDonald Islands',
-        VA: 'Holy See (Vatican City State)',
+        VA: 'Holy See',
         HN: 'Honduras',
         HK: 'Hong Kong',
         HU: 'Hungary',
@@ -1003,7 +1004,7 @@ export function getEnglishCountryMapping() {
         NA: 'Namibia',
         NR: 'Nauru',
         NP: 'Nepal',
-        NL: 'Netherlands',
+        NL: 'Netherlands, Kingdom of the',
         NC: 'New Caledonia',
         NZ: 'New Zealand',
         NI: 'Nicaragua',
@@ -1016,7 +1017,7 @@ export function getEnglishCountryMapping() {
         OM: 'Oman',
         PK: 'Pakistan',
         PW: 'Palau',
-        PS: 'Palestinian Territory, Occupied',
+        PS: 'Palestine, State of',
         PA: 'Panama',
         PG: 'Papua New Guinea',
         PY: 'Paraguay',
@@ -1060,7 +1061,6 @@ export function getEnglishCountryMapping() {
         SD: 'Sudan',
         SR: 'Suriname',
         SJ: 'Svalbard and Jan Mayen',
-        SZ: 'Swaziland',
         SE: 'Sweden',
         CH: 'Switzerland',
         SY: 'Syrian Arab Republic',
@@ -1081,16 +1081,16 @@ export function getEnglishCountryMapping() {
         UG: 'Uganda',
         UA: 'Ukraine',
         AE: 'United Arab Emirates',
-        GB: 'United Kingdom',
-        US: 'United States',
+        GB: 'United Kingdom of Great Britain and Northern Ireland',
+        US: 'United States of America',
         UM: 'United States Minor Outlying Islands',
         UY: 'Uruguay',
         UZ: 'Uzbekistan',
         VU: 'Vanuatu',
         VE: 'Venezuela, Bolivarian Republic of',
         VN: 'VietNam',
-        VG: 'Virgin Islands, British',
-        VI: 'Virgin Islands, U.S.',
+        VG: 'Virgin Islands (British)',
+        VI: 'Virgin Islands (U.S.)',
         WF: 'Wallis and Futuna',
         EH: 'Western Sahara',
         YE: 'Yemen',
@@ -1315,7 +1315,7 @@ export function getGermanCountryMapping() {
         SD: 'Sudan',
         SR: 'Suriname',
         SJ: 'Spitzbergen und Jan Mayen',
-        SZ: 'Eswatini',
+
         SE: 'Schweden',
         CH: 'Schweiz',
         SY: 'Syrien',

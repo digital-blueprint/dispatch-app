@@ -949,6 +949,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateYear = '';
 
                 this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping();
+                console.log("addRecipientToRequest this.currentRecipient.addressCountry " + this.currentRecipient.addressCountry);
 
                 /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-gn-dialog')).value =
                     this.currentRecipient.givenName;
@@ -1086,6 +1087,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateMonth = '';
                     this.currentRecipient.birthDateYear = '';
                     this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping();
+                    console.log("updateRecipient this.currentRecipient.addressCountry " + this.currentRecipient.addressCountry);
 
                     /** @type {HTMLInputElement} */ (this._('#tf-edit-recipient-gn-dialog')).value =
                         this.currentRecipient.givenName;
@@ -2336,6 +2338,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         ? responseBody['localData']['streetAddress']
                         : '';
                     this.currentRecipient.addressCountry = dispatchHelper.getCountryMapping();
+                    console.log("preloadSelectedRecipient this.currentRecipient.addressCountry " + this.currentRecipient.addressCountry);
                 }
             } else {
                 // TODO error handling
@@ -4260,13 +4263,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addRecipientCardLeftSideContent(recipient) {
         const i18n = this._i18n;
-
+        console.log("addRecipientCardLeftSideContent");
         return html`
             <div class="left-side">
                 <div>${recipient.givenName} ${recipient.familyName}</div>
                 <div>${recipient.streetAddress}</div>
                 <div>${recipient.postalCode} ${recipient.addressLocality}</div>
-                <div>${dispatchHelper.getCountryMapping()[recipient.addressCountry]}</div>
+                <div>
+                    ${this.currentItem.senderAddressCountry
+                            ? html`
+                              ${this.lang === 'en'
+                                    ? dispatchHelper.getEnglishCountryMapping()[
+                                              recipient.addressCountry
+                                            ]
+                                    : dispatchHelper.getGermanCountryMapping()[
+                                              recipient.addressCountry
+                                            ]}
+                          `
+                            : ``}
+                </div>
                 ${recipient.electronicallyDeliverable
                     ? html`
                           <div class="delivery-status">
