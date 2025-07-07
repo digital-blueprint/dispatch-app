@@ -1089,7 +1089,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateDay = '';
                     this.currentRecipient.birthDateMonth = '';
                     this.currentRecipient.birthDateYear = '';
-                    this.currentRecipient.addressCountry = dispatchHelper.getEnglishCountryMapping();
+                    this.currentRecipient.addressCountry =
+                        dispatchHelper.getEnglishCountryMapping();
                     console.log(
                         'updateRecipient this.currentRecipient.addressCountry ' +
                             this.currentRecipient.addressCountry,
@@ -2343,7 +2344,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.streetAddress = responseBody['localData']['streetAddress']
                         ? responseBody['localData']['streetAddress']
                         : '';
-                    this.currentRecipient.addressCountry = dispatchHelper.getEnglishCountryMapping();
+                    this.currentRecipient.addressCountry =
+                        dispatchHelper.getEnglishCountryMapping();
                     console.log(
                         'preloadSelectedRecipient this.currentRecipient.addressCountry ' +
                             this.currentRecipient.addressCountry,
