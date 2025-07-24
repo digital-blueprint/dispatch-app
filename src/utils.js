@@ -93,7 +93,6 @@ export function getGermanCountryList() {
         <option value="AR">Argentinien</option>
         <option value="AM">Armenien</option>
         <option value="AW">Aruba</option>
-        <option value="AC">Ascension</option>
         <option value="AZ">Aserbaidschan</option>
         <option value="ET">Äthiopien</option>
         <option value="AU">Australien</option>
@@ -113,11 +112,11 @@ export function getGermanCountryList() {
         <option value="BW">Botswana</option>
         <option value="BR">Brasilien</option>
         <option value="VG">Britische Jungferninseln</option>
+        <option value="IO">Britisches Territorium im Indischen Ozean</option>
         <option value="BN">Brunei</option>
         <option value="BG">Bulgarien</option>
         <option value="BF">Burkina Faso</option>
         <option value="BI">Burundi</option>
-        <option value="CV">Cabo Verde</option>
         <option value="CL">Chile</option>
         <option value="CN">China</option>
         <option value="CK">Cookinseln</option>
@@ -177,18 +176,17 @@ export function getGermanCountryList() {
         <option value="KH">Kambodscha</option>
         <option value="CM">Kamerun</option>
         <option value="CA">Kanada</option>
+        <option value="CV">Kap Verde</option>
         <option value="KZ">Kasachstan</option>
         <option value="QA">Katar</option>
         <option value="KE">Kenia</option>
         <option value="KG">Kirgisistan</option>
         <option value="KI">Kiribati</option>
-        <option value="CC">Kokosinseln (Keelinginseln)</option>
+        <option value="CC">Kokosinseln</option>
         <option value="CO">Kolumbien</option>
         <option value="KM">Komoren</option>
         <option value="CG">Kongo</option>
         <option value="CD">Kongo, Demokratische Republik</option>
-        <option value="KP">Korea, Demokratische Volksrepublik</option>
-        <option value="KR">Korea, Republik</option>
         <option value="HR">Kroatien</option>
         <option value="CU">Kuba</option>
         <option value="KW">Kuwait</option>
@@ -233,12 +231,14 @@ export function getGermanCountryList() {
         <option value="NE">Niger</option>
         <option value="NG">Nigeria</option>
         <option value="NU">Niue</option>
+        <option value="KP">Nordkorea</option>
         <option value="MP">Nördlichen Marianen</option>
         <option value="MK">Nordmazedonien</option>
         <option value="NF">Norfolkinseln</option>
         <option value="NO">Norwegen</option>
         <option value="OM">Oman</option>
         <option value="AT" selected="selected">Österreich</option>
+        <option value="TL">Osttimor</option>
         <option value="PK">Pakistan</option>
         <option value="PS">Palästina</option>
         <option value="PW">Palau</option>
@@ -254,10 +254,12 @@ export function getGermanCountryList() {
         <option value="RE">Réunion</option>
         <option value="RW">Ruanda</option>
         <option value="RO">Rumänien</option>
-        <option value="RU">Russische Föderation</option>
+        <option value="RU">Russland</option>
         <option value="MF">Saint-Martin</option>
         <option value="SB">Salomonen</option>
         <option value="ZM">Sambia</option>
+        <option value="WS">Samoa</option>
+        <option value="SM">San Marino</option>
         <option value="ST">São Tomé und Príncipe</option>
         <option value="SA">Saudi-Arabien</option>
         <option value="SE">Schweden</option>
@@ -283,6 +285,7 @@ export function getGermanCountryList() {
         <option value="ZA">Südafrika</option>
         <option value="SD">Sudan</option>
         <option value="GS">Südgeorgien und die Südlichen Sandwichinseln</option>
+        <option value="KR">Südkorea</option>
         <option value="SS">Südsudan</option>
         <option value="SR">Suriname</option>
         <option value="SY">Syrien</option>
@@ -290,14 +293,13 @@ export function getGermanCountryList() {
         <option value="TW">Taiwan</option>
         <option value="TZ">Tansania</option>
         <option value="TH">Thailand</option>
-        <option value="TL">Timor-Leste</option>
         <option value="TG">Togo</option>
         <option value="TK">Tokelau</option>
         <option value="TO">Tonga</option>
         <option value="TT">Trinidad und Tobago</option>
         <option value="TA">Tristan da Cunha</option>
         <option value="TD">Tschad</option>
-        <option value="CZ">Tschechische Republik</option>
+        <option value="CZ">Tschechien</option>
         <option value="TN">Tunesien</option>
         <option value="TR">Türkei</option>
         <option value="TM">Turkmenistan</option>
@@ -356,7 +358,6 @@ export function getEnglishCountryList() {
 
         <option value="BA">Bosnia and Herzegovina</option>
         <option value="BW">Botswana</option>
-        <option value="BV">Bouvet Island</option>
         <option value="BR">Brazil</option>
         <option value="IO">British Indian Ocean Territory</option>
         <option value="BN">Brunei Darussalam</option>
@@ -579,6 +580,304 @@ export function getEnglishCountryList() {
     `;
 }
 
+export function getGermanCountryMapping() {
+    const countries = {
+        AF: 'Afghanistan',
+        EG: 'Ägypten',
+        AX: 'Åland',
+        AL: 'Albanien',
+        DZ: 'Algerien',
+        VI: 'Amerikanische Jungferninseln',
+        AS: 'Amerikanisch-Samoa',
+        AD: 'Andorra',
+        AO: 'Angola',
+        AI: 'Anguilla',
+        AQ: 'Antarktis',
+        AG: 'Antigua und Barbuda',
+        GQ: 'Äquatorialguinea',
+        AR: 'Argentinien',
+        AM: 'Armenien',
+        AW: 'Aruba',
+        AZ: 'Aserbaidschan',
+        ET: 'Äthiopien',
+        AU: 'Australien',
+        BS: 'Bahamas',
+        BH: 'Bahrain',
+        BD: 'Bangladesch',
+        BB: 'Barbados',
+        BY: 'Belarus',
+        BE: 'Belgien',
+        BZ: 'Belize',
+        BJ: 'Benin',
+        BM: 'Bermuda',
+        BT: 'Bhutan',
+        BO: 'Bolivien',
+        BQ: 'Bonaire, Saba, Sint Eustatius',
+        BA: 'Bosnien and Herzegovina',
+        BW: 'Botswana',
+        BR: 'Brasilien',
+        VG: 'Britische Jungferninseln',
+        IO: 'Britisches Territorium im Indischen Ozean',
+        BN: 'Brunei',
+        BG: 'Bulgarien',
+        BF: 'Burkina Faso',
+        BI: 'Burundi',
+        CL: 'Chile',
+        CN: 'China',
+        CK: 'Cookinseln',
+        CR: 'Costa Rica',
+        CI: "Côte d'Ivoire",
+        CW: 'Curaçao',
+        DK: 'Dänemark',
+        DE: 'Deutschland',
+        DM: 'Dominica',
+        DO: 'Dominikanische Republik',
+        DJ: 'Dschibuti',
+        EC: 'Ecuador',
+        SV: 'El Salvador',
+        ER: 'Eritrea',
+        EE: 'Estland',
+        SZ: 'Eswatini',
+        FK: 'Falklandinseln',
+        FO: 'Färöer',
+        FJ: 'Fidschi',
+        FI: 'Finnland',
+        FR: 'Frankreich',
+        GF: 'Französisch-Guayana',
+        PF: 'Französisch-Polynesien',
+        GA: 'Gabun',
+        GM: 'Gambia',
+        GE: 'Georgien',
+        GH: 'Ghana',
+        GI: 'Gibraltar',
+        GD: 'Grenada',
+        GR: 'Griechenland',
+        GL: 'Grönland',
+        GP: 'Guadeloupe',
+        GU: 'Guam',
+        GT: 'Guatemala',
+        GG: 'Guernsey',
+        GN: 'Guinea',
+        GW: 'Guinea-Bissau',
+        GY: 'Guyana',
+        HT: 'Haiti',
+        HN: 'Honduras',
+        HK: 'Hongkong',
+        IN: 'Indien',
+        ID: 'Indonesien',
+        IM: 'Insel Man',
+        IR: 'Iran',
+        IQ: 'Irak',
+        IE: 'Irland',
+        IS: 'Islan',
+        IL: 'Israel',
+        IT: 'Italien',
+        JM: 'Jamaika',
+        JP: 'Japan',
+        YE: 'Jemen',
+        JE: 'Jersey',
+        JO: 'Jordanien',
+        KY: 'Kaimaninseln',
+        KH: 'Kambodscha',
+        CM: 'Kamerun',
+        CA: 'Kanada',
+        CV: 'Kap Verde',
+        KZ: 'Kasachstan',
+        QA: 'Katar',
+        KE: 'Kenia',
+        KG: 'Kirgisistan',
+        KI: 'Kiribati',
+        CC: 'Kokosinseln',
+        CO: 'Kolumbien',
+        KM: 'Komoren',
+        CG: 'Kongo',
+        CD: 'Kongo, Demokratische Republik ',
+        HR: 'Kroatien',
+        CU: 'Kuba',
+        KW: 'Kuwait',
+        LA: 'Laos',
+        LS: 'Lesotho',
+        LV: 'Lettland',
+        LB: 'Libanon',
+        LR: 'Liberia',
+        LY: 'Libyen',
+        LI: 'Liechtenstein',
+        LT: 'Litauen',
+        LU: 'Luxemburg',
+        MO: 'Macau',
+        MG: 'Madagaskar',
+        MW: 'Malawi',
+        MY: 'Malaysia',
+        MV: 'Malediven',
+        ML: 'Mali',
+        MT: 'Malta',
+        MA: 'Marokko',
+        MH: 'Marshallinseln',
+        MQ: 'Martinique',
+        MR: 'Mauretanien',
+        MU: 'Mauritius',
+        YT: 'Mayotte',
+        MX: 'Mexiko',
+        FM: 'Mikronesien',
+        MD: 'Moldau',
+        MC: 'Monaco',
+        MN: 'Mongolei',
+        ME: 'Montenegro',
+        MS: 'Montserrat',
+        MZ: 'Mosambik',
+        MM: 'Myanmar',
+        NA: 'Namibia',
+        NR: 'Nauru',
+        NP: 'Nepal',
+        NC: 'Neukaledonien',
+        NZ: 'Neuseeland',
+        NI: 'Nicaragua',
+        NL: 'Niederlande',
+        NE: 'Niger',
+        NG: 'Nigeria',
+        NU: 'Niue',
+        KP: 'Nordkorea',
+        MP: 'Nördliche Marianen',
+        MK: 'Nordmazedonien',
+        NF: 'Norfolkinsel',
+        NO: 'Norwegen',
+        OM: 'Oman',
+
+        CF: 'Zentralafrikanische Republik',
+        TD: 'Tschad',
+
+        CX: 'Weihnachtsinsel',
+
+
+
+
+
+
+
+        CY: 'Zypern',
+        CZ: 'Tschechien',
+
+
+
+
+
+
+
+
+
+
+
+
+
+        HM: 'Heard und McDonaldinseln',
+        VA: 'Vatikanstadt',
+
+        HU: 'Ungarn',
+
+
+
+
+        KR: 'Südkorea',
+
+
+
+
+
+
+
+
+
+
+
+
+
+        PK: 'Pakistan',
+        PW: 'Palau',
+        PS: 'Palästina',
+        PA: 'Panama',
+        PG: 'Papua-Neuguinea',
+        PY: 'Paraguay',
+        PE: 'Peru',
+        PH: 'Philippinen',
+        PN: 'Pitcairninseln',
+        PL: 'Polaen',
+        PT: 'Portugal',
+        PR: 'Puerto Rico',
+
+        RE: 'Réunion',
+        RO: 'Rumänien',
+        RU: 'Russland',
+        RW: 'Ruanda',
+        BL: 'Saint-Barthélemy',
+        SH: 'St. Helena, Ascension und Tristan da Cunha',
+        KN: 'St. Kitts und Nevis',
+        LC: 'St. Lucia',
+        MF: 'Saint-Martin (französischer Teil)',
+        PM: 'Saint-Pierre und Miquelon',
+        VC: 'St. Vincent und die Grenadinen',
+        WS: 'Samoa',
+        SM: 'San Marino',
+        ST: 'São Tomé und Príncipe',
+        SA: 'Saudi-Arabien',
+        SN: 'Senegal',
+        RS: 'Serbien',
+        SC: 'Seychellen',
+        SL: 'Sierra Leone',
+        SG: 'Singapur',
+        SX: 'Sint Maarten',
+        SK: 'Slovakei',
+        SI: 'Slowenien',
+        SB: 'Salomonen',
+        SO: 'Somalia',
+        ZA: 'Südafrika',
+        GS: 'Südgeorgien und die Südlichen Sandwichinseln',
+        SS: 'Südsudan',
+        ES: 'Spanien',
+        LK: 'Sri Lanka',
+        SD: 'Sudan',
+        SR: 'Suriname',
+        SJ: 'Spitzbergen und Jan Mayen',
+
+        SE: 'Schweden',
+        CH: 'Schweiz',
+        SY: 'Syrien',
+        TW: 'Taiwan',
+        TJ: 'Tadschikistan',
+        TZ: 'Tansaniac of',
+        TH: 'Thailand',
+        TL: 'Osttimor',
+        AT: 'Österreich',
+        TG: 'Togo',
+        TK: 'Tokelau',
+        TO: 'Tonga',
+        TT: 'Trinidad und Tobago',
+        TN: 'Tunesien',
+        TR: 'Türkei',
+        TM: 'Turkmenistan',
+        TC: 'Turks- und Caicosinseln',
+        TV: 'Tuvalu',
+        UG: 'Uganda',
+        UA: 'Ukraine',
+        AE: 'Vereinigte Arabische Emirate',
+        GB: 'Vereinigtes Königreich',
+        US: 'Vereinigte Staaten',
+        UM: 'United States Minor Outlying Islands',
+        UY: 'Uruguay',
+        UZ: 'Usbekistan',
+        VU: 'Vanuatu',
+        VE: 'Venezuela',
+        VN: 'Vietnam',
+
+
+        WF: 'Wallis und Futuna',
+        EH: 'Westsahara',
+
+        ZM: 'Sambia',
+        ZW: 'Simbabwe',
+    };
+    return countries;
+}
+
 export function getEnglishCountryMapping() {
     const countries = {
         AF: 'Afghanistan',
@@ -611,7 +910,6 @@ export function getEnglishCountryMapping() {
         BQ: 'Bonaire, Sint Eustatius and Saba',
         BA: 'Bosnia and Herzegovina',
         BW: 'Botswana',
-        BV: 'Bouvet Island',
         BR: 'Brazil',
         IO: 'British Indian Ocean Territory',
         BN: 'Brunei Darussalam',
@@ -651,7 +949,7 @@ export function getEnglishCountryMapping() {
         GQ: 'Equatorial Guinea',
         ER: 'Eritrea',
         EE: 'Estonia',
-        SZ: 'Eswatini',
+
         ET: 'Ethiopia',
         FK: 'Falkland Islands (Malvinas)',
         FO: 'Faroe Islands',
@@ -834,257 +1132,4 @@ export function getEnglishCountryMapping() {
     return countries;
 }
 
-export function getGermanCountryMapping() {
-    const countries = {
-        AF: 'Afghanistan',
-        AX: 'Åland Islands',
-        AL: 'Albanien',
-        DZ: 'Algerien',
-        AS: 'Amerikanisch-Samoa',
-        AD: 'Andorra',
-        AO: 'Angola',
-        AI: 'Anguilla',
-        AQ: 'Antarktis',
-        AG: 'Antigua und Barbuda',
-        AR: 'Argentinien',
-        AM: 'Armenien',
-        AW: 'Aruba',
-        AU: 'Australien',
-        AT: 'Österreich',
-        AZ: 'Aserbaidschan',
-        BS: 'Bahamas',
-        BH: 'Bahrain',
-        BD: 'Bangladesch',
-        BB: 'Barbados',
-        BY: 'Belarus',
-        BE: 'Belgien',
-        BZ: 'Belize',
-        BJ: 'Benin',
-        BM: 'Bermuda',
-        BT: 'Bhutan',
-        BO: 'Bolivien',
-        BQ: 'Bonaire, Saba, Sint Eustatius',
-        BA: 'Bosnien and Herzegovina',
-        BW: 'Botswana',
-        BV: 'Bouvetinsel',
-        BR: 'Brasilien',
-        IO: 'Britisches Territorium im Indischen Ozean',
-        BN: 'Brunei',
-        BG: 'Bulgarien',
-        BF: 'Burkina Faso',
-        BI: 'Burundi',
-        KH: 'Cambodia',
-        CM: 'Kamerun',
-        CA: 'Kanada',
-        CV: 'Kap Verde',
-        KY: 'Cayman Islands (Kaimaninseln)',
-        CF: 'Zentralafrikanische Republik',
-        TD: 'Tschad',
-        CL: 'Chile',
-        CN: 'China',
-        CX: 'Weihnachtsinsel',
-        CC: 'Kokosinseln',
-        CO: 'Kolumbien',
-        KM: 'Komoren',
-        CG: 'Republik Kongo',
-        CD: 'Demokratische Republik Kongo',
-        CK: 'Kanarische Inseln',
-        CR: 'Costa Rica',
-        CI: 'Elfenbeinküste',
-        HR: 'Kroatien',
-        CU: 'Kuba',
-        CW: 'Curaçao',
-        CY: 'Zypern',
-        CZ: 'Tschechien',
-        DK: 'Dänemark',
-        DJ: 'Dschibuti',
-        DM: 'Dominica',
-        DO: 'Dominikanische Republik',
-        EC: 'Ecuador',
-        EG: 'Ägypten',
-        SV: 'El Salvador',
-        GQ: 'Äquatorialguinea',
-        ER: 'Eritrea',
-        EE: 'Estland',
-        ET: 'Äthiopien',
-        FK: 'Falklandinseln',
-        FO: 'Färöer',
-        FJ: 'Fidschi',
-        FI: 'Finnland',
-        FR: 'Frankreich',
-        GF: 'Französisch-Guayana',
-        PF: 'Französisch-Polynesien',
-        TF: 'Französische Süd- und Antarktisgebiete',
-        GA: 'Gabun',
-        GM: 'Gambia',
-        GE: 'Georgien',
-        DE: 'Deutschland',
-        GH: 'Ghana',
-        GI: 'Gibraltar',
-        GR: 'Griechenland',
-        GL: 'Grönland',
-        GD: 'Grenada',
-        GP: 'Guadeloupe',
-        GU: 'Guam',
-        GT: 'Guatemala',
-        GG: 'Guernsey',
-        GN: 'Guinea',
-        GW: 'Guinea-Bissau',
-        GY: 'Guyana',
-        HT: 'Haiti',
-        HM: 'Heard und McDonaldinseln',
-        VA: 'Vatikanstadt',
-        HN: 'Honduras',
-        HK: 'Hongkong',
-        HU: 'Ungarn',
-        IS: 'Islan',
-        IN: 'Indien',
-        ID: 'Indonesien',
-        IR: 'Iran',
-        IQ: 'Irak',
-        IE: 'Irland',
-        IM: 'Isle of Man',
-        IL: 'Israel',
-        IT: 'Italien',
-        JM: 'Jamaika',
-        JP: 'Japan',
-        JE: 'Jersey',
-        JO: 'Jordanien',
-        KZ: 'Kasachstan',
-        KE: 'Kenia',
-        KI: 'Kiribati',
-        KP: 'Nordkorea',
-        KR: 'Südkorea',
-        KW: 'Kuwait',
-        KG: 'Kirgisistan',
-        LA: 'Laos',
-        LV: 'Lettland',
-        LB: 'Libanon',
-        LS: 'Lesotho',
-        LR: 'Liberia',
-        LY: 'Libyen',
-        LI: 'Liechtenstein',
-        LT: 'Litauen',
-        LU: 'Luxemburg',
-        MO: 'Macau',
-        MK: 'Nordmazedonien',
-        MG: 'Madagaskar',
-        MW: 'Malawi',
-        MY: 'Malaysia',
-        MV: 'Maldiven',
-        ML: 'Mali',
-        MT: 'Malta',
-        MH: 'Marshallinseln',
-        MQ: 'Martinique',
-        MR: 'Mauretanien',
-        MU: 'Mauritius',
-        YT: 'Mayotte',
-        MX: 'Mexiko',
-        FM: 'Föderierte Staaten von Mikronesien',
-        MD: 'Moldau',
-        MC: 'Monaco',
-        MN: 'Mongolei',
-        ME: 'Montenegro',
-        MS: 'Montserrat',
-        MA: 'Marokko',
-        MZ: 'Mosambik',
-        MM: 'Myanmar',
-        NA: 'Namibia',
-        NR: 'Nauru',
-        NP: 'Nepal',
-        NL: 'Niederlande',
-        NC: 'Neukaledonien',
-        NZ: 'Neuseeland',
-        NI: 'Nicaragua',
-        NE: 'Niger',
-        NG: 'Nigeria',
-        NU: 'Niue',
-        NF: 'Norfolkinsel',
-        MP: 'Nördliche Marianen',
-        NO: 'Norwegen',
-        OM: 'Oman',
-        PK: 'Pakistan',
-        PW: 'Palau',
-        PS: 'Palästina',
-        PA: 'Panama',
-        PG: 'Papua-Neuguinea',
-        PY: 'Paraguay',
-        PE: 'Peru',
-        PH: 'Philippinen',
-        PN: 'Pitcairninseln',
-        PL: 'Polaen',
-        PT: 'Portugal',
-        PR: 'Puerto Rico',
-        QA: 'Katar',
-        RE: 'Réunion',
-        RO: 'Rumänien',
-        RU: 'Russland',
-        RW: 'Ruanda',
-        BL: 'Saint-Barthélemy',
-        SH: 'St. Helena, Ascension und Tristan da Cunha',
-        KN: 'St. Kitts und Nevis',
-        LC: 'St. Lucia',
-        MF: 'Saint-Martin (französischer Teil)',
-        PM: 'Saint-Pierre und Miquelon',
-        VC: 'St. Vincent und die Grenadinen',
-        WS: 'Samoa',
-        SM: 'San Marino',
-        ST: 'São Tomé und Príncipe',
-        SA: 'Saudi-Arabien',
-        SN: 'Senegal',
-        RS: 'Serbien',
-        SC: 'Seychellen',
-        SL: 'Sierra Leone',
-        SG: 'Singapur',
-        SX: 'Sint Maarten',
-        SK: 'Slovakei',
-        SI: 'Slowenien',
-        SB: 'Salomonen',
-        SO: 'Somalia',
-        ZA: 'Südafrika',
-        GS: 'Südgeorgien und die Südlichen Sandwichinseln',
-        SS: 'Südsudan',
-        ES: 'Spanien',
-        LK: 'Sri Lanka',
-        SD: 'Sudan',
-        SR: 'Suriname',
-        SJ: 'Spitzbergen und Jan Mayen',
 
-        SE: 'Schweden',
-        CH: 'Schweiz',
-        SY: 'Syrien',
-        TW: 'Taiwan',
-        TJ: 'Tadschikistan',
-        TZ: 'Tansaniac of',
-        TH: 'Thailand',
-        TL: 'Osttimor',
-        TG: 'Togo',
-        TK: 'Tokelau',
-        TO: 'Tonga',
-        TT: 'Trinidad und Tobago',
-        TN: 'Tunesien',
-        TR: 'Türkei',
-        TM: 'Turkmenistan',
-        TC: 'Turks- und Caicosinseln',
-        TV: 'Tuvalu',
-        UG: 'Uganda',
-        UA: 'Ukraine',
-        AE: 'Vereinigte Arabische Emirate',
-        GB: 'Vereinigtes Königreich',
-        US: 'Vereinigte Staaten',
-        UM: 'United States Minor Outlying Islands',
-        UY: 'Uruguay',
-        UZ: 'Usbekistan',
-        VU: 'Vanuatu',
-        VE: 'Venezuela',
-        VN: 'Vietnam',
-        VG: 'Britische Jungferninseln',
-        VI: 'Amerikanische Jungferninseln',
-        WF: 'Wallis und Futuna',
-        EH: 'Westsahara',
-        YE: 'Jemen',
-        ZM: 'Sambia',
-        ZW: 'Simbabwe',
-    };
-    return countries;
-}
