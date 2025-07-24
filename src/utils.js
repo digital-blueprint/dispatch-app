@@ -108,12 +108,12 @@ export function getGermanCountryList() {
         <option value="BM">Bermuda</option>
         <option value="BT">Bhutan</option>
         <option value="BO">Bolivien</option>
-        <option value="BQ">Bonaire</option>
+        <option value="BQ">Bonaire, Saba, Sint Eustatius</option>
         <option value="BA">Bosnien und Herzegovina</option>
-        <option value="BW">Botsuana</option>
+        <option value="BW">Botswana</option>
         <option value="BR">Brasilien</option>
         <option value="VG">Britische Jungferninseln</option>
-        <option value="BN">Brunei Darussalam</option>
+        <option value="BN">Brunei</option>
         <option value="BG">Bulgarien</option>
         <option value="BF">Burkina Faso</option>
         <option value="BI">Burundi</option>
@@ -255,7 +255,6 @@ export function getGermanCountryList() {
         <option value="RW">Ruanda</option>
         <option value="RO">Rumänien</option>
         <option value="RU">Russische Föderation</option>
-        <option value="SQ">Saba</option>
         <option value="MF">Saint-Martin</option>
         <option value="SB">Salomonen</option>
         <option value="ZM">Sambia</option>
@@ -269,7 +268,6 @@ export function getGermanCountryList() {
         <option value="SL">Sierra Leone</option>
         <option value="ZW">Simbabwe</option>
         <option value="SG">Singapur</option>
-        <option value="EQ">Sint Eustatius</option>
         <option value="SX">Sint Maarten</option>
         <option value="SK">Slowakei</option>
         <option value="SI">Slowenien</option>
@@ -355,7 +353,7 @@ export function getEnglishCountryList() {
         <option value="BM">Bermuda</option>
         <option value="BT">Bhutan</option>
         <option value="BO">Bolivia, Plurinational State of</option>
-        
+
         <option value="BA">Bosnia and Herzegovina</option>
         <option value="BW">Botswana</option>
         <option value="BV">Bouvet Island</option>
