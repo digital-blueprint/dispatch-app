@@ -424,7 +424,6 @@ export function getEnglishCountryList() {
         <option value="GW">Guinea-Bissau</option>
         <option value="GY">Guyana</option>
         <option value="HT">Haiti</option>
-        <option value="HM">Heard Island and McDonald Islands</option>
         <option value="VA">Holy See</option>
         <option value="HN">Honduras</option>
         <option value="HK">Hong Kong</option>
@@ -541,7 +540,6 @@ export function getEnglishCountryList() {
         <option value="SH">St. Helena, Ascension und Tristan da Cunha</option>
         <option value="SD">Sudan</option>
         <option value="SR">Suriname</option>
-        <option value="SJ">Svalbard and Jan Mayen</option>
         <option value="SE">Sweden</option>
         <option value="CH">Switzerland</option>
         <option value="SY">Syrian Arab Republic</option>
@@ -564,7 +562,6 @@ export function getEnglishCountryList() {
         <option value="AE">United Arab Emirates</option>
         <option value="GB">United Kingdom of Great Britain and Northern Ireland</option>
         <option value="US">United States of America</option>
-        <option value="UM">United States Minor Outlying Islands</option>
         <option value="UY">Uruguay</option>
         <option value="UZ">Uzbekistan</option>
         <option value="VU">Vanuatu</option>
@@ -742,115 +739,68 @@ export function getGermanCountryMapping() {
         NF: 'Norfolkinsel',
         NO: 'Norwegen',
         OM: 'Oman',
-
-        CF: 'Zentralafrikanische Republik',
-        TD: 'Tschad',
-
-        CX: 'Weihnachtsinsel',
-
-
-
-
-
-
-
-        CY: 'Zypern',
-        CZ: 'Tschechien',
-
-
-
-
-
-
-
-
-
-
-
-
-
-        HM: 'Heard und McDonaldinseln',
-        VA: 'Vatikanstadt',
-
-        HU: 'Ungarn',
-
-
-
-
-        KR: 'Südkorea',
-
-
-
-
-
-
-
-
-
-
-
-
-
+        AT: 'Österreich',
+        TL: 'Osttimor',
         PK: 'Pakistan',
-        PW: 'Palau',
         PS: 'Palästina',
+        PW: 'Palau',
         PA: 'Panama',
         PG: 'Papua-Neuguinea',
         PY: 'Paraguay',
         PE: 'Peru',
         PH: 'Philippinen',
         PN: 'Pitcairninseln',
-        PL: 'Polaen',
+        PL: 'Polen',
         PT: 'Portugal',
         PR: 'Puerto Rico',
-
         RE: 'Réunion',
+        RW: 'Ruanda',
         RO: 'Rumänien',
         RU: 'Russland',
-        RW: 'Ruanda',
-        BL: 'Saint-Barthélemy',
-        SH: 'St. Helena, Ascension und Tristan da Cunha',
-        KN: 'St. Kitts und Nevis',
-        LC: 'St. Lucia',
-        MF: 'Saint-Martin (französischer Teil)',
-        PM: 'Saint-Pierre und Miquelon',
-        VC: 'St. Vincent und die Grenadinen',
+        MF: 'Saint-Martin',
+        SB: 'Salomonen',
+        ZM: 'Sambia',
         WS: 'Samoa',
         SM: 'San Marino',
         ST: 'São Tomé und Príncipe',
         SA: 'Saudi-Arabien',
+        SE: 'Schweden',
+        CH: 'Schweiz',
         SN: 'Senegal',
         RS: 'Serbien',
         SC: 'Seychellen',
         SL: 'Sierra Leone',
+        ZW: 'Simbabwe',
         SG: 'Singapur',
         SX: 'Sint Maarten',
-        SK: 'Slovakei',
+        SK: 'Slowakei',
         SI: 'Slowenien',
-        SB: 'Salomonen',
         SO: 'Somalia',
-        ZA: 'Südafrika',
-        GS: 'Südgeorgien und die Südlichen Sandwichinseln',
-        SS: 'Südsudan',
         ES: 'Spanien',
         LK: 'Sri Lanka',
+        BL: 'St. Barthélemy',
+        SH: 'St. Helena, Ascension und Tristan da Cunha',
+        KN: 'St. Kitts und Nevis',
+        LC: 'St. Lucia',
+        PM: 'Saint-Pierre und Miquelon',
+        VC: 'St. Vincent und die Grenadinen',
+        ZA: 'Südafrika',
         SD: 'Sudan',
+        GS: 'Südgeorgien und die Südlichen Sandwichinseln',
+        KR: 'Südkorea',
+        SS: 'Südsudan',
         SR: 'Suriname',
-        SJ: 'Spitzbergen und Jan Mayen',
-
-        SE: 'Schweden',
-        CH: 'Schweiz',
         SY: 'Syrien',
-        TW: 'Taiwan',
         TJ: 'Tadschikistan',
-        TZ: 'Tansaniac of',
+        TW: 'Taiwan',
+        TZ: 'Tansania',
         TH: 'Thailand',
-        TL: 'Osttimor',
-        AT: 'Österreich',
         TG: 'Togo',
         TK: 'Tokelau',
         TO: 'Tonga',
         TT: 'Trinidad und Tobago',
+        TD: 'Tschad',
+        CZ: 'Tschechien',
         TN: 'Tunesien',
         TR: 'Türkei',
         TM: 'Turkmenistan',
@@ -858,22 +808,21 @@ export function getGermanCountryMapping() {
         TV: 'Tuvalu',
         UG: 'Uganda',
         UA: 'Ukraine',
-        AE: 'Vereinigte Arabische Emirate',
-        GB: 'Vereinigtes Königreich',
-        US: 'Vereinigte Staaten',
-        UM: 'United States Minor Outlying Islands',
+        HU: 'Ungarn',
         UY: 'Uruguay',
         UZ: 'Usbekistan',
         VU: 'Vanuatu',
+        VA: 'Vatikanstadt',
         VE: 'Venezuela',
+        AE: 'Vereinigte Arabische Emirate',
+        US: 'Vereinigte Staaten',
+        GB: 'Vereinigtes Königreich von Großbritannien und Nordirland',
         VN: 'Vietnam',
-
-
         WF: 'Wallis und Futuna',
+        CX: 'Weihnachtsinsel',
         EH: 'Westsahara',
-
-        ZM: 'Sambia',
-        ZW: 'Simbabwe',
+        CF: 'Zentralafrikanische Republik',
+        CY: 'Zypern',
     };
     return countries;
 }
@@ -976,7 +925,6 @@ export function getEnglishCountryMapping() {
         GW: 'Guinea-Bissau',
         GY: 'Guyana',
         HT: 'Haiti',
-        HM: 'Heard Island and McDonald Islands',
         VA: 'Holy See',
         HN: 'Honduras',
         HK: 'Hong Kong',
@@ -1092,7 +1040,6 @@ export function getEnglishCountryMapping() {
         LK: 'Sri Lanka',
         SD: 'Sudan',
         SR: 'Suriname',
-        SJ: 'Svalbard and Jan Mayen',
         SE: 'Sweden',
         CH: 'Switzerland',
         SY: 'Syrian Arab Republic',
@@ -1115,7 +1062,6 @@ export function getEnglishCountryMapping() {
         AE: 'United Arab Emirates',
         GB: 'United Kingdom of Great Britain and Northern Ireland',
         US: 'United States of America',
-        UM: 'United States Minor Outlying Islands',
         UY: 'Uruguay',
         UZ: 'Uzbekistan',
         VU: 'Vanuatu',
@@ -1131,5 +1077,3 @@ export function getEnglishCountryMapping() {
     };
     return countries;
 }
-
-
