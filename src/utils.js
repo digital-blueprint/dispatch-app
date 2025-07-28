@@ -329,7 +329,7 @@ export function getEnglishCountryList() {
     return html`
         <option value></option>
         <option value="AF">Afghanistan</option>
-        <option value="AX">Åland Islands</option>
+        <option value="AX">Åland</option>
         <option value="AL">Albania</option>
         <option value="DZ">Algeria</option>
         <option value="AS">American Samoa</option>
@@ -354,8 +354,8 @@ export function getEnglishCountryList() {
         <option value="BJ">Benin</option>
         <option value="BM">Bermuda</option>
         <option value="BT">Bhutan</option>
-        <option value="BO">Bolivia, Plurinational State of</option>
-
+        <option value="BO">Bolivia</option>
+        <option value="BQ">Bonaire, Saba, Sint Eustatius</option>
         <option value="BA">Bosnia and Herzegovina</option>
         <option value="BW">Botswana</option>
         <option value="BR">Brazil</option>
@@ -374,11 +374,11 @@ export function getEnglishCountryList() {
         <option value="CL">Chile</option>
         <option value="CN">China</option>
         <option value="CX">Christmas Island</option>
-        <option value="CC">Cocos (Keeling) Islands</option>
+        <option value="CC">Cocos Islands</option>
         <option value="CO">Colombia</option>
         <option value="KM">Comoros</option>
         <option value="CG">Congo</option>
-        <option value="CD">Congo, Democratic Republic of the</option>
+        <option value="CD">Congo, the Democratic Republic of the</option>
         <option value="CK">Cook Islands</option>
         <option value="CR">Costa Rica</option>
         <option value="CI">Côte d'Ivoire</option>
@@ -399,7 +399,7 @@ export function getEnglishCountryList() {
         <option value="EE">Estonia</option>
         <option value="SZ">Eswatini</option>
         <option value="ET">Ethiopia</option>
-        <option value="FK">Falkland Islands (Malvinas)</option>
+        <option value="FK">Falkland Islands</option>
         <option value="FO">Faroe Islands</option>
         <option value="FJ">Fiji</option>
         <option value="FI">Finland</option>
@@ -431,7 +431,7 @@ export function getEnglishCountryList() {
         <option value="IS">Iceland</option>
         <option value="IN">India</option>
         <option value="ID">Indonesia</option>
-        <option value="IR">Iran, Islamic Republic of</option>
+        <option value="IR">Iran</option>
         <option value="IQ">Iraq</option>
         <option value="IE">Ireland</option>
         <option value="IM">Isle of Man</option>
@@ -444,8 +444,6 @@ export function getEnglishCountryList() {
         <option value="KZ">Kazakhstan</option>
         <option value="KE">Kenya</option>
         <option value="KI">Kiribati</option>
-        <option value="KP">Korea, Democratic People's Republic of</option>
-        <option value="KR">Korea, Republic of</option>
         <option value="KW">Kuwait</option>
         <option value="KG">Kyrgyzstan</option>
         <option value="LA">Lao People's Democratic Republic</option>
@@ -458,7 +456,6 @@ export function getEnglishCountryList() {
         <option value="LT">Lithuania</option>
         <option value="LU">Luxembourg</option>
         <option value="MO">Macao</option>
-        <option value="MK">North Macedonia</option>
         <option value="MG">Madagascar</option>
         <option value="MW">Malawi</option>
         <option value="MY">Malaysia</option>
@@ -471,8 +468,8 @@ export function getEnglishCountryList() {
         <option value="MU">Mauritius</option>
         <option value="YT">Mayotte</option>
         <option value="MX">Mexico</option>
-        <option value="FM">Micronesia, Federated States of</option>
-        <option value="MD">Moldova, Republic of</option>
+        <option value="FM">Micronesia</option>
+        <option value="MD">Moldova</option>
         <option value="MC">Monaco</option>
         <option value="MN">Mongolia</option>
         <option value="ME">Montenegro</option>
@@ -483,7 +480,7 @@ export function getEnglishCountryList() {
         <option value="NA">Namibia</option>
         <option value="NR">Nauru</option>
         <option value="NP">Nepal</option>
-        <option value="NL">Netherlands, Kingdom of the</option>
+        <option value="NL">Netherlands</option>
         <option value="NC">New Caledonia</option>
         <option value="NZ">New Zealand</option>
         <option value="NI">Nicaragua</option>
@@ -491,6 +488,8 @@ export function getEnglishCountryList() {
         <option value="NG">Nigeria</option>
         <option value="NU">Niue</option>
         <option value="NF">Norfolk Island</option>
+        <option value="KP">North Korea</option>
+        <option value="MK">North Macedonia</option>
         <option value="MP">Northern Mariana Islands</option>
         <option value="NO">Norway</option>
         <option value="OM">Oman</option>
@@ -509,7 +508,7 @@ export function getEnglishCountryList() {
         <option value="QA">Qatar</option>
         <option value="RE">Réunion</option>
         <option value="RO">Romania</option>
-        <option value="RU">Russian Federation</option>
+        <option value="RU">Russia</option>
         <option value="RW">Rwanda</option>
         <option value="BL">Saint Barthélemy</option>
         <option value="SH">Saint Helena, Ascension and Tristan da Cunha</option>
@@ -534,16 +533,16 @@ export function getEnglishCountryList() {
         <option value="SO">Somalia</option>
         <option value="ZA">South Africa</option>
         <option value="GS">South Georgia and the South Sandwich Islands</option>
+        <option value="KR">South Korea</option>
         <option value="SS">South Sudan</option>
         <option value="ES">Spain</option>
         <option value="LK">Sri Lanka</option>
-        <option value="SH">St. Helena, Ascension und Tristan da Cunha</option>
         <option value="SD">Sudan</option>
         <option value="SR">Suriname</option>
         <option value="SE">Sweden</option>
         <option value="CH">Switzerland</option>
         <option value="SY">Syrian Arab Republic</option>
-        <option value="TW">Taiwan, Province of China</option>
+        <option value="TW">Taiwan</option>
         <option value="TJ">Tajikistan</option>
         <option value="TZ">Tanzania, United Republic of</option>
         <option value="TH">Thailand</option>
@@ -553,7 +552,7 @@ export function getEnglishCountryList() {
         <option value="TO">Tonga</option>
         <option value="TT">Trinidad and Tobago</option>
         <option value="TN">Tunisia</option>
-        <option value="TR">Türkiye</option>
+        <option value="TR">Turkey</option>
         <option value="TM">Turkmenistan</option>
         <option value="TC">Turks and Caicos Islands</option>
         <option value="TV">Tuvalu</option>
@@ -830,7 +829,7 @@ export function getGermanCountryMapping() {
 export function getEnglishCountryMapping() {
     const countries = {
         AF: 'Afghanistan',
-        AX: 'Åland Islands',
+        AX: 'Åland',
         AL: 'Albania',
         DZ: 'Algeria',
         AS: 'American Samoa',
@@ -855,8 +854,8 @@ export function getEnglishCountryMapping() {
         BJ: 'Benin',
         BM: 'Bermuda',
         BT: 'Bhutan',
-        BO: 'Bolivia, Plurinational State of',
-        BQ: 'Bonaire, Sint Eustatius and Saba',
+        BO: 'Bolivia',
+        BQ: 'Bonaire, Saba, Sint Eustatius',
         BA: 'Bosnia and Herzegovina',
         BW: 'Botswana',
         BR: 'Brazil',
@@ -875,7 +874,7 @@ export function getEnglishCountryMapping() {
         CL: 'Chile',
         CN: 'China',
         CX: 'Christmas Island',
-        CC: 'Cocos (Keeling) Islands',
+        CC: 'Cocos Islands',
         CO: 'Colombia',
         KM: 'Comoros',
         CG: 'Congo',
@@ -898,7 +897,7 @@ export function getEnglishCountryMapping() {
         GQ: 'Equatorial Guinea',
         ER: 'Eritrea',
         EE: 'Estonia',
-
+        SZ: 'Eswatini',
         ET: 'Ethiopia',
         FK: 'Falkland Islands (Malvinas)',
         FO: 'Faroe Islands',
@@ -932,7 +931,7 @@ export function getEnglishCountryMapping() {
         IS: 'Iceland',
         IN: 'India',
         ID: 'Indonesia',
-        IR: 'Iran, Islamic Republic of',
+        IR: 'Iran',
         IQ: 'Iraq',
         IE: 'Ireland',
         IM: 'Isle of Man',
@@ -945,8 +944,6 @@ export function getEnglishCountryMapping() {
         KZ: 'Kazakhstan',
         KE: 'Kenya',
         KI: 'Kiribati',
-        KP: "Korea, Democratic People's Republic of",
-        KR: 'Korea, Republic of',
         KW: 'Kuwait',
         KG: 'Kyrgyzstan',
         LA: "Lao People's Democratic Republic",
@@ -959,7 +956,7 @@ export function getEnglishCountryMapping() {
         LT: 'Lithuania',
         LU: 'Luxembourg',
         MO: 'Macao',
-        MK: 'North Macedonia',
+
         MG: 'Madagascar',
         MW: 'Malawi',
         MY: 'Malaysia',
@@ -972,8 +969,8 @@ export function getEnglishCountryMapping() {
         MU: 'Mauritius',
         YT: 'Mayotte',
         MX: 'Mexico',
-        FM: 'Micronesia, Federated States of',
-        MD: 'Moldova, Republic of',
+        FM: 'Micronesia',
+        MD: 'Moldovaf',
         MC: 'Monaco',
         MN: 'Mongolia',
         ME: 'Montenegro',
@@ -984,7 +981,7 @@ export function getEnglishCountryMapping() {
         NA: 'Namibia',
         NR: 'Nauru',
         NP: 'Nepal',
-        NL: 'Netherlands, Kingdom of the',
+        NL: 'Netherlands',
         NC: 'New Caledonia',
         NZ: 'New Zealand',
         NI: 'Nicaragua',
@@ -992,6 +989,8 @@ export function getEnglishCountryMapping() {
         NG: 'Nigeria',
         NU: 'Niue',
         NF: 'Norfolk Island',
+        KP: 'North Korea',
+        MK: 'North Macedonia',
         MP: 'Northern Mariana Islands',
         NO: 'Norway',
         OM: 'Oman',
@@ -1010,7 +1009,7 @@ export function getEnglishCountryMapping() {
         QA: 'Qatar',
         RE: 'Réunion',
         RO: 'Romania',
-        RU: 'Russian Federation',
+        RU: 'Russia',
         RW: 'Rwanda',
         BL: 'Saint Barthélemy',
         SH: 'Saint Helena, Ascension and Tristan da Cunha',
@@ -1035,6 +1034,7 @@ export function getEnglishCountryMapping() {
         SO: 'Somalia',
         ZA: 'South Africa',
         GS: 'South Georgia and the South Sandwich Islands',
+        KR: 'South Korea',
         SS: 'South Sudan',
         ES: 'Spain',
         LK: 'Sri Lanka',
@@ -1043,7 +1043,7 @@ export function getEnglishCountryMapping() {
         SE: 'Sweden',
         CH: 'Switzerland',
         SY: 'Syrian Arab Republic',
-        TW: 'Taiwan, Province of China',
+        TW: 'Taiwan',
         TJ: 'Tajikistan',
         TZ: 'Tanzania, United Republic of',
         TH: 'Thailand',
@@ -1066,7 +1066,7 @@ export function getEnglishCountryMapping() {
         UZ: 'Uzbekistan',
         VU: 'Vanuatu',
         VE: 'Venezuela, Bolivarian Republic of',
-        VN: 'VietNam',
+        VN: 'Vietnam',
         VG: 'Virgin Islands (British)',
         VI: 'Virgin Islands (U.S.)',
         WF: 'Wallis and Futuna',
