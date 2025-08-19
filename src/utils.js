@@ -1,5 +1,5 @@
 import {html} from 'lit';
-import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
+import {importPdfJs} from '@dbp-toolkit/pdf-viewer';
 import * as commonUtils from '@dbp-toolkit/common/utils';
 
 export const getPDFFileBase64Content = (file) => {
@@ -28,6 +28,7 @@ export const getReferenceNumberFromPDF = async (file) => {
     const data = await readBinaryFileContent(file);
 
     // Load PDF
+    let pdfjs = await importPdfJs();
     const pdf = await pdfjs.getDocument({data: data}).promise;
     let referenceNumber = null;
 
