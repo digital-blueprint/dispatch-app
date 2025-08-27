@@ -1,6 +1,7 @@
 import {html} from 'lit';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import * as commonUtils from '@dbp-toolkit/common/utils';
+import deAT from 'cldr-localenames-full/main/de-AT/territories.json';
 
 export const getPDFFileBase64Content = (file) => {
     return file.contentUrl.replace(/data:\s*application\/pdf;\s*base64,/, '');
@@ -75,6 +76,9 @@ export const getDataURIContentType = (dataURI) => {
 };
 
 export function getGermanCountryList() {
+    const countries = deAT.main["de-AT"].localeDisplayNames.territories;
+
+    console.log(countries["DE"]);
     return html`
         <option value></option>
         <option value="AF">Afghanistan</option>
