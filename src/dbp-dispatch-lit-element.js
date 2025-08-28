@@ -2659,7 +2659,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
-                                ${dispatchHelper.getGermanCountryList()}
+                                ${this.lang === 'en'
+                                        ? dispatchHelper.getEnglishCountryList()
+                                        : dispatchHelper.getGermanCountryList()}
                                 <!--<select
                                     required
                                     id="edit-sender-country-select"
@@ -2971,7 +2973,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         <div class="nf-label no-selector">
                                             ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                         </div>
-                                        ${dispatchHelper.getGermanCountryList()}
+                                        ${this.lang === 'en'
+                                                ? dispatchHelper.getEnglishCountryList()
+                                                : dispatchHelper.getGermanCountryList()}
                                         <!--<select
                                             ?disabled="${this.currentRecipient &&
                                             this.currentRecipient.personIdentifier}"
@@ -3304,7 +3308,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
-                                ${dispatchHelper.getGermanCountryList()}
+                                ${this.lang === 'en'
+                                        ? dispatchHelper.getEnglishCountryList()
+                                        : dispatchHelper.getGermanCountryList()}
                                 <!--<select id="edit-recipient-country-select" class="country-select">
                                     ${this.lang === 'en'
                                         ? dispatchHelper.getEnglishCountryList()

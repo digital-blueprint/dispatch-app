@@ -2,6 +2,7 @@ import {html} from 'lit';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import deAT from 'cldr-localenames-full/main/de-AT/territories.json';
+import enAT from 'cldr-localenames-full/main/en-AT/territories.json';
 //import keys from "../dist/shared/index.es.DXc8AeoU.es.js";
 
 export const getPDFFileBase64Content = (file) => {
@@ -124,7 +125,7 @@ export function getGermanCountryList() {
 
 export function getEnglishCountryList() {
     let selectElement = document.createElement("select");
-    let allCountries = deAT.main["en-AT"].localeDisplayNames.territories;
+    let allCountries = enAT.main["en-AT"].localeDisplayNames.territories;
 
     const countryCodes =
         ["AF","EG","AL","DZ","AD","AO","AG","GQ","AR","AM","AZ","ET","AU",
@@ -152,7 +153,7 @@ export function getEnglishCountryList() {
 
 
     const sortedCountries= Object.fromEntries(
-        Object.entries(selectedCountries).sort(([,a],[,b]) => a.localeCompare(b, "de"))
+        Object.entries(selectedCountries).sort(([,a],[,b]) => a.localeCompare(b, "en"))
     );
     console.log(sortedCountries);
     let firstOption = document.createElement("option");
