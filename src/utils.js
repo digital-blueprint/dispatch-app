@@ -76,10 +76,23 @@ export const getDataURIContentType = (dataURI) => {
 };
 
 export function getGermanCountryList() {
+    let selectElement = document.createElement("select");
     const countries = deAT.main["de-AT"].localeDisplayNames.territories;
+    const countryCodes =
+        ["AF","EG","AL","DZ","AD","AO","AG","GQ","AR","AM","AZ","ET","AU","BS","BH","BD","BB","BY","BE","BZ","BJ","BT","BO","BA","BW","BR","BN","BG","BF","BI","CL","CN","CR","CI","DK","DE","DM","DO","DJ","EC","SV","ER","EE","FJ","FI","FR","GA","GM","GE","GH","GD","GR","GT","GN","GW","GY","HT","HN","IN","ID","IQ","IR","IE","IS","IL","IT","JM","JP","YE","JO","KH","CM","CA","CV","KZ","QA","KE","KG","KI","CO","KM","CG","CD","KP","KR","XK","HR","CU","KW","LA","LS","LV","LB","LR","LY","LI","LT","LU","MG","MW","MY","MV","ML","MT","MA","MH","MR","MU","MK","MX","FM","MD","MC","MN","ME","MZ","MM","NA","NR","NP","NZ","NI","NL","NE","NG","NO","OM","AT","PK","PW","PA","PG","PY","PE","PH","PL","PT","RW","RO","RU","SB","ZM","WS","SM","ST","SA","SE","CH","SN","RS","SC","SL","ZW","SG","SK","SI","SO","ES","LK","KN","LC","VC","ZA","SR","SZ","SY","TJ","TZ","TH","TL","TG","TO","TT","TD","CZ","TN","TR","TM","TV","UG","UA","HU","UY","UZ","VU","VA","VE","AE","US","GB","VN","CF","CY","SS","SD"];
+    let firstOption = document.createElement("option");
+    selectElement.appendChild(firstOption);
+    for (let countryCode of countryCodes)
+    {
+        let option = document.createElement("option");
+        option.value = countryCode;
+        option.text = countries[countryCode];
+        selectElement.appendChild(option);
+    }
 
-    console.log(countries["DE"]);
-    return html`
+    return selectElement;
+
+    /*return html`
         <option value></option>
         <option value="AF">Afghanistan</option>
         <option value="EG">Ägypten</option>
@@ -326,7 +339,7 @@ export function getGermanCountryList() {
         <option value="EH">Westsahara</option>
         <option value="CF">Zentralafrikanische Republik</option>
         <option value="CY">Zypern</option>
-    `;
+    `;*/
 }
 
 export function getEnglishCountryList() {

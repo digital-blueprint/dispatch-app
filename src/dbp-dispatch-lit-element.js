@@ -2659,14 +2659,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
-                                <select
+                                ${dispatchHelper.getGermanCountryList()}
+                                <!--<select
                                     required
                                     id="edit-sender-country-select"
                                     class="country-select">
                                     ${this.lang === 'en'
                                         ? dispatchHelper.getEnglishCountryList()
                                         : dispatchHelper.getGermanCountryList()}
-                                </select>
+                                </select>-->
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -2970,8 +2971,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         <div class="nf-label no-selector">
                                             ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                         </div>
-
-                                        <select
+                                        ${dispatchHelper.getGermanCountryList()}
+                                        <!--<select
                                             ?disabled="${this.currentRecipient &&
                                             this.currentRecipient.personIdentifier}"
                                             id="add-recipient-country-select"
@@ -2982,7 +2983,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             ${this.lang === 'en'
                                                 ? dispatchHelper.getEnglishCountryList()
                                                 : dispatchHelper.getGermanCountryList()}
-                                        </select>
+                                        </select>-->
                                     </div>
                                 </div>
                             </div>
@@ -3303,11 +3304,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
-                                <select id="edit-recipient-country-select" class="country-select">
+                                ${dispatchHelper.getGermanCountryList()}
+                                <!--<select id="edit-recipient-country-select" class="country-select">
                                     ${this.lang === 'en'
                                         ? dispatchHelper.getEnglishCountryList()
                                         : dispatchHelper.getGermanCountryList()}
-                                </select>
+                                </select>-->
                             </div>
                         </main>
                         <footer class="modal-footer">
