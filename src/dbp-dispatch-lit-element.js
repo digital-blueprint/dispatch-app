@@ -948,7 +948,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateMonth = '';
                 this.currentRecipient.birthDateYear = '';
 
-                this.currentRecipient.addressCountry = dispatchHelper.getEnglishCountryMapping();
+                //this.currentRecipient.addressCountry = dispatchHelper.getEnglishCountryMapping();
                 console.log(
                     'addRecipientToRequest this.currentRecipient.addressCountry ' +
                         this.currentRecipient.addressCountry,
@@ -1089,8 +1089,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateDay = '';
                     this.currentRecipient.birthDateMonth = '';
                     this.currentRecipient.birthDateYear = '';
-                    this.currentRecipient.addressCountry =
-                        dispatchHelper.getEnglishCountryMapping();
+                    /*this.currentRecipient.addressCountry =
+                        dispatchHelper.getEnglishCountryMapping();*/
                     console.log(
                         'updateRecipient this.currentRecipient.addressCountry ' +
                             this.currentRecipient.addressCountry,
@@ -2344,8 +2344,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.streetAddress = responseBody['localData']['streetAddress']
                         ? responseBody['localData']['streetAddress']
                         : '';
-                    this.currentRecipient.addressCountry =
-                        dispatchHelper.getEnglishCountryMapping();
+                    /*this.currentRecipient.addressCountry =
+                        dispatchHelper.getEnglishCountryMapping();*/
                     console.log(
                         'preloadSelectedRecipient this.currentRecipient.addressCountry ' +
                             this.currentRecipient.addressCountry,
@@ -2662,14 +2662,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 ${this.lang === 'en'
                                         ? dispatchHelper.getEnglishCountryList()
                                         : dispatchHelper.getGermanCountryList()}
-                                <!--<select
+                                <select
                                     required
                                     id="edit-sender-country-select"
                                     class="country-select">
                                     ${this.lang === 'en'
                                         ? dispatchHelper.getEnglishCountryList()
                                         : dispatchHelper.getGermanCountryList()}
-                                </select>-->
+                                </select>
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -2976,7 +2976,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.lang === 'en'
                                                 ? dispatchHelper.getEnglishCountryList()
                                                 : dispatchHelper.getGermanCountryList()}
-                                        <!--<select
+                                        <select
                                             ?disabled="${this.currentRecipient &&
                                             this.currentRecipient.personIdentifier}"
                                             id="add-recipient-country-select"
@@ -2987,7 +2987,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             ${this.lang === 'en'
                                                 ? dispatchHelper.getEnglishCountryList()
                                                 : dispatchHelper.getGermanCountryList()}
-                                        </select>-->
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -3311,11 +3311,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 ${this.lang === 'en'
                                         ? dispatchHelper.getEnglishCountryList()
                                         : dispatchHelper.getGermanCountryList()}
-                                <!--<select id="edit-recipient-country-select" class="country-select">
+                                <select id="edit-recipient-country-select" class="country-select">
                                     ${this.lang === 'en'
                                         ? dispatchHelper.getEnglishCountryList()
                                         : dispatchHelper.getGermanCountryList()}
-                                </select>-->
+                                </select>
                             </div>
                         </main>
                         <footer class="modal-footer">
