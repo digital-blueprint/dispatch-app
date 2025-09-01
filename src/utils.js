@@ -1,5 +1,5 @@
 import {html} from 'lit';
-import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
+import {importPdfJs} from '@dbp-toolkit/pdf-viewer';
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import deAT from 'cldr-localenames-full/main/de-AT/territories.json';
 import enAT from 'cldr-localenames-full/main/en-AT/territories.json';
@@ -31,6 +31,7 @@ export const getReferenceNumberFromPDF = async (file) => {
     const data = await readBinaryFileContent(file);
 
     // Load PDF
+    let pdfjs = await importPdfJs();
     const pdf = await pdfjs.getDocument({data: data}).promise;
     let referenceNumber = null;
 
