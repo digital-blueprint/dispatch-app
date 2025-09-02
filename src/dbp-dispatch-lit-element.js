@@ -2976,18 +2976,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         ${this.lang === 'en'
                                             ? dispatchHelper.getEnglishCountryList()
                                             : dispatchHelper.getGermanCountryList()}
-                                        <select
-                                            ?disabled="${this.currentRecipient &&
-                                            this.currentRecipient.personIdentifier}"
-                                            id="add-recipient-country-select"
-                                            class="country-select"
-                                            @change="${() => {
-                                                this.disablePersonSelector();
-                                            }}">
-                                            ${this.lang === 'en'
-                                                ? dispatchHelper.getEnglishCountryList()
-                                                : dispatchHelper.getGermanCountryList()}
-                                        </select>
                                     </div>
                                 </div>
                             </div>
