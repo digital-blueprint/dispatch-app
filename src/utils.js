@@ -79,6 +79,7 @@ export const getDataURIContentType = (dataURI) => {
 
 export function getGermanCountryList() {
     let selectElement = document.createElement('select');
+    selectElement.setAttribute('id', 'add-recipient-country-select');
     const selectedCountries = getGermanCountryMapping();
     const sortedCountries = Object.fromEntries(
         Object.entries(selectedCountries).sort(([, a], [, b]) => a.localeCompare(b, 'de')),
@@ -91,12 +92,13 @@ export function getGermanCountryList() {
         option.text = countryName;
         selectElement.appendChild(option);
     }
-
+    selectElement.value='AT';
     return selectElement;
 }
 
 export function getEnglishCountryList() {
     let selectElement = document.createElement('select');
+    selectElement.setAttribute('id', 'add-recipient-country-select');
     const selectedCountries = getEnglishCountryMapping();
     const sortedCountries = Object.fromEntries(
         Object.entries(selectedCountries).sort(([, a], [, b]) => a.localeCompare(b, 'en')),
@@ -109,7 +111,7 @@ export function getEnglishCountryList() {
         option.text = countryName;
         selectElement.appendChild(option);
     }
-
+    selectElement.value='AT';
     return selectElement;
 }
 
