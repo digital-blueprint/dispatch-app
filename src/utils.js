@@ -92,7 +92,7 @@ export function getGermanCountryList() {
         option.text = countryName;
         selectElement.appendChild(option);
     }
-    selectElement.value='AT';
+    selectElement.value = 'AT';
     return selectElement;
 }
 
@@ -111,7 +111,7 @@ export function getEnglishCountryList() {
         option.text = countryName;
         selectElement.appendChild(option);
     }
-    selectElement.value='AT';
+    selectElement.value = 'AT';
     return selectElement;
 }
 
