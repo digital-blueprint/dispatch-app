@@ -283,6 +283,7 @@ Dependencies:
                                 '(MIT OR GPL-3.0-or-later)',
                                 '(MPL-2.0 OR Apache-2.0)',
                                 'MIT OR SEE LICENSE IN FEEL-FREE.md',
+                                '(MIT AND Zlib)',
                             ];
                             if (!licenses.includes(dependency.license)) {
                                 throw new Error(
