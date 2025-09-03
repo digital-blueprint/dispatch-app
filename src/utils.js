@@ -116,8 +116,7 @@ export function getEnglishCountryList() {
 }
 
 export function getGermanCountryMapping() {
-    let allCountries = deAT.main['de-AT'].localeDisplayNames.territories;
-
+    let allCountries = new Intl.DisplayNames(['de-AT'], { type: 'region' });
     const countryCodes = [
         'AF',
         'EG',
@@ -315,18 +314,15 @@ export function getGermanCountryMapping() {
         'SS',
         'SD',
     ];
-    const selectedCountries = countryCodes.reduce((acc, key) => {
-        if (key in allCountries) {
-            acc[key] = allCountries[key];
-        }
-        return acc;
-    }, {});
-    return selectedCountries;
+    const countryNames = Object.fromEntries(
+        countryCodes.map(code => [code, allCountries.of(code)])
+    );
+
+    return countryNames;
 }
 
 export function getEnglishCountryMapping() {
-    let allCountries = enAT.main['en-AT'].localeDisplayNames.territories;
-
+    let allCountries = new Intl.DisplayNames(['en-AT'], { type: 'region' });
     const countryCodes = [
         'AF',
         'EG',
@@ -524,11 +520,8 @@ export function getEnglishCountryMapping() {
         'SS',
         'SD',
     ];
-    const selectedCountries = countryCodes.reduce((acc, key) => {
-        if (key in allCountries) {
-            acc[key] = allCountries[key];
-        }
-        return acc;
-    }, {});
-    return selectedCountries;
+    const countryNames = Object.fromEntries(
+        countryCodes.map(code => [code, allCountries.of(code)])
+    );
+    return countryNames;
 }
