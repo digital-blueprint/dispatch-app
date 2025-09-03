@@ -1,7 +1,5 @@
 import {importPdfJs} from '@dbp-toolkit/pdf-viewer';
 import * as commonUtils from '@dbp-toolkit/common/utils';
-import deAT from 'cldr-localenames-full/main/de-AT/territories.json';
-import enAT from 'cldr-localenames-full/main/en-AT/territories.json';
 //import keys from "../dist/shared/index.es.DXc8AeoU.es.js";
 
 export const getPDFFileBase64Content = (file) => {
@@ -116,7 +114,7 @@ export function getEnglishCountryList() {
 }
 
 export function getGermanCountryMapping() {
-    let allCountries = new Intl.DisplayNames(['de-AT'], { type: 'region' });
+    let allCountries = new Intl.DisplayNames(['de-AT'], {type: 'region'});
     const countryCodes = [
         'AF',
         'EG',
@@ -315,14 +313,14 @@ export function getGermanCountryMapping() {
         'SD',
     ];
     const countryNames = Object.fromEntries(
-        countryCodes.map(code => [code, allCountries.of(code)])
+        countryCodes.map((code) => [code, allCountries.of(code)]),
     );
 
     return countryNames;
 }
 
 export function getEnglishCountryMapping() {
-    let allCountries = new Intl.DisplayNames(['en-AT'], { type: 'region' });
+    let allCountries = new Intl.DisplayNames(['en-AT'], {type: 'region'});
     const countryCodes = [
         'AF',
         'EG',
@@ -521,7 +519,7 @@ export function getEnglishCountryMapping() {
         'SD',
     ];
     const countryNames = Object.fromEntries(
-        countryCodes.map(code => [code, allCountries.of(code)])
+        countryCodes.map((code) => [code, allCountries.of(code)]),
     );
     return countryNames;
 }

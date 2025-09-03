@@ -66,7 +66,6 @@
         "@tugraz/font-source-sans-pro": "^0.2.4",
         "@tugraz/web-components": "^0.3.6",
         "@webcomponents/scoped-custom-element-registry": "^0.0.10",
-        "cldr-localenames-full": "^47.0.0",
         "lit": "^3.0.0",
         "pdfjs-dist": "^4.3 <4.6"
     },
