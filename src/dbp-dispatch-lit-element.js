@@ -1091,22 +1091,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateYear = '';
                     this.currentRecipient.addressCountry =
                         dispatchHelper.getEnglishCountryMapping();
-                    /*this.currentRecipient.addressCountry = (
-                        this._('#edit-recipient-country-select')
-                    ).value;*/
-                    console.log('select');
-                    let text ='';
-                    for (let x in this._('#edit-recipient-country-select')) {
-                        text += (
-                            this._('#edit-recipient-country-select')
-                        ).value;
-                    };
-                    console.log(text);
-                    this._('#edit-recipient-country-select').addEventListener("change", function () {
-                        console.log("User selected:", this._('#edit-recipient-country-select').value);
-                    });
+
                     console.log(
-                        this._('#edit-recipient-country-select').value +
                         ' updateRecipient this.currentRecipient.addressCountry ' +
                             this.currentRecipient.addressCountry,
                     );
@@ -2359,8 +2345,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.streetAddress = responseBody['localData']['streetAddress']
                         ? responseBody['localData']['streetAddress']
                         : '';
-                    /*this.currentRecipient.addressCountry =
-                        dispatchHelper.getEnglishCountryMapping();*/
+                    this.currentRecipient.addressCountry =
+                        dispatchHelper.getEnglishCountryMapping();
                     console.log(
                         'preloadSelectedRecipient this.currentRecipient.addressCountry ' +
                             this.currentRecipient.addressCountry,
