@@ -971,7 +971,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 ).value = this.currentRecipient.birthDateMonth;
                 /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-birthdate-year')).value =
                     this.currentRecipient.birthDateYear;
-                /** @type {HTMLInputElement} */ (this._('#add-recipient-country-select')).value =
+                /** @type {HTMLInputElement} */ (this._('#edit-recipient-country-select')).value =
                     'AT';
 
                 this.requestUpdate();
@@ -1089,10 +1089,25 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateDay = '';
                     this.currentRecipient.birthDateMonth = '';
                     this.currentRecipient.birthDateYear = '';
-                    /*this.currentRecipient.addressCountry =
-                        dispatchHelper.getEnglishCountryMapping();*/
+                    this.currentRecipient.addressCountry =
+                        dispatchHelper.getEnglishCountryMapping();
+                    /*this.currentRecipient.addressCountry = (
+                        this._('#edit-recipient-country-select')
+                    ).value;*/
+                    console.log('select');
+                    let text ='';
+                    for (let x in this._('#edit-recipient-country-select')) {
+                        text += (
+                            this._('#edit-recipient-country-select')
+                        ).value;
+                    };
+                    console.log(text);
+                    this._('#edit-recipient-country-select').addEventListener("change", function () {
+                        console.log("User selected:", this._('#edit-recipient-country-select').value);
+                    });
                     console.log(
-                        'updateRecipient this.currentRecipient.addressCountry ' +
+                        this._('#edit-recipient-country-select').value +
+                        ' updateRecipient this.currentRecipient.addressCountry ' +
                             this.currentRecipient.addressCountry,
                     );
 
@@ -2411,7 +2426,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         // Reset country selector.
         /** @type {HTMLSelectElement} */
-        const CountrySelectElement = this.shadowRoot.querySelector('#add-recipient-country-select');
+        const CountrySelectElement = this.shadowRoot.querySelector('#edit-recipient-country-select');
         const options = CountrySelectElement.options;
 
         for (var i = 0, iLen = options.length; i < iLen; i++) {
@@ -3013,7 +3028,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         button.disabled = true;
 
                                         let validcountry = this.checkValidity(
-                                            this._('#add-recipient-country-select'),
+                                            this._('#edit-recipient-country-select'),
                                         );
                                         let validal = this.checkValidity(
                                             this._('#tf-add-recipient-al-dialog'),
@@ -3061,7 +3076,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 ).value;
                                             this.currentRecipient.addressCountry =
                                                 /** @type {HTMLInputElement } */ (
-                                                    this._('#add-recipient-country-select')
+                                                    this._('#edit-recipient-country-select')
                                                 ).value;
                                             this.currentRecipient.postalCode =
                                                 /** @type {HTMLInputElement } */ (
@@ -3530,7 +3545,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                       </div>
                                   `
                                 : ``}
-                            ${this.currentRecipient &&
+                            <!--${this.currentRecipient &&
                             this.currentRecipient.addressCountry &&
                             this.currentRecipient.addressCountry.length > 0 &&
                             this.currentRecipient.addressCountry !== 'AT'
@@ -3539,7 +3554,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                           i18n.t('create-request.add-recipient-country-warning') +
                                           '</div>',
                                   )
-                                : ``}
+                                : ``}-->
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn"></div>
