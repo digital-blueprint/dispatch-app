@@ -1091,10 +1091,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateYear = '';
                     this.currentRecipient.addressCountry =
                         dispatchHelper.getEnglishCountryMapping();
-                    console.log(
-                        'updateRecipient this.currentRecipient.addressCountry ' +
-                            this.currentRecipient.addressCountry,
-                    );
 
                     /** @type {HTMLInputElement} */ (this._('#tf-edit-recipient-gn-dialog')).value =
                         this.currentRecipient.givenName;
