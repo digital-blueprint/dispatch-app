@@ -1096,6 +1096,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         ' updateRecipient this.currentRecipient.addressCountry ' +
                             this.currentRecipient.addressCountry,
                     );
+                    let text = "";
+                    for (let [index, value] of Object.entries(this._('#edit-recipient-country-select'))) {
+                        text += index + ": " + value.text + ";";
+                    }
+                    console.log('text object '+text);
 
                     /** @type {HTMLInputElement} */ (this._('#tf-edit-recipient-gn-dialog')).value =
                         this.currentRecipient.givenName;
@@ -2164,6 +2169,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.addressCountry = /** @type {HTMLInputElement } */ (
                 this._('#edit-recipient-country-select')
             ).value;
+
+
+
             this.currentRecipient.postalCode = /** @type {HTMLInputElement } */ (
                 this._('#tf-edit-recipient-pc-dialog')
             ).value;
