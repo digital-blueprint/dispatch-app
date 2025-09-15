@@ -3299,11 +3299,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 ${this.lang === 'en'
                                     ? dispatchHelper.getEnglishCountryList()
                                     : dispatchHelper.getGermanCountryList()}
-                                <select id="edit-recipient-country-select" class="country-select">
-                                    ${this.lang === 'en'
-                                        ? dispatchHelper.getEnglishCountryList()
-                                        : dispatchHelper.getGermanCountryList()}
-                                </select>
                             </div>
                         </main>
                         <footer class="modal-footer">
