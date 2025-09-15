@@ -13,7 +13,14 @@ import license from 'rollup-plugin-license';
 import del from 'rollup-plugin-delete';
 import emitEJS from 'rollup-plugin-emit-ejs';
 import {getBabelOutputPlugin} from '@rollup/plugin-babel';
-import {getPackagePath, getBuildInfo, generateTLSConfig, getDistPath} from '@dbp-toolkit/dev-utils';
+import {
+    getPackagePath,
+    getBuildInfo,
+    generateTLSConfig,
+    getDistPath,
+    getCopyTargets,
+    getUrlOptions,
+} from '@dbp-toolkit/dev-utils';
 import {createRequire} from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -277,6 +284,7 @@ Dependencies:
                                 '(MIT OR GPL-3.0-or-later)',
                                 '(MPL-2.0 OR Apache-2.0)',
                                 'MIT OR SEE LICENSE IN FEEL-FREE.md',
+                                '(MIT AND Zlib)',
                             ];
                             if (!licenses.includes(dependency.license)) {
                                 throw new Error(
@@ -292,22 +300,10 @@ Dependencies:
                 strictRequires: 'auto',
             }),
             json(),
-            urlPlugin({
-                limit: 0,
-                include: [
-                    await getPackagePath('select2', '**/*.css'),
-                    await getPackagePath('tippy.js', '**/*.css'),
-                ],
-                emitFiles: true,
-                fileName: 'shared/[name].[hash][extname]',
-            }),
+            urlPlugin(await getUrlOptions(pkg.name, 'shared')),
             whitelabel &&
                 copy({
                     targets: [
-                        {
-                            src: 'vendor/signature/assets/*-placeholder.png',
-                            dest: 'dist/' + (await getDistPath('@digital-blueprint/esign-app')),
-                        },
                         {src: 'assets/*.css', dest: 'dist/' + (await getDistPath(pkg.name))},
                         {src: 'assets/*.ico', dest: 'dist/' + (await getDistPath(pkg.name))},
                         {
@@ -316,7 +312,13 @@ Dependencies:
                         },
                         {src: 'assets/*.metadata.json', dest: 'dist'},
                         {src: 'src/*.metadata.json', dest: 'dist'},
-                        {src: 'vendor/signature/src/*.metadata.json', dest: 'dist'},
+                        {
+                            src: await getPackagePath(
+                                '@digital-blueprint/esign-app',
+                                'src/*.metadata.json',
+                            ),
+                            dest: 'dist',
+                        },
                         {src: 'assets/*.svg', dest: 'dist/' + (await getDistPath(pkg.name))},
                         {src: 'assets/htaccess-shared', dest: 'dist/shared/', rename: '.htaccess'},
                         {src: 'assets/icon-*.png', dest: 'dist/' + (await getDistPath(pkg.name))},
@@ -333,15 +335,6 @@ Dependencies:
                             rename: pkg.internalName + '.webmanifest',
                         },
                         {src: 'assets/silent-check-sso.html', dest: 'dist'},
-                        // the pdfjs worker is needed for signature, pdf-viewer and the annotation loading in dispatch!
-                        {
-                            src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.mjs'),
-                            dest: 'dist/' + (await getDistPath('@dbp-toolkit/pdf-viewer', 'pdfjs')),
-                        },
-                        {
-                            src: await getPackagePath('pdfjs-dist', 'cmaps/*'),
-                            dest: 'dist/' + (await getDistPath('@dbp-toolkit/pdf-viewer', 'pdfjs')),
-                        }, // do we want all map files?
                         {
                             src: await getPackagePath('@fontsource/nunito-sans', '*'),
                             dest: 'dist/' + (await getDistPath(pkg.name, 'fonts/nunito-sans')),
@@ -362,41 +355,12 @@ Dependencies:
                             ),
                             dest: 'dist/' + (await getDistPath(pkg.name)),
                         },
-                        {
-                            src: await getPackagePath('@dbp-toolkit/common', 'assets/icons/*.svg'),
-                            dest: 'dist/' + (await getDistPath('@dbp-toolkit/common', 'icons')),
-                        },
-                        {
-                            src: await getPackagePath('tabulator-tables', 'dist/css'),
-                            dest: 'dist/' + (await getDistPath(pkg.name, 'tabulator-tables')),
-                        },
-                        {
-                            src: await getPackagePath('tabulator-tables', 'dist/css'),
-                            dest:
-                                'dist/' +
-                                (await getDistPath(
-                                    '@dbp-toolkit/file-handling',
-                                    'tabulator-tables',
-                                )),
-                        },
-                        {
-                            src: await getPackagePath('tabulator-tables', 'dist/css'),
-                            dest:
-                                'dist/' +
-                                (await getDistPath(
-                                    '@dbp-toolkit/tabulator-table',
-                                    'tabulator-tables',
-                                )),
-                        },
+                        ...(await getCopyTargets(pkg.name, 'dist')),
                     ],
                 }),
             !whitelabel &&
                 copy({
                     targets: [
-                        {
-                            src: 'vendor/signature/assets/*-placeholder.png',
-                            dest: 'dist/' + (await getDistPath('@digital-blueprint/esign-app')),
-                        },
                         {
                             src: customAssetsPath + '*.css',
                             dest: 'dist/' + (await getDistPath(pkg.name)),
@@ -410,7 +374,13 @@ Dependencies:
                             dest: 'dist/' + (await getDistPath(pkg.name)),
                         },
                         {src: customAssetsPath + '*.metadata.json', dest: 'dist'},
-                        {src: 'vendor/signature/src/*.metadata.json', dest: 'dist'},
+                        {
+                            src: await getPackagePath(
+                                '@digital-blueprint/esign-app',
+                                'src/*.metadata.json',
+                            ),
+                            dest: 'dist',
+                        },
                         {
                             src: customAssetsPath + '*.svg',
                             dest: 'dist/' + (await getDistPath(pkg.name)),
@@ -443,15 +413,6 @@ Dependencies:
                             rename: pkg.internalName + '.webmanifest',
                         },
                         {src: customAssetsPath + 'silent-check-sso.html', dest: 'dist'},
-                        // the pdfjs worker is needed for signature, pdf-viewer and the annotation loading in dispatch!
-                        {
-                            src: await getPackagePath('pdfjs-dist', 'legacy/build/pdf.worker.mjs'),
-                            dest: 'dist/' + (await getDistPath('@dbp-toolkit/pdf-viewer', 'pdfjs')),
-                        },
-                        {
-                            src: await getPackagePath('pdfjs-dist', 'cmaps/*'),
-                            dest: 'dist/' + (await getDistPath('@dbp-toolkit/pdf-viewer', 'pdfjs')),
-                        }, // do we want all map files?
                         {
                             src: await getPackagePath('@tugraz/font-source-sans-pro', 'files/*'),
                             dest: 'dist/' + (await getDistPath(pkg.name, 'fonts/source-sans-pro')),
@@ -472,32 +433,7 @@ Dependencies:
                             ),
                             dest: 'dist/' + (await getDistPath(pkg.name)),
                         },
-                        {
-                            src: await getPackagePath('@dbp-toolkit/common', 'assets/icons/*.svg'),
-                            dest: 'dist/' + (await getDistPath('@dbp-toolkit/common', 'icons')),
-                        },
-                        {
-                            src: await getPackagePath('tabulator-tables', 'dist/css'),
-                            dest: 'dist/' + (await getDistPath(pkg.name, 'tabulator-tables')),
-                        },
-                        {
-                            src: await getPackagePath('tabulator-tables', 'dist/css'),
-                            dest:
-                                'dist/' +
-                                (await getDistPath(
-                                    '@dbp-toolkit/file-handling',
-                                    'tabulator-tables',
-                                )),
-                        },
-                        {
-                            src: await getPackagePath('tabulator-tables', 'dist/css'),
-                            dest:
-                                'dist/' +
-                                (await getDistPath(
-                                    '@dbp-toolkit/tabulator-table',
-                                    'tabulator-tables',
-                                )),
-                        },
+                        ...(await getCopyTargets(pkg.name, 'dist')),
                     ],
                 }),
 
