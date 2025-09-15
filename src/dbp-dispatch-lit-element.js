@@ -948,7 +948,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateMonth = '';
                 this.currentRecipient.birthDateYear = '';
 
-                //this.currentRecipient.addressCountry = dispatchHelper.getEnglishCountryMapping();
+                this.currentRecipient.addressCountry = dispatchHelper.getEnglishCountryMapping();
                 console.log(
                     'addRecipientToRequest this.currentRecipient.addressCountry ' +
                         this.currentRecipient.addressCountry,
