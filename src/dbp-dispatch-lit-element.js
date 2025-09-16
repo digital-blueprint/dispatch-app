@@ -2669,7 +2669,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
-                                ${this.lang === 'en'
+                                <!--${this.lang === 'en'
                                     ? dispatchHelper.getEnglishCountryList()
                                     : dispatchHelper.getGermanCountryList()}
                                 <select
@@ -2679,7 +2679,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     ${this.lang === 'en'
                                         ? dispatchHelper.getEnglishCountryList()
                                         : dispatchHelper.getGermanCountryList()}
-                                </select>
+                                </select>-->
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -2744,6 +2744,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addAddRecipientModal() {
         const i18n = this._i18n;
+        const countries = this.lang === 'en'
+            ? dispatchHelper.getEnglishCountryList()
+            : dispatchHelper.getGermanCountryList();
 
         return html`
             <div class="modal micromodal-slide" id="add-recipient-modal" aria-hidden="true">
@@ -2983,9 +2986,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         <div class="nf-label no-selector">
                                             ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                         </div>
-                                        ${this.lang === 'en'
-                                            ? dispatchHelper.getEnglishCountryList()
-                                            : dispatchHelper.getGermanCountryList()}
+                                        <select id="edit-recipient-country-select"
+                                                @change=${this.onCountryChange}>
+                                            ${Object.entries(countries).map(([code, name]) => html`
+                                                <option value=${code}>${name}</option>
+                                                `)}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -3315,9 +3321,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     <option value=${code}>${name}</option>
                                     `)}
                                 </select>
-                                <!--${this.lang === 'en'
-                                    ? dispatchHelper.getEnglishCountryList()
-                                    : dispatchHelper.getGermanCountryList()}-->
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -4192,11 +4195,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                   this.currentItem.dateSubmitted ||
                                   !this.mayWrite}"
                                   @click="${(event) => {
-                                      if (this.currentItem.senderAddressCountry !== '') {
-                                          /** @type {HTMLSelectElement} */ (
-                                              this._('#edit-sender-country-select')
-                                          ).value = this.currentItem.senderAddressCountry;
-                                      }
+                                      //if (this.currentItem.senderAddressCountry  && this.currentItem.senderAddressCountry !== '') {
+                                      //    /** @type {HTMLSelectElement} */ (
+                                      //        this._('#edit-sender-country-select')
+                                      //     ).value = this.currentItem.senderAddressCountry;
+                                      //}
                                       // @ts-ignore
                                       MicroModal.show(this._('#edit-sender-modal'), {
                                           disableScroll: true,
