@@ -4204,11 +4204,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                   this.currentItem.dateSubmitted ||
                                   !this.mayWrite}"
                                   @click="${(event) => {
-                                      //if (this.currentItem.senderAddressCountry  && this.currentItem.senderAddressCountry !== '') {
-                                      //    /** @type {HTMLSelectElement} */ (
-                                      //        this._('#edit-sender-country-select')
-                                      //     ).value = this.currentItem.senderAddressCountry;
-                                      //}
+                                      if (this.currentItem.senderAddressCountry  && this.currentItem.senderAddressCountry !== '') {
+                                          /** @type {HTMLSelectElement} */ (
+                                              this._('#edit-sender-country-select')
+                                           ).value = this.currentItem.senderAddressCountry;
+                                      }
                                       // @ts-ignore
                                       MicroModal.show(this._('#edit-sender-modal'), {
                                           disableScroll: true,
