@@ -2526,6 +2526,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addEditSenderModal() {
         const i18n = this._i18n;
+        const countries = this.lang === 'en'
+            ? dispatchHelper.getEnglishCountryList()
+            : dispatchHelper.getGermanCountryList();
 
         return html`
             <div class="modal micromodal-slide" id="edit-sender-modal" aria-hidden="true">
@@ -2669,6 +2672,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
+                                <select id="edit-sender-country-select"
+                                        @change=${this.onCountryChange}>
+                                    ${Object.entries(countries).map(([code, name]) => html`
+                                                <option value=${code}>${name}</option>
+                                                `)}
+                                </select>
                                 <!--${this.lang === 'en'
                                     ? dispatchHelper.getEnglishCountryList()
                                     : dispatchHelper.getGermanCountryList()}
