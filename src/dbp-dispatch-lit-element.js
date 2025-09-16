@@ -12,7 +12,7 @@ import {IconButton, LoadingButton} from '@dbp-toolkit/common';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
-import {getReferenceNumberFromPDF} from './utils';
+import {getGermanCountryList, getReferenceNumberFromPDF} from './utils';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 
 export default class DBPDispatchLitElement extends DBPLitElement {
@@ -92,6 +92,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this._loginStatus = '';
         this._loginState = [];
+
     }
 
     /**
@@ -1096,11 +1097,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         ' updateRecipient this.currentRecipient.addressCountry ' +
                             this.currentRecipient.addressCountry,
                     );
-                    let text = "";
-                    for (let [index, value] of Object.entries(this._('#edit-recipient-country-select'))) {
-                        text += index + ": " + value.text + ";";
-                    }
-                    console.log('text object '+text);
+
+                    console.log((this._('#edit-recipient-country-select')).value);
+
+
+
 
                     /** @type {HTMLInputElement} */ (this._('#tf-edit-recipient-gn-dialog')).value =
                         this.currentRecipient.givenName;
@@ -2166,9 +2167,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.familyName = /** @type {HTMLInputElement } */ (
                 this._('#tf-edit-recipient-fn-dialog')
             ).value;
-            this.currentRecipient.addressCountry = /** @type {HTMLInputElement } */ (
+            /*this.currentRecipient.addressCountry = (
                 this._('#edit-recipient-country-select')
-            ).value;
+            ).value;*/
 
 
 
@@ -3131,6 +3132,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addEditRecipientModal() {
         const i18n = this._i18n;
+        const countries = this.lang === 'en'
+            ? dispatchHelper.getEnglishCountryList()
+            : dispatchHelper.getGermanCountryList();
 
         return html`
             <div class="modal micromodal-slide" id="edit-recipient-modal" aria-hidden="true">
@@ -3305,9 +3309,15 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
-                                ${this.lang === 'en'
+                                <select id="edit-recipient-country-select"
+                                        @change=${this.onCountryChange}>
+                                        ${Object.entries(countries).map(([code, name]) => html`
+                                    <option value=${code}>${name}</option>
+                                    `)}
+                                </select>
+                                <!--${this.lang === 'en'
                                     ? dispatchHelper.getEnglishCountryList()
-                                    : dispatchHelper.getGermanCountryList()}
+                                    : dispatchHelper.getGermanCountryList()}-->
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -4507,5 +4517,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const timestamp = dateObject.getTime();
 
         return timestamp;
+    }
+
+    onCountryChange(e) {
+        const selectedCode = e.target.value;
+        console.log("User selected country:", selectedCode);
+        this.currentRecipient.addressCountry = selectedCode;
+        // handle however you need
     }
 }

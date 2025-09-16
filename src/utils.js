@@ -82,16 +82,7 @@ export function getGermanCountryList() {
     const sortedCountries = Object.fromEntries(
         Object.entries(selectedCountries).sort(([, a], [, b]) => a.localeCompare(b, 'de')),
     );
-    let firstOption = document.createElement('option');
-    selectElement.appendChild(firstOption);
-    for (const [countryCode, countryName] of Object.entries(sortedCountries)) {
-        let option = document.createElement('option');
-        option.value = countryCode;
-        option.text = countryName;
-        selectElement.appendChild(option);
-    }
-    //selectElement.value = 'AT';
-    return selectElement;
+    return sortedCountries;
 }
 
 export function getEnglishCountryList() {
@@ -102,16 +93,7 @@ export function getEnglishCountryList() {
     const sortedCountries = Object.fromEntries(
         Object.entries(selectedCountries).sort(([, a], [, b]) => a.localeCompare(b, 'en')),
     );
-    let firstOption = document.createElement('option');
-    selectElement.appendChild(firstOption);
-    for (const [countryCode, countryName] of Object.entries(sortedCountries)) {
-        let option = document.createElement('option');
-        option.value = countryCode;
-        option.text = countryName;
-        selectElement.appendChild(option);
-    }
-    //selectElement.value = 'AT';
-    return selectElement;
+    return sortedCountries;
 }
 
 export function getGermanCountryMapping() {

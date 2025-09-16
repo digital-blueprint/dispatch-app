@@ -190,6 +190,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             });
 
             document.addEventListener('keyup', this.boundPressEnterAndSubmitSearchHandler);
+
         });
     }
 
