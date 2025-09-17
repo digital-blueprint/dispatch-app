@@ -2675,7 +2675,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <select id="edit-sender-country-select"
                                         @change=${this.onCountryChange}>
                                     ${Object.entries(countries).map(([code, name]) => html`
-                                                <option value=${code}>${name}</option>
+                                                <option value=${code} ?selected=${code === 'AT'}>${name}</option>
                                                 `)}
                                 </select>
                                 <!--${this.lang === 'en'
@@ -2998,7 +2998,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         <select id="edit-recipient-country-select"
                                                 @change=${this.onCountryChange}>
                                             ${Object.entries(countries).map(([code, name]) => html`
-                                                <option value=${code}>${name}</option>
+                                                <option value=${code} ?selected=${code === 'AT'}>${name}</option>
                                                 `)}
                                         </select>
                                     </div>
@@ -3327,7 +3327,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <select id="edit-recipient-country-select"
                                         @change=${this.onCountryChange}>
                                         ${Object.entries(countries).map(([code, name]) => html`
-                                    <option value=${code}>${name}</option>
+                                    <option value=${code} ?selected=${code === 'AT'} >${name}</option>
                                     `)}
                                 </select>
                             </div>
