@@ -766,10 +766,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     render() {
         const i18n = this._i18n;
-        // const tabulatorCss = commonUtils.getAssetURL(
-        //     pkgName,
-        //     'tabulator-tables/css/tabulator.min.css',
-        // );
 
         if (
             this.isLoggedIn() &&
