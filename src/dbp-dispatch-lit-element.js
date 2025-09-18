@@ -1092,13 +1092,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.addressCountry =
                         dispatchHelper.getEnglishCountryMapping();
 
-                    let text = "";
-                    for (let [index, value] of Object.entries(this._('#edit-recipient-country-select'))) {
-                        text += index + ": " + value + ";";
-                    }
-                    console.log('text ' + (
-                        this._('#edit-recipient-country-select')
-                    ).value);
                     /** @type {HTMLInputElement} */ (this._('#tf-edit-recipient-gn-dialog')).value =
                         this.currentRecipient.givenName;
                     /** @type {HTMLInputElement} */ (this._('#tf-edit-recipient-fn-dialog')).value =
