@@ -12,7 +12,7 @@ import {IconButton, LoadingButton} from '@dbp-toolkit/common';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
-import {getGermanCountryList, getReferenceNumberFromPDF} from './utils';
+import {getReferenceNumberFromPDF} from './utils';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 
 export default class DBPDispatchLitElement extends DBPLitElement {
@@ -92,7 +92,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this._loginStatus = '';
         this._loginState = [];
-
     }
 
     /**
@@ -1092,6 +1091,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this.currentRecipient.birthDateYear = '';
                     this.currentRecipient.addressCountry =
                         dispatchHelper.getEnglishCountryMapping();
+
                     /** @type {HTMLInputElement} */ (this._('#tf-edit-recipient-gn-dialog')).value =
                         this.currentRecipient.givenName;
                     /** @type {HTMLInputElement} */ (this._('#tf-edit-recipient-fn-dialog')).value =
@@ -2160,8 +2160,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this._('#edit-recipient-country-select')
             ).value;*/
 
-
-
             this.currentRecipient.postalCode = /** @type {HTMLInputElement } */ (
                 this._('#tf-edit-recipient-pc-dialog')
             ).value;
@@ -2410,7 +2408,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         // Reset country selector.
         /** @type {HTMLSelectElement} */
-        const CountrySelectElement = this.shadowRoot.querySelector('#edit-recipient-country-select');
+        const CountrySelectElement = this.shadowRoot.querySelector(
+            '#edit-recipient-country-select',
+        );
         const options = CountrySelectElement.options;
 
         for (var i = 0, iLen = options.length; i < iLen; i++) {
@@ -2515,9 +2515,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addEditSenderModal() {
         const i18n = this._i18n;
-        const countries = this.lang === 'en'
-            ? dispatchHelper.getEnglishCountryList()
-            : dispatchHelper.getGermanCountryList();
+        const countries =
+            this.lang === 'en'
+                ? dispatchHelper.getEnglishCountryList()
+                : dispatchHelper.getGermanCountryList();
 
         return html`
             <div class="modal micromodal-slide" id="edit-sender-modal" aria-hidden="true">
@@ -2661,11 +2662,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
-                                <select id="edit-sender-country-select"
-                                        @change=${this.onCountryChange}>
-                                    ${Object.entries(countries).map(([code, name]) => html`
-                                                <option value=${code} ?selected=${code === 'AT'}>${name}</option>
-                                                `)}
+                                <select
+                                    id="edit-sender-country-select"
+                                    @change=${this.onCountryChange}>
+                                    ${Object.entries(countries).map(
+                                        ([code, name]) => html`
+                                            <option value=${code} ?selected=${code === 'AT'}>
+                                                ${name}
+                                            </option>
+                                        `,
+                                    )}
                                 </select>
                                 <!--${this.lang === 'en'
                                     ? dispatchHelper.getEnglishCountryList()
@@ -2675,8 +2681,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     id="edit-sender-country-select"
                                     class="country-select">
                                     ${this.lang === 'en'
-                                        ? dispatchHelper.getEnglishCountryList()
-                                        : dispatchHelper.getGermanCountryList()}
+                                    ? dispatchHelper.getEnglishCountryList()
+                                    : dispatchHelper.getGermanCountryList()}
                                 </select>-->
                             </div>
                         </main>
@@ -2742,9 +2748,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addAddRecipientModal() {
         const i18n = this._i18n;
-        const countries = this.lang === 'en'
-            ? dispatchHelper.getEnglishCountryList()
-            : dispatchHelper.getGermanCountryList();
+        const countries =
+            this.lang === 'en'
+                ? dispatchHelper.getEnglishCountryList()
+                : dispatchHelper.getGermanCountryList();
 
         return html`
             <div class="modal micromodal-slide" id="add-recipient-modal" aria-hidden="true">
@@ -2984,11 +2991,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         <div class="nf-label no-selector">
                                             ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                         </div>
-                                        <select id="edit-recipient-country-select"
-                                                @change=${this.onCountryChange}>
-                                            ${Object.entries(countries).map(([code, name]) => html`
-                                                <option value=${code} ?selected=${code === 'AT'}>${name}</option>
-                                                `)}
+                                        <select
+                                            id="edit-recipient-country-select"
+                                            @change=${this.onCountryChange}>
+                                            ${Object.entries(countries).map(
+                                                ([code, name]) => html`
+                                                    <option
+                                                        value=${code}
+                                                        ?selected=${code === 'AT'}>
+                                                        ${name}
+                                                    </option>
+                                                `,
+                                            )}
                                         </select>
                                     </div>
                                 </div>
@@ -3136,9 +3150,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addEditRecipientModal() {
         const i18n = this._i18n;
-        const countries = this.lang === 'en'
-            ? dispatchHelper.getEnglishCountryList()
-            : dispatchHelper.getGermanCountryList();
+        const countries =
+            this.lang === 'en'
+                ? dispatchHelper.getEnglishCountryList()
+                : dispatchHelper.getGermanCountryList();
 
         return html`
             <div class="modal micromodal-slide" id="edit-recipient-modal" aria-hidden="true">
@@ -3313,11 +3328,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
-                                <select id="edit-recipient-country-select"
-                                        @change=${this.onCountryChange}>
-                                        ${Object.entries(countries).map(([code, name]) => html`
-                                    <option value=${code} ?selected=${code === 'AT'} >${name}</option>
-                                    `)}
+                                <select
+                                    id="edit-recipient-country-select"
+                                    @change=${this.onCountryChange}>
+                                    ${Object.entries(countries).map(
+                                        ([code, name]) => html`
+                                            <option value=${code} ?selected=${code === 'AT'}>
+                                                ${name}
+                                            </option>
+                                        `,
+                                    )}
                                 </select>
                             </div>
                         </main>
@@ -4193,10 +4213,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                   this.currentItem.dateSubmitted ||
                                   !this.mayWrite}"
                                   @click="${(event) => {
-                                      if (this.currentItem.senderAddressCountry  && this.currentItem.senderAddressCountry !== '') {
+                                      if (
+                                          this.currentItem.senderAddressCountry &&
+                                          this.currentItem.senderAddressCountry !== ''
+                                      ) {
                                           /** @type {HTMLSelectElement} */ (
                                               this._('#edit-sender-country-select')
-                                           ).value = this.currentItem.senderAddressCountry;
+                                          ).value = this.currentItem.senderAddressCountry;
                                       }
                                       // @ts-ignore
                                       MicroModal.show(this._('#edit-sender-modal'), {
@@ -4522,7 +4545,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     onCountryChange(e) {
         const selectedCode = e.target.value;
-        console.log("User selected country:", selectedCode);
+        console.log('User selected country:', selectedCode);
         this.currentRecipient.addressCountry = selectedCode;
         // handle however you need
     }

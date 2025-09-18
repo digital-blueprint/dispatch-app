@@ -87,8 +87,7 @@ export function getGermanCountryList() {
 
 export function getEnglishCountryList() {
     let selectElement = document.createElement('select');
-    selectElement.setAttribute('id', 'html select' +
-        '');
+    selectElement.setAttribute('id', 'html select' + '');
     const selectedCountries = getEnglishCountryMapping();
     const sortedCountries = Object.fromEntries(
         Object.entries(selectedCountries).sort(([, a], [, b]) => a.localeCompare(b, 'en')),
