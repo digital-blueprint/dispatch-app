@@ -50,6 +50,10 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.ref == 'refs/heads/production'
     environment: ${{ github.ref_name }}
 
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -59,19 +63,18 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          registry-url: "https://registry.npmjs.org"
           cache: "npm"
 
       - name: Publish to NPM
         if: github.ref == 'refs/heads/main'
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          # https://www.npmjs.com/settings/dbp-deploy/tokens
-          # NPM_TOKEN needs to be a "Publish" token with 2FA disabled!
-          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
-          npm ci
-          npm run build
-          npm run publish
+          if npx --yes can-npm-publish --verbose; then
+            npm install -g npm@latest
+            npm ci
+            npm run build
+            npm publish
+          fi
 
       - name: Deploy and wait for completion
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.ref == 'refs/heads/production'
