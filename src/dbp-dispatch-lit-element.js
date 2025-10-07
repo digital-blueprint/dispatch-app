@@ -1237,7 +1237,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
 
-        if (confirm(i18n.t('show-requests.delete-dialog-text_one'))) {
+        if (confirm(i18n.t('show-requests.delete-dialog-text', {count: 1}))) {
             button.start();
 
             try {
@@ -1344,7 +1344,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             return;
         }
 
-        if (confirm(i18n.t('show-requests.submit-dialog-text_one'))) {
+        if (confirm(i18n.t('show-requests.submit-dialog-text', {count: 1}))) {
             try {
                 button.start();
 
@@ -1717,7 +1717,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 return;
             }
 
-            let dialogText = i18n.t('show-requests.submit-dialog-text_other', {
+            let dialogText = i18n.t('show-requests.submit-dialog-text', {
                 count: this.currentTable.getSelectedRows().length,
             });
 
@@ -1834,7 +1834,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 return;
             }
 
-            let dialogText = i18n.t('show-requests.delete-dialog-text_other', {
+            let dialogText = i18n.t('show-requests.delete-dialog-text', {
                 count: this.currentTable.getSelectedRows().length,
             });
 
