@@ -43,6 +43,7 @@
         "playwright": "^1.34.0",
         "playwright-core": "^1.21.0",
         "prettier": "^3.0.0",
+        "rolldown": "^1.0.0-beta.42",
         "rollup": "^4.0.0",
         "rollup-plugin-copy": "^3.3.0",
         "rollup-plugin-delete": "^3.0.0",
@@ -69,7 +70,7 @@
         "pdfjs-dist": "^4.3 <4.6"
     },
     "scripts": {
-        "build": "rollup -c",
+        "build": "rolldown -c rollup.config.js",
         "fix": "npm run eslint:fix && npm run prettier:fix && npm run i18next:fix",
         "check": "npm run eslint && npm run prettier && npm run i18next",
         "eslint:fix": "eslint \"**/*.{js,ts}\" --fix",
@@ -78,13 +79,13 @@
         "i18next": "i18next-cli extract --ci --dry-run",
         "prettier:fix": "prettier \"**/*.{js,json,ts,md,yaml,yml}\" --write",
         "prettier": "prettier \"**/*.{js,json,ts,md,yaml,yml}\" --check",
-        "watch": "rollup -c --watch",
+        "watch": "rolldown -c rollup.config.js --watch",
         "watch-local": "npm run watch",
-        "watch-full": "rollup -c --watch --environment FORCE_FULL",
-        "watch-bs": "rollup -c --watch --environment APP_ENV:bs",
-        "watch-custom": "rollup -c --watch --environment APP_ENV:localCustom",
-        "test": "rollup -c --environment APP_ENV:test && karma start karma.conf.cjs --singleRun",
-        "test-full": "rollup -c --environment FORCE_FULL,APP_ENV:test && karma start karma.conf.cjs --singleRun",
+        "watch-full": "rolldown -c rollup.config.js --watch --environment FORCE_FULL",
+        "watch-bs": "rolldown -c rollup.config.js --watch --environment APP_ENV:bs",
+        "watch-custom": "rolldown -c rollup.config.js --watch --environment APP_ENV:localCustom",
+        "test": "rolldown -c rollup.config.js --environment APP_ENV:test && karma start karma.conf.cjs --singleRun",
+        "test-full": "rolldown -c rollup.config.js --environment FORCE_FULL,APP_ENV:test && karma start karma.conf.cjs --singleRun",
         "lint": "eslint .",
         "tsc": "tsc -p jsconfig.json"
     }
