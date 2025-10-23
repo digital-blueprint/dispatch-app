@@ -971,7 +971,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 ).value = this.currentRecipient.birthDateMonth;
                 /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-birthdate-year')).value =
                     this.currentRecipient.birthDateYear;
-                /** @type {HTMLInputElement} */ (this._('#edit-recipient-country-select')).value =
+                /** @type {HTMLInputElement} */ (this._('#add-recipient-country-select')).value =
                     'AT';
 
                 this.requestUpdate();
@@ -2156,9 +2156,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.familyName = /** @type {HTMLInputElement } */ (
                 this._('#tf-edit-recipient-fn-dialog')
             ).value;
-            /*this.currentRecipient.addressCountry = (
+            this.currentRecipient.addressCountry = (
                 this._('#edit-recipient-country-select')
-            ).value;*/
+            ).value;
 
             this.currentRecipient.postalCode = /** @type {HTMLInputElement } */ (
                 this._('#tf-edit-recipient-pc-dialog')
@@ -2409,7 +2409,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         // Reset country selector.
         /** @type {HTMLSelectElement} */
         const CountrySelectElement = this.shadowRoot.querySelector(
-            '#edit-recipient-country-select',
+            '#add-recipient-country-select',
         );
         const options = CountrySelectElement.options;
 
@@ -2992,7 +2992,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                         </div>
                                         <select
-                                            id="edit-recipient-country-select"
+                                            id="add-recipient-country-select"
                                             @change=${this.onCountryChange}>
                                             ${Object.entries(countries).map(
                                                 ([code, name]) => html`
@@ -3041,7 +3041,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         button.disabled = true;
 
                                         let validcountry = this.checkValidity(
-                                            this._('#edit-recipient-country-select'),
+                                            this._('#add-recipient-country-select'),
                                         );
                                         let validal = this.checkValidity(
                                             this._('#tf-add-recipient-al-dialog'),
@@ -3089,7 +3089,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                 ).value;
                                             this.currentRecipient.addressCountry =
                                                 /** @type {HTMLInputElement } */ (
-                                                    this._('#edit-recipient-country-select')
+                                                    this._('#add-recipient-country-select')
                                                 ).value;
                                             this.currentRecipient.postalCode =
                                                 /** @type {HTMLInputElement } */ (
