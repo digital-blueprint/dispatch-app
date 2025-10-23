@@ -3566,7 +3566,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                       </div>
                                   `
                                 : ``}
-                            <!--${this.currentRecipient &&
+                            ${this.currentRecipient &&
                             this.currentRecipient.addressCountry &&
                             this.currentRecipient.addressCountry.length > 0 &&
                             this.currentRecipient.addressCountry !== 'AT'
@@ -3575,7 +3575,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                           i18n.t('create-request.add-recipient-country-warning') +
                                           '</div>',
                                   )
-                                : ``}-->
+                                : ``}
                         </main>
                         <footer class="modal-footer">
                             <div class="modal-footer-btn"></div>
