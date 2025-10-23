@@ -2156,9 +2156,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             this.currentRecipient.familyName = /** @type {HTMLInputElement } */ (
                 this._('#tf-edit-recipient-fn-dialog')
             ).value;
-            this.currentRecipient.addressCountry = (
-                this._('#edit-recipient-country-select')
-            ).value;
+            this.currentRecipient.addressCountry = this._('#edit-recipient-country-select').value;
 
             this.currentRecipient.postalCode = /** @type {HTMLInputElement } */ (
                 this._('#tf-edit-recipient-pc-dialog')
@@ -2408,9 +2406,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         // Reset country selector.
         /** @type {HTMLSelectElement} */
-        const CountrySelectElement = this.shadowRoot.querySelector(
-            '#add-recipient-country-select',
-        );
+        const CountrySelectElement = this.shadowRoot.querySelector('#add-recipient-country-select');
         const options = CountrySelectElement.options;
 
         for (var i = 0, iLen = options.length; i < iLen; i++) {
