@@ -706,14 +706,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             href="#"
                             title="${i18n.t('create-request.back-to-create')}"
                             @click="${(e) => {
-                                this.currentItem = {};
-                                this.currentItem.senderOrganizationName = '';
-                                this.currentItem.senderFullName = '';
-                                this.currentItem.senderAddressCountry = '';
-                                this.currentItem.senderPostalCode = '';
-                                this.currentItem.senderAddressLocality = '';
-                                this.currentItem.senderStreetAddress = '';
-                                this.currentItem.senderBuildingNumber = '';
                                 this.currentItem.files = [];
                                 this.currentItem.recipients = [];
                                 this.currentRecipient = {};
