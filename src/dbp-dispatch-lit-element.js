@@ -226,7 +226,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      */
     async sendCreateDispatchRequest() {
         const i18n = this._i18n;
-        console.log('here');
         let body = {
             name:
                 this.subject && this.subject !== ''
@@ -757,7 +756,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 if (this.newRequests !== null) {
                     this.setTabulatorData(this.newRequests);
                 }
-            } else {
+            } else if (this.addFileViaButton) {
                 // If added via "Edit request" "add Files" button
                 let rows = this.currentTable.getRows();
                 if (Array.isArray(rows) && rows.length > 0) {
