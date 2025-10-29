@@ -5,3 +5,15 @@ npm-debug.log
 .vscode
 .cert
 yarn.lock
+.shared
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml

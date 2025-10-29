@@ -9,7 +9,7 @@ layout {
     }
     pane split_direction="vertical" size="40%" {
       pane {
-        command "just "
+        command "just"
         args "watch"
         focus true
       }
