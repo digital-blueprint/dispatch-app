@@ -13,10 +13,9 @@ export default [
             jsdoc: jsdoc,
         },
         languageOptions: {
-            ecmaVersion: 2020,
+            ecmaVersion: 'latest',
             globals: {
                 ...globals.browser,
-                ...globals.es2020,
                 ...globals.mocha,
             },
         },
