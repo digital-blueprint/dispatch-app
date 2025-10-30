@@ -28,7 +28,7 @@ const pkg = require('./package.json');
 const appEnv = typeof process.env.APP_ENV !== 'undefined' ? process.env.APP_ENV : 'local';
 const watch = process.env.ROLLUP_WATCH === 'true';
 const buildFull = (!watch && appEnv !== 'test') || process.env.FORCE_FULL !== undefined;
-let useTerser = buildFull;
+let doMinify = buildFull;
 let useBabel = buildFull;
 let checkLicenses = buildFull;
 let treeshake = buildFull;
@@ -171,6 +171,7 @@ export default (async () => {
             chunkFileNames: 'shared/[name].[hash].js',
             format: 'esm',
             sourcemap: true,
+            ...(isRolldown ? {minify: doMinify} : {}),
         },
         treeshake: treeshake,
         onwarn: function (warning, warn) {
@@ -461,7 +462,7 @@ Dependencies:
                         ],
                     ],
                 }),
-            useTerser ? terser() : false,
+            doMinify && !isRolldown ? terser() : false,
             watch
                 ? serve({
                       contentBase: '.',
