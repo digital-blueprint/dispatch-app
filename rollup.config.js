@@ -1,15 +1,9 @@
 import url from 'node:url';
 import process from 'node:process';
 import {globSync} from 'node:fs';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import replace from '@rollup/plugin-replace';
-import {replacePlugin as rolldownReplace} from 'rolldown/experimental';
-import terser from '@rollup/plugin-terser';
-import json from '@rollup/plugin-json';
+import {replacePlugin} from 'rolldown/experimental';
 import serve from 'rollup-plugin-serve';
 import license from 'rollup-plugin-license';
-import del from 'rollup-plugin-delete';
 import emitEJS from 'rollup-plugin-emit-ejs';
 import {getBabelOutputPlugin} from '@rollup/plugin-babel';
 import {
@@ -30,7 +24,6 @@ let doMinify = buildFull;
 let useBabel = buildFull;
 let checkLicenses = buildFull;
 let treeshake = buildFull;
-let isRolldown = process.argv.some((arg) => arg.includes('rolldown'));
 let nodeEnv = buildFull ? 'production' : 'development';
 
 // if true, app assets and configs are whitelabel
@@ -170,7 +163,8 @@ export default (async () => {
             chunkFileNames: 'shared/[name].[hash].js',
             format: 'esm',
             sourcemap: true,
-            ...(isRolldown ? {minify: doMinify, cleanDir: true} : {}),
+            minify: doMinify,
+            cleanDir: true,
         },
         treeshake: treeshake,
         onwarn: function (warning, warn) {
@@ -187,10 +181,6 @@ export default (async () => {
             '.css': 'js', // work around rolldown handling the CSS import before the URL plugin can
         },
         plugins: [
-            !isRolldown &&
-                del({
-                    targets: 'dist/*',
-                }),
             whitelabel &&
                 emitEJS({
                     src: 'assets',
@@ -257,26 +247,15 @@ export default (async () => {
                         enableAnnotations: config.enableAnnotations,
                     },
                 }),
-            isRolldown
-                ? rolldownReplace(
-                      {
-                          'process.env.NODE_ENV': JSON.stringify(nodeEnv),
-                      },
+            replacePlugin(
+                {
+                    'process.env.NODE_ENV': JSON.stringify(nodeEnv),
+                },
 
-                      {
-                          preventAssignment: true,
-                      },
-                  )
-                : replace({
-                      'process.env.NODE_ENV': JSON.stringify(nodeEnv),
-
-                      preventAssignment: true,
-                  }),
-            !isRolldown &&
-                resolve({
-                    browser: true,
-                    preferBuiltins: true,
-                }),
+                {
+                    preventAssignment: true,
+                },
+            ),
             checkLicenses &&
                 license({
                     banner: {
@@ -310,13 +289,6 @@ Dependencies:
                         },
                     },
                 }),
-            !isRolldown &&
-                commonjs({
-                    include: 'node_modules/**',
-                    strictRequires: 'auto',
-                }),
-            !isRolldown && json(),
-            await assetPlugin(pkg.name, 'dist', {}),
             whitelabel &&
                 (await assetPlugin(pkg.name, 'dist', {
                     copyTargets: [
@@ -470,7 +442,6 @@ Dependencies:
                         ],
                     ],
                 }),
-            doMinify && !isRolldown ? terser() : false,
             watch
                 ? serve({
                       contentBase: '.',
