@@ -154,6 +154,11 @@
         </div>
         <div slot="logo">
             <style>
+                [slot="logo"] {
+                    display: flex;
+                    height: 100%;
+                    justify-content: end;
+                }
 
                 .logo-dark, .light-theme .logo-dark, .dark-theme .logo-light{
                     display: none;
@@ -162,18 +167,10 @@
                 .logo-light, .light-theme .logo-light, .dark-theme .logo-dark{
                     display: block;
                 }
-
-                .wrapper{
-                    float: right;
-                    padding: 0 50px 0 0;
-                }
-
-
             </style>
-            <div class="wrapper">
-                <img class="logo-light" style="height: 80px" src="<%= getPrivateUrl('dbp_logo_small_on_white.svg') %>" alt="digital blueprint - A University toolbox logo">
-                <img class="logo-dark" style="height: 80px" src="<%= getPrivateUrl('dbp_logo_small_on_black.svg') %>" alt="digital blueprint - A University toolbox logo">
-            </div>
+
+            <img class="logo-light" src="<%= getPrivateUrl('dbp_logo_small_on_white.svg') %>" alt="digital blueprint - A University toolbox logo">
+            <img class="logo-dark" src="<%= getPrivateUrl('dbp_logo_small_on_black.svg') %>" alt="digital blueprint - A University toolbox logo">
         </div>
     </template>
 </template>
