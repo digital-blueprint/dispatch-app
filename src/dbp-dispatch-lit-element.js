@@ -232,7 +232,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     ? this.subject
                     : i18n.t('create-request.default-subject'),
             senderOrganizationName: this.currentItem.senderOrganizationName,
-            senderFullName: this.currentItem.senderFullName ? this.currentItem.senderFullName : '',
+            senderFullName: this.currentItem.senderFullName
+                ? this.currentItem.senderFullName
+                : i18n.t('create-request.sender-full-name')
+                  ? i18n.t('create-request.sender-full-name')
+                  : '',
             senderAddressCountry: this.currentItem.senderAddressCountry,
             senderPostalCode: this.currentItem.senderPostalCode,
             senderAddressLocality: this.currentItem.senderAddressLocality,
