@@ -3,10 +3,10 @@
     "devenv": {
       "locked": {
         "dir": "src/modules",
-        "lastModified": 1761686631,
+        "lastModified": 1763485342,
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "b59500b629c08829825d4f4eca68169ea3a8821f",
+        "rev": "0c5eefb43412365b29b16ccf1690ff0e97b381ee",
         "type": "github"
       },
       "original": {
@@ -40,10 +40,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1760663237,
+        "lastModified": 1763319842,
         "owner": "cachix",
         "repo": "git-hooks.nix",
-        "rev": "ca5b894d3e3e151ffc1db040b6ce4dcc75d31c37",
+        "rev": "7275fa67fbbb75891c16d9dee7d88e58aea2d761",
         "type": "github"
       },
       "original": {
@@ -60,10 +60,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1709087332,
+        "lastModified": 1762808025,
         "owner": "hercules-ci",
         "repo": "gitignore.nix",
-        "rev": "637db329424fd7e46cf4185293b9cc8c88c95394",
+        "rev": "cb5e3fdca1de58ccbc3ef53de65bd372b48f567c",
         "type": "github"
       },
       "original": {
@@ -101,10 +101,10 @@
     "shared": {
       "flake": false,
       "locked": {
-        "lastModified": 1761657092,
+        "lastModified": 1763558680,
         "owner": "digital-blueprint",
         "repo": "shared",
-        "rev": "4e6e34440e85683835c8121b476d2fe84c216243",
+        "rev": "a0046313b70941b3f640f70f11844c324b60ad3f",
         "type": "github"
       },
       "original": {
