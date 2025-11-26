@@ -12,8 +12,6 @@ import {
     InlineNotification,
 } from '@dbp-toolkit/common';
 import {classMap} from 'lit/directives/class-map.js';
-import {Activity} from './activity.js';
-import metadata from './dbp-show-requests.metadata.json';
 import MicroModal from './micromodal.es';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
@@ -29,7 +27,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
         super();
         this._i18n = createInstance();
-        this.activity = new Activity(metadata);
         this.lang = this._i18n.language;
         this.entryPointUrl = '';
         this.loading = false;
@@ -538,7 +535,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getGeneralCSS(false)}
             ${commonStyles.getLinkCss()}
             ${commonStyles.getNotificationCSS()}
-            ${commonStyles.getActivityCSS()}
             ${commonStyles.getModalDialogCSS()}
             ${commonStyles.getButtonCSS()}
             ${dispatchStyles.getDispatchRequestStyles()}
@@ -924,16 +920,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations})}">
 
-                <h2>${this.activity.getName(this.lang)}</h2>
-
-                <p class="subheadline">
-                    <slot name="description">
-                        ${this.activity.getDescription(this.lang)}
-                    </slot>
-                </p>
-
                 <slot name="activity-description">
-                    <p>${i18n.t('show-requests.description-text')}
+                    <p class="activity-description">${i18n.t('show-requests.description-text')}
                         <a href="#" class="int-link-internal" title="${i18n.t('show-requests.create-new-request')}"
                            @click="${(e) => {
                                this.dispatchEvent(

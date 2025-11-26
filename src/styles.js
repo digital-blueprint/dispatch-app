@@ -481,6 +481,10 @@ export function getDispatchRequestStyles() {
             text-decoration: none;
         }
 
+        .activity-description {
+            margin-top: 0;
+        }
+
         h3 {
             font-weight: 300;
             margin-top: 1.3em;

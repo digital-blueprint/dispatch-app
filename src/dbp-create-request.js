@@ -14,8 +14,6 @@ import {
 import {CustomPersonSelect} from './person-select';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {classMap} from 'lit/directives/class-map.js';
-import {Activity} from './activity.js';
-import metadata from './dbp-create-request.metadata.json';
 import * as dispatchStyles from './styles';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
@@ -27,7 +25,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         super();
         this._i18n = createInstance();
         this.lang = this._i18n.language;
-        this.activity = new Activity(metadata);
         this.entryPointUrl = '';
 
         this.newRequests = [];
@@ -338,7 +335,6 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${commonStyles.getGeneralCSS(false)}
             ${commonStyles.getLinkCss()}
             ${commonStyles.getNotificationCSS()}
-            ${commonStyles.getActivityCSS()}
             ${commonStyles.getModalDialogCSS()}
             ${commonStyles.getButtonCSS()}
             /* tabulatorStyles.getTabulatorStyles() */
@@ -623,13 +619,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 class="${classMap({
                     hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations,
                 })}">
-                <h2>${this.activity.getName(this.lang)}</h2>
-                <p class="subheadline">
-                    <slot name="description">${this.activity.getDescription(this.lang)}</slot>
-                </p>
-
                 <slot name="activity-description">
-                    <p>${i18n.t('create-request.description-text')}</p>
+                    <p class="activity-description">${i18n.t('create-request.description-text')}</p>
                 </slot>
 
                 <dbp-inline-notification
