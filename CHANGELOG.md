@@ -1,10 +1,11 @@
 # Changelog
 
-## Unreleased
+## v1.5.0
 
 - Add download button to request attachments
 - Replace deprecate 'queryLocal' by 'filter' query parameter for person-select
 - Update toolkit and adapt to new PersonSelect signature
+- New app shell/menu layout
 
 ## v1.4.0
 
