@@ -108,6 +108,22 @@
         "appDomain": "https://epost.tugraz.at/",
         "enableAnnotations": true
     },
+    "staging": {
+        "basePath": "/",
+        "entryPointURL": "https://api-test.tugraz.at",
+        "keyCloakBaseURL": "https://auth-test.tugraz.at/auth",
+        "keyCloakRealm": "tugraz",
+        "keyCloakClientId": "epost-test_tugraz_at",
+        "matomoUrl": "https://analytics.tugraz.at/",
+        "matomoSiteId": 131,
+        "nextcloudBaseURL": "https://cloud.tugraz.at",
+        "nextcloudName": "TU Graz cloud",
+        "pdfAsQualifiedlySigningServer": "https://sig-test.tugraz.at",
+        "hiddenActivities": [],
+        "shortName": "TU Graz",
+        "appDomain": "https://epost-test.tugraz.at/",
+        "enableAnnotations": true
+    },
     "production": {
         "basePath": "/",
         "entryPointURL": "https://api.tugraz.at",
