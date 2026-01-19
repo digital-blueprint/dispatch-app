@@ -5,6 +5,10 @@
     "type": "module",
     "main": "src/dbp-dispatch.js",
     "license": "LGPL-2.1-or-later",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/digital-blueprint/dispatch-app.git"
+    },
     "private": false,
     "publishConfig": {
         "registry": "https://registry.npmjs.org",
