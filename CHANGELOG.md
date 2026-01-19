@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.5.1
+
+- App menu accessibility improvements
+
 ## v1.5.0
 
 - Add download button to request attachments
