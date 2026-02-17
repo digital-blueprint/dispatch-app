@@ -3334,7 +3334,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
-                                <select
+                                <!--
                                 <select
                                     id="tf-edit-recipient-country-select"
                                     @change=${this.onCountryChange}>
@@ -3345,7 +3345,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                             </option>
                                         `,
                                     )}
-                                </select>
+                                </select>-->
+                                <input        type="text"        class="input"        name="tf-edit-recipient-country-select"        id="tf-edit-recipient-country-select"        value="${this.currentRecipient                ? this.currentRecipient.addressCountry                : ``}"        required         /><dbp-icon-button        class="search-button"        @click="${(event) => {
+
+                            }}"        aria-label="${i18n.t('show-requests.search-box-text')}"        title="${i18n.t('show-requests.search-box-text')}"        icon-name="search"></dbp-icon-button>
+
                             </div>
                         </main>
                         <footer class="modal-footer">
