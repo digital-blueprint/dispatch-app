@@ -1224,7 +1224,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                       ).then(() => {
                                                                           /** @type {HTMLInputElement} */ (
                                                                               this._(
-                                                                                  '#edit-recipient-country-select',
+                                                                                  '#tf-edit-recipient-country-select',
                                                                               )
                                                                           ).value =
                                                                               this.currentRecipient.addressCountry;
