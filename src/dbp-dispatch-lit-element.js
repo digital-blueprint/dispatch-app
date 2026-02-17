@@ -3183,11 +3183,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="input"
                                         name="tf-edit-recipient-gn-dialog"
                                         id="tf-edit-recipient-gn-dialog"
-                                        value="${
-                                            this.currentRecipient
-                                                ? this.currentRecipient.givenName
-                                                : ``
-                                        }"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.givenName
+                                            : ``}"
                                         required
                                         @input="${() => {
                                             // TODO
@@ -3204,11 +3202,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="input"
                                         name="tf-edit-recipient-fn-dialog"
                                         id="tf-edit-recipient-fn-dialog"
-                                        value="${
-                                            this.currentRecipient
-                                                ? this.currentRecipient.familyName
-                                                : ``
-                                        }"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.familyName
+                                            : ``}"
                                         required
                                         @input="${() => {
                                             // TODO
@@ -3230,11 +3226,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         placeholder="${i18n.t(
                                             'show-requests.add-recipient-birthdate-dialog-placeholder-day',
                                         )}"
-                                        value="${
-                                            this.currentRecipient
-                                                ? this.currentRecipient.birthDateDay
-                                                : ``
-                                        }" />
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.birthDateDay
+                                            : ``}" />
                                     <input
                                         type="number"
                                         class="input"
@@ -3245,11 +3239,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         placeholder="${i18n.t(
                                             'show-requests.add-recipient-birthdate-dialog-placeholder-month',
                                         )}"
-                                        value="${
-                                            this.currentRecipient
-                                                ? this.currentRecipient.birthDateMonth
-                                                : ``
-                                        }" />
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.birthDateMonth
+                                            : ``}" />
                                     <input
                                         type="number"
                                         class="input"
@@ -3260,11 +3252,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         placeholder="${i18n.t(
                                             'show-requests.add-recipient-birthdate-dialog-placeholder-year',
                                         )}"
-                                        value="${
-                                            this.currentRecipient
-                                                ? this.currentRecipient.birthDateYear
-                                                : ``
-                                        }" />
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.birthDateYear
+                                            : ``}" />
                                 </div>
                             </div>
                             <div class="modal-content-item">
@@ -3277,11 +3267,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="input"
                                         name="tf-edit-recipient-sa-dialog"
                                         id="tf-edit-recipient-sa-dialog"
-                                        value="${
-                                            this.currentRecipient
-                                                ? this.currentRecipient.streetAddress
-                                                : ``
-                                        }"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.streetAddress
+                                            : ``}"
                                         required
                                         @input="${() => {
                                             // TODO
@@ -3298,11 +3286,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="input"
                                         name="tf-edit-recipient-pc-dialog"
                                         id="tf-edit-recipient-pc-dialog"
-                                        value="${
-                                            this.currentRecipient
-                                                ? this.currentRecipient.postalCode
-                                                : ``
-                                        }"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.postalCode
+                                            : ``}"
                                         required
                                         @input="${() => {
                                             // TODO
@@ -3319,11 +3305,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="input"
                                         name="tf-edit-recipient-al-dialog"
                                         id="tf-edit-recipient-al-dialog"
-                                        value="${
-                                            this.currentRecipient
-                                                ? this.currentRecipient.addressLocality
-                                                : ``
-                                        }"
+                                        value="${this.currentRecipient
+                                            ? this.currentRecipient.addressLocality
+                                            : ``}"
                                         required
                                         @input="${() => {
                                             // TODO
@@ -3334,7 +3318,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
-                                <select
                                 <select
                                     id="tf-edit-recipient-country-select"
                                     @change=${this.onCountryChange}>
