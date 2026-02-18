@@ -167,6 +167,10 @@ export default (async () => {
             minify: doMinify,
             cleanDir: true,
         },
+        experimental: {
+            // https://github.com/rolldown/rolldown/issues/8361
+            chunkOptimization: false,
+        },
         treeshake: treeshake,
         onwarn: function (warning, warn) {
             // more eval
