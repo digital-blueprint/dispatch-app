@@ -2663,17 +2663,26 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
-                                <select
+                                <!--<select
                                     id="edit-sender-country-select"
                                     @change=${this.onCountryChange}>
                                     ${Object.entries(countries).map(
-                                        ([code, name]) => html`
-                                            <option value=${code} ?selected=${code === 'AT'}>
-                                                ${name}
-                                            </option>
-                                        `,
-                                    )}
-                                </select>
+                                    ([code, name]) => html`
+                                        <option value=${code} ?selected=${code === 'AT'}>
+                                            ${name}
+                                        </option>
+                                    `,
+                                )}
+                                </select>-->
+                                <input
+                                    required
+                                    type="text"
+                                    class="input"
+                                    name="edit-sender-country-select"
+                                    id="edit-sender-country-select"
+                                    @input="${() => {
+                                        // TODO
+                                    }}" />
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -4203,14 +4212,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                   this.currentItem.dateSubmitted ||
                                   !this.mayWrite}"
                                   @click="${(event) => {
-                                      if (
+                                      /*if (
                                           this.currentItem.senderAddressCountry &&
                                           this.currentItem.senderAddressCountry !== ''
-                                      ) {
-                                          /** @type {HTMLSelectElement} */ (
+                                      ) {*/
+                                      /** @type {HTMLSelectElement} */ /*(
                                               this._('#edit-sender-country-select')
                                           ).value = this.currentItem.senderAddressCountry;
-                                      }
+                                      }*/
                                       // @ts-ignore
                                       MicroModal.show(this._('#edit-sender-modal'), {
                                           disableScroll: true,
