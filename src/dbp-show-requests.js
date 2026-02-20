@@ -12,6 +12,7 @@ import {
     InlineNotification,
     DBPSelect,
 } from '@dbp-toolkit/common';
+import {send} from '@dbp-toolkit/common/notification';
 import {classMap} from 'lit/directives/class-map.js';
 import MicroModal from './micromodal.es';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
@@ -552,6 +553,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      * Exports metadata for all organizations
      */
     async exportAllOrganizations() {
+        const i18n = this._i18n;
+
         if (!this.mayReadMetadata) {
             return;
         }
@@ -593,9 +596,25 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 }
             }
 
+            if (allRecipients.length === 0) {
+                send({
+                    summary: i18n.t('show-requests.export-no-data-title'),
+                    body: i18n.t('show-requests.export-no-data-text'),
+                    type: 'warning',
+                    timeout: 5,
+                });
+                return;
+            }
+
             this.downloadCSV(allRecipients, 'all-organizations-metadata.csv');
         } catch (error) {
             console.error('Error exporting all organizations:', error);
+            send({
+                summary: i18n.t('show-requests.export-error-title'),
+                body: i18n.t('show-requests.export-error-text'),
+                type: 'danger',
+                timeout: 5,
+            });
         }
     }
 
@@ -603,6 +622,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      * Exports metadata for the current organization
      */
     async exportCurrentOrganization() {
+        const i18n = this._i18n;
+
         if (!this.mayReadMetadata || !this.groupId) {
             return;
         }
@@ -617,9 +638,25 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 }
             }
 
+            if (allRecipients.length === 0) {
+                send({
+                    summary: i18n.t('show-requests.export-no-data-title'),
+                    body: i18n.t('show-requests.export-no-data-text'),
+                    type: 'warning',
+                    timeout: 5,
+                });
+                return;
+            }
+
             this.downloadCSV(allRecipients, 'current-organization-metadata.csv');
         } catch (error) {
             console.error('Error exporting current organization:', error);
+            send({
+                summary: i18n.t('show-requests.export-error-title'),
+                body: i18n.t('show-requests.export-error-text'),
+                type: 'danger',
+                timeout: 5,
+            });
         }
     }
 
