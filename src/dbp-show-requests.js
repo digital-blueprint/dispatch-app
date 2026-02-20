@@ -10,6 +10,7 @@ import {
     Icon,
     MiniSpinner,
     InlineNotification,
+    DBPSelect,
 } from '@dbp-toolkit/common';
 import {classMap} from 'lit/directives/class-map.js';
 import MicroModal from './micromodal.es';
@@ -102,6 +103,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-tooltip': TooltipElement,
             'dbp-pdf-viewer': PdfViewer,
             'dbp-tabulator-table': TabulatorTable,
+            'dbp-select': DBPSelect,
         };
     }
 
@@ -147,6 +149,14 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             switch (propName) {
                 case 'lang':
                     this._i18n.changeLanguage(this.lang);
+                    break;
+                case 'mayReadMetadata':
+                    // Setup export dropdown when metadata permission changes
+                    if (this.mayReadMetadata) {
+                        this.updateComplete.then(() => {
+                            this.setupExportDropdown();
+                        });
+                    }
                     break;
             }
         });
@@ -505,6 +515,230 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         });
     }
 
+    /**
+     * Sets up the export dropdown options
+     */
+    setupExportDropdown() {
+        const i18n = this._i18n;
+        const exportDropdown = this._('#export-dropdown');
+        if (exportDropdown && this.mayReadMetadata) {
+            exportDropdown.setOptions([
+                {
+                    value: 'all-organizations',
+                    label: i18n.t('show-requests.export-all-organizations'),
+                },
+                {
+                    value: 'current-organization',
+                    label: i18n.t('show-requests.export-current-organization'),
+                },
+            ]);
+        }
+    }
+
+    /**
+     * Handles the export dropdown selection
+     * @param {CustomEvent} event
+     */
+    handleExportSelection = async (event) => {
+        const exportType = event.detail.value;
+        if (exportType === 'all-organizations') {
+            await this.exportAllOrganizations();
+        } else if (exportType === 'current-organization') {
+            await this.exportCurrentOrganization();
+        }
+    };
+
+    /**
+     * Exports metadata for all organizations
+     */
+    async exportAllOrganizations() {
+        if (!this.mayReadMetadata) {
+            return;
+        }
+
+        try {
+            // Fetch all organizations from the API
+            const options = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/ld+json',
+                    Authorization: 'Bearer ' + this.auth.token,
+                },
+            };
+
+            const response = await this.httpGetAsync(
+                this.entryPointUrl + '/dispatch/groups?perPage=9999',
+                options,
+            );
+            const responseBody = await response.json();
+            const organizations = responseBody['hydra:member'] || [];
+
+            // Fetch recipients for all organizations
+            const allRecipients = [];
+            for (const org of organizations) {
+                const orgId = org.identifier;
+                const requestsResponse = await this.getListOfDispatchRequests(orgId);
+                const requestsBody = await requestsResponse.json();
+                const requests = this.parseListOfRequests(requestsBody);
+
+                for (const request of requests) {
+                    if (request.recipients && Array.isArray(request.recipients)) {
+                        for (const recipient of request.recipients) {
+                            allRecipients.push({
+                                organizationName: org.name,
+                                ...recipient,
+                            });
+                        }
+                    }
+                }
+            }
+
+            this.downloadCSV(allRecipients, 'all-organizations-metadata.csv');
+        } catch (error) {
+            console.error('Error exporting all organizations:', error);
+        }
+    }
+
+    /**
+     * Exports metadata for the current organization
+     */
+    async exportCurrentOrganization() {
+        if (!this.mayReadMetadata || !this.groupId) {
+            return;
+        }
+
+        try {
+            const allRecipients = [];
+            for (const request of this.requestList) {
+                if (request.recipients && Array.isArray(request.recipients)) {
+                    for (const recipient of request.recipients) {
+                        allRecipients.push(recipient);
+                    }
+                }
+            }
+
+            this.downloadCSV(allRecipients, 'current-organization-metadata.csv');
+        } catch (error) {
+            console.error('Error exporting current organization:', error);
+        }
+    }
+
+    /**
+     * Generates and downloads a CSV file compatible with Microsoft Excel
+     * @param {Array} data - Array of recipient objects
+     * @param {string} filename - Name of the CSV file
+     */
+    downloadCSV(data, filename) {
+        if (!data || data.length === 0) {
+            console.warn('No data to export');
+            return;
+        }
+
+        // Define CSV headers
+        const headers = [
+            'Given Name',
+            'Family Name',
+            'Birth Date',
+            'Street Address',
+            'Postal Code',
+            'Address Locality',
+            'Address Country',
+            'Person Identifier',
+            'Recipient Identifier',
+            'Date Created',
+            'Date Submitted',
+            'Electronically Deliverable',
+            'Dual Delivery Selected',
+            'App Delivery ID',
+        ];
+
+        if (data[0] && data[0].organizationName !== undefined) {
+            headers.unshift('Organization Name');
+        }
+
+        // Build CSV content with proper Excel compatibility
+        const csvRows = [];
+
+        // Add headers
+        csvRows.push(headers.map((h) => this.escapeCSVValue(h)).join(';'));
+
+        // Add data rows
+        for (const recipient of data) {
+            const row = [];
+
+            if (recipient.organizationName !== undefined) {
+                row.push(this.escapeCSVValue(recipient.organizationName || ''));
+            }
+
+            row.push(
+                this.escapeCSVValue(recipient.givenName || ''),
+                this.escapeCSVValue(recipient.familyName || ''),
+                this.escapeCSVValue(recipient.birthDate || ''),
+                this.escapeCSVValue(recipient.streetAddress || ''),
+                this.escapeCSVValue(recipient.postalCode || ''),
+                this.escapeCSVValue(recipient.addressLocality || ''),
+                this.escapeCSVValue(recipient.addressCountry || ''),
+                this.escapeCSVValue(recipient.personIdentifier || ''),
+                this.escapeCSVValue(recipient.identifier || ''),
+                this.escapeCSVValue(recipient.dateCreated || ''),
+                this.escapeCSVValue(recipient.dateSubmitted || ''),
+                this.escapeCSVValue(
+                    recipient.electronicallyDeliverable !== undefined
+                        ? recipient.electronicallyDeliverable
+                        : '',
+                ),
+                this.escapeCSVValue(
+                    recipient.dualDeliverySelected !== undefined
+                        ? recipient.dualDeliverySelected
+                        : '',
+                ),
+                this.escapeCSVValue(recipient.appDeliveryID || ''),
+            );
+
+            csvRows.push(row.join(';'));
+        }
+
+        // Add BOM for Excel UTF-8 compatibility
+        const BOM = '\uFEFF';
+        const csvContent = BOM + csvRows.join('\r\n');
+
+        // Create blob and use file-sink for download
+        const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+        const file = new File([blob], filename, {type: 'text/csv;charset=utf-8;'});
+
+        // Use dbp-file-sink to download the file
+        const fileSink = /** @type {FileSink} */ (this._('#file-sink-export'));
+        if (fileSink) {
+            fileSink.files = [file];
+        }
+    }
+
+    /**
+     * Escapes CSV values properly for Excel
+     * @param {*} value - Value to escape
+     * @returns {string} Escaped value
+     */
+    escapeCSVValue(value) {
+        if (value === null || value === undefined) {
+            return '';
+        }
+
+        const stringValue = String(value);
+
+        // If value contains semicolon, newline, or double quote, wrap in quotes
+        if (
+            stringValue.includes(';') ||
+            stringValue.includes('\n') ||
+            stringValue.includes('"') ||
+            stringValue.includes('\r')
+        ) {
+            // Escape double quotes by doubling them
+            return '"' + stringValue.replace(/"/g, '""') + '"';
+        }
+
+        return stringValue;
+    }
+
     deleteSelectedRows() {
         let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
         table.deleteSelectedRows();
@@ -547,6 +781,21 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             .muted {
                 color: var(--dbp-muted);
+            }
+
+            .choose-and-create-btns {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .choose-and-create-btns dbp-resource-select {
+                flex: 1;
+                min-width: 250px;
+            }
+
+            .choose-and-create-btns dbp-select {
+                margin-left: 10px;
             }
 
             #search-operator,
@@ -952,6 +1201,16 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         }
                                     }}
                         ></dbp-resource-select>
+                        ${
+                            this.mayReadMetadata
+                                ? html`
+                                      <dbp-select
+                                          id="export-dropdown"
+                                          label="${i18n.t('show-requests.export')}"
+                                          @change="${this.handleExportSelection}"></dbp-select>
+                                  `
+                                : ``
+                        }
                     </div>
                 </div>
 
@@ -1734,6 +1993,19 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${this.addEditReferenceNumberModal()}
 
             ${this.addFileViewerModal()}
+
+            <dbp-file-sink
+                id="file-sink-export"
+                context="Export CSV"
+                filename="metadata-export.csv"
+                subscribe="initial-file-handling-state,nextcloud-store-session"
+                enabled-targets="${this.fileHandlingEnabledTargets}"
+                nextcloud-auth-url="${this.nextcloudWebAppPasswordURL}"
+                nextcloud-web-dav-url="${this.nextcloudWebDavURL}"
+                nextcloud-name="${this.nextcloudName}"
+                nextcloud-file-url="${this.nextcloudFileURL}"
+                lang="${this.lang}">
+            </dbp-file-sink>
         `;
     }
 }
