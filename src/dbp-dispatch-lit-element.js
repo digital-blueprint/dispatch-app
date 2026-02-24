@@ -2674,15 +2674,20 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     `,
                                 )}
                                 </select>-->
-                                <input
-                                    required
-                                    type="text"
-                                    class="input"
-                                    name="edit-sender-country-select"
-                                    id="edit-sender-country-select"
-                                    @input="${() => {
-                                        // TODO
-                                    }}" />
+                                <div class="country-select-container">
+                                    <input
+                                        required
+                                        type="text"
+                                        class="input"
+                                        name="edit-sender-country-select"
+                                        id="edit-sender-country-select"
+                                        @input="${() => {
+                                            // TODO
+                                        }}" />
+                                    <dbp-icon-button
+                                        id="search-country-btn"
+                                        icon-name="search"></dbp-icon-button>
+                                </div>
                             </div>
                         </main>
                         <footer class="modal-footer">
