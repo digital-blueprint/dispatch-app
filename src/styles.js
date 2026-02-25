@@ -1208,10 +1208,6 @@ export function getDispatchRequestStyles() {
             .sender-data {
                 margin-bottom: 0;
             }
-
-            .return-receipt-widget__upload-date {
-                max-width: 180px;
-            }
         }
 
         @media only screen and (max-width: 650px) {
@@ -1260,6 +1256,29 @@ export function getDispatchRequestStyles() {
                 gap: 1.5em;
                 grid-template-columns: 1fr 1fr;
             }
+        }
+        .country-select-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%; /* Adjust based on your layout */
+        }
+
+        #edit-sender-country-select {
+            width: 100%;
+            padding-right: 40px;
+            box-sizing: border-box;
+        }
+
+        #search-country-btn {
+            position: absolute;
+            right: 8px; /* Offset from the right edge */
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     `;
 }
