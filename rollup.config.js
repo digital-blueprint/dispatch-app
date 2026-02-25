@@ -167,6 +167,10 @@ export default (async () => {
             minify: doMinify,
             cleanDir: true,
         },
+        experimental: {
+            // https://github.com/rolldown/rolldown/issues/8361
+            chunkOptimization: false,
+        },
         treeshake: treeshake,
         onwarn: function (warning, warn) {
             // more eval
@@ -455,6 +459,12 @@ Dependencies:
                       },
                   })
                 : false,
+            watch && {
+                name: 'log-rebuild',
+                writeBundle() {
+                    console.log(`\n[${new Date().toLocaleString()}] dist rebuilt\n`);
+                },
+            },
         ],
     };
 })();
