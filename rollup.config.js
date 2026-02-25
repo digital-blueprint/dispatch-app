@@ -49,6 +49,7 @@ if (
 }
 
 // load devconfig for local development if present
+// eslint-disable-next-line no-useless-assignment
 let devConfig = require('./app.config.json');
 try {
     console.log('Loading ' + './' + devPath + 'app.config.json ...');
