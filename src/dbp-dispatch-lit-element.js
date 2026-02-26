@@ -4217,14 +4217,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                   this.currentItem.dateSubmitted ||
                                   !this.mayWrite}"
                                   @click="${(event) => {
-                                      /*if (
+                                      if (
                                           this.currentItem.senderAddressCountry &&
                                           this.currentItem.senderAddressCountry !== ''
-                                      ) {*/
-                                      /** @type {HTMLSelectElement} */ /*(
-                                              this._('#edit-sender-country-select')
-                                          ).value = this.currentItem.senderAddressCountry;
-                                      }*/
+                                      ) {
+                                          const language_mapping =
+                                              this.lang === 'en'
+                                                  ? dispatchHelper.getEnglishCountryMapping()
+                                                  : dispatchHelper.getGermanCountryMapping();
+
+                                          /** @type {HTMLSelectElement} */ this._(
+                                              '#edit-sender-country-select',
+                                          ).value =
+                                              language_mapping[
+                                                  this.currentItem.senderAddressCountry
+                                              ];
+                                      }
                                       // @ts-ignore
                                       MicroModal.show(this._('#edit-sender-modal'), {
                                           disableScroll: true,

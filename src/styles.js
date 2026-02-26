@@ -1266,14 +1266,14 @@ export function getDispatchRequestStyles() {
 
         #edit-sender-country-select {
             width: 100%;
-            padding-right: 40px;
+            /*padding-right: 40px;*/
             box-sizing: border-box;
         }
 
         #search-country-btn {
             position: absolute;
-            right: 8px; /* Offset from the right edge */
-            cursor: pointer;
+            right: 1px;
+            /*cursor: pointer;*/
             background: transparent;
             border: none;
             display: flex;
