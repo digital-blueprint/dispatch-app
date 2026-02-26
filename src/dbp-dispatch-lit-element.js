@@ -2681,12 +2681,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         class="input"
                                         name="edit-sender-country-select"
                                         id="edit-sender-country-select"
-                                        @input="${() => {
+                                        @input="${(event) => {
                                             // TODO
+                                            this.showSuggestions(event);
                                         }}" />
                                     <dbp-icon-button
                                         id="search-country-btn"
                                         icon-name="search"></dbp-icon-button>
+                                    <div class="country-suggestions"></div>
                                 </div>
                             </div>
                         </main>
@@ -4560,5 +4562,45 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         console.log('User selected country:', selectedCode);
         this.currentRecipient.addressCountry = selectedCode;
         // handle however you need
+    }
+    showSuggestions(event) {
+        const suggestionsBox = this.renderRoot.querySelector('.country-suggestions');
+
+        if (!suggestionsBox) {
+            console.warn('country-suggestions not found');
+            return;
+        }
+        const value = event.target.value;
+        const query = value.toLowerCase();
+        //const query = searchBox.value.toLowerCase();
+        suggestionsBox.innerHTML = '';
+        if (!query) {
+            suggestionsBox.style.display = 'none';
+            return;
+        }
+        const language_mapping =
+            this.lang === 'en'
+                ? dispatchHelper.getEnglishCountryMapping()
+                : dispatchHelper.getGermanCountryMapping();
+        const div = document.createElement('div');
+        div.textContent = language_mapping[this.currentItem.senderAddressCountry];
+        suggestionsBox.appendChild(div);
+        /*const filteredSuggestions = language_mapping.filter((item) =>
+            item.toLowerCase().includes(query),
+        );
+        if (filteredSuggestions.length) {
+            suggestionsBox.style.display = "block";
+            filteredSuggestions.forEach(item => {
+                const div = document.createElement("div");
+                div.textContent = item;
+                div.onclick = () => {
+                    searchBox.value = item;
+                    suggestionsBox.style.display = "none";
+                };
+                suggestionsBox.appendChild(div);
+            });*/
+        /*} else {
+            suggestionsBox.style.display = "none";
+        }*/
     }
 }
