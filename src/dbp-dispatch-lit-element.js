@@ -903,11 +903,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateYear !== ''
             ) {
                 birthDate =
-                    this.currentRecipient.birthDateDay +
-                    '.' +
+                    this.currentRecipient.birthDateYear +
+                    '-' +
                     this.currentRecipient.birthDateMonth +
-                    '.' +
-                    this.currentRecipient.birthDateYear;
+                    '-' +
+                    this.currentRecipient.birthDateDay;
             }
 
             let response = await this.sendAddRequestRecipientsRequest(
@@ -1026,11 +1026,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateYear !== ''
             ) {
                 birthDate =
-                    this.currentRecipient.birthDateDay +
-                    '.' +
+                    this.currentRecipient.birthDateYear +
+                    '-' +
                     this.currentRecipient.birthDateMonth +
-                    '.' +
-                    this.currentRecipient.birthDateYear;
+                    '-' +
+                    this.currentRecipient.birthDateDay;
             }
 
             let personIdentifier = null;
