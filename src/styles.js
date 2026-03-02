@@ -1280,5 +1280,10 @@ export function getDispatchRequestStyles() {
             align-items: center;
             justify-content: center;
         }
+
+        #country-suggestions {
+            position: absolute;
+            width: 100%;
+        }
     `;
 }

@@ -2688,8 +2688,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                     <dbp-icon-button
                                         id="search-country-btn"
                                         icon-name="search"></dbp-icon-button>
-                                    <div class="country-suggestions"></div>
                                 </div>
+                                <div class="country-suggestions"></div>
                             </div>
                         </main>
                         <footer class="modal-footer">
