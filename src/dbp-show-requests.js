@@ -585,6 +585,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 const requests = this.parseListOfRequests(requestsBody);
 
                 for (const request of requests) {
+                    if (!request.dateSubmitted) {
+                        continue;
+                    }
+
                     if (request.recipients && Array.isArray(request.recipients)) {
                         for (const recipient of request.recipients) {
                             allRecipients.push({
@@ -635,6 +639,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         try {
             const allRecipients = [];
             for (const request of this.requestList) {
+                if (!request.dateSubmitted) {
+                    continue;
+                }
+
                 if (request.recipients && Array.isArray(request.recipients)) {
                     for (const recipient of request.recipients) {
                         allRecipients.push({
