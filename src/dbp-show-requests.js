@@ -589,6 +589,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         for (const recipient of request.recipients) {
                             allRecipients.push({
                                 organizationName: org.name,
+                                dispatchRequestIdentifier: request.dispatchRequestIdentifier,
                                 ...recipient,
                             });
                         }
@@ -633,7 +634,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             for (const request of this.requestList) {
                 if (request.recipients && Array.isArray(request.recipients)) {
                     for (const recipient of request.recipients) {
-                        allRecipients.push(recipient);
+                        allRecipients.push({
+                            dispatchRequestIdentifier: request.dispatchRequestIdentifier,
+                            ...recipient,
+                        });
                     }
                 }
             }
@@ -682,6 +686,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'Address Country',
             'Person Identifier',
             'Recipient Identifier',
+            'Dispatch Request Identifier',
             'Date Created',
             'Date Submitted',
             'Electronically Deliverable',
@@ -717,6 +722,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 this.escapeCSVValue(recipient.addressCountry || ''),
                 this.escapeCSVValue(recipient.personIdentifier || ''),
                 this.escapeCSVValue(recipient.identifier || ''),
+                this.escapeCSVValue(recipient.dispatchRequestIdentifier || ''),
                 this.escapeCSVValue(recipient.dateCreated || ''),
                 this.escapeCSVValue(recipient.dateSubmitted || ''),
                 this.escapeCSVValue(
