@@ -687,6 +687,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'Person Identifier',
             'Recipient Identifier',
             'Dispatch Request Identifier',
+            'Last Status Update',
             'Date Created',
             'Date Submitted',
             'Electronically Deliverable',
@@ -723,6 +724,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 this.escapeCSVValue(recipient.personIdentifier || ''),
                 this.escapeCSVValue(recipient.identifier || ''),
                 this.escapeCSVValue(recipient.dispatchRequestIdentifier || ''),
+                this.escapeCSVValue(
+                    recipient.lastStatusChange && recipient.lastStatusChange.dispatchStatus
+                        ? recipient.lastStatusChange.dispatchStatus
+                        : '',
+                ),
                 this.escapeCSVValue(recipient.dateCreated || ''),
                 this.escapeCSVValue(recipient.dateSubmitted || ''),
                 this.escapeCSVValue(
