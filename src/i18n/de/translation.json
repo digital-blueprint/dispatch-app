@@ -171,6 +171,7 @@
         "overall-status-success": "{{success}} Zugestellt",
         "overall-status-success-foreign-countries": "{{success}} Ursprungsland verlassen",
         "pending": "In Zustellung",
+        "person-identifier": "Personenkennung",
         "recipient-id": "Empfängerauftrags-ID",
         "recipients": "Empfänger",
         "reference-number": "Geschäftszahl",

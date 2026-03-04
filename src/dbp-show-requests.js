@@ -740,30 +740,32 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             return;
         }
 
+        const i18n = this._i18n;
+
         // Define CSV headers
         const headers = [
-            'Given Name',
-            'Family Name',
-            'Birth Date',
-            'Street Address',
-            'Postal Code',
-            'Address Locality',
-            'Address Country',
-            'Person Identifier',
-            'Recipient Identifier',
-            'Dispatch Request Identifier',
-            'Reference Number',
-            'Delivery Channel',
-            'Delivery End Date',
-            'Last Status Update',
-            'Date Created',
-            'Date Submitted',
-            'Electronically Deliverable',
-            'App Delivery ID',
+            i18n.t('show-requests.add-recipient-gn-dialog-label'),
+            i18n.t('show-requests.add-recipient-fn-dialog-label'),
+            i18n.t('show-requests.add-recipient-birthdate-dialog-label'),
+            i18n.t('show-requests.add-recipient-sa-dialog-label'),
+            i18n.t('show-requests.add-recipient-pc-dialog-label'),
+            i18n.t('show-requests.add-recipient-al-dialog-label'),
+            i18n.t('show-requests.add-recipient-ac-dialog-label'),
+            i18n.t('show-requests.person-identifier'),
+            i18n.t('show-requests.recipient-id'),
+            i18n.t('show-requests.table-header-id'),
+            i18n.t('show-requests.reference-number'),
+            i18n.t('show-requests.delivery-service-dialog-label'),
+            i18n.t('show-requests.delivery-end-date'),
+            i18n.t('show-requests.delivery-status-changes'),
+            i18n.t('show-requests.table-header-date-created'),
+            i18n.t('show-requests.date-submitted'),
+            i18n.t('show-requests.electronically-deliverable'),
+            i18n.t('show-requests.app-delivery-id'),
         ];
 
         if (data[0] && data[0].organizationName !== undefined) {
-            headers.unshift('Organization Name');
+            headers.unshift(i18n.t('show-requests.edit-sender-gn-dialog-label'));
         }
 
         // Build CSV content with proper Excel compatibility

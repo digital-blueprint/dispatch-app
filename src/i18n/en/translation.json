@@ -171,6 +171,7 @@
         "overall-status-success": "{{success}} Delivered",
         "overall-status-success-foreign-countries": "{{success}} Left the country of origin",
         "pending": "Pending / In-transit",
+        "person-identifier": "Person Identifier",
         "recipient-id": "Recipient request ID",
         "recipients": "Recipients",
         "reference-number": "Reference number",
