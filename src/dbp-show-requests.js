@@ -759,7 +759,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'Date Created',
             'Date Submitted',
             'Electronically Deliverable',
-            'Dual Delivery Selected',
             'App Delivery ID',
         ];
 
@@ -813,11 +812,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 this.escapeCSVValue(
                     recipient.electronicallyDeliverable !== undefined
                         ? recipient.electronicallyDeliverable
-                        : '',
-                ),
-                this.escapeCSVValue(
-                    recipient.dualDeliverySelected !== undefined
-                        ? recipient.dualDeliverySelected
                         : '',
                 ),
                 this.escapeCSVValue(recipient.appDeliveryID || recipient.appDeliveryId || ''),
