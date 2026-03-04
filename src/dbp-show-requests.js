@@ -550,6 +550,64 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     };
 
     /**
+     * Builds an export-ready recipient object and enriches it with recipient details
+     * @param {object} recipient
+     * @param {object} request
+     * @param {string | undefined} organizationName
+     * @returns {Promise<object>}
+     */
+    async buildExportRecipient(recipient, request, organizationName = undefined) {
+        const exportRecipient = {
+            ...recipient,
+            dispatchRequestIdentifier:
+                request.dispatchRequestIdentifier || request.identifier || '',
+            requestReferenceNumber: request.referenceNumber || '',
+            requestDateSubmitted: request.dateSubmitted || '',
+        };
+
+        if (organizationName !== undefined) {
+            exportRecipient.organizationName = organizationName;
+        }
+
+        if (!recipient?.identifier) {
+            return exportRecipient;
+        }
+
+        try {
+            const recipientResponse = await this.getDispatchRecipient(recipient.identifier);
+            if (recipientResponse.status === 200) {
+                const recipientBody = await recipientResponse.json();
+                exportRecipient.appDeliveryID =
+                    recipientBody.appDeliveryID ||
+                    recipientBody.appDeliveryId ||
+                    exportRecipient.appDeliveryID ||
+                    exportRecipient.appDeliveryId ||
+                    '';
+                exportRecipient.deliveryEndDate =
+                    recipientBody.deliveryEndDate || exportRecipient.deliveryEndDate || '';
+                exportRecipient.electronicallyDeliverable =
+                    recipientBody.electronicallyDeliverable !== undefined
+                        ? recipientBody.electronicallyDeliverable
+                        : exportRecipient.electronicallyDeliverable;
+                exportRecipient.postalDeliverable =
+                    recipientBody.postalDeliverable !== undefined
+                        ? recipientBody.postalDeliverable
+                        : exportRecipient.postalDeliverable;
+                exportRecipient.lastStatusChange =
+                    recipientBody.lastStatusChange || exportRecipient.lastStatusChange || '';
+            }
+        } catch (error) {
+            console.warn(
+                'Could not fetch recipient details for export:',
+                recipient.identifier,
+                error,
+            );
+        }
+
+        return exportRecipient;
+    }
+
+    /**
      * Exports metadata for all organizations
      */
     async exportAllOrganizations() {
@@ -590,15 +648,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     }
 
                     if (request.recipients && Array.isArray(request.recipients)) {
-                        for (const recipient of request.recipients) {
-                            allRecipients.push({
-                                ...recipient,
-                                organizationName: org.name,
-                                dispatchRequestIdentifier:
-                                    request.dispatchRequestIdentifier || request.identifier || '',
-                                requestReferenceNumber: request.referenceNumber || '',
-                            });
-                        }
+                        const exportRecipients = await Promise.all(
+                            request.recipients.map((recipient) =>
+                                this.buildExportRecipient(recipient, request, org.name),
+                            ),
+                        );
+                        allRecipients.push(...exportRecipients);
                     }
                 }
             }
@@ -643,14 +698,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 }
 
                 if (request.recipients && Array.isArray(request.recipients)) {
-                    for (const recipient of request.recipients) {
-                        allRecipients.push({
-                            ...recipient,
-                            dispatchRequestIdentifier:
-                                request.dispatchRequestIdentifier || request.identifier || '',
-                            requestReferenceNumber: request.referenceNumber || '',
-                        });
-                    }
+                    const exportRecipients = await Promise.all(
+                        request.recipients.map((recipient) =>
+                            this.buildExportRecipient(recipient, request),
+                        ),
+                    );
+                    allRecipients.push(...exportRecipients);
                 }
             }
 
@@ -700,6 +753,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'Recipient Identifier',
             'Dispatch Request Identifier',
             'Reference Number',
+            'Delivery Channel',
+            'Delivery End Date',
             'Last Status Update',
             'Date Created',
             'Date Submitted',
@@ -739,12 +794,22 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 this.escapeCSVValue(recipient.dispatchRequestIdentifier || ''),
                 this.escapeCSVValue(recipient.requestReferenceNumber || ''),
                 this.escapeCSVValue(
+                    recipient.electronicallyDeliverable
+                        ? 'electronic'
+                        : recipient.postalDeliverable
+                          ? 'postal'
+                          : '',
+                ),
+                this.escapeCSVValue(recipient.deliveryEndDate || ''),
+                this.escapeCSVValue(
                     recipient.lastStatusChange && recipient.lastStatusChange.dispatchStatus
                         ? recipient.lastStatusChange.dispatchStatus
                         : '',
                 ),
                 this.escapeCSVValue(recipient.dateCreated || ''),
-                this.escapeCSVValue(recipient.dateSubmitted || ''),
+                this.escapeCSVValue(
+                    recipient.requestDateSubmitted || recipient.dateSubmitted || '',
+                ),
                 this.escapeCSVValue(
                     recipient.electronicallyDeliverable !== undefined
                         ? recipient.electronicallyDeliverable
