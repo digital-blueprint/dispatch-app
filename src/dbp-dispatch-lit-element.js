@@ -169,7 +169,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests?perPage=9999&groupId=' + groupId,
+            this.entryPointUrl +
+                '/dispatch/requests?perPage=9999&groupId=' +
+                encodeURIComponent(groupId),
             options,
         );
     }
@@ -188,7 +190,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests/' + identifier,
+            this.entryPointUrl + '/dispatch/requests/' + encodeURIComponent(identifier),
             options,
         );
     }
@@ -207,7 +209,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-recipients/' + identifier,
+            this.entryPointUrl + '/dispatch/request-recipients/' + encodeURIComponent(identifier),
             options,
         );
     }
@@ -273,7 +275,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests/' + identifier,
+            this.entryPointUrl + '/dispatch/requests/' + encodeURIComponent(identifier),
             options,
         );
     }
@@ -356,7 +358,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests/' + identifier + '/submit',
+            this.entryPointUrl + '/dispatch/requests/' + encodeURIComponent(identifier) + '/submit',
             options,
         );
     }
@@ -444,7 +446,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-recipients/' + id,
+            this.entryPointUrl + '/dispatch/request-recipients/' + encodeURIComponent(id),
             options,
         );
     }
@@ -474,7 +476,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-files/' + id,
+            this.entryPointUrl + '/dispatch/request-files/' + encodeURIComponent(id),
             options,
         );
     }
@@ -487,7 +489,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: 'Bearer ' + this.auth.token,
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/base/people/' + identifier, options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/base/people/' + encodeURIComponent(identifier),
+            options,
+        );
     }
 
     async sendChangeSubjectRequest(identifier, subject) {
@@ -520,7 +525,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-status-changes/' + identifier,
+            this.entryPointUrl +
+                '/dispatch/request-status-changes/' +
+                encodeURIComponent(identifier),
             options,
         );
     }
@@ -534,7 +541,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-files/' + identifier,
+            this.entryPointUrl + '/dispatch/request-files/' + encodeURIComponent(identifier),
             options,
         );
     }
@@ -3693,7 +3700,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-status-changes/' + id + '/file',
+            this.entryPointUrl +
+                '/dispatch/request-status-changes/' +
+                encodeURIComponent(id) +
+                '/file',
             options,
         );
     }
@@ -3782,7 +3792,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-status-changes/' + id + '/file',
+            this.entryPointUrl +
+                '/dispatch/request-status-changes/' +
+                encodeURIComponent(id) +
+                '/file',
             options,
         );
     }
