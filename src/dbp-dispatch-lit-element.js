@@ -479,23 +479,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         );
     }
 
-    async sendGetPersonDetailsRequest(identifier) {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/ld+json',
-                Authorization: 'Bearer ' + this.auth.token,
-            },
-        };
-        return await this.httpGetAsync(
-            this.entryPointUrl +
-                '/base/people/' +
-                identifier +
-                '?includeLocal=streetAddress%2CaddressLocality%2CpostalCode%2CaddressCountry',
-            options,
-        );
-    }
-
     async sendGetPersonRequest(identifier) {
         const options = {
             method: 'GET',
@@ -2308,54 +2291,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         this.tempChange = false;
-    }
-
-    async preloadSelectedRecipient() {
-        this.currentRecipient = {};
-
-        if (
-            this._('#recipient-selector') &&
-            this._('#recipient-selector').getAttribute('data-object') !== null &&
-            this._('#recipient-selector').getAttribute('data-object') !== ''
-        ) {
-            const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
-            const personId = person['identifier'];
-
-            let response = await this.sendGetPersonDetailsRequest(personId);
-
-            let responseBody = await response.json();
-            if (responseBody !== undefined && response.status === 200) {
-                this.currentRecipient.familyName = responseBody.familyName;
-                this.currentRecipient.givenName = responseBody.givenName;
-                let birthDate = responseBody.birthDate ? responseBody.birthDate : '';
-                this.currentRecipient.birthDateDay = birthDate.day ? birthDate.day : '';
-                this.currentRecipient.birthDateMonth = birthDate.month ? birthDate.month : '';
-                this.currentRecipient.birthDateYear = birthDate.year ? birthDate.year : '';
-
-                if (responseBody['localData'] !== null) {
-                    this.currentRecipient.addressLocality = responseBody['localData'][
-                        'addressLocality'
-                    ]
-                        ? responseBody['localData']['addressLocality']
-                        : '';
-                    this.currentRecipient.postalCode = responseBody['localData']['postalCode']
-                        ? responseBody['localData']['postalCode']
-                        : '';
-                    this.currentRecipient.streetAddress = responseBody['localData']['streetAddress']
-                        ? responseBody['localData']['streetAddress']
-                        : '';
-                    this.currentRecipient.addressCountry =
-                        dispatchHelper.getEnglishCountryMapping();
-                    console.log(
-                        'preloadSelectedRecipient this.currentRecipient.addressCountry ' +
-                            this.currentRecipient.addressCountry,
-                    );
-                }
-            } else {
-                // TODO error handling
-            }
-            this.requestUpdate();
-        }
     }
 
     async loadLastModifiedName(personIdentifier) {
