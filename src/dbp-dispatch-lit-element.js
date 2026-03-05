@@ -169,7 +169,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests?perPage=9999&groupId=' + groupId,
+            this.entryPointUrl +
+                '/dispatch/requests?perPage=9999&groupId=' +
+                encodeURIComponent(groupId),
             options,
         );
     }
@@ -188,7 +190,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests/' + identifier,
+            this.entryPointUrl + '/dispatch/requests/' + encodeURIComponent(identifier),
             options,
         );
     }
@@ -207,7 +209,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-recipients/' + identifier,
+            this.entryPointUrl + '/dispatch/request-recipients/' + encodeURIComponent(identifier),
             options,
         );
     }
@@ -273,7 +275,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests/' + identifier,
+            this.entryPointUrl + '/dispatch/requests/' + encodeURIComponent(identifier),
             options,
         );
     }
@@ -356,7 +358,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/requests/' + identifier + '/submit',
+            this.entryPointUrl + '/dispatch/requests/' + encodeURIComponent(identifier) + '/submit',
             options,
         );
     }
@@ -444,7 +446,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-recipients/' + id,
+            this.entryPointUrl + '/dispatch/request-recipients/' + encodeURIComponent(id),
             options,
         );
     }
@@ -474,24 +476,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-files/' + id,
-            options,
-        );
-    }
-
-    async sendGetPersonDetailsRequest(identifier) {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/ld+json',
-                Authorization: 'Bearer ' + this.auth.token,
-            },
-        };
-        return await this.httpGetAsync(
-            this.entryPointUrl +
-                '/base/people/' +
-                identifier +
-                '?includeLocal=streetAddress%2CaddressLocality%2CpostalCode%2CaddressCountry',
+            this.entryPointUrl + '/dispatch/request-files/' + encodeURIComponent(id),
             options,
         );
     }
@@ -504,7 +489,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 Authorization: 'Bearer ' + this.auth.token,
             },
         };
-        return await this.httpGetAsync(this.entryPointUrl + '/base/people/' + identifier, options);
+        return await this.httpGetAsync(
+            this.entryPointUrl + '/base/people/' + encodeURIComponent(identifier),
+            options,
+        );
     }
 
     async sendChangeSubjectRequest(identifier, subject) {
@@ -537,7 +525,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-status-changes/' + identifier,
+            this.entryPointUrl +
+                '/dispatch/request-status-changes/' +
+                encodeURIComponent(identifier),
             options,
         );
     }
@@ -551,7 +541,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             },
         };
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-files/' + identifier,
+            this.entryPointUrl + '/dispatch/request-files/' + encodeURIComponent(identifier),
             options,
         );
     }
@@ -903,11 +893,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateYear !== ''
             ) {
                 birthDate =
-                    this.currentRecipient.birthDateDay +
-                    '.' +
+                    this.currentRecipient.birthDateYear +
+                    '-' +
                     this.currentRecipient.birthDateMonth +
-                    '.' +
-                    this.currentRecipient.birthDateYear;
+                    '-' +
+                    this.currentRecipient.birthDateDay;
             }
 
             let response = await this.sendAddRequestRecipientsRequest(
@@ -1026,11 +1016,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 this.currentRecipient.birthDateYear !== ''
             ) {
                 birthDate =
-                    this.currentRecipient.birthDateDay +
-                    '.' +
+                    this.currentRecipient.birthDateYear +
+                    '-' +
                     this.currentRecipient.birthDateMonth +
-                    '.' +
-                    this.currentRecipient.birthDateYear;
+                    '-' +
+                    this.currentRecipient.birthDateDay;
             }
 
             let personIdentifier = null;
@@ -2308,54 +2298,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         this.tempChange = false;
-    }
-
-    async preloadSelectedRecipient() {
-        this.currentRecipient = {};
-
-        if (
-            this._('#recipient-selector') &&
-            this._('#recipient-selector').getAttribute('data-object') !== null &&
-            this._('#recipient-selector').getAttribute('data-object') !== ''
-        ) {
-            const person = JSON.parse(this._('#recipient-selector').getAttribute('data-object'));
-            const personId = person['identifier'];
-
-            let response = await this.sendGetPersonDetailsRequest(personId);
-
-            let responseBody = await response.json();
-            if (responseBody !== undefined && response.status === 200) {
-                this.currentRecipient.familyName = responseBody.familyName;
-                this.currentRecipient.givenName = responseBody.givenName;
-                let birthDate = responseBody.birthDate ? responseBody.birthDate : '';
-                this.currentRecipient.birthDateDay = birthDate.day ? birthDate.day : '';
-                this.currentRecipient.birthDateMonth = birthDate.month ? birthDate.month : '';
-                this.currentRecipient.birthDateYear = birthDate.year ? birthDate.year : '';
-
-                if (responseBody['localData'] !== null) {
-                    this.currentRecipient.addressLocality = responseBody['localData'][
-                        'addressLocality'
-                    ]
-                        ? responseBody['localData']['addressLocality']
-                        : '';
-                    this.currentRecipient.postalCode = responseBody['localData']['postalCode']
-                        ? responseBody['localData']['postalCode']
-                        : '';
-                    this.currentRecipient.streetAddress = responseBody['localData']['streetAddress']
-                        ? responseBody['localData']['streetAddress']
-                        : '';
-                    this.currentRecipient.addressCountry =
-                        dispatchHelper.getEnglishCountryMapping();
-                    console.log(
-                        'preloadSelectedRecipient this.currentRecipient.addressCountry ' +
-                            this.currentRecipient.addressCountry,
-                    );
-                }
-            } else {
-                // TODO error handling
-            }
-            this.requestUpdate();
-        }
     }
 
     async loadLastModifiedName(personIdentifier) {
@@ -3774,7 +3716,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-status-changes/' + id + '/file',
+            this.entryPointUrl +
+                '/dispatch/request-status-changes/' +
+                encodeURIComponent(id) +
+                '/file',
             options,
         );
     }
@@ -3863,7 +3808,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         };
 
         return await this.httpGetAsync(
-            this.entryPointUrl + '/dispatch/request-status-changes/' + id + '/file',
+            this.entryPointUrl +
+                '/dispatch/request-status-changes/' +
+                encodeURIComponent(id) +
+                '/file',
             options,
         );
     }

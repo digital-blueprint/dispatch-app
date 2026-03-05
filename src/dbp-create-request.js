@@ -1118,26 +1118,15 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             'show-requests.add-recipient-button-text',
                                                         )}"
                                                         @click="${(event) => {
-                                                            this.preloadSelectedRecipient().then(
-                                                                () => {
-                                                                    MicroModal.show(
-                                                                        // @ts-ignore
-                                                                        this._(
-                                                                            '#add-recipient-modal',
-                                                                        ),
-                                                                        {
-                                                                            disableScroll: true,
-                                                                            disableFocus: false,
-                                                                            onClose: (modal) => {
-                                                                                this.loading = false;
-                                                                                /** @type {LoadingButton} */ (
-                                                                                    this._(
-                                                                                        '#add-recipient-btn',
-                                                                                    )
-                                                                                ).stop();
-                                                                            },
-                                                                        },
-                                                                    );
+                                                            this.currentRecipient = {};
+                                                            // @ts-ignore
+                                                            MicroModal.show(
+                                                                this._('#add-recipient-modal'),
+                                                                {
+                                                                    disableScroll: true,
+                                                                    onClose: (modal) => {
+                                                                        //this.loading = false;
+                                                                    },
                                                                 },
                                                             );
                                                         }}"

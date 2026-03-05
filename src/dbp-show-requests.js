@@ -550,6 +550,64 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     };
 
     /**
+     * Builds an export-ready recipient object and enriches it with recipient details
+     * @param {object} recipient
+     * @param {object} request
+     * @param {string | undefined} organizationName
+     * @returns {Promise<object>}
+     */
+    async buildExportRecipient(recipient, request, organizationName = undefined) {
+        const exportRecipient = {
+            ...recipient,
+            dispatchRequestIdentifier:
+                request.dispatchRequestIdentifier || request.identifier || '',
+            requestReferenceNumber: request.referenceNumber || '',
+            requestDateSubmitted: request.dateSubmitted || '',
+        };
+
+        if (organizationName !== undefined) {
+            exportRecipient.organizationName = organizationName;
+        }
+
+        if (!recipient?.identifier) {
+            return exportRecipient;
+        }
+
+        try {
+            const recipientResponse = await this.getDispatchRecipient(recipient.identifier);
+            if (recipientResponse.status === 200) {
+                const recipientBody = await recipientResponse.json();
+                exportRecipient.appDeliveryID =
+                    recipientBody.appDeliveryID ||
+                    recipientBody.appDeliveryId ||
+                    exportRecipient.appDeliveryID ||
+                    exportRecipient.appDeliveryId ||
+                    '';
+                exportRecipient.deliveryEndDate =
+                    recipientBody.deliveryEndDate || exportRecipient.deliveryEndDate || '';
+                exportRecipient.electronicallyDeliverable =
+                    recipientBody.electronicallyDeliverable !== undefined
+                        ? recipientBody.electronicallyDeliverable
+                        : exportRecipient.electronicallyDeliverable;
+                exportRecipient.postalDeliverable =
+                    recipientBody.postalDeliverable !== undefined
+                        ? recipientBody.postalDeliverable
+                        : exportRecipient.postalDeliverable;
+                exportRecipient.lastStatusChange =
+                    recipientBody.lastStatusChange || exportRecipient.lastStatusChange || '';
+            }
+        } catch (error) {
+            console.warn(
+                'Could not fetch recipient details for export:',
+                recipient.identifier,
+                error,
+            );
+        }
+
+        return exportRecipient;
+    }
+
+    /**
      * Exports metadata for all organizations
      */
     async exportAllOrganizations() {
@@ -585,13 +643,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 const requests = this.parseListOfRequests(requestsBody);
 
                 for (const request of requests) {
+                    if (!request.dateSubmitted) {
+                        continue;
+                    }
+
                     if (request.recipients && Array.isArray(request.recipients)) {
-                        for (const recipient of request.recipients) {
-                            allRecipients.push({
-                                organizationName: org.name,
-                                ...recipient,
-                            });
-                        }
+                        const exportRecipients = await Promise.all(
+                            request.recipients.map((recipient) =>
+                                this.buildExportRecipient(recipient, request, org.name),
+                            ),
+                        );
+                        allRecipients.push(...exportRecipients);
                     }
                 }
             }
@@ -631,10 +693,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         try {
             const allRecipients = [];
             for (const request of this.requestList) {
+                if (!request.dateSubmitted) {
+                    continue;
+                }
+
                 if (request.recipients && Array.isArray(request.recipients)) {
-                    for (const recipient of request.recipients) {
-                        allRecipients.push(recipient);
-                    }
+                    const exportRecipients = await Promise.all(
+                        request.recipients.map((recipient) =>
+                            this.buildExportRecipient(recipient, request),
+                        ),
+                    );
+                    allRecipients.push(...exportRecipients);
                 }
             }
 
@@ -671,26 +740,32 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             return;
         }
 
+        const i18n = this._i18n;
+
         // Define CSV headers
         const headers = [
-            'Given Name',
-            'Family Name',
-            'Birth Date',
-            'Street Address',
-            'Postal Code',
-            'Address Locality',
-            'Address Country',
-            'Person Identifier',
-            'Recipient Identifier',
-            'Date Created',
-            'Date Submitted',
-            'Electronically Deliverable',
-            'Dual Delivery Selected',
-            'App Delivery ID',
+            i18n.t('show-requests.add-recipient-gn-dialog-label'),
+            i18n.t('show-requests.add-recipient-fn-dialog-label'),
+            i18n.t('show-requests.add-recipient-birthdate-dialog-label'),
+            i18n.t('show-requests.add-recipient-sa-dialog-label'),
+            i18n.t('show-requests.add-recipient-pc-dialog-label'),
+            i18n.t('show-requests.add-recipient-al-dialog-label'),
+            i18n.t('show-requests.add-recipient-ac-dialog-label'),
+            i18n.t('show-requests.person-identifier'),
+            i18n.t('show-requests.recipient-id'),
+            i18n.t('show-requests.table-header-id'),
+            i18n.t('show-requests.reference-number'),
+            i18n.t('show-requests.delivery-service-dialog-label'),
+            i18n.t('show-requests.delivery-end-date'),
+            i18n.t('show-requests.delivery-status-changes'),
+            i18n.t('show-requests.table-header-date-created'),
+            i18n.t('show-requests.date-submitted'),
+            i18n.t('show-requests.electronically-deliverable'),
+            i18n.t('show-requests.app-delivery-id'),
         ];
 
         if (data[0] && data[0].organizationName !== undefined) {
-            headers.unshift('Organization Name');
+            headers.unshift(i18n.t('show-requests.edit-sender-gn-dialog-label'));
         }
 
         // Build CSV content with proper Excel compatibility
@@ -717,25 +792,38 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 this.escapeCSVValue(recipient.addressCountry || ''),
                 this.escapeCSVValue(recipient.personIdentifier || ''),
                 this.escapeCSVValue(recipient.identifier || ''),
+                this.escapeCSVValue(recipient.dispatchRequestIdentifier || ''),
+                this.escapeCSVValue(recipient.requestReferenceNumber || ''),
+                this.escapeCSVValue(
+                    recipient.electronicallyDeliverable
+                        ? 'electronic'
+                        : recipient.postalDeliverable
+                          ? 'postal'
+                          : '',
+                ),
+                this.escapeCSVValue(recipient.deliveryEndDate || ''),
+                this.escapeCSVValue(
+                    recipient.lastStatusChange && recipient.lastStatusChange.dispatchStatus
+                        ? recipient.lastStatusChange.dispatchStatus
+                        : '',
+                ),
                 this.escapeCSVValue(recipient.dateCreated || ''),
-                this.escapeCSVValue(recipient.dateSubmitted || ''),
+                this.escapeCSVValue(
+                    recipient.requestDateSubmitted || recipient.dateSubmitted || '',
+                ),
                 this.escapeCSVValue(
                     recipient.electronicallyDeliverable !== undefined
                         ? recipient.electronicallyDeliverable
                         : '',
                 ),
-                this.escapeCSVValue(
-                    recipient.dualDeliverySelected !== undefined
-                        ? recipient.dualDeliverySelected
-                        : '',
-                ),
-                this.escapeCSVValue(recipient.appDeliveryID || ''),
+                this.escapeCSVValue(recipient.appDeliveryID || recipient.appDeliveryId || ''),
             );
 
             csvRows.push(row.join(';'));
         }
 
-        // Add BOM for Excel UTF-8 compatibility
+        // Add delimiter hint for Excel and BOM for UTF-8 compatibility
+        csvRows.unshift('sep=;');
         const BOM = '\uFEFF';
         const csvContent = BOM + csvRows.join('\r\n');
 
