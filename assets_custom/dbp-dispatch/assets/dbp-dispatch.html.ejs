@@ -211,8 +211,17 @@
                     height: 100%;
                     display: flex;
                     justify-content: end;
-                    padding: 7px 0;
                 }
+
+                [slot="logo"] a {
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+                    width: 100%;
+                    text-decoration: none;
+                    box-sizing: border-box;
+                }
+
             </style>
             <a href="https://www.tugraz.at" title="TU Graz Home" target="_blank" rel="noopener">
                 <tug-logo id="main-logo" subscribe="lang"></tug-logo>
