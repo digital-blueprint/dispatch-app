@@ -1078,10 +1078,7 @@ export function getDispatchRequestStyles() {
         }
 
         .new-line-content {
-            /* white-space: pre-line; */
-            /* white-space: normal; */
-            /* width: 90%; */
-            /* margin-top: -1em; */
+            white-space: pre-line;
         }
 
         .scroll {

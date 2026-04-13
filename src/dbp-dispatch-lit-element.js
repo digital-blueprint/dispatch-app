@@ -15,6 +15,10 @@ import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 import {getReferenceNumberFromPDF} from './utils';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 
+function normalizeNewlines(text = '') {
+    return String(text).replace(/\\n/g, '\n');
+}
+
 export default class DBPDispatchLitElement extends DBPLitElement {
     constructor() {
         super();
@@ -3485,11 +3489,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                                   statusChange.dateCreated,
                                                               )}
                                                           </div>
-                                                          <div
-                                                              class="status-detail new-line-content">
-                                                              ${statusChange.description}
-                                                              (StatusType
-                                                              ${statusChange.statusType})
+                                                          <div class="status-detail">
+                                                              <span class="new-line-content">
+                                                                  ${normalizeNewlines(
+                                                                      statusChange.description,
+                                                                  )}
+                                                              </span>
+                                                              <span>
+                                                                  (StatusType
+                                                                  ${statusChange.statusType})
+                                                              </span>
                                                           </div>
                                                       </div>
 
