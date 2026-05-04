@@ -6,6 +6,8 @@ import MicroModal from './micromodal.es';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {html} from 'lit';
 import * as dispatchHelper from './utils';
+import '@dbp-toolkit/country-select';
+import {CustomCountrySelect} from './country-select';
 import {CustomPersonSelect} from './person-select';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {IconButton, LoadingButton} from '@dbp-toolkit/common';
@@ -57,6 +59,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     static get scopedElements() {
         return {
+            'dbp-country-select': CustomCountrySelect,
             'dbp-file-source': FileSource,
             'dbp-file-sink': FileSink,
             'dbp-person-select': CustomPersonSelect,
@@ -75,6 +78,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             currentItemTabulator: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
             personSelectorIsDisabled: {type: Boolean, attribute: false},
+            selectedCountry: {type: String, attribute: false},
             subject: {type: String, attribute: false},
             groupId: {type: String, attribute: false},
             tempItem: {type: Object, attribute: false},
@@ -2357,7 +2361,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         // Reset country selector.
         /** @type {HTMLSelectElement} */
-        const CountrySelectElement = this.shadowRoot.querySelector('#add-recipient-country-select');
+        /*const CountrySelectElement = this.shadowRoot.querySelector('#add-recipient-country-select');
         const options = CountrySelectElement.options;
 
         for (var i = 0, iLen = options.length; i < iLen; i++) {
@@ -2365,7 +2369,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 CountrySelectElement.selectedIndex = i;
                 return;
             }
-        }
+        }*/
     }
 
     clearAll() {
@@ -2609,17 +2613,24 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
-                                <select
+                                <div class="field">
+                                    <div class="control">
+                                        <dbp-country-select
+                                            lang="${this.lang}"
+                                            value="AT"></dbp-country-select>
+                                    </div>
+                                </div>
+                                <!--<select
                                     id="edit-sender-country-select"
                                     @change=${this.onCountryChange}>
                                     ${Object.entries(countries).map(
-                                        ([code, name]) => html`
-                                            <option value=${code} ?selected=${code === 'AT'}>
-                                                ${name}
-                                            </option>
-                                        `,
-                                    )}
-                                </select>
+                                    ([code, name]) => html`
+                                        <option value=${code} ?selected=${code === 'AT'}>
+                                            ${name}
+                                        </option>
+                                    `,
+                                )}
+                                </select>-->
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -2927,19 +2938,31 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                         <div class="nf-label no-selector">
                                             ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                                         </div>
-                                        <select
+                                        <div class="field">
+                                            <div class="control">
+                                                <dbp-country-select
+                                                    lang="${this.lang}"
+                                                    value="AT"></dbp-country-select>
+                                            </div>
+                                        </div>
+                                        <!--<select
                                             id="add-recipient-country-select"
                                             @change=${this.onCountryChange}>
                                             ${Object.entries(countries).map(
-                                                ([code, name]) => html`
-                                                    <option
-                                                        value=${code}
-                                                        ?selected=${code === 'AT'}>
-                                                        ${name}
-                                                    </option>
-                                                `,
-                                            )}
-                                        </select>
+                                            ([code, name]) => html`
+                                                <option value=${code} ?selected=${code === 'AT'}>
+                                                    ${name}
+                                                </option>
+                                            `,
+                                        )}
+                                        </select>-->
+                                    </div>
+                                    <div class="field">
+                                        <div class="control">
+                                            <dbp-country-select
+                                                lang="${this.lang}"
+                                                value="AT"></dbp-country-select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -3264,17 +3287,24 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                                 </div>
-                                <select
+                                <div>
+                                    <div class="control">
+                                        <dbp-country-select
+                                            lang="${this.lang}"
+                                            value="AT"></dbp-country-select>
+                                    </div>
+                                </div>
+                                <!--<select
                                     id="tf-edit-recipient-country-select"
                                     @change=${this.onCountryChange}>
                                     ${Object.entries(countries).map(
-                                        ([code, name]) => html`
-                                            <option value=${code} ?selected=${code === 'AT'}>
-                                                ${name}
-                                            </option>
-                                        `,
-                                    )}
-                                </select>
+                                    ([code, name]) => html`
+                                        <option value=${code} ?selected=${code === 'AT'}>
+                                            ${name}
+                                        </option>
+                                    `,
+                                )}
+                                </select>-->
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -4160,14 +4190,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                   this.currentItem.dateSubmitted ||
                                   !this.mayWrite}"
                                   @click="${(event) => {
-                                      if (
+                                      /*if (
                                           this.currentItem.senderAddressCountry &&
                                           this.currentItem.senderAddressCountry !== ''
-                                      ) {
-                                          /** @type {HTMLSelectElement} */ (
-                                              this._('#edit-sender-country-select')
+                                      ) {*/
+                                      /** @type {HTMLSelectElement} */ /*(
+                                         /    this._('#edit-sender-country-select')
                                           ).value = this.currentItem.senderAddressCountry;
-                                      }
+                                      }*/
                                       // @ts-ignore
                                       MicroModal.show(this._('#edit-sender-modal'), {
                                           disableScroll: true,
