@@ -91,6 +91,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     static get scopedElements() {
         return {
+            ...super.scopedElements,
             'dbp-icon': Icon,
             'dbp-mini-spinner': MiniSpinner,
             'dbp-loading-button': LoadingButton,

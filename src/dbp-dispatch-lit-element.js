@@ -10,7 +10,7 @@ import '@dbp-toolkit/country-select';
 import {CustomCountrySelect} from './country-select';
 import {CustomPersonSelect} from './person-select';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
-import {IconButton, LoadingButton} from '@dbp-toolkit/common';
+import {IconButton, LoadingButton, ScopedElementsMixin} from '@dbp-toolkit/common';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
@@ -21,7 +21,7 @@ function normalizeNewlines(text = '') {
     return String(text).replace(/\\n/g, '\n');
 }
 
-export default class DBPDispatchLitElement extends DBPLitElement {
+export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitElement) {
     constructor() {
         super();
         this.isSessionRefreshed = false;
