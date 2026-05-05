@@ -1583,8 +1583,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    async confirmEditSubject() {
-        let subject = /** @type {HTMLInputElement } */ (this._('#tf-edit-subject-fn-dialog')).value;
+    async confirmEditSubject(subject) {
         let rows = this.currentTable.getRows();
         this.currentTable.updateRow(rows[this.currentRowIndex], {subject: subject});
         let id = this.currentItem.identifier;
@@ -3810,80 +3809,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     addEditSubjectModal() {
-        const i18n = this._i18n;
-
         return html`
-            <div class="modal micromodal-slide" id="edit-subject-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                        class="modal-container"
-                        id="edit-subject-modal-box"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="edit-subject-modal-title">
-                        <header class="modal-header">
-                            <h3 id="edit-subject-modal-title">
-                                ${i18n.t('show-requests.edit-subject-modal-title')}
-                            </h3>
-                            <button
-                                title="${i18n.t('show-requests.modal-close')}"
-                                class="modal-close"
-                                aria-label="${i18n.t('show-requests.modal-close')}"
-                                @click="${() => {
-                                    // @ts-ignore
-                                    MicroModal.close(this._('#edit-subject-modal'));
-                                }}">
-                                <dbp-icon
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    name="close"
-                                    class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="edit-subject-modal-content">
-                            <div class="modal-content-item">
-                                <div>
-                                    <input
-                                        type="text"
-                                        class="input"
-                                        name="tf-edit-subject-fn-dialog"
-                                        id="tf-edit-subject-fn-dialog"
-                                        value="${this.subject
-                                            ? this.subject
-                                            : this._i18n.t('create-request.default-subject')}"
-                                        @input="${() => {
-                                            // TODO
-                                        }}" />
-                                </div>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                                <button
-                                    class="button"
-                                    data-micromodal-close
-                                    aria-label="Close this dialog window"
-                                    @click="${() => {
-                                        // @ts-ignore
-                                        MicroModal.close(this._('#edit-subject-modal'));
-                                    }}">
-                                    ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
-                                </button>
-                                <button
-                                    class="button select-button is-primary"
-                                    id="edit-subject-confirm-btn"
-                                    @click="${() => {
-                                        this.confirmEditSubject().then((r) => {
-                                            // @ts-ignore
-                                            MicroModal.close(this._('#edit-subject-modal'));
-                                        });
-                                    }}">
-                                    ${i18n.t('show-requests.edit-subject-dialog-button-ok')}
-                                </button>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
+            <dbp-dispatch-edit-subject-modal
+                id="edit-subject-modal"
+                lang="${this.lang}"
+                .subject=${this.subject}
+                @confirm="${async (event) => {
+                    await this.confirmEditSubject(event.detail.subject);
+                    this._('#edit-subject-modal').close();
+                }}"
+                @dbp-modal-closed="${() => {
+                    this.loading = false;
+                }}"></dbp-dispatch-edit-subject-modal>
         `;
     }
 

@@ -21,6 +21,7 @@ import * as dispatchStyles from './styles';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
 import {CustomPersonSelect} from './person-select.js';
+import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
 
 // NOTE: pdf-viewer is loading the pdfjs worker also for getBusinessNumberFromPDF!
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
@@ -105,6 +106,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-pdf-viewer': PdfViewer,
             'dbp-tabulator-table': TabulatorTable,
             'dbp-select': DBPSelect,
+            'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
         };
     }
 
@@ -1689,29 +1691,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                                   ? this.currentItem
                                                                                         .name
                                                                                   : '';
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-subject-fn-dialog',
-                                                                                  )
-                                                                              ).value = this
-                                                                                  .currentItem.name
-                                                                                  ? this.currentItem
-                                                                                        .name
-                                                                                  : ``;
-                                                                              // @ts-ignore
-                                                                              MicroModal.show(
-                                                                                  this._(
-                                                                                      '#edit-subject-modal',
-                                                                                  ),
-                                                                                  {
-                                                                                      disableScroll: true,
-                                                                                      onClose: (
-                                                                                          modal,
-                                                                                      ) => {
-                                                                                          //this.loading = false;
-                                                                                      },
-                                                                                  },
-                                                                              );
+                                                                              this._(
+                                                                                  '#edit-subject-modal',
+                                                                              ).open(this.subject);
                                                                           }}"
                                                                           aria-label="${i18n.t(
                                                                               'show-requests.edit-subject-button-text',

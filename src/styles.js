@@ -636,7 +636,6 @@ export function getDispatchRequestStyles() {
         #add-recipient-modal-box,
         #edit-recipient-modal-box,
         #add-subject-modal-box,
-        #edit-subject-modal-box,
         #edit-reference-number-modal-box,
         #show-recipient-modal-box,
         #file-viewer-modal-box {
@@ -715,7 +714,6 @@ export function getDispatchRequestStyles() {
         }
 
         #add-subject-modal-box,
-        #edit-subject-modal-box,
         #edit-reference-number-modal-box {
             height: auto;
             min-height: 185px;
@@ -741,7 +739,6 @@ export function getDispatchRequestStyles() {
         #edit-recipient-modal-box header.modal-header,
         #show-recipient-modal-box header.modal-header,
         #add-subject-modal-box header.modal-header,
-        #edit-subject-modal-box header.modal-header,
         #edit-reference-number-modal-box header.modal-header,
         #file-viewer-modal-box header.modal-header {
             padding: 0px;
@@ -759,7 +756,6 @@ export function getDispatchRequestStyles() {
         #edit-recipient-modal-box footer.modal-footer .modal-footer-btn,
         #show-recipient-modal-box footer.modal-footer .modal-footer-btn,
         #add-subject-modal-box footer.modal-footer .modal-footer-btn,
-        #edit-subject-modal-box footer.modal-footer .modal-footer-btn,
         #edit-reference-number-modal-box footer.modal-footer .modal-footer-btn {
             padding: 0px;
             display: flex;
@@ -775,7 +771,6 @@ export function getDispatchRequestStyles() {
         #add-recipient-modal-content,
         #edit-recipient-modal-content,
         #add-subject-modal-content,
-        #edit-subject-modal-content,
         #edit-reference-number-modal-content,
         #file-viewer-modal-modal-content {
             display: flex;
@@ -787,7 +782,6 @@ export function getDispatchRequestStyles() {
         }
 
         #add-subject-modal-content,
-        #edit-subject-modal-content,
         #edit-reference-number-modal-content {
             gap: 0;
         }
@@ -797,7 +791,6 @@ export function getDispatchRequestStyles() {
         #add-recipient-modal-content div .input,
         #edit-recipient-modal-content div .input,
         #add-subject-modal-content div .input,
-        #edit-subject-modal-content div .input,
         #edit-reference-number-modal-content div .input {
             width: 100%;
         }
@@ -807,7 +800,6 @@ export function getDispatchRequestStyles() {
         #add-recipient-modal-content .nf-label,
         #edit-recipient-modal-content .nf-label,
         #add-subject-modal-content .nf-label,
-        #edit-subject-modal-content .nf-label,
         #edit-reference-number-modal-content .nf-label {
             padding-bottom: 2px;
         }
@@ -822,7 +814,6 @@ export function getDispatchRequestStyles() {
         #edit-recipient-modal-title,
         #show-recipient-modal-title,
         #add-subject-modal-title,
-        #edit-subject-modal-title,
         #edit-reference-number-modal-title,
         #file-viewer-modal-title {
             margin: 0;

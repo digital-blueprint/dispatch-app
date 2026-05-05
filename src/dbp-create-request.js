@@ -19,6 +19,7 @@ import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
+import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -108,6 +109,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-resource-select': ResourceSelect,
             'dbp-pdf-viewer': PdfViewer,
             'dbp-tabulator-table': TabulatorTable,
+            'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
         };
     }
 
@@ -968,22 +970,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 this.subject = this.currentItem.name
                                                                     ? this.currentItem.name
                                                                     : '';
-                                                                /** @type {HTMLInputElement} */ (
-                                                                    this._(
-                                                                        '#tf-edit-subject-fn-dialog',
-                                                                    )
-                                                                ).value = this.currentItem.name
-                                                                    ? this.currentItem.name
-                                                                    : ``;
-                                                                MicroModal.show(
-                                                                    // @ts-ignore
-                                                                    this._('#edit-subject-modal'),
-                                                                    {
-                                                                        disableScroll: true,
-                                                                        onClose: (modal) => {
-                                                                            this.loading = false;
-                                                                        },
-                                                                    },
+                                                                this._('#edit-subject-modal').open(
+                                                                    this.subject,
                                                                 );
                                                             }}"
                                                             aria-label="${i18n.t(
