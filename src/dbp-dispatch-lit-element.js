@@ -6,7 +6,6 @@ import MicroModal from './micromodal.es';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {html} from 'lit';
 import * as dispatchHelper from './utils';
-import {CustomPersonSelect} from './person-select';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {IconButton, LoadingButton} from '@dbp-toolkit/common';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
@@ -58,7 +57,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return {
             'dbp-file-source': FileSource,
             'dbp-file-sink': FileSink,
-            'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-icon-button': IconButton,
         };
@@ -869,7 +867,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return list;
     }
 
-    async addRecipientToRequest(button) {
+    async addRecipientToRequest(recipient) {
+        this.currentRecipient = recipient;
         const addRecipientButton = /** @type {LoadingButton} */ (this._('#add-recipient-btn'));
         addRecipientButton.start();
         try {
@@ -933,42 +932,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         recipients: this.createFormattedRecipientsList(this.currentItem.recipients),
                     });
                 }
-                this.currentRecipient.personIdentifier = '';
-                this.currentRecipient.givenName = '';
-                this.currentRecipient.familyName = '';
-                this.currentRecipient.postalCode = '';
-                this.currentRecipient.addressLocality = '';
-                this.currentRecipient.streetAddress = '';
-                this.currentRecipient.birthDateDay = '';
-                this.currentRecipient.birthDateMonth = '';
-                this.currentRecipient.birthDateYear = '';
-
-                this.currentRecipient.addressCountry = dispatchHelper.getEnglishCountryMapping();
-                console.log(
-                    'addRecipientToRequest this.currentRecipient.addressCountry ' +
-                        this.currentRecipient.addressCountry,
-                );
-
-                /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-gn-dialog')).value =
-                    this.currentRecipient.givenName;
-                /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-fn-dialog')).value =
-                    this.currentRecipient.familyName;
-                /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-pc-dialog')).value =
-                    this.currentRecipient.postalCode;
-                /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-al-dialog')).value =
-                    this.currentRecipient.addressLocality;
-                /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-sa-dialog')).value =
-                    this.currentRecipient.streetAddress;
-                /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-birthdate-day')).value =
-                    this.currentRecipient.birthDateDay;
-                /** @type {HTMLInputElement} */ (
-                    this._('#tf-add-recipient-birthdate-month')
-                ).value = this.currentRecipient.birthDateMonth;
-                /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-birthdate-year')).value =
-                    this.currentRecipient.birthDateYear;
-                /** @type {HTMLInputElement} */ (this._('#add-recipient-country-select')).value =
-                    'AT';
-
                 this.requestUpdate();
             } else {
                 // TODO error handling
@@ -989,9 +952,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 timeout: 5,
             });
         } finally {
-            /** @type {CustomPersonSelect} */ (this._('#recipient-selector')).clear();
             addRecipientButton.stop();
-            button.disabled = false;
         }
     }
 
@@ -2029,20 +1990,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return dateTuple;
     }
 
-    async processSelectedRecipient(event) {
-        this.currentRecipient = {};
-        const person = JSON.parse(event.target.dataset.object);
-
-        this.currentRecipient.personIdentifier = person['identifier'];
-
-        const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
-        elements.forEach((element) => {
-            element.classList.add('muted');
-        });
-
-        this.requestUpdate();
-    }
-
     async confirmEditRecipient(recipient) {
         this.currentRecipient = {...this.currentRecipient, ...recipient};
         await this.updateRecipient();
@@ -2199,42 +2146,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return sortedRecipients;
     }
 
-    disablePersonSelector() {
-        this.personSelectorIsDisabled = true;
-    }
-
-    resetRecipientFields() {
-        /** @type {CustomPersonSelect} */ (this._('#recipient-selector')).clear();
-        this.currentRecipient = {};
-        const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
-        elements.forEach((element) => {
-            element.classList.remove('muted');
-        });
-
-        // Re-enable Person Selector.
-        this.personSelectorIsDisabled = false;
-
-        // Clear values and re-enable all input fields.
-        const manualElements = this.shadowRoot.querySelectorAll('.modal-content-right .input');
-        manualElements.forEach((element) => {
-            const input = /** @type {HTMLInputElement} */ (element);
-            input.value = '';
-            input.disabled = false;
-        });
-
-        // Reset country selector.
-        /** @type {HTMLSelectElement} */
-        const CountrySelectElement = this.shadowRoot.querySelector('#add-recipient-country-select');
-        const options = CountrySelectElement.options;
-
-        for (var i = 0, iLen = options.length; i < iLen; i++) {
-            if (options[i].defaultSelected) {
-                CountrySelectElement.selectedIndex = i;
-                return;
-            }
-        }
-    }
-
     clearAll() {
         this.currentItem = {};
 
@@ -2344,404 +2255,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     addAddRecipientModal() {
-        const i18n = this._i18n;
-        const countries =
-            this.lang === 'en'
-                ? dispatchHelper.getEnglishCountryList()
-                : dispatchHelper.getGermanCountryList();
-
         return html`
-            <div class="modal micromodal-slide" id="add-recipient-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                        class="modal-container"
-                        id="add-recipient-modal-box"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="add-recipient-modal-title">
-                        <header class="modal-header">
-                            <h3 id="add-recipient-modal-title">
-                                ${i18n.t('show-requests.add-recipient-dialog-title')}
-                            </h3>
-                            <button
-                                title="${i18n.t('show-requests.modal-close')}"
-                                class="modal-close"
-                                aria-label="${i18n.t('show-requests.modal-close')}"
-                                @click="${() => {
-                                    this.resetRecipientFields();
-                                    // @ts-ignore
-                                    MicroModal.close(this._('#add-recipient-modal'));
-                                }}">
-                                <dbp-icon
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    name="close"
-                                    class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="add-recipient-modal-content">
-                            <div class="modal-content-container">
-                                <div class="modal-content-left">
-                                    <div class="modal-content-item">
-                                        <div class="nf-label selector">
-                                            <h4>
-                                                ${i18n.t(
-                                                    'show-requests.add-recipient-person-select-label',
-                                                )}
-                                            </h4>
-                                        </div>
-                                        <div>
-                                            <div class="control">
-                                                <dbp-person-select
-                                                    id="recipient-selector"
-                                                    subscribe="auth"
-                                                    lang="${this.lang}"
-                                                    entry-point-url="${this.entryPointUrl}"
-                                                    show-reload-button
-                                                    ?disabled=${this.personSelectorIsDisabled}
-                                                    @change="${(event) => {
-                                                        this.processSelectedRecipient(event);
-                                                    }}"></dbp-person-select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-content-right">
-                                    <div>
-                                        <h4
-                                            class="${classMap({
-                                                muted:
-                                                    this.currentRecipient &&
-                                                    this.currentRecipient.personIdentifier,
-                                            })}">
-                                            ${i18n.t('show-requests.add-recipient-or-text')}
-                                        </h4>
-                                    </div>
-                                    <div class="modal-content-item">
-                                        <div class="nf-label no-selector">
-                                            ${i18n.t('show-requests.add-recipient-gn-dialog-label')}
-                                        </div>
-                                        <div>
-                                            <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
-                                                type="text"
-                                                class="input"
-                                                name="tf-add-recipient-gn-dialog"
-                                                id="tf-add-recipient-gn-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.givenName
-                                                    : ``}"
-                                                required
-                                                @input="${() => {
-                                                    this.disablePersonSelector();
-                                                }}" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-content-item">
-                                        <div class="nf-label no-selector">
-                                            ${i18n.t('show-requests.add-recipient-fn-dialog-label')}
-                                        </div>
-                                        <div>
-                                            <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
-                                                type="text"
-                                                class="input"
-                                                name="tf-add-recipient-fn-dialog"
-                                                id="tf-add-recipient-fn-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.familyName
-                                                    : ``}"
-                                                required
-                                                @input="${() => {
-                                                    this.disablePersonSelector();
-                                                }}" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-content-item">
-                                        <div class="nf-label no-selector">
-                                            ${i18n.t(
-                                                'show-requests.add-recipient-birthdate-dialog-label',
-                                            )}
-                                        </div>
-                                        <div class="birthdate-input">
-                                            <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
-                                                type="number"
-                                                class="input"
-                                                id="tf-add-recipient-birthdate-day"
-                                                min="1"
-                                                max="31"
-                                                lang="${this.lang}"
-                                                placeholder="${i18n.t(
-                                                    'show-requests.add-recipient-birthdate-dialog-placeholder-day',
-                                                )}"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.birthDateDay
-                                                    : ``}"
-                                                @input="${() => {
-                                                    this.disablePersonSelector();
-                                                }}" />
-                                            <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
-                                                type="number"
-                                                class="input"
-                                                id="tf-add-recipient-birthdate-month"
-                                                min="1"
-                                                max="12"
-                                                lang="${this.lang}"
-                                                placeholder="${i18n.t(
-                                                    'show-requests.add-recipient-birthdate-dialog-placeholder-month',
-                                                )}"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.birthDateMonth
-                                                    : ``}"
-                                                @input="${() => {
-                                                    this.disablePersonSelector();
-                                                }}" />
-                                            <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
-                                                type="number"
-                                                class="input"
-                                                id="tf-add-recipient-birthdate-year"
-                                                min="1800"
-                                                max="2300"
-                                                lang="${this.lang}"
-                                                placeholder="${i18n.t(
-                                                    'show-requests.add-recipient-birthdate-dialog-placeholder-year',
-                                                )}"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.birthDateYear
-                                                    : ``}"
-                                                @input="${() => {
-                                                    this.disablePersonSelector();
-                                                }}" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-content-item">
-                                        <div class="nf-label no-selector">
-                                            ${i18n.t('show-requests.add-recipient-sa-dialog-label')}
-                                        </div>
-                                        <div>
-                                            <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
-                                                type="text"
-                                                class="input"
-                                                name="tf-add-recipient-sa-dialog"
-                                                id="tf-add-recipient-sa-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.streetAddress
-                                                    : ``}"
-                                                required
-                                                @input="${() => {
-                                                    this.disablePersonSelector();
-                                                }}" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-content-item">
-                                        <div class="nf-label no-selector">
-                                            ${i18n.t('show-requests.add-recipient-pc-dialog-label')}
-                                        </div>
-                                        <div>
-                                            <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
-                                                type="number"
-                                                class="input"
-                                                name="tf-add-recipient-pc-dialog"
-                                                id="tf-add-recipient-pc-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.postalCode
-                                                    : ``}"
-                                                required
-                                                @input="${() => {
-                                                    this.disablePersonSelector();
-                                                }}" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-content-item">
-                                        <div class="nf-label no-selector">
-                                            ${i18n.t('show-requests.add-recipient-al-dialog-label')}
-                                        </div>
-                                        <div>
-                                            <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
-                                                type="text"
-                                                class="input"
-                                                name="tf-add-recipient-al-dialog"
-                                                id="tf-add-recipient-al-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.addressLocality
-                                                    : ``}"
-                                                required
-                                                @input="${() => {
-                                                    this.disablePersonSelector();
-                                                }}" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-content-item">
-                                        <div class="nf-label no-selector">
-                                            ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
-                                        </div>
-                                        <select
-                                            id="add-recipient-country-select"
-                                            @change=${this.onCountryChange}>
-                                            ${Object.entries(countries).map(
-                                                ([code, name]) => html`
-                                                    <option
-                                                        value=${code}
-                                                        ?selected=${code === 'AT'}>
-                                                        ${name}
-                                                    </option>
-                                                `,
-                                            )}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                                <button
-                                    class="button"
-                                    aria-label="Close this dialog window"
-                                    @click="${() => {
-                                        this.resetRecipientFields();
-                                        // @ts-ignore
-                                        MicroModal.close(this._('#add-recipient-modal'));
-                                    }}">
-                                    ${i18n.t('show-requests.add-recipient-dialog-button-cancel')}
-                                </button>
-                                <button
-                                    class="button is-warning ${classMap({
-                                        nothidden:
-                                            this._('#recipient-selector') &&
-                                            /** @type {CustomPersonSelect} */ (
-                                                this._('#recipient-selector')
-                                            ).value === '',
-                                    })}"
-                                    @click="${() => {
-                                        this.resetRecipientFields();
-                                    }}">
-                                    ${i18n.t('show-requests.reset-select-button-text')}
-                                </button>
-                                <button
-                                    class="button select-button is-primary"
-                                    id="add-recipient-confirm-btn"
-                                    @click="${(event) => {
-                                        let button = event.target;
-                                        button.disabled = true;
-
-                                        let validcountry = this.checkValidity(
-                                            this._('#add-recipient-country-select'),
-                                        );
-                                        let validal = this.checkValidity(
-                                            this._('#tf-add-recipient-al-dialog'),
-                                        );
-                                        let validpc = this.checkValidity(
-                                            this._('#tf-add-recipient-pc-dialog'),
-                                        );
-                                        let validsa = this.checkValidity(
-                                            this._('#tf-add-recipient-sa-dialog'),
-                                        );
-                                        let validbirthday = this.checkValidity(
-                                            this._('#tf-add-recipient-birthdate-day'),
-                                        );
-                                        let validbirthmonth = this.checkValidity(
-                                            this._('#tf-add-recipient-birthdate-month'),
-                                        );
-                                        let validbirthyear = this.checkValidity(
-                                            this._('#tf-add-recipient-birthdate-year'),
-                                        );
-                                        let validfn = this.checkValidity(
-                                            this._('#tf-add-recipient-fn-dialog'),
-                                        );
-                                        let validgn = this.checkValidity(
-                                            this._('#tf-add-recipient-gn-dialog'),
-                                        );
-
-                                        if (
-                                            validgn &&
-                                            validfn &&
-                                            validcountry &&
-                                            validpc &&
-                                            validal &&
-                                            validsa &&
-                                            validbirthday &&
-                                            validbirthmonth &&
-                                            validbirthyear
-                                        ) {
-                                            this.currentRecipient.givenName =
-                                                /** @type {HTMLInputElement } */ (
-                                                    this._('#tf-add-recipient-gn-dialog')
-                                                ).value;
-                                            this.currentRecipient.familyName =
-                                                /** @type {HTMLInputElement } */ (
-                                                    this._('#tf-add-recipient-fn-dialog')
-                                                ).value;
-                                            this.currentRecipient.addressCountry =
-                                                /** @type {HTMLInputElement } */ (
-                                                    this._('#add-recipient-country-select')
-                                                ).value;
-                                            this.currentRecipient.postalCode =
-                                                /** @type {HTMLInputElement } */ (
-                                                    this._('#tf-add-recipient-pc-dialog')
-                                                ).value;
-                                            this.currentRecipient.addressLocality =
-                                                /** @type {HTMLInputElement } */ (
-                                                    this._('#tf-add-recipient-al-dialog')
-                                                ).value;
-                                            this.currentRecipient.streetAddress =
-                                                /** @type {HTMLInputElement } */ (
-                                                    this._('#tf-add-recipient-sa-dialog')
-                                                ).value;
-                                            this.currentRecipient.birthDateDay =
-                                                /** @type {HTMLInputElement } */ (
-                                                    this._('#tf-add-recipient-birthdate-day')
-                                                ).value;
-                                            this.currentRecipient.birthDateMonth =
-                                                /** @type {HTMLInputElement } */ (
-                                                    this._('#tf-add-recipient-birthdate-month')
-                                                ).value;
-                                            this.currentRecipient.birthDateYear =
-                                                /** @type {HTMLInputElement } */ (
-                                                    this._('#tf-add-recipient-birthdate-year')
-                                                ).value;
-
-                                            this.addRecipientToRequest(button).then((r) => {
-                                                button.disabled = false;
-                                                // @ts-ignore
-                                                MicroModal.close(this._('#add-recipient-modal'));
-                                                /** @type {CustomPersonSelect} */ (
-                                                    this._('#recipient-selector')
-                                                ).value = '';
-                                                // Re-enable manual recipient fields.
-                                                const elements =
-                                                    this.shadowRoot.querySelectorAll(
-                                                        '.nf-label.no-selector',
-                                                    );
-                                                elements.forEach((element) => {
-                                                    element.classList.remove('muted');
-                                                });
-                                                // Re-enable person selector.
-                                                this.personSelectorIsDisabled = false;
-                                            });
-                                        } else {
-                                            button.disabled = false;
-                                        }
-                                    }}">
-                                    ${i18n.t('show-requests.add-recipient-dialog-button-ok')}
-                                </button>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
+            <dbp-dispatch-add-recipient-modal
+                id="add-recipient-modal"
+                lang="${this.lang}"
+                entry-point-url="${this.entryPointUrl}"
+                .recipient=${this.currentRecipient}
+                @confirm="${async (event) => {
+                    await this.addRecipientToRequest(event.detail.recipient);
+                    event.detail.complete();
+                    this._('#add-recipient-modal').close();
+                    this.currentRecipient = {};
+                }}"
+                @dbp-modal-closed="${() => {
+                    this.currentRecipient = {};
+                    this.personSelectorIsDisabled = false;
+                }}"></dbp-dispatch-add-recipient-modal>
         `;
     }
 

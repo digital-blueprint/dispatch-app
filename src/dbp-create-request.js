@@ -24,6 +24,7 @@ import {DispatchAddSubjectModal} from './dialogs/add-subject-modal.js';
 import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
 import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
 import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
+import {DispatchAddRecipientModal} from './dialogs/add-recipient-modal.js';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -118,6 +119,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
             'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
             'dbp-dispatch-edit-recipient-modal': DispatchEditRecipientModal,
+            'dbp-dispatch-add-recipient-modal': DispatchAddRecipientModal,
         };
     }
 
@@ -1102,16 +1104,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         )}"
                                                         @click="${(event) => {
                                                             this.currentRecipient = {};
-                                                            // @ts-ignore
-                                                            MicroModal.show(
-                                                                this._('#add-recipient-modal'),
-                                                                {
-                                                                    disableScroll: true,
-                                                                    onClose: (modal) => {
-                                                                        //this.loading = false;
-                                                                    },
-                                                                },
-                                                            );
+                                                            this._('#add-recipient-modal').open({});
                                                         }}"
                                                         title="${i18n.t(
                                                             'show-requests.add-recipient-button-text',

@@ -632,7 +632,6 @@ export function getDispatchRequestStyles() {
         }
 
         #add-sender-modal-box,
-        #add-recipient-modal-box,
         #show-recipient-modal-box {
             display: flex;
             flex-direction: column;
@@ -650,7 +649,6 @@ export function getDispatchRequestStyles() {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        /* #add-recipient-modal-box h4 { */
         .modal-content-container h4 {
             margin-top: 0;
         }
@@ -694,13 +692,6 @@ export function getDispatchRequestStyles() {
             }
         }
 
-        #add-recipient-modal-box {
-            height: auto;
-            min-height: fit-content;
-            max-width: 736px;
-            gap: 20px;
-        }
-
         #show-recipient-modal-box {
             height: auto;
             width: 90vw;
@@ -708,7 +699,6 @@ export function getDispatchRequestStyles() {
         }
 
         #add-sender-modal-box header.modal-header,
-        #add-recipient-modal-box header.modal-header,
         #show-recipient-modal-box header.modal-header {
             padding: 0px;
             display: flex;
@@ -720,7 +710,6 @@ export function getDispatchRequestStyles() {
         }
 
         #add-sender-modal-box footer.modal-footer .modal-footer-btn,
-        #add-recipient-modal-box footer.modal-footer .modal-footer-btn,
         #show-recipient-modal-box footer.modal-footer .modal-footer-btn {
             padding: 0px;
             display: flex;
@@ -731,8 +720,7 @@ export function getDispatchRequestStyles() {
             padding: 0 10px 10px 0;
         }
 
-        #add-sender-modal-content,
-        #add-recipient-modal-content {
+        #add-sender-modal-content {
             display: flex;
             padding-left: 0px;
             padding-right: 0px;
@@ -741,13 +729,11 @@ export function getDispatchRequestStyles() {
             flex-direction: column;
         }
 
-        #add-sender-modal-content div .input,
-        #add-recipient-modal-content div .input {
+        #add-sender-modal-content div .input {
             width: 100%;
         }
 
-        #add-sender-modal-content .nf-label,
-        #add-recipient-modal-content .nf-label {
+        #add-sender-modal-content .nf-label {
             padding-bottom: 2px;
         }
 
@@ -756,19 +742,9 @@ export function getDispatchRequestStyles() {
         }
 
         #add-sender-modal-title,
-        #add-recipient-modal-title,
         #show-recipient-modal-title {
             margin: 0;
             padding: 0.25em 0 0 0;
-        }
-
-        #tf-add-recipient-birthdate-day,
-        #tf-add-recipient-birthdate-month {
-            flex: 1;
-        }
-
-        #tf-add-recipient-birthdate-year {
-            flex: 2;
         }
 
         .birthdate-input {

@@ -113,3 +113,7 @@ new CustomEvent('confirm', {
 - Replaced parent recipient field queries and `MicroModal.show(...)` calls with the dialog component `open(currentRecipient)` API and `confirm` event.
 - Updated `confirmEditRecipient(...)` to merge recipient form data from the dialog event before calling the existing `updateRecipient()` flow.
 - Removed obsolete edit-recipient MicroModal CSS selectors from `src/styles.js`.
+- Extracted `add-recipient-modal` into `src/dialogs/add-recipient-modal.js` with `dbp-person-select`, manual-entry state, local validation, reset behavior, birthdate inputs, and country selection owned by the dialog.
+- Replaced parent add-recipient field queries, `recipient-selector` access, and `MicroModal.show(...)` calls with the dialog component `open({})` API and `confirm` event.
+- Updated `addRecipientToRequest(...)` to receive recipient form data from the dialog event instead of querying parent shadow DOM fields.
+- Removed obsolete add-recipient MicroModal CSS selectors and unused add-recipient helper methods from `src/dbp-dispatch-lit-element.js` / `src/styles.js`.
