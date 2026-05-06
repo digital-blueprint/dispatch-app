@@ -631,8 +631,7 @@ export function getDispatchRequestStyles() {
             margin-bottom: 10px;
         }
 
-        #add-sender-modal-box,
-        #show-recipient-modal-box {
+        #add-sender-modal-box {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -692,32 +691,16 @@ export function getDispatchRequestStyles() {
             }
         }
 
-        #show-recipient-modal-box {
-            height: auto;
-            width: 90vw;
-            max-width: 800px;
-        }
-
-        #add-sender-modal-box header.modal-header,
-        #show-recipient-modal-box header.modal-header {
+        #add-sender-modal-box header.modal-header {
             padding: 0px;
             display: flex;
             justify-content: space-between;
         }
 
-        #show-recipient-modal-box header.modal-header {
-            padding: 0 10px 20px 0;
-        }
-
-        #add-sender-modal-box footer.modal-footer .modal-footer-btn,
-        #show-recipient-modal-box footer.modal-footer .modal-footer-btn {
+        #add-sender-modal-box footer.modal-footer .modal-footer-btn {
             padding: 0px;
             display: flex;
             justify-content: space-between;
-        }
-
-        #show-recipient-modal-box footer.modal-footer .modal-footer-btn {
-            padding: 0 10px 10px 0;
         }
 
         #add-sender-modal-content {
@@ -741,8 +724,7 @@ export function getDispatchRequestStyles() {
             color: var(--dbp-muted);
         }
 
-        #add-sender-modal-title,
-        #show-recipient-modal-title {
+        #add-sender-modal-title {
             margin: 0;
             padding: 0.25em 0 0 0;
         }
@@ -878,109 +860,8 @@ export function getDispatchRequestStyles() {
             font-style: italic;
         }
 
-        .element-left {
-            background-color: var(--dbp-primary-surface);
-            border: var(--dbp-border);
-            border-color: var(--dbp-primary-surface-border-color);
-            color: var(--dbp-on-primary-surface);
-            padding: 0px 20px 12px 40px;
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .element-left.first,
-        .element-right.first {
-            padding-top: 12px;
-        }
-
-        .element-right {
-            text-align: left;
-            margin-left: 12px;
-            padding: 0px 0px 12px;
-        }
-
-        .detailed-recipient-modal-content-wrapper {
-            display: grid;
-            grid-template-columns: min-content auto;
-            grid-template-rows: auto;
-            max-height: calc(100vh - 149px);
-            overflow-y: auto;
-            width: 100%;
-        }
-
         input[type='date'] {
             width: 100%;
-        }
-
-        .modal-content:not(:has(.scroll)) .notification-container {
-            margin-top: 12px;
-        }
-
-        .notification-container label {
-            font-weight: bold;
-        }
-
-        .recipient-status {
-            margin-bottom: 2em;
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .status-container {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .recipient-status .status-detail {
-            font-weight: bolder;
-        }
-
-        .return-receipt-widget {
-            min-width: 220px;
-            background-color: var(--dbp-background);
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            /* Align right. */
-            align-items: flex-end;
-        }
-
-        .return-receipt-widget__title {
-            margin: 0;
-        }
-
-        .return-receipt-widget__upload-date {
-            display: block;
-            font-size: 14px;
-            text-align: right;
-        }
-
-        .return-receipt__buttons {
-            display: flex;
-            flex-direction: row;
-            /* margin-left: -8px; */
-            /* Align right. */
-            margin-right: -11px;
-        }
-
-        .upload-btn {
-            margin-left: -2px;
-        }
-
-        .download-btn {
-            margin-top: auto;
-            margin-bottom: auto;
-        }
-
-        .new-line-content {
-            white-space: pre-line;
-        }
-
-        .scroll {
-            overflow-y: auto;
-            overflow-x: clip;
         }
 
         .dispatch-status {
@@ -1008,47 +889,8 @@ export function getDispatchRequestStyles() {
                 width: calc(100% - 45px);
             }
 
-            #show-recipient-modal-box {
-                height: 100%;
-            }
-
-            #show-recipient-modal-box header.modal-header {
-                padding: 0;
-            }
-
-            #show-recipient-modal-box .detailed-recipient-modal-content-wrapper {
-                grid-template-columns: unset;
-                max-height: 100%;
-            }
-
             .mobile-hidden {
                 display: none;
-            }
-
-            /* inputs */
-            .element-right {
-                border: 1px solid var(--dbp-muted);
-                padding: 5px;
-                margin: 0;
-            }
-
-            .element-right.first {
-                padding-top: 5px;
-            }
-
-            /* labels */
-            .element-left {
-                margin-top: 8px;
-                font-weight: bold;
-                text-align: left;
-                padding: 5px 5px 5px 0;
-                background: initial;
-                color: var(--dbp-content);
-                border: 0 none;
-            }
-
-            .element-left.first {
-                padding-top: 5px;
             }
 
             .btn-row-left {
@@ -1101,28 +943,6 @@ export function getDispatchRequestStyles() {
 
             .sender-data {
                 margin-bottom: 0;
-            }
-
-            .return-receipt-widget__upload-date {
-                max-width: 180px;
-            }
-        }
-
-        @media only screen and (max-width: 650px) {
-            .recipient-status {
-                flex-direction: column;
-            }
-
-            .return-receipt-widget {
-                align-items: flex-start;
-            }
-
-            .return-receipt-widget__upload-date {
-                text-align: left;
-            }
-
-            .return-receipt__buttons {
-                margin-left: -8px;
             }
         }
 

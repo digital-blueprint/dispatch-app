@@ -117,3 +117,8 @@ new CustomEvent('confirm', {
 - Replaced parent add-recipient field queries, `recipient-selector` access, and `MicroModal.show(...)` calls with the dialog component `open({})` API and `confirm` event.
 - Updated `addRecipientToRequest(...)` to receive recipient form data from the dialog event instead of querying parent shadow DOM fields.
 - Removed obsolete add-recipient MicroModal CSS selectors and unused add-recipient helper methods from `src/dbp-dispatch-lit-element.js` / `src/styles.js`.
+- Extracted `show-recipient-modal` into `src/dialogs/show-recipient-modal.js` with recipient detail rendering and return-receipt buttons owned by the dialog.
+- Replaced parent `MicroModal.show(...)` calls with the dialog component `open(currentRecipient)` API.
+- Replaced return-receipt button callbacks with semantic dialog events: `upload-return-receipt`, `download-return-receipt`, `view-return-receipt`, and `delete-return-receipt`.
+- Removed obsolete show-recipient MicroModal CSS selectors from `src/styles.js` and moved the detail/status/return-receipt styles into the dialog component.
+- Removed the now-unused local `src/micromodal.es.js` implementation after all app dialogs were migrated to `dbp-modal`.

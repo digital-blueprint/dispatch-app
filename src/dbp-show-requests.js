@@ -14,7 +14,6 @@ import {
 } from '@dbp-toolkit/common';
 import {send} from '@dbp-toolkit/common/notification';
 import {classMap} from 'lit/directives/class-map.js';
-import MicroModal from './micromodal.es';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import * as dispatchStyles from './styles';
@@ -27,6 +26,7 @@ import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
 import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
 import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
 import {DispatchAddRecipientModal} from './dialogs/add-recipient-modal.js';
+import {DispatchShowRecipientModal} from './dialogs/show-recipient-modal.js';
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -113,6 +113,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
             'dbp-dispatch-edit-recipient-modal': DispatchEditRecipientModal,
             'dbp-dispatch-add-recipient-modal': DispatchAddRecipientModal,
+            'dbp-dispatch-show-recipient-modal': DispatchShowRecipientModal,
         };
     }
 
@@ -1868,22 +1869,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             this.fetchDetailedRecipientInformation(
                                                                 recipient.identifier,
                                                             ).then(() => {
-                                                                // @ts-ignore
-                                                                MicroModal.show(
-                                                                    this._('#show-recipient-modal'),
-                                                                    {
-                                                                        disableScroll: true,
-                                                                        onShow: (modal) => {
-                                                                            this.button = button;
-                                                                        },
-                                                                        onClose: (modal) => {
-                                                                            //this.loading = false;
-                                                                            this.currentRecipient =
-                                                                                {};
-                                                                            button.stop();
-                                                                        },
-                                                                    },
-                                                                );
+                                                                this._(
+                                                                    '#show-recipient-modal',
+                                                                ).open(this.currentRecipient);
+                                                                this.button = button;
                                                             });
                                                         } catch {
                                                             button.stop();

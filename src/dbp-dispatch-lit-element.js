@@ -1,8 +1,6 @@
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import {createInstance} from './i18n';
-import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {send} from '@dbp-toolkit/common/notification';
-import MicroModal from './micromodal.es';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {html} from 'lit';
 import * as dispatchHelper from './utils';
@@ -12,10 +10,6 @@ import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {getReferenceNumberFromPDF} from './utils';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
-
-function normalizeNewlines(text = '') {
-    return String(text).replace(/\\n/g, '\n');
-}
 
 export default class DBPDispatchLitElement extends DBPLitElement {
     constructor() {
@@ -2292,308 +2286,40 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     addShowRecipientModal() {
-        const i18n = this._i18n;
-
         return html`
-            <div class="modal micromodal-slide" id="show-recipient-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                        class="modal-container"
-                        id="show-recipient-modal-box"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="show-recipient-modal-title">
-                        <header class="modal-header">
-                            <h3 id="show-recipient-modal-title">
-                                ${i18n.t('show-requests.show-recipient-dialog-title')}
-                            </h3>
-                            <button
-                                title="${i18n.t('show-requests.modal-close')}"
-                                class="modal-close"
-                                aria-label="${i18n.t('show-requests.modal-close')}"
-                                @click="${() => {
-                                    // @ts-ignore
-                                    MicroModal.close(this._('#show-recipient-modal'));
-                                }}">
-                                <dbp-icon
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    name="close"
-                                    class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="show-recipient-modal-content">
-                            <div class="detailed-recipient-modal-content-wrapper">
-                                <div class="element-left first">
-                                    ${i18n.t('show-requests.edit-recipient-gn-dialog-label')}:
-                                </div>
-                                <div class="element-right first">
-                                    ${this.currentRecipient && this.currentRecipient.givenName
-                                        ? this.currentRecipient.givenName
-                                        : ``}
-                                </div>
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.edit-recipient-fn-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.familyName
-                                        ? this.currentRecipient.familyName
-                                        : ``}
-                                </div>
-
-                                ${this.currentRecipient &&
-                                this.currentRecipient.birthDateDay &&
-                                this.currentRecipient.birthDateMonth &&
-                                this.currentRecipient.birthDateYear &&
-                                this.currentRecipient.birthDateDay !== '' &&
-                                this.currentRecipient.birthDateMonth !== '' &&
-                                this.currentRecipient.birthDateYear !== ''
-                                    ? html`
-                                          <div class="element-left">
-                                              ${i18n.t(
-                                                  'show-requests.add-recipient-birthdate-dialog-label',
-                                              )}:
-                                          </div>
-                                          <div class="element-right">
-                                              ${this.currentRecipient.birthDateYear +
-                                              '-' +
-                                              this.currentRecipient.birthDateMonth +
-                                              '-' +
-                                              this.currentRecipient.birthDateDay}
-                                          </div>
-                                      `
-                                    : ``}
-                                ${this.currentRecipient && this.currentRecipient.streetAddress
-                                    ? html`
-                                          <div class="element-left">
-                                              ${i18n.t(
-                                                  'show-requests.edit-recipient-sa-dialog-label',
-                                              )}:
-                                          </div>
-                                          <div class="element-right">
-                                              ${this.currentRecipient.streetAddress}
-                                          </div>
-                                      `
-                                    : ``}
-                                ${this.currentRecipient && this.currentRecipient.postalCode
-                                    ? html`
-                                          <div class="element-left">
-                                              ${i18n.t(
-                                                  'show-requests.edit-recipient-pc-dialog-label',
-                                              )}:
-                                          </div>
-                                          <div class="element-right">
-                                              ${this.currentRecipient.postalCode}
-                                          </div>
-                                      `
-                                    : ``}
-                                ${this.currentRecipient && this.currentRecipient.addressLocality
-                                    ? html`
-                                          <div class="element-left">
-                                              ${i18n.t(
-                                                  'show-requests.edit-recipient-al-dialog-label',
-                                              )}:
-                                          </div>
-                                          <div class="element-right">
-                                              ${this.currentRecipient.addressLocality}
-                                          </div>
-                                      `
-                                    : ``}
-                                ${this.currentRecipient && this.currentRecipient.addressCountry
-                                    ? html`
-                                          <div class="element-left">
-                                              ${i18n.t(
-                                                  'show-requests.edit-recipient-ac-dialog-label',
-                                              )}:
-                                          </div>
-                                          <div class="element-right">
-                                              ${this.currentRecipient.addressCountry}
-                                          </div>
-                                      `
-                                    : ``}
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.delivery-service-dialog-label')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient.electronicallyDeliverable
-                                        ? i18n.t('show-requests.electronically-deliverable')
-                                        : this.currentRecipient.postalDeliverable
-                                          ? i18n.t('show-requests.only-postal-deliverable')
-                                          : i18n.t('show-requests.not-deliverable-1') +
-                                            '. ' +
-                                            i18n.t('show-requests.not-deliverable-2')}
-                                </div>
-                                ${this.currentRecipient && this.currentRecipient.deliveryEndDate
-                                    ? html`
-                                          <div class="element-left">
-                                              ${i18n.t('show-requests.delivery-end-date')}:
-                                          </div>
-                                          <div class="element-right">
-                                              ${this.convertToReadableDate(
-                                                  this.currentRecipient.deliveryEndDate,
-                                              )}
-                                          </div>
-                                      `
-                                    : ``}
-                                <div class="element-left">
-                                    ${i18n.t('show-requests.recipient-id')}:
-                                </div>
-                                <div class="element-right">
-                                    ${this.currentRecipient && this.currentRecipient.identifier
-                                        ? this.currentRecipient.identifier
-                                        : ``}
-                                </div>
-                                ${this.currentRecipient && this.currentRecipient.appDeliveryId
-                                    ? html`
-                                          <div class="element-left">
-                                              ${i18n.t('show-requests.app-delivery-id')}:
-                                          </div>
-                                          <div class="element-right">
-                                              ${this.currentRecipient &&
-                                              this.currentRecipient.appDeliveryId
-                                                  ? this.currentRecipient.appDeliveryId
-                                                  : ``}
-                                          </div>
-                                      `
-                                    : ``}
-                            </div>
-                            ${this.currentRecipient &&
-                            this.currentRecipient.statusChanges &&
-                            this.currentRecipient.statusChanges.length > 0
-                                ? html`
-                                      <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
-                                      <div class="scroll">
-                                          ${this.currentRecipient.statusChanges.map(
-                                              (statusChange) => html`
-                                                  <div class="recipient-status">
-                                                      <div class="status-container">
-                                                          <div class="status-date">
-                                                              ${this.convertToReadableDate(
-                                                                  statusChange.dateCreated,
-                                                              )}
-                                                          </div>
-                                                          <div class="status-detail">
-                                                              <span class="new-line-content">
-                                                                  ${normalizeNewlines(
-                                                                      statusChange.description,
-                                                                  )}
-                                                              </span>
-                                                              <span>
-                                                                  (StatusType
-                                                                  ${statusChange.statusType})
-                                                              </span>
-                                                          </div>
-                                                      </div>
-
-                                                      ${this.renderReturnReceiptButtons(
-                                                          statusChange,
-                                                      )}
-                                                  </div>
-                                              `,
-                                          )}
-                                      </div>
-                                  `
-                                : ``}
-                            ${this.currentRecipient &&
-                            this.currentRecipient.addressCountry &&
-                            this.currentRecipient.addressCountry.length > 0 &&
-                            this.currentRecipient.addressCountry !== 'AT'
-                                ? unsafeHTML(
-                                      '<div class="notification-container"><label>Info: </label>' +
-                                          i18n.t('create-request.add-recipient-country-warning') +
-                                          '</div>',
-                                  )
-                                : ``}
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn"></div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    renderReturnReceiptButtons(statusChange) {
-        const i18n = this._i18n;
-        const dateLocal = i18n.language == 'de' ? 'de-AT' : 'en-US';
-
-        if (statusChange.statusType === 26 || statusChange.statusType === 30) {
-            return html`
-                <div class="return-receipt-widget">
-                    <h4 class="return-receipt-widget__title">
-                        ${i18n.t('show-requests.return-receipt.widget-label')}
-                    </h4>
-
-                    <span class="return-receipt-widget__upload-date">
-                        ${statusChange.fileFormat && statusChange.fileIsUploadedManually
-                            ? i18n.t('show-requests.return-receipt.uploaded-on') +
-                              ' ' +
-                              new Date(statusChange.fileDateAdded).toLocaleString(dateLocal, {})
-                            : ''}
-                    </span>
-
-                    <span class="return-receipt__buttons">
-                        ${!statusChange.fileFormat
-                            ? this.renderReturnReceiptUploadWidget(statusChange)
-                            : ''}
-                        ${statusChange.fileFormat
-                            ? this.renderReturnReceiptDownloadButton(statusChange)
-                            : ''}
-                        ${statusChange.fileFormat
-                            ? this.renderReturnReceiptViewButton(statusChange)
-                            : ''}
-                        ${statusChange.fileFormat && statusChange.fileIsUploadedManually
-                            ? this.renderReturnReceiptDeleteButton(statusChange)
-                            : ''}
-                    </span>
-                </div>
-            `;
-        }
-    }
-
-    renderReturnReceiptUploadWidget(statusChange) {
-        const i18n = this._i18n;
-
-        return html`
-            <dbp-icon-button
-                class="upload-btn"
-                @click="${(event) => {
+            <dbp-dispatch-show-recipient-modal
+                id="show-recipient-modal"
+                lang="${this.lang}"
+                .recipient=${this.currentRecipient}
+                @upload-return-receipt="${() => {
                     this._('#file-return-receipt').setAttribute('dialog-open', '');
                 }}"
-                aria-label="${i18n.t('show-requests.return-receipt.upload-button-text')}"
-                title="${i18n.t('show-requests.return-receipt.upload-button-text')}"
-                icon-name="add-file"></dbp-icon-button>
-        `;
-    }
-    renderReturnReceiptDownloadButton(statusChange) {
-        const i18n = this._i18n;
-        return html`
-            <dbp-icon-button
-                class="download-btn"
-                @click="${(event) => {
+                @download-return-receipt="${(event) => {
                     this._onDownloadFileClicked(
-                        event,
-                        // statusChange['@id'],
-                        statusChange['identifier'],
+                        {target: event.detail.button},
+                        event.detail.statusChange.identifier,
                     );
                 }}"
-                aria-label="${i18n.t('show-requests.download-button-text')}"
-                title="${i18n.t('show-requests.download-button-text')}"
-                icon-name="download"></dbp-icon-button>
-        `;
-    }
-
-    renderReturnReceiptViewButton(statusChange) {
-        const i18n = this._i18n;
-        return html`
-            <dbp-icon-button
-                class="view-btn"
-                @click="${(event) => {
-                    this.showReturnReceiptFileViewer(event, statusChange);
+                @view-return-receipt="${(event) => {
+                    this.showReturnReceiptFileViewer(
+                        {target: event.detail.button},
+                        event.detail.statusChange,
+                    );
                 }}"
-                aria-label="${i18n.t('show-requests.return-receipt.view-button-text')}"
-                title="${i18n.t('show-requests.return-receipt.view-button-text')}"
-                icon-name="eye"></dbp-icon-button>
+                @delete-return-receipt="${(event) => {
+                    this._onDeleteReceiptClicked(
+                        {target: event.detail.button},
+                        event.detail.statusChange,
+                    );
+                }}"
+                @dbp-modal-closed="${() => {
+                    this.currentRecipient = {};
+                    this.loading = false;
+                    if (this.button) {
+                        this.button.stop();
+                        this.button = undefined;
+                    }
+                }}"></dbp-dispatch-show-recipient-modal>
         `;
     }
 
@@ -2625,20 +2351,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         } finally {
             button.stop();
         }
-    }
-
-    renderReturnReceiptDeleteButton(statusChange) {
-        const i18n = this._i18n;
-        return html`
-            <dbp-icon-button
-                class="delete-btn"
-                @click="${(event) => {
-                    this._onDeleteReceiptClicked(event, statusChange);
-                }}"
-                aria-label="${i18n.t('show-requests.return-receipt.delete-button-text')}"
-                title="${i18n.t('show-requests.return-receipt.delete-button-text')}"
-                icon-name="trash"></dbp-icon-button>
-        `;
     }
 
     async _onDeleteReceiptClicked(event, statusChange) {

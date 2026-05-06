@@ -156,7 +156,6 @@
             "text": "A subject must be set to submit a dispatch order.",
             "title": "Missing subject"
         },
-        "modal-close": "Close modal",
         "modified-from": "Last modified from",
         "no-files-attached": "No files attached (yet).",
         "no-recipients-added": "No recipients specified (yet).",
