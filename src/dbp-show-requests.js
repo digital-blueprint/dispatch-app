@@ -383,7 +383,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         options[0] = html`
             <option value="all">${i18n.t('show-requests.all-columns')}</option>
         `;
-        let lang = table.getLang().columns;
+        let lang = table.getLang()?.columns;
+        if (!lang) return options;
+
         Object.entries(lang).forEach(([key, value], counter) => {
             if (key !== 'actions') {
                 options[counter + 1] = html`
