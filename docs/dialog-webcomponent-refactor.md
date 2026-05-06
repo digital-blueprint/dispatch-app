@@ -102,3 +102,6 @@ new CustomEvent('confirm', {
 - Replaced the inline add-subject MicroModal markup in `dbp-create-request` with the dialog component and a `confirm` event.
 - Updated `confirmAddSubject(...)` to receive the subject value from the dialog event instead of querying parent shadow DOM inputs/buttons.
 - Removed obsolete add-subject MicroModal CSS selectors from `src/styles.js`.
+- Extracted `file-viewer-modal` into `src/dialogs/file-viewer-modal.js` with the `dbp-pdf-viewer` owned by the dialog component.
+- Replaced parent `#file-viewer` shadow DOM queries with a `showPDF(file)` method on the file-viewer dialog component.
+- Removed obsolete file-viewer MicroModal CSS selectors from `src/styles.js`.

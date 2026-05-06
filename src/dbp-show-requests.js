@@ -23,9 +23,7 @@ import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
 import {CustomPersonSelect} from './person-select.js';
 import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
 import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
-
-// NOTE: pdf-viewer is loading the pdfjs worker also for getBusinessNumberFromPDF!
-import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
+import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -104,11 +102,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-resource-select': ResourceSelect,
             'dbp-info-tooltip': InfoTooltip,
             'dbp-tooltip': TooltipElement,
-            'dbp-pdf-viewer': PdfViewer,
             'dbp-tabulator-table': TabulatorTable,
             'dbp-select': DBPSelect,
             'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
             'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
+            'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
         };
     }
 

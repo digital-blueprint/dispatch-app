@@ -11,7 +11,6 @@ import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {IconButton, LoadingButton} from '@dbp-toolkit/common';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
-import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 import {getReferenceNumberFromPDF} from './utils';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 
@@ -62,7 +61,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-icon-button': IconButton,
-            'dbp-pdf-viewer': PdfViewer,
         };
     }
 
@@ -1926,14 +1924,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 const binaryFile = new File([arr], fileName, {
                     type: dispatchHelper.getDataURIContentType(fileContentUrl),
                 });
-                /** @type {PdfViewer} */ (this._('#file-viewer')).showPDF(binaryFile);
-                // @ts-ignore
-                MicroModal.show(this._('#file-viewer-modal'), {
-                    disableScroll: true,
-                    onClose: (modal) => {
-                        this.loading = false;
-                    },
-                });
+                this._('#file-viewer-modal').showPDF(binaryFile);
             } else {
                 //TODO
             }
@@ -3619,16 +3610,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     type: dispatchHelper.getDataURIContentType(fileContentUrl),
                 });
 
-                /** @type {PdfViewer} */ (this._('#file-viewer')).showPDF(binaryFile);
-
-                // @ts-ignore
-                MicroModal.show(this._('#file-viewer-modal'), {
-                    disableScroll: true,
-                    onClose: (modal) => {
-                        this.loading = false;
-                        button.stop();
-                    },
-                });
+                this._('#file-viewer-modal').showPDF(binaryFile);
             } else {
                 send({
                     summary: 'Error',
@@ -3830,45 +3812,13 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     addFileViewerModal() {
-        const i18n = this._i18n;
-
         return html`
-            <div class="modal micromodal-slide" id="file-viewer-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                        class="modal-container"
-                        id="file-viewer-modal-box"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="file-viewer-modal-title">
-                        <header class="modal-header">
-                            <h3 id="file-viewer-modal-title">
-                                ${i18n.t('show-requests.file-viewer-dialog-title')}
-                            </h3>
-                            <button
-                                title="${i18n.t('show-requests.modal-close')}"
-                                class="modal-close"
-                                aria-label="${i18n.t('show-requests.modal-close')}"
-                                @click="${() => {
-                                    // @ts-ignore
-                                    MicroModal.close(this._('#file-viewer-modal'));
-                                }}">
-                                <dbp-icon
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    name="close"
-                                    class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="file-viewer-modal-content">
-                            <!-- TODO: auto-resize="contain"-->
-                            <dbp-pdf-viewer
-                                lang="${this.lang}"
-                                auto-resize="cover"
-                                id="file-viewer"></dbp-pdf-viewer>
-                        </main>
-                    </div>
-                </div>
-            </div>
+            <dbp-dispatch-file-viewer-modal
+                id="file-viewer-modal"
+                lang="${this.lang}"
+                @dbp-modal-closed="${() => {
+                    this.loading = false;
+                }}"></dbp-dispatch-file-viewer-modal>
         `;
     }
 

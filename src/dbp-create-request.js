@@ -18,10 +18,10 @@ import * as dispatchStyles from './styles';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import MicroModal from './micromodal.es';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
-import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
 import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
 import {DispatchAddSubjectModal} from './dialogs/add-subject-modal.js';
+import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -109,11 +109,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-file-sink': FileSink,
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
-            'dbp-pdf-viewer': PdfViewer,
             'dbp-tabulator-table': TabulatorTable,
             'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
             'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
             'dbp-dispatch-add-subject-modal': DispatchAddSubjectModal,
+            'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
         };
     }
 
