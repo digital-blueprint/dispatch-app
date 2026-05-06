@@ -1597,24 +1597,16 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         await this.changeReferenceNumberRequest(id, referenceNumber);
     }
 
-    async confirmAddSubject() {
-        /** @type {HTMLButtonElement} */ (this._('#add-subject-confirm-btn')).disabled = true;
-        const subjectHtml = /** @type {HTMLInputElement } */ (this._('#tf-add-subject-fn-dialog'));
+    async confirmAddSubject(subject) {
         this.subject =
-            subjectHtml.value && subjectHtml.value !== ''
-                ? subjectHtml.value
-                : this._i18n.t('create-request.default-subject');
+            subject && subject !== '' ? subject : this._i18n.t('create-request.default-subject');
 
         await this.processCreateDispatchRequest();
-
-        /** @type {HTMLInputElement } */ (this._('#tf-add-subject-fn-dialog')).value = '';
 
         this.showDetailsView = true;
         this.hasSubject = true;
 
         this.hasSender = true;
-
-        /** @type {HTMLButtonElement} */ (this._('#add-subject-confirm-btn')).disabled = false;
     }
 
     async fetchDetailedRecipientInformation(identifier) {

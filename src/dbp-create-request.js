@@ -21,6 +21,7 @@ import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
 import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
+import {DispatchAddSubjectModal} from './dialogs/add-subject-modal.js';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -112,6 +113,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-tabulator-table': TabulatorTable,
             'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
             'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
+            'dbp-dispatch-add-subject-modal': DispatchAddSubjectModal,
         };
     }
 
@@ -1341,80 +1343,14 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${this.addEditSubjectModal()} ${this.addEditReferenceNumberModal()}
             ${this.addFileViewerModal()}
 
-            <div class="modal micromodal-slide" id="add-subject-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                        class="modal-container"
-                        id="add-subject-modal-box"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="add-subject-modal-title">
-                        <header class="modal-header">
-                            <h3 id="add-subject-modal-title">
-                                ${i18n.t('create-request.empty-subject')}
-                            </h3>
-                            <button
-                                title="${i18n.t('show-requests.modal-close')}"
-                                class="modal-close"
-                                aria-label="${i18n.t('show-requests.modal-close')}"
-                                @click="${() => {
-                                    // @ts-ignore
-                                    MicroModal.close(this._('#add-subject-modal'));
-                                }}">
-                                <dbp-icon
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    name="close"
-                                    class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="add-subject-modal-content">
-                            <div class="modal-content-item">
-                                <div>
-                                    <input
-                                        type="text"
-                                        class="input"
-                                        name="tf-add-subject-fn-dialog"
-                                        id="tf-add-subject-fn-dialog"
-                                        value="${this.subject ? this.subject : ``}"
-                                        @input="${() => {
-                                            // TODO
-                                        }}" />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div>${i18n.t('show-requests.add-subject-description')}</div>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                                <button
-                                    class="button"
-                                    data-micromodal-close
-                                    aria-label="Close this dialog window"
-                                    @click="${() => {
-                                        // @ts-ignore
-                                        MicroModal.close(this._('#add-subject-modal'));
-                                    }}">
-                                    ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
-                                </button>
-                                <button
-                                    class="button select-button is-primary"
-                                    id="add-subject-confirm-btn"
-                                    @click="${() => {
-                                        /** @type {HTMLButtonElement} */ (
-                                            this._('#add-subject-confirm-btn')
-                                        ).disabled = true;
-                                        // @ts-ignore
-                                        MicroModal.close(this._('#add-subject-modal'));
-                                        this.confirmAddSubject();
-                                    }}">
-                                    ${i18n.t('show-requests.add-subject-dialog-button-ok')}
-                                </button>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
+            <dbp-dispatch-add-subject-modal
+                id="add-subject-modal"
+                lang="${this.lang}"
+                .subject=${this.subject}
+                @confirm="${async (event) => {
+                    this._('#add-subject-modal').close();
+                    await this.confirmAddSubject(event.detail.subject);
+                }}"></dbp-dispatch-add-subject-modal>
         `;
     }
 }
