@@ -1503,51 +1503,23 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
     }
 
-    async confirmEditSender() {
+    async confirmEditSender(sender) {
         const i18n = this._i18n;
         const editSenderButton = /** @type {IconButton} */ (this._('#edit-sender-btn'));
         editSenderButton.start();
         try {
             let id = this.currentItem.identifier;
-            let senderOrganizationName = /** @type {HTMLInputElement } */ (
-                this._('#tf-edit-sender-gn-dialog')
-            ).value;
-            let senderFullName = /** @type {HTMLInputElement } */ (
-                this._('#tf-edit-sender-fn-dialog')
-            ).value;
-            let senderPostalCode = /** @type {HTMLInputElement } */ (
-                this._('#tf-edit-sender-pc-dialog')
-            ).value;
-            let senderAddressLocality = /** @type {HTMLInputElement } */ (
-                this._('#tf-edit-sender-al-dialog')
-            ).value;
-            let senderStreetAddress = /** @type {HTMLInputElement } */ (
-                this._('#tf-edit-sender-sa-dialog')
-            ).value;
-            let senderBuildingNumberHTML = /** @type {HTMLInputElement } */ (
-                this._('#tf-edit-sender-bn-dialog')
-            );
-            let senderBuildingNumber =
-                senderBuildingNumberHTML && senderBuildingNumberHTML.value
-                    ? senderBuildingNumberHTML.value
-                    : '';
-
             let groupId = this.groupId;
-
-            let e = /** @type {HTMLSelectElement} */ (this._('#edit-sender-country-select'));
-            let value = e.value;
-            let text = e.options[e.selectedIndex].text;
-            let senderAddressCountry = [value, text];
 
             let response = await this.sendEditDispatchRequest(
                 id,
-                senderOrganizationName,
-                senderFullName,
-                senderAddressCountry[0],
-                senderPostalCode,
-                senderAddressLocality,
-                senderStreetAddress,
-                senderBuildingNumber,
+                sender.senderOrganizationName,
+                sender.senderFullName,
+                sender.senderAddressCountry,
+                sender.senderPostalCode,
+                sender.senderAddressLocality,
+                sender.senderStreetAddress,
+                sender.senderBuildingNumber,
                 groupId,
             );
 
@@ -2440,224 +2412,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     addEditSenderModal() {
-        const i18n = this._i18n;
-        const countries =
-            this.lang === 'en'
-                ? dispatchHelper.getEnglishCountryList()
-                : dispatchHelper.getGermanCountryList();
-
         return html`
-            <div class="modal micromodal-slide" id="edit-sender-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                        class="modal-container"
-                        id="edit-sender-modal-box"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="edit-sender-modal-title">
-                        <header class="modal-header">
-                            <h3 id="edit-sender-modal-title">
-                                ${i18n.t('show-requests.edit-sender-dialog-title')}
-                            </h3>
-                            <button
-                                title="${i18n.t('show-requests.modal-close')}"
-                                class="modal-close"
-                                aria-label="${i18n.t('show-requests.modal-close')}"
-                                @click="${() => {
-                                    // @ts-ignore
-                                    MicroModal.close(this._('#edit-sender-modal'));
-                                }}">
-                                <dbp-icon
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    name="close"
-                                    class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="edit-sender-modal-content">
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                        type="text"
-                                        class="input"
-                                        name="tf-edit-sender-fn-dialog"
-                                        id="tf-edit-sender-fn-dialog"
-                                        value="${this.currentItem.senderFullName}"
-                                        @input="${() => {
-                                            // TODO
-                                        }}" />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-gn-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                        required
-                                        type="text"
-                                        class="input"
-                                        name="tf-edit-sender-gn-dialog"
-                                        id="tf-edit-sender-gn-dialog"
-                                        value="${this.currentItem &&
-                                        this.currentItem.senderOrganizationName}"
-                                        @input="${() => {
-                                            // TODO
-                                        }}" />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                        required
-                                        type="text"
-                                        class="input"
-                                        name="tf-edit-sender-sa-dialog"
-                                        id="tf-edit-sender-sa-dialog"
-                                        value="${this.currentItem &&
-                                        this.currentItem.senderStreetAddress}"
-                                        @input="${() => {
-                                            // TODO
-                                        }}" />
-                                </div>
-                            </div>
-                            ${this.currentItem && this.currentItem.senderBuildingNumber
-                                ? html`
-                                      <div class="modal-content-item">
-                                          <div class="nf-label">
-                                              ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
-                                          </div>
-                                          <div>
-                                              <input
-                                                  type="text"
-                                                  class="input"
-                                                  maxlength="10"
-                                                  name="tf-edit-sender-bn-dialog"
-                                                  id="tf-edit-sender-bn-dialog"
-                                                  value="${this.currentItem &&
-                                                  this.currentItem.senderBuildingNumber}"
-                                                  @input="${() => {
-                                                      // TODO
-                                                  }}" />
-                                          </div>
-                                      </div>
-                                  `
-                                : ``}
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-pc-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                        required
-                                        type="number"
-                                        class="input"
-                                        name="tf-edit-sender-pc-dialog"
-                                        id="tf-edit-sender-pc-dialog"
-                                        value="${this.currentItem &&
-                                        this.currentItem.senderPostalCode}"
-                                        @input="${() => {
-                                            // TODO
-                                        }}" />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-al-dialog-label')}
-                                </div>
-                                <div>
-                                    <input
-                                        required
-                                        type="text"
-                                        class="input"
-                                        name="tf-edit-sender-al-dialog"
-                                        id="tf-edit-sender-al-dialog"
-                                        value="${this.currentItem &&
-                                        this.currentItem.senderAddressLocality}"
-                                        @input="${() => {
-                                            // TODO
-                                        }}" />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div class="nf-label">
-                                    ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
-                                </div>
-                                <select
-                                    id="edit-sender-country-select"
-                                    @change=${this.onCountryChange}>
-                                    ${Object.entries(countries).map(
-                                        ([code, name]) => html`
-                                            <option value=${code} ?selected=${code === 'AT'}>
-                                                ${name}
-                                            </option>
-                                        `,
-                                    )}
-                                </select>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                                <button
-                                    class="button"
-                                    data-micromodal-close
-                                    aria-label="Close this dialog window"
-                                    @click="${() => {
-                                        // @ts-ignore
-                                        MicroModal.close(this._('#edit-sender-modal'));
-                                    }}">
-                                    ${i18n.t('show-requests.edit-sender-dialog-button-cancel')}
-                                </button>
-                                <button
-                                    class="button select-button is-primary"
-                                    id="edit-sender-confirm-btn"
-                                    @click="${() => {
-                                        let validpc = this.checkValidity(
-                                            this._('#edit-sender-country-select'),
-                                        );
-                                        let validbn = this.checkValidity(
-                                            this._('#tf-edit-sender-al-dialog'),
-                                        );
-                                        let validsa = this.checkValidity(
-                                            this._('#tf-edit-sender-pc-dialog'),
-                                        );
-                                        let validbirthday = this.checkValidity(
-                                            this._('#tf-edit-sender-sa-dialog'),
-                                        );
-                                        let validfn = this.checkValidity(
-                                            this._('#tf-edit-sender-gn-dialog'),
-                                        );
-                                        let validgn = this.checkValidity(
-                                            this._('#tf-edit-sender-fn-dialog'),
-                                        );
-
-                                        if (
-                                            validgn &&
-                                            validfn &&
-                                            validpc &&
-                                            validsa &&
-                                            validbn &&
-                                            validbirthday
-                                        ) {
-                                            this.confirmEditSender().then((r) => {
-                                                // @TODO: Add Error checking
-                                                // @ts-ignore
-                                                MicroModal.close(this._('#edit-sender-modal'));
-                                            });
-                                        }
-                                    }}">
-                                    ${i18n.t('show-requests.edit-sender-dialog-button-ok')}
-                                </button>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
+            <dbp-dispatch-edit-sender-modal
+                id="edit-sender-modal"
+                lang="${this.lang}"
+                .sender=${this.currentItem}
+                @confirm="${async (event) => {
+                    await this.confirmEditSender(event.detail);
+                    this._('#edit-sender-modal').close();
+                }}"
+                @dbp-modal-closed="${() => {
+                    this.loading = false;
+                }}"></dbp-dispatch-edit-sender-modal>
         `;
     }
 
@@ -3975,21 +3741,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                   this.currentItem.dateSubmitted ||
                                   !this.mayWrite}"
                                   @click="${(event) => {
-                                      if (
-                                          this.currentItem.senderAddressCountry &&
-                                          this.currentItem.senderAddressCountry !== ''
-                                      ) {
-                                          /** @type {HTMLSelectElement} */ (
-                                              this._('#edit-sender-country-select')
-                                          ).value = this.currentItem.senderAddressCountry;
-                                      }
-                                      // @ts-ignore
-                                      MicroModal.show(this._('#edit-sender-modal'), {
-                                          disableScroll: true,
-                                          onClose: (modal) => {
-                                              this.loading = false;
-                                          },
-                                      });
+                                      this._('#edit-sender-modal').open(this.currentItem);
                                   }}"
                                   aria-label="${i18n.t('show-requests.edit-sender-button-text')}"
                                   title="${i18n.t('show-requests.edit-sender-button-text')}"

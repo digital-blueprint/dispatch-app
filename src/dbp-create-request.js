@@ -22,6 +22,7 @@ import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
 import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
 import {DispatchAddSubjectModal} from './dialogs/add-subject-modal.js';
 import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
+import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -114,6 +115,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
             'dbp-dispatch-add-subject-modal': DispatchAddSubjectModal,
             'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
+            'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
         };
     }
 

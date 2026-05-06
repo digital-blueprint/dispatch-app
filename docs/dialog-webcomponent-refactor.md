@@ -105,3 +105,7 @@ new CustomEvent('confirm', {
 - Extracted `file-viewer-modal` into `src/dialogs/file-viewer-modal.js` with the `dbp-pdf-viewer` owned by the dialog component.
 - Replaced parent `#file-viewer` shadow DOM queries with a `showPDF(file)` method on the file-viewer dialog component.
 - Removed obsolete file-viewer MicroModal CSS selectors from `src/styles.js`.
+- Extracted `edit-sender-modal` into `src/dialogs/edit-sender-modal.js` with local form validation and country selection.
+- Replaced parent sender field queries and `MicroModal.show(...)` calls with the dialog component `open(currentItem)` API and `confirm` event.
+- Updated `confirmEditSender(...)` to receive sender form data from the dialog event instead of querying parent shadow DOM fields.
+- Removed obsolete edit-sender MicroModal CSS selectors from `src/styles.js`.

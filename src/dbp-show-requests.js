@@ -24,6 +24,7 @@ import {CustomPersonSelect} from './person-select.js';
 import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
 import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
 import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
+import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -107,6 +108,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
             'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
             'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
+            'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
         };
     }
 

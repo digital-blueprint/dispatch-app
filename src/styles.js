@@ -631,7 +631,6 @@ export function getDispatchRequestStyles() {
             margin-bottom: 10px;
         }
 
-        #edit-sender-modal-box,
         #add-sender-modal-box,
         #add-recipient-modal-box,
         #edit-recipient-modal-box,
@@ -710,20 +709,12 @@ export function getDispatchRequestStyles() {
             gap: 20px;
         }
 
-        #edit-sender-modal-box {
-            height: auto;
-            min-height: fit-content;
-            max-width: 400px;
-            gap: 20px;
-        }
-
         #show-recipient-modal-box {
             height: auto;
             width: 90vw;
             max-width: 800px;
         }
 
-        #edit-sender-modal-box header.modal-header,
         #add-sender-modal-box header.modal-header,
         #add-recipient-modal-box header.modal-header,
         #edit-recipient-modal-box header.modal-header,
@@ -737,7 +728,6 @@ export function getDispatchRequestStyles() {
             padding: 0 10px 20px 0;
         }
 
-        #edit-sender-modal-box footer.modal-footer .modal-footer-btn,
         #add-sender-modal-box footer.modal-footer .modal-footer-btn,
         #add-recipient-modal-box footer.modal-footer .modal-footer-btn,
         #edit-recipient-modal-box footer.modal-footer .modal-footer-btn,
@@ -751,7 +741,6 @@ export function getDispatchRequestStyles() {
             padding: 0 10px 10px 0;
         }
 
-        #edit-sender-modal-content,
         #add-sender-modal-content,
         #add-recipient-modal-content,
         #edit-recipient-modal-content {
@@ -763,14 +752,12 @@ export function getDispatchRequestStyles() {
             flex-direction: column;
         }
 
-        #edit-sender-modal-content div .input,
         #add-sender-modal-content div .input,
         #add-recipient-modal-content div .input,
         #edit-recipient-modal-content div .input {
             width: 100%;
         }
 
-        #edit-sender-modal-content .nf-label,
         #add-sender-modal-content .nf-label,
         #add-recipient-modal-content .nf-label,
         #edit-recipient-modal-content .nf-label {
@@ -781,7 +768,6 @@ export function getDispatchRequestStyles() {
             color: var(--dbp-muted);
         }
 
-        #edit-sender-modal-title,
         #add-sender-modal-title,
         #add-recipient-modal-title,
         #edit-recipient-modal-title,
