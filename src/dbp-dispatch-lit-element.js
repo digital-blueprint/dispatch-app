@@ -972,8 +972,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                 ).value = this.currentRecipient.birthDateMonth;
                 /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-birthdate-year')).value =
                     this.currentRecipient.birthDateYear;
-                /** @type {HTMLInputElement} */ (this._('#add-recipient-country-select')).value =
-                    'AT';
+                /** @type {HTMLInputElement} */ (this._('#tf-')).value = 'AT';
 
                 this.requestUpdate();
             } else {
@@ -1540,9 +1539,13 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
 
             let groupId = this.groupId;
 
-            let e = /** @type {HTMLSelectElement} */ (this._('#edit-sender-country-select'));
-            let value = e.value;
-            let text = e.options[e.selectedIndex].text;
+            //let e = /** @type {HTMLSelectElement} */ (this._('#edit-sender-country-select'));
+            let e = this.shadowRoot.querySelector('#edit-sender-country-select');
+            const select_div = e.shadowRoot.querySelector('.select2-control');
+            const select = select_div.querySelector('.select');
+            console.log(`${select.innerHTML}`);
+            let value = select.value;
+            let text = select.options[select.selectedIndex].text;
             let senderAddressCountry = [value, text];
 
             let response = await this.sendEditDispatchRequest(
@@ -2130,6 +2133,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
     }
 
     async confirmEditRecipient() {
+        console.log('validcountry ' + validcountry);
         let validcountry = this.checkValidity(this._('#tf-edit-recipient-country-select'));
         let validal = this.checkValidity(this._('#tf-edit-recipient-al-dialog'));
         let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'));
@@ -2361,7 +2365,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
 
         // Reset country selector.
         /** @type {HTMLSelectElement} */
-        /*const CountrySelectElement = this.shadowRoot.querySelector('#add-recipient-country-select');
+        const CountrySelectElement = this.shadowRoot.querySelector('#tf-');
         const options = CountrySelectElement.options;
 
         for (var i = 0, iLen = options.length; i < iLen; i++) {
@@ -2369,7 +2373,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                 CountrySelectElement.selectedIndex = i;
                 return;
             }
-        }*/
+        }
     }
 
     clearAll() {
@@ -2613,11 +2617,13 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                 <div class="nf-label">
                                     ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                                 </div>
-                                <div class="field">
+                                <div>
                                     <div class="control">
                                         <dbp-country-select
                                             lang="${this.lang}"
-                                            value="AT"></dbp-country-select>
+                                            value="AT"
+                                            id="edit-sender-country-select"
+                                            @change=${this.onCountryChange}></dbp-country-select>
                                     </div>
                                 </div>
                                 <!--<select
@@ -2649,9 +2655,21 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                     class="button select-button is-primary"
                                     id="edit-sender-confirm-btn"
                                     @click="${() => {
-                                        let validpc = this.checkValidity(
-                                            this._('#edit-sender-country-select'),
+                                        console.log(
+                                            'country select ' +
+                                                this._('#edit-sender-country-select'),
                                         );
+                                        /*let validpc = this.checkValidity(
+                                            this._('#edit-sender-country-select'),
+                                        );*/
+                                        const countrySelect = this.renderRoot.querySelector(
+                                            '#edit-sender-country-select',
+                                        );
+
+                                        const validpc = countrySelect.shadowRoot
+                                            .querySelector('select')
+                                            .checkValidity();
+
                                         let validbn = this.checkValidity(
                                             this._('#tf-edit-sender-al-dialog'),
                                         );
@@ -2942,11 +2960,14 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                             <div class="control">
                                                 <dbp-country-select
                                                     lang="${this.lang}"
-                                                    value="AT"></dbp-country-select>
+                                                    value="AT"
+                                                    id="edit-sender-country-select"
+                                                    @change=${this
+                                                        .onCountryChange}></dbp-country-select>
                                             </div>
                                         </div>
                                         <!--<select
-                                            id="add-recipient-country-select"
+                                            id="tf-"
                                             @change=${this.onCountryChange}>
                                             ${Object.entries(countries).map(
                                             ([code, name]) => html`
@@ -2961,7 +2982,10 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         <div class="control">
                                             <dbp-country-select
                                                 lang="${this.lang}"
-                                                value="AT"></dbp-country-select>
+                                                value="AT"
+                                                id="edit-sender-country-select"
+                                                @change=${this
+                                                    .onCountryChange}></dbp-country-select>
                                         </div>
                                     </div>
                                 </div>
@@ -2999,9 +3023,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         let button = event.target;
                                         button.disabled = true;
 
-                                        let validcountry = this.checkValidity(
-                                            this._('#add-recipient-country-select'),
-                                        );
+                                        let validcountry = this.checkValidity(this._('#tf-'));
                                         let validal = this.checkValidity(
                                             this._('#tf-add-recipient-al-dialog'),
                                         );
@@ -3048,7 +3070,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                                 ).value;
                                             this.currentRecipient.addressCountry =
                                                 /** @type {HTMLInputElement } */ (
-                                                    this._('#add-recipient-country-select')
+                                                    this._('#tf-')
                                                 ).value;
                                             this.currentRecipient.postalCode =
                                                 /** @type {HTMLInputElement } */ (
@@ -3291,7 +3313,9 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                     <div class="control">
                                         <dbp-country-select
                                             lang="${this.lang}"
-                                            value="AT"></dbp-country-select>
+                                            value="AT"
+                                            id="edit-sender-country-select"
+                                            @change=${this.onCountryChange}></dbp-country-select>
                                     </div>
                                 </div>
                                 <!--<select
@@ -4190,14 +4214,14 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                   this.currentItem.dateSubmitted ||
                                   !this.mayWrite}"
                                   @click="${(event) => {
-                                      /*if (
+                                      if (
                                           this.currentItem.senderAddressCountry &&
                                           this.currentItem.senderAddressCountry !== ''
-                                      ) {*/
-                                      /** @type {HTMLSelectElement} */ /*(
-                                         /    this._('#edit-sender-country-select')
+                                      ) {
+                                          /** @type {HTMLSelectElement} */ (
+                                              this._('#edit-sender-country-select')
                                           ).value = this.currentItem.senderAddressCountry;
-                                      }*/
+                                      }
                                       // @ts-ignore
                                       MicroModal.show(this._('#edit-sender-modal'), {
                                           disableScroll: true,
