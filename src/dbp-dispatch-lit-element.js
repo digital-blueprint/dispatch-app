@@ -1590,10 +1590,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         await this.changeSubjectRequest(id, subject);
     }
 
-    async confirmEditReferenceNumber() {
-        let referenceNumber = /** @type {HTMLInputElement } */ (
-            this._('#tf-edit-reference-number-fn-dialog')
-        ).value;
+    async confirmEditReferenceNumber(referenceNumber) {
         let rows = this.currentTable.getRows();
         this.currentTable.updateRow(rows[this.currentRowIndex], {gz: referenceNumber});
         let id = this.currentItem.identifier;
@@ -3825,79 +3822,18 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     addEditReferenceNumberModal() {
-        const i18n = this._i18n;
-
         return html`
-            <div class="modal micromodal-slide" id="edit-reference-number-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                        class="modal-container"
-                        id="edit-reference-number-modal-box"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="edit-reference-number-modal-title">
-                        <header class="modal-header">
-                            <h3 id="edit-reference-number-modal-title">
-                                ${i18n.t('show-requests.reference-number-dialog-title')}
-                            </h3>
-                            <button
-                                title="${i18n.t('show-requests.modal-close')}"
-                                class="modal-close"
-                                aria-label="${i18n.t('show-requests.modal-close')}"
-                                @click="${() => {
-                                    // @ts-ignore
-                                    MicroModal.close(this._('#edit-reference-number-modal'));
-                                }}">
-                                <dbp-icon
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    name="close"
-                                    class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="edit-reference-number-modal-content">
-                            <div class="modal-content-item">
-                                <div>
-                                    <input
-                                        type="text"
-                                        class="input"
-                                        name="tf-edit-reference-number-fn-dialog"
-                                        id="tf-edit-reference-number-fn-dialog"
-                                        value="${this.currentItem.referenceNumber ?? ``}" />
-                                </div>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                                <button
-                                    class="button"
-                                    data-micromodal-close
-                                    aria-label="Close this dialog window"
-                                    @click="${() => {
-                                        // @ts-ignore
-                                        MicroModal.close(this._('#edit-reference-number-modal'));
-                                    }}">
-                                    ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
-                                </button>
-                                <button
-                                    class="button select-button is-primary"
-                                    id="edit-reference-number-confirm-btn"
-                                    @click="${() => {
-                                        this.confirmEditReferenceNumber().then((r) => {
-                                            MicroModal.close(
-                                                // @ts-ignore
-                                                this._('#edit-reference-number-modal'),
-                                            );
-                                        });
-                                    }}">
-                                    ${i18n.t(
-                                        'show-requests.edit-reference-number-dialog-button-ok',
-                                    )}
-                                </button>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
+            <dbp-dispatch-edit-reference-number-modal
+                id="edit-reference-number-modal"
+                lang="${this.lang}"
+                .referenceNumber=${this.currentItem.referenceNumber ?? ``}
+                @confirm="${async (event) => {
+                    await this.confirmEditReferenceNumber(event.detail.referenceNumber);
+                    this._('#edit-reference-number-modal').close();
+                }}"
+                @dbp-modal-closed="${() => {
+                    this.loading = false;
+                }}"></dbp-dispatch-edit-reference-number-modal>
         `;
     }
 

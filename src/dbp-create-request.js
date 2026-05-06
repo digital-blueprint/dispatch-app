@@ -20,6 +20,7 @@ import MicroModal from './micromodal.es';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
 import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
+import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -110,6 +111,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-pdf-viewer': PdfViewer,
             'dbp-tabulator-table': TabulatorTable,
             'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
+            'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
         };
     }
 
@@ -1035,24 +1037,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             this.currentItem.dateSubmitted ||
                                                             !this.mayWrite}"
                                                             @click="${(event) => {
-                                                                /** @type {HTMLInputElement} */ (
-                                                                    this._(
-                                                                        '#tf-edit-reference-number-fn-dialog',
-                                                                    )
-                                                                ).value =
+                                                                this._(
+                                                                    '#edit-reference-number-modal',
+                                                                ).open(
                                                                     this.currentItem
-                                                                        .referenceNumber ?? ``;
-                                                                MicroModal.show(
-                                                                    // @ts-ignore
-                                                                    this._(
-                                                                        '#edit-reference-number-modal',
-                                                                    ),
-                                                                    {
-                                                                        disableScroll: true,
-                                                                        onClose: (modal) => {
-                                                                            this.loading = false;
-                                                                        },
-                                                                    },
+                                                                        .referenceNumber ?? ``,
                                                                 );
                                                             }}"
                                                             aria-label="${i18n.t(

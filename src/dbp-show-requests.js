@@ -22,6 +22,7 @@ import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
 import {CustomPersonSelect} from './person-select.js';
 import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
+import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
 
 // NOTE: pdf-viewer is loading the pdfjs worker also for getBusinessNumberFromPDF!
 import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
@@ -107,6 +108,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-tabulator-table': TabulatorTable,
             'dbp-select': DBPSelect,
             'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
+            'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
         };
     }
 
@@ -1762,27 +1764,12 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                               .dateSubmitted ||
                                                                           !this.mayWrite}"
                                                                           @click="${(event) => {
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-reference-number-fn-dialog',
-                                                                                  )
-                                                                              ).value =
+                                                                              this._(
+                                                                                  '#edit-reference-number-modal',
+                                                                              ).open(
                                                                                   this.currentItem
                                                                                       .referenceNumber ??
-                                                                                  ``;
-                                                                              // @ts-ignore
-                                                                              MicroModal.show(
-                                                                                  this._(
-                                                                                      '#edit-reference-number-modal',
-                                                                                  ),
-                                                                                  {
-                                                                                      disableScroll: true,
-                                                                                      onClose: (
-                                                                                          modal,
-                                                                                      ) => {
-                                                                                          //this.loading = false;
-                                                                                      },
-                                                                                  },
+                                                                                      ``,
                                                                               );
                                                                           }}"
                                                                           aria-label="${i18n.t(
