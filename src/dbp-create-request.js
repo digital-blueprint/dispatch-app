@@ -23,6 +23,7 @@ import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-
 import {DispatchAddSubjectModal} from './dialogs/add-subject-modal.js';
 import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
 import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
+import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -116,6 +117,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-dispatch-add-subject-modal': DispatchAddSubjectModal,
             'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
             'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
+            'dbp-dispatch-edit-recipient-modal': DispatchEditRecipientModal,
         };
     }
 
@@ -1192,98 +1194,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                       this.fetchDetailedRecipientInformation(
                                                                           recipient.identifier,
                                                                       ).then(() => {
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-country-select',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.addressCountry;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-birthdate-day',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.birthDateDay;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-birthdate-month',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.birthDateMonth;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-birthdate-year',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.birthDateYear;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-gn-dialog',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.givenName;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-fn-dialog',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.familyName;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-pc-dialog',
-                                                                              )
-                                                                          ).value = this
-                                                                              .currentRecipient
-                                                                              .postalCode
-                                                                              ? this
-                                                                                    .currentRecipient
-                                                                                    .postalCode
-                                                                              : '';
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-al-dialog',
-                                                                              )
-                                                                          ).value = this
-                                                                              .currentRecipient
-                                                                              .addressLocality
-                                                                              ? this
-                                                                                    .currentRecipient
-                                                                                    .addressLocality
-                                                                              : '';
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-sa-dialog',
-                                                                              )
-                                                                          ).value = this
-                                                                              .currentRecipient
-                                                                              .streetAddress
-                                                                              ? this
-                                                                                    .currentRecipient
-                                                                                    .streetAddress
-                                                                              : '';
-
-                                                                          MicroModal.show(
-                                                                              // @ts-ignore
-                                                                              this._(
-                                                                                  '#edit-recipient-modal',
-                                                                              ),
-                                                                              {
-                                                                                  disableScroll: true,
-                                                                                  onShow: (
-                                                                                      modal,
-                                                                                  ) => {
-                                                                                      this.button =
-                                                                                          button;
-                                                                                  },
-                                                                                  onClose: (
-                                                                                      modal,
-                                                                                  ) => {
-                                                                                      this.loading = false;
-                                                                                      this.currentRecipient =
-                                                                                          {};
-                                                                                  },
-                                                                              },
+                                                                          this._(
+                                                                              '#edit-recipient-modal',
+                                                                          ).open(
+                                                                              this.currentRecipient,
                                                                           );
+                                                                          this.button = button;
                                                                       });
                                                                   } catch {
                                                                       button.stop();

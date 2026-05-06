@@ -109,3 +109,7 @@ new CustomEvent('confirm', {
 - Replaced parent sender field queries and `MicroModal.show(...)` calls with the dialog component `open(currentItem)` API and `confirm` event.
 - Updated `confirmEditSender(...)` to receive sender form data from the dialog event instead of querying parent shadow DOM fields.
 - Removed obsolete edit-sender MicroModal CSS selectors from `src/styles.js`.
+- Extracted `edit-recipient-modal` into `src/dialogs/edit-recipient-modal.js` with local form validation, birthdate inputs, and country selection.
+- Replaced parent recipient field queries and `MicroModal.show(...)` calls with the dialog component `open(currentRecipient)` API and `confirm` event.
+- Updated `confirmEditRecipient(...)` to merge recipient form data from the dialog event before calling the existing `updateRecipient()` flow.
+- Removed obsolete edit-recipient MicroModal CSS selectors from `src/styles.js`.
