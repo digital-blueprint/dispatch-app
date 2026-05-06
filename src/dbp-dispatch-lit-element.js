@@ -1543,7 +1543,6 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
             let e = this.shadowRoot.querySelector('#edit-sender-country-select');
             const select_div = e.shadowRoot.querySelector('.select2-control');
             const select = select_div.querySelector('.select');
-            console.log(`${select.innerHTML}`);
             let value = select.value;
             let text = select.options[select.selectedIndex].text;
             let senderAddressCountry = [value, text];
@@ -2133,7 +2132,6 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
     }
 
     async confirmEditRecipient() {
-        console.log('validcountry ' + validcountry);
         let validcountry = this.checkValidity(this._('#tf-edit-recipient-country-select'));
         let validal = this.checkValidity(this._('#tf-edit-recipient-al-dialog'));
         let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'));
@@ -2365,7 +2363,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
 
         // Reset country selector.
         /** @type {HTMLSelectElement} */
-        const CountrySelectElement = this.shadowRoot.querySelector('#tf-');
+        const CountrySelectElement = this.shadowRoot.querySelector("#edit-sender-country-select'");
         const options = CountrySelectElement.options;
 
         for (var i = 0, iLen = options.length; i < iLen; i++) {
@@ -2470,10 +2468,6 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
 
     addEditSenderModal() {
         const i18n = this._i18n;
-        const countries =
-            this.lang === 'en'
-                ? dispatchHelper.getEnglishCountryList()
-                : dispatchHelper.getGermanCountryList();
 
         return html`
             <div class="modal micromodal-slide" id="edit-sender-modal" aria-hidden="true">
@@ -2626,17 +2620,6 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                             @change=${this.onCountryChange}></dbp-country-select>
                                     </div>
                                 </div>
-                                <!--<select
-                                    id="edit-sender-country-select"
-                                    @change=${this.onCountryChange}>
-                                    ${Object.entries(countries).map(
-                                    ([code, name]) => html`
-                                        <option value=${code} ?selected=${code === 'AT'}>
-                                            ${name}
-                                        </option>
-                                    `,
-                                )}
-                                </select>-->
                             </div>
                         </main>
                         <footer class="modal-footer">
@@ -2655,18 +2638,11 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                     class="button select-button is-primary"
                                     id="edit-sender-confirm-btn"
                                     @click="${() => {
-                                        console.log(
-                                            'country select ' +
-                                                this._('#edit-sender-country-select'),
-                                        );
-                                        /*let validpc = this.checkValidity(
-                                            this._('#edit-sender-country-select'),
-                                        );*/
                                         const countrySelect = this.renderRoot.querySelector(
                                             '#edit-sender-country-select',
                                         );
 
-                                        const validpc = countrySelect.shadowRoot
+                                        let validpc = countrySelect.shadowRoot
                                             .querySelector('select')
                                             .checkValidity();
 
