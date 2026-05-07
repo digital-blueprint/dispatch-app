@@ -1254,8 +1254,22 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async submitRequest(table, event, item, index = 0) {
         const i18n = this._i18n;
         let button = event.target;
+        let request = item;
 
-        if (item.dateSubmitted) {
+        if (item?.identifier) {
+            try {
+                const response = await this.getDispatchRequest(item.identifier);
+                const responseBody = response.status === 200 ? await response.json() : undefined;
+                if (responseBody !== undefined) {
+                    request = responseBody;
+                    this.currentItem = responseBody;
+                }
+            } catch (e) {
+                console.error(`${e.name}: ${e.message}`);
+            }
+        }
+
+        if (request.dateSubmitted) {
             send({
                 summary: i18n.t('show-requests.submit-not-allowed-title'),
                 body: i18n.t('show-requests.submit-not-allowed-text'),
@@ -1267,7 +1281,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         let rows = table.getRows();
         let row = rows[index];
-        if (!this.checkCanSubmit(this.currentItem)) {
+        if (!this.checkCanSubmit(request)) {
             return;
         }
 
@@ -1275,7 +1289,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             try {
                 button.start();
 
-                let response = await this.sendSubmitDispatchRequest(item.identifier);
+                let response = await this.sendSubmitDispatchRequest(request.identifier);
 
                 if (response.status === 201) {
                     let responseBody = await response.json();
@@ -1286,7 +1300,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let btn_research = this.createScopedElement('dbp-icon-button');
                     btn_research.setAttribute('icon-name', 'keyword-research');
                     btn_research.addEventListener('click', async (event) => {
-                        this.editRequest(event, item, index);
+                        this.editRequest(event, request, index);
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_research);
@@ -1299,7 +1313,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (this.currentTable) {
                         if (this.createdRequestsList && this.createdRequestsList.length > 0) {
                             this.createdRequestsIds = this.createdRequestsIds.filter(
-                                (id) => id !== item.identifier,
+                                (id) => id !== request.identifier,
                             );
 
                             await this.getCreatedDispatchRequests();
