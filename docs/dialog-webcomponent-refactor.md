@@ -122,3 +122,4 @@ new CustomEvent('confirm', {
 - Replaced return-receipt button callbacks with semantic dialog events: `upload-return-receipt`, `download-return-receipt`, `view-return-receipt`, and `delete-return-receipt`.
 - Removed obsolete show-recipient MicroModal CSS selectors from `src/styles.js` and moved the detail/status/return-receipt styles into the dialog component.
 - Removed the now-unused local `src/micromodal.es.js` implementation after all app dialogs were migrated to `dbp-modal`.
+- Removed leftover active MicroModal-era CSS from `src/styles.js`, including the unused `.modal-overlay`, `#add-sender-modal-*`, and `.modal-content-*` selectors.

@@ -504,10 +504,6 @@ export function getDispatchRequestStyles() {
             color: var(--dbp-muted);
         }
 
-        .modal-overlay {
-            z-index: 9000;
-        }
-
         .no-access-notification {
             margin-top: 1.3em;
             margin-bottom: 1.3em;
@@ -631,102 +627,8 @@ export function getDispatchRequestStyles() {
             margin-bottom: 10px;
         }
 
-        #add-sender-modal-box {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 15px 20px 20px;
-            min-width: 320px;
-        }
-
-        .modal-content {
-            container-type: inline-size;
-        }
-
-        .modal-content-container {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .modal-content-container h4 {
-            margin-top: 0;
-        }
-
-        .modal-content-right {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4em;
-            padding-left: 20px;
-        }
-
-        .modal-content-left {
-            border-right: var(--dbp-border);
-            padding-right: 20px;
-        }
-
-        @container (max-width: 490px) {
-            .modal-content-container {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .modal-content-right {
-                padding-left: 0;
-            }
-
-            .modal-content-left h4 {
-                margin-top: 0;
-                margin-bottom: 15px;
-            }
-
-            .modal-content-right h4 {
-                margin-top: 30px;
-                margin-bottom: 10px;
-            }
-
-            .modal-content-left {
-                padding-right: 0;
-                border-right: 0;
-                padding-bottom: 20px;
-                border-bottom: 1px solid var(--dbp-content);
-            }
-        }
-
-        #add-sender-modal-box header.modal-header {
-            padding: 0px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #add-sender-modal-box footer.modal-footer .modal-footer-btn {
-            padding: 0px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #add-sender-modal-content {
-            display: flex;
-            padding-left: 0px;
-            padding-right: 0px;
-            overflow: unset;
-            gap: 1em;
-            flex-direction: column;
-        }
-
-        #add-sender-modal-content div .input {
-            width: 100%;
-        }
-
-        #add-sender-modal-content .nf-label {
-            padding-bottom: 2px;
-        }
-
         .muted {
             color: var(--dbp-muted);
-        }
-
-        #add-sender-modal-title {
-            margin: 0;
-            padding: 0.25em 0 0 0;
         }
 
         .birthdate-input {
