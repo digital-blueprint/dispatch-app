@@ -2118,9 +2118,12 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
     }
 
     async processSelectedRecipient(event) {
-        this.currentRecipient = {};
-        const person = JSON.parse(event.target.dataset.object);
-
+        let person = this._('#recipient-selector');
+        console.log(person);
+        //TO DO: use the person var to get the person identifier
+        //this.currentRecipient = {};
+        /*const person = JSON.parse(event.target.dataset.object);
+        console.log("this ", person);
         this.currentRecipient.personIdentifier = person['identifier'];
 
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
@@ -2128,7 +2131,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
             element.classList.add('muted');
         });
 
-        this.requestUpdate();
+        this.requestUpdate();*/
     }
 
     async confirmEditRecipient() {
@@ -2363,13 +2366,14 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
 
         // Reset country selector.
         /** @type {HTMLSelectElement} */
-        const CountrySelectElement = this.shadowRoot.querySelector("#edit-sender-country-select'");
+        const CountrySelectElement = this.shadowRoot.querySelector('#edit-sender-country-select');
         const options = CountrySelectElement.options;
-
-        for (var i = 0, iLen = options.length; i < iLen; i++) {
-            if (options[i].defaultSelected) {
-                CountrySelectElement.selectedIndex = i;
-                return;
+        if (options !== undefined && options !== null) {
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].defaultSelected) {
+                    CountrySelectElement.selectedIndex = i;
+                    return;
+                }
             }
         }
     }
