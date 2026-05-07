@@ -1112,8 +1112,12 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                     /** @type {HTMLInputElement} */ (
                         this._('#tf-edit-recipient-birthdate-year')
                     ).value = this.currentRecipient.birthDateYear;
-                    /** @type {HTMLInputElement} */ (
+
+                    /*/** @type {HTMLInputElement} */ /*(
                         this._('#tf-edit-recipient-country-select')
+                    ).value = 'AT';*/
+                    /** @type {HTMLInputElement} */ this._(
+                        '#tf-edit-recipient-country-select',
                     ).value = 'AT';
                 } else {
                     hasError = true;
@@ -2139,7 +2143,10 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
     }
 
     async confirmEditRecipient() {
-        let validcountry = this.checkValidity(this._('#tf-edit-recipient-country-select'));
+        //const countrySelect = this.renderRoot.querySelector('#tf-add-recipient-country-select');
+
+        //let validpc = countrySelect.shadowRoot.querySelector('select').checkValidity();
+        //let validcountry = this.checkValidity(this._('#tf-edit-recipient-country-select'));
         let validal = this.checkValidity(this._('#tf-edit-recipient-al-dialog'));
         let validpc = this.checkValidity(this._('#tf-edit-recipient-pc-dialog'));
         let validsa = this.checkValidity(this._('#tf-edit-recipient-sa-dialog'));
@@ -2152,7 +2159,6 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
         if (
             validgn &&
             validfn &&
-            validcountry &&
             validpc &&
             validal &&
             validsa &&
@@ -3340,7 +3346,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         <dbp-country-select
                                             lang="${this.lang}"
                                             value="AT"
-                                            id="edit-sender-country-select"
+                                            id="tf-edit-recipient-country-select"
                                             @change=${this.onCountryChange}></dbp-country-select>
                                     </div>
                                 </div>
