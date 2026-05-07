@@ -63,7 +63,14 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
     }
 
     _onPersonSelected(event) {
-        const person = JSON.parse(event.target.dataset.object);
+        const personData = event.target.dataset.object;
+        if (!personData) {
+            this.recipient = {};
+            this.requestUpdate();
+            return;
+        }
+
+        const person = JSON.parse(personData);
         this.recipient = {personIdentifier: person.identifier};
         this.requestUpdate();
     }
