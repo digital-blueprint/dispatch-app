@@ -2253,8 +2253,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 lang="${this.lang}"
                 .sender=${this.currentItem}
                 @confirm="${async (event) => {
+                    const modal = event.currentTarget;
                     await this.confirmEditSender(event.detail);
-                    this._('#edit-sender-modal').close();
+                    modal.close();
                 }}"
                 @dbp-modal-closed="${() => {
                     this.loading = false;
@@ -2270,9 +2271,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 entry-point-url="${this.entryPointUrl}"
                 .recipient=${this.currentRecipient}
                 @confirm="${async (event) => {
+                    const modal = event.currentTarget;
                     await this.addRecipientToRequest(event.detail.recipient);
                     event.detail.complete();
-                    this._('#add-recipient-modal').close();
+                    modal.close();
                     this.currentRecipient = {};
                 }}"
                 @dbp-modal-closed="${() => {
@@ -2289,8 +2291,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 lang="${this.lang}"
                 .recipient=${this.currentRecipient}
                 @confirm="${async (event) => {
+                    const modal = event.currentTarget;
                     await this.confirmEditRecipient(event.detail);
-                    this._('#edit-recipient-modal').close();
+                    modal.close();
                 }}"
                 @dbp-modal-closed="${() => {
                     this.currentRecipient = {};
@@ -2515,8 +2518,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 lang="${this.lang}"
                 .subject=${this.subject}
                 @confirm="${async (event) => {
+                    const modal = event.currentTarget;
                     await this.confirmEditSubject(event.detail.subject);
-                    this._('#edit-subject-modal').close();
+                    modal.close();
                 }}"
                 @dbp-modal-closed="${() => {
                     this.loading = false;
@@ -2531,8 +2535,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 lang="${this.lang}"
                 .referenceNumber=${this.currentItem.referenceNumber ?? ``}
                 @confirm="${async (event) => {
+                    const modal = event.currentTarget;
                     await this.confirmEditReferenceNumber(event.detail.referenceNumber);
-                    this._('#edit-reference-number-modal').close();
+                    modal.close();
                 }}"
                 @dbp-modal-closed="${() => {
                     this.loading = false;

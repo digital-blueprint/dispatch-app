@@ -124,3 +124,4 @@ new CustomEvent('confirm', {
 - Removed the now-unused local `src/micromodal.es.js` implementation after all app dialogs were migrated to `dbp-modal`.
 - Removed leftover active MicroModal-era CSS from `src/styles.js`, including the unused `.modal-overlay`, `#add-sender-modal-*`, and `.modal-content-*` selectors.
 - Moved shared dialog scoped-element registrations into `src/dbp-dispatch-lit-element.js` so `dbp-create-request` and `dbp-show-requests` no longer duplicate imports for dialogs rendered by the base class.
+- Replaced confirm-handler close calls that queried hard-coded modal IDs with `event.currentTarget.close()`, keeping close behavior tied to the dialog component that emitted the event.

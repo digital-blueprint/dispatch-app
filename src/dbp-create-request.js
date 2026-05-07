@@ -1230,8 +1230,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 lang="${this.lang}"
                 .subject=${this.subject}
                 @confirm="${async (event) => {
-                    this._('#add-subject-modal').close();
+                    const modal = event.currentTarget;
                     await this.confirmAddSubject(event.detail.subject);
+                    modal.close();
                 }}"></dbp-dispatch-add-subject-modal>
         `;
     }
