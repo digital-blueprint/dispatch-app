@@ -4,6 +4,7 @@ import {ScopedElementsMixin} from '@dbp-toolkit/common';
 import DBPDispatchLitElement from './dbp-dispatch-lit-element';
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
+import {send} from '@dbp-toolkit/common/notification';
 import {
     LoadingButton,
     IconButton,
@@ -224,6 +225,171 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     async _onCreateRequestButtonClicked(event) {
         this.openFileSource();
+    }
+
+    async confirmAddSubject(subject) {
+        this.subject =
+            subject && subject !== '' ? subject : this._i18n.t('create-request.default-subject');
+
+        await this.processCreateDispatchRequest();
+
+        this.showDetailsView = true;
+        this.hasSubject = true;
+
+        this.hasSender = true;
+    }
+
+    async processSelectedSender(event) {
+        this.storeGroupValue(event.detail.value);
+        const i18n = this._i18n;
+        this.organizationLoaded = true;
+
+        if (event.target.valueObject.accessRights) {
+            this.mayReadAddress = event.target.valueObject.accessRights.includes('wra');
+            this.mayReadMetadata = event.target.valueObject.accessRights.includes('rm');
+
+            let mayWrite = event.target.valueObject.accessRights.includes('w');
+            if (!mayWrite && !this.requestCreated) {
+                this.mayRead = event.target.valueObject.accessRights.includes('rc');
+                this.mayWrite = mayWrite;
+            } else if (!mayWrite && this.requestCreated) {
+                if (Object.keys(this.tempItem).length !== 0) {
+                    this.currentItem = this.tempItem;
+                    this.tempChange = true;
+                    /** @type {ResourceSelect} */ (this._('#create-resource-select')).value =
+                        this.tempValue;
+
+                    send({
+                        summary: i18n.t('create-request.create-not-allowed-title'),
+                        body: i18n.t('create-request.create-not-allowed-text'),
+                        type: 'danger',
+                        timeout: 5,
+                    });
+                }
+                this.mayRead = event.target.valueObject.accessRights.includes('rc');
+                this.mayWrite = mayWrite;
+                return;
+            } else if (mayWrite && this.requestCreated && !this.tempChange) {
+                let senderFullName = this.currentItem.senderFullName
+                    ? this.currentItem.senderFullName
+                    : i18n.t('create-request.sender-full-name')
+                      ? i18n.t('create-request.sender-full-name')
+                      : '';
+                let senderOrganizationName = event.target.valueObject.name;
+                let senderAddressCountry = event.target.valueObject.country;
+                let senderStreetAddress = event.target.valueObject.street;
+                let senderAddressLocality = event.target.valueObject.locality;
+                let senderPostalCode = event.target.valueObject.postalCode;
+                let groupId = event.target.valueObject.identifier;
+                let mayRead = event.target.valueObject.accessRights.includes('rc');
+
+                let response = await this.sendEditDispatchRequest(
+                    this.currentItem.identifier,
+                    senderOrganizationName,
+                    senderFullName,
+                    senderAddressCountry,
+                    senderPostalCode,
+                    senderAddressLocality,
+                    senderStreetAddress,
+                    groupId,
+                );
+
+                let responseBody = await response.json();
+                if (responseBody !== undefined && response.status === 200) {
+                    this.currentItem = responseBody;
+                    this.currentItem.senderFullName = senderFullName;
+                    this.currentItem.senderOrganizationName = senderOrganizationName;
+                    this.currentItem.senderAddressCountry = senderAddressCountry;
+                    this.currentItem.senderStreetAddress = senderStreetAddress;
+                    this.currentItem.senderAddressLocality = senderAddressLocality;
+                    this.currentItem.senderPostalCode = senderPostalCode;
+
+                    this.groupId = groupId;
+
+                    this.mayRead = mayRead;
+                    this.mayWrite = mayWrite;
+
+                    this.tempItem = this.currentItem;
+                    this.tempValue = /** @type {ResourceSelect} */ (
+                        this._('#create-resource-select')
+                    ).value;
+                } else if (response.status === 403) {
+                    send({
+                        summary: i18n.t('create-request.error-requested-title'),
+                        body: i18n.t('error-not-permitted'),
+                        type: 'danger',
+                        timeout: 5,
+                    });
+                }
+            } else {
+                this.currentItem.senderFullName = this.currentItem.senderFullName
+                    ? this.currentItem.senderFullName
+                    : i18n.t('create-request.sender-full-name')
+                      ? i18n.t('create-request.sender-full-name')
+                      : '';
+                this.currentItem.senderOrganizationName = event.target.valueObject.name;
+                this.currentItem.senderAddressCountry = event.target.valueObject.country;
+                this.currentItem.senderStreetAddress = event.target.valueObject.street;
+                this.currentItem.senderAddressLocality = event.target.valueObject.locality;
+                this.currentItem.senderPostalCode = event.target.valueObject.postalCode;
+
+                this.groupId = event.target.valueObject.identifier;
+                this.mayRead = event.target.valueObject.accessRights.includes('rc');
+                this.mayWrite = event.target.valueObject.accessRights.includes('w');
+
+                this.tempItem = this.currentItem;
+                this.tempValue = /** @type {ResourceSelect} */ (
+                    this._('#create-resource-select')
+                ).value;
+            }
+        }
+
+        this.tempChange = false;
+    }
+
+    async getCreatedDispatchRequests() {
+        this.createRequestsLoading = !this._initialFetchDone;
+        this.tableLoading = true;
+
+        this.createdRequestsList = [];
+        let createdRequestsIds = this.createdRequestsIds;
+
+        if (createdRequestsIds !== undefined) {
+            for (let i = 0; i < createdRequestsIds.length; i++) {
+                try {
+                    let response = await this.getDispatchRequest(createdRequestsIds[i]);
+                    let responseBody = await response.json();
+                    if (responseBody !== undefined && responseBody.status !== 403) {
+                        this.createdRequestsList.push(responseBody);
+                    } else {
+                        if (response.status === 500) {
+                            send({
+                                summary: 'Error!',
+                                body: 'Could not fetch dispatch requests. Response code: 500',
+                                type: 'danger',
+                                timeout: 5,
+                            });
+                        } else if (response.status === 403) {
+                            // TODO
+                        }
+                    }
+                } catch (e) {
+                    console.error(`${e.name}: ${e.message}`);
+                    send({
+                        summary: 'Error!',
+                        body: 'Could not fetch dispatch requests.',
+                        type: 'danger',
+                        timeout: 5,
+                    });
+                }
+            }
+        }
+
+        this.tableLoading = false;
+        this.createRequestsLoading = false;
+        this._initialFetchDone = true;
+        this.showListView = true;
+        return this.createdRequestsList;
     }
 
     getCurrentTime() {

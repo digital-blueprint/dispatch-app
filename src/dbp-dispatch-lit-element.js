@@ -540,51 +540,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         );
     }
 
-    async getCreatedDispatchRequests() {
-        this.createRequestsLoading = !this._initialFetchDone;
-        this.tableLoading = true;
-
-        this.createdRequestsList = [];
-        let createdRequestsIds = this.createdRequestsIds;
-
-        if (createdRequestsIds !== undefined) {
-            for (let i = 0; i < createdRequestsIds.length; i++) {
-                try {
-                    let response = await this.getDispatchRequest(createdRequestsIds[i]);
-                    let responseBody = await response.json();
-                    if (responseBody !== undefined && responseBody.status !== 403) {
-                        this.createdRequestsList.push(responseBody);
-                    } else {
-                        if (response.status === 500) {
-                            send({
-                                summary: 'Error!',
-                                body: 'Could not fetch dispatch requests. Response code: 500',
-                                type: 'danger',
-                                timeout: 5,
-                            });
-                        } else if (response.status === 403) {
-                            //TODO
-                        }
-                    }
-                } catch (e) {
-                    console.error(`${e.name}: ${e.message}`);
-                    send({
-                        summary: 'Error!',
-                        body: 'Could not fetch dispatch requests.',
-                        type: 'danger',
-                        timeout: 5,
-                    });
-                }
-            }
-        }
-
-        this.tableLoading = false;
-        this.createRequestsLoading = false;
-        this._initialFetchDone = true;
-        this.showListView = true;
-        return this.createdRequestsList;
-    }
-
     /*
      * Open file source
      *
@@ -1536,18 +1491,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         return rows?.[index] ?? null;
     }
 
-    async confirmAddSubject(subject) {
-        this.subject =
-            subject && subject !== '' ? subject : this._i18n.t('create-request.default-subject');
-
-        await this.processCreateDispatchRequest();
-
-        this.showDetailsView = true;
-        this.hasSubject = true;
-
-        this.hasSender = true;
-    }
-
     async fetchDetailedRecipientInformation(identifier) {
         let response = await this.getDispatchRecipient(identifier);
 
@@ -2034,129 +1977,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     async confirmEditRecipient(recipient) {
         this.currentRecipient = {...this.currentRecipient, ...recipient};
         await this.updateRecipient();
-    }
-
-    async processSelectedSender(event) {
-        this.storeGroupValue(event.detail.value);
-        const i18n = this._i18n;
-        this.organizationLoaded = true;
-
-        if (event.target.valueObject.accessRights) {
-            this.mayReadAddress = event.target.valueObject.accessRights.includes('wra');
-            this.mayReadMetadata = event.target.valueObject.accessRights.includes('rm');
-
-            let mayWrite = event.target.valueObject.accessRights.includes('w');
-            if (!mayWrite && !this.requestCreated) {
-                this.mayRead = event.target.valueObject.accessRights.includes('rc');
-                this.mayWrite = mayWrite;
-            } else if (!mayWrite && this.requestCreated) {
-                if (Object.keys(this.tempItem).length !== 0) {
-                    this.currentItem = this.tempItem;
-                    this.tempChange = true;
-                    /** @type {ResourceSelect} */ (this._('#create-resource-select')).value =
-                        this.tempValue;
-
-                    send({
-                        summary: i18n.t('create-request.create-not-allowed-title'),
-                        body: i18n.t('create-request.create-not-allowed-text'),
-                        type: 'danger',
-                        timeout: 5,
-                    });
-                }
-                this.mayRead = event.target.valueObject.accessRights.includes('rc');
-                this.mayWrite = mayWrite;
-                return;
-            } else if (mayWrite && this.requestCreated && !this.tempChange) {
-                let senderFullName = this.currentItem.senderFullName
-                    ? this.currentItem.senderFullName
-                    : i18n.t('create-request.sender-full-name')
-                      ? i18n.t('create-request.sender-full-name')
-                      : '';
-                let senderOrganizationName = event.target.valueObject.name;
-                let senderAddressCountry = event.target.valueObject.country;
-                let senderStreetAddress = event.target.valueObject.street;
-                let senderAddressLocality = event.target.valueObject.locality;
-                let senderPostalCode = event.target.valueObject.postalCode;
-                let groupId = event.target.valueObject.identifier;
-                let mayRead = event.target.valueObject.accessRights.includes('rc');
-
-                let response = await this.sendEditDispatchRequest(
-                    this.currentItem.identifier,
-                    senderOrganizationName,
-                    senderFullName,
-                    senderAddressCountry,
-                    senderPostalCode,
-                    senderAddressLocality,
-                    senderStreetAddress,
-                    groupId,
-                );
-
-                let responseBody = await response.json();
-                if (responseBody !== undefined && response.status === 200) {
-                    // send({ //TODO
-                    //     "summary": i18n.t('show-requests.successfully-updated-sender-title'),
-                    //     "body": i18n.t('show-requests.successfully-updated-sender-text'),
-                    //     "type": "success",
-                    //     "timeout": 5,
-                    // });
-
-                    this.currentItem = responseBody;
-                    this.currentItem.senderFullName = senderFullName;
-                    this.currentItem.senderOrganizationName = senderOrganizationName;
-                    this.currentItem.senderAddressCountry = senderAddressCountry;
-                    this.currentItem.senderStreetAddress = senderStreetAddress;
-                    this.currentItem.senderAddressLocality = senderAddressLocality;
-                    this.currentItem.senderPostalCode = senderPostalCode;
-
-                    this.groupId = groupId;
-
-                    this.mayRead = mayRead;
-                    this.mayWrite = mayWrite;
-
-                    this.tempItem = this.currentItem;
-                    this.tempValue = /** @type {ResourceSelect} */ (
-                        this._('#create-resource-select')
-                    ).value;
-                } else if (response.status === 403) {
-                    send({
-                        summary: i18n.t('create-request.error-requested-title'),
-                        body: i18n.t('error-not-permitted'),
-                        type: 'danger',
-                        timeout: 5,
-                    });
-                } else {
-                    // TODO error handling
-                    // send({
-                    //     "summary": 'Error!',
-                    //     "body": 'Could not edit sender. Response code: ' + response.status,
-                    //     "type": "danger",
-                    //     "timeout": 5,
-                    // });
-                }
-            } else {
-                this.currentItem.senderFullName = this.currentItem.senderFullName
-                    ? this.currentItem.senderFullName
-                    : i18n.t('create-request.sender-full-name')
-                      ? i18n.t('create-request.sender-full-name')
-                      : '';
-                this.currentItem.senderOrganizationName = event.target.valueObject.name;
-                this.currentItem.senderAddressCountry = event.target.valueObject.country;
-                this.currentItem.senderStreetAddress = event.target.valueObject.street;
-                this.currentItem.senderAddressLocality = event.target.valueObject.locality;
-                this.currentItem.senderPostalCode = event.target.valueObject.postalCode;
-
-                this.groupId = event.target.valueObject.identifier;
-                this.mayRead = event.target.valueObject.accessRights.includes('rc');
-                this.mayWrite = event.target.valueObject.accessRights.includes('w');
-
-                this.tempItem = this.currentItem;
-                this.tempValue = /** @type {ResourceSelect} */ (
-                    this._('#create-resource-select')
-                ).value;
-            }
-        }
-
-        this.tempChange = false;
     }
 
     async loadLastModifiedName(personIdentifier) {
@@ -2695,33 +2515,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             ? i18n.t('show-requests.metadata-files-text')
                             : i18n.t('show-requests.empty-files-text')}
                     </div>
-                </div>
-            </div>
-        `;
-    }
-
-    addSubHeader() {
-        const i18n = this._i18n;
-
-        return html`
-            <div class="details header sub">
-                <div>
-                    <div class="section-titles">${i18n.t('show-requests.date-created')}</div>
-                    <div>${this.convertToReadableDate(this.currentItem.dateCreated)}</div>
-                </div>
-                <div class="line"></div>
-                <div>
-                    <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
-                    <div>
-                        ${this.lastModifiedName
-                            ? this.lastModifiedName
-                            : this.currentItem.personIdentifier}
-                    </div>
-                </div>
-                <div class="line"></div>
-                <div>
-                    <div class="section-titles">${i18n.t('show-requests.table-header-id')}</div>
-                    <div>${this.currentItem.identifier}</div>
                 </div>
             </div>
         `;

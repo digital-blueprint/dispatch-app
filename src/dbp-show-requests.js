@@ -1051,6 +1051,33 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
     }
 
+    addSubHeader() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="details header sub">
+                <div>
+                    <div class="section-titles">${i18n.t('show-requests.date-created')}</div>
+                    <div>${this.convertToReadableDate(this.currentItem.dateCreated)}</div>
+                </div>
+                <div class="line"></div>
+                <div>
+                    <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
+                    <div>
+                        ${this.lastModifiedName
+                            ? this.lastModifiedName
+                            : this.currentItem.personIdentifier}
+                    </div>
+                </div>
+                <div class="line"></div>
+                <div>
+                    <div class="section-titles">${i18n.t('show-requests.table-header-id')}</div>
+                    <div>${this.currentItem.identifier}</div>
+                </div>
+            </div>
+        `;
+    }
+
     returnToList(updateRouting = true) {
         let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
         let currentPage = table ? table.getPage() : 1;
