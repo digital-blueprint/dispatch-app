@@ -972,7 +972,8 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                 ).value = this.currentRecipient.birthDateMonth;
                 /** @type {HTMLInputElement} */ (this._('#tf-add-recipient-birthdate-year')).value =
                     this.currentRecipient.birthDateYear;
-                /** @type {HTMLInputElement} */ (this._('#tf-')).value = 'AT';
+                /** @type {HTMLInputElement} */ this._('#tf-add-recipient-country-select').value =
+                    'AT';
 
                 this.requestUpdate();
             } else {
@@ -2118,20 +2119,23 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
     }
 
     async processSelectedRecipient(event) {
-        let person = this._('#recipient-selector');
-        console.log(person);
+        let person_select_component = this._('#recipient-selector');
+        let person_select = person_select_component.shadowRoot.querySelector('.select');
+        let person = person_select.value;
         //TO DO: use the person var to get the person identifier
-        //this.currentRecipient = {};
-        /*const person = JSON.parse(event.target.dataset.object);
-        console.log("this ", person);
-        this.currentRecipient.personIdentifier = person['identifier'];
+        this.currentRecipient = {};
+        if (person !== undefined && person !== null) {
+            console.log('this ', person);
+            this.currentRecipient.personIdentifier = person['identifier'];
+        }
+        //const person = JSON.parse(event.target.dataset.object);
 
         const elements = this.shadowRoot.querySelectorAll('.nf-label.no-selector');
         elements.forEach((element) => {
             element.classList.add('muted');
         });
 
-        this.requestUpdate();*/
+        this.requestUpdate();
     }
 
     async confirmEditRecipient() {
@@ -2770,15 +2774,19 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         </div>
                                         <div>
                                             <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
+                                                ?disabled="${
+                                                    this.currentRecipient &&
+                                                    this.currentRecipient.personIdentifier
+                                                }"
                                                 type="text"
                                                 class="input"
                                                 name="tf-add-recipient-gn-dialog"
                                                 id="tf-add-recipient-gn-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.givenName
-                                                    : ``}"
+                                                value="${
+                                                    this.currentRecipient
+                                                        ? this.currentRecipient.givenName
+                                                        : ``
+                                                }"
                                                 required
                                                 @input="${() => {
                                                     this.disablePersonSelector();
@@ -2791,15 +2799,19 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         </div>
                                         <div>
                                             <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
+                                                ?disabled="${
+                                                    this.currentRecipient &&
+                                                    this.currentRecipient.personIdentifier
+                                                }"
                                                 type="text"
                                                 class="input"
                                                 name="tf-add-recipient-fn-dialog"
                                                 id="tf-add-recipient-fn-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.familyName
-                                                    : ``}"
+                                                value="${
+                                                    this.currentRecipient
+                                                        ? this.currentRecipient.familyName
+                                                        : ``
+                                                }"
                                                 required
                                                 @input="${() => {
                                                     this.disablePersonSelector();
@@ -2814,8 +2826,10 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         </div>
                                         <div class="birthdate-input">
                                             <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
+                                                ?disabled="${
+                                                    this.currentRecipient &&
+                                                    this.currentRecipient.personIdentifier
+                                                }"
                                                 type="number"
                                                 class="input"
                                                 id="tf-add-recipient-birthdate-day"
@@ -2825,15 +2839,19 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                                 placeholder="${i18n.t(
                                                     'show-requests.add-recipient-birthdate-dialog-placeholder-day',
                                                 )}"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.birthDateDay
-                                                    : ``}"
+                                                value="${
+                                                    this.currentRecipient
+                                                        ? this.currentRecipient.birthDateDay
+                                                        : ``
+                                                }"
                                                 @input="${() => {
                                                     this.disablePersonSelector();
                                                 }}" />
                                             <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
+                                                ?disabled="${
+                                                    this.currentRecipient &&
+                                                    this.currentRecipient.personIdentifier
+                                                }"
                                                 type="number"
                                                 class="input"
                                                 id="tf-add-recipient-birthdate-month"
@@ -2843,15 +2861,19 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                                 placeholder="${i18n.t(
                                                     'show-requests.add-recipient-birthdate-dialog-placeholder-month',
                                                 )}"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.birthDateMonth
-                                                    : ``}"
+                                                value="${
+                                                    this.currentRecipient
+                                                        ? this.currentRecipient.birthDateMonth
+                                                        : ``
+                                                }"
                                                 @input="${() => {
                                                     this.disablePersonSelector();
                                                 }}" />
                                             <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
+                                                ?disabled="${
+                                                    this.currentRecipient &&
+                                                    this.currentRecipient.personIdentifier
+                                                }"
                                                 type="number"
                                                 class="input"
                                                 id="tf-add-recipient-birthdate-year"
@@ -2861,9 +2883,11 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                                 placeholder="${i18n.t(
                                                     'show-requests.add-recipient-birthdate-dialog-placeholder-year',
                                                 )}"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.birthDateYear
-                                                    : ``}"
+                                                value="${
+                                                    this.currentRecipient
+                                                        ? this.currentRecipient.birthDateYear
+                                                        : ``
+                                                }"
                                                 @input="${() => {
                                                     this.disablePersonSelector();
                                                 }}" />
@@ -2875,15 +2899,19 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         </div>
                                         <div>
                                             <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
+                                                ?disabled="${
+                                                    this.currentRecipient &&
+                                                    this.currentRecipient.personIdentifier
+                                                }"
                                                 type="text"
                                                 class="input"
                                                 name="tf-add-recipient-sa-dialog"
                                                 id="tf-add-recipient-sa-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.streetAddress
-                                                    : ``}"
+                                                value="${
+                                                    this.currentRecipient
+                                                        ? this.currentRecipient.streetAddress
+                                                        : ``
+                                                }"
                                                 required
                                                 @input="${() => {
                                                     this.disablePersonSelector();
@@ -2896,15 +2924,19 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         </div>
                                         <div>
                                             <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
+                                                ?disabled="${
+                                                    this.currentRecipient &&
+                                                    this.currentRecipient.personIdentifier
+                                                }"
                                                 type="number"
                                                 class="input"
                                                 name="tf-add-recipient-pc-dialog"
                                                 id="tf-add-recipient-pc-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.postalCode
-                                                    : ``}"
+                                                value="${
+                                                    this.currentRecipient
+                                                        ? this.currentRecipient.postalCode
+                                                        : ``
+                                                }"
                                                 required
                                                 @input="${() => {
                                                     this.disablePersonSelector();
@@ -2917,15 +2949,19 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         </div>
                                         <div>
                                             <input
-                                                ?disabled="${this.currentRecipient &&
-                                                this.currentRecipient.personIdentifier}"
+                                                ?disabled="${
+                                                    this.currentRecipient &&
+                                                    this.currentRecipient.personIdentifier
+                                                }"
                                                 type="text"
                                                 class="input"
                                                 name="tf-add-recipient-al-dialog"
                                                 id="tf-add-recipient-al-dialog"
-                                                value="${this.currentRecipient
-                                                    ? this.currentRecipient.addressLocality
-                                                    : ``}"
+                                                value="${
+                                                    this.currentRecipient
+                                                        ? this.currentRecipient.addressLocality
+                                                        : ``
+                                                }"
                                                 required
                                                 @input="${() => {
                                                     this.disablePersonSelector();
@@ -2942,32 +2978,33 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                                     lang="${this.lang}"
                                                     value="AT"
                                                     id="edit-sender-country-select"
-                                                    @change=${this
-                                                        .onCountryChange}></dbp-country-select>
+                                                    @change=${
+                                                        this.onCountryChange
+                                                    }></dbp-country-select>
                                             </div>
                                         </div>
                                         <!--<select
                                             id="tf-"
                                             @change=${this.onCountryChange}>
                                             ${Object.entries(countries).map(
-                                            ([code, name]) => html`
-                                                <option value=${code} ?selected=${code === 'AT'}>
-                                                    ${name}
-                                                </option>
-                                            `,
-                                        )}
+                                                ([code, name]) => html`
+                                                    <option
+                                                        value=${code}
+                                                        ?selected=${code === 'AT'}>
+                                                        ${name}
+                                                    </option>
+                                                `,
+                                            )}
                                         </select>-->
                                     </div>
-                                    <div class="field">
-                                        <div class="control">
+                                        <div class="">
                                             <dbp-country-select
                                                 lang="${this.lang}"
                                                 value="AT"
-                                                id="edit-sender-country-select"
-                                                @change=${this
-                                                    .onCountryChange}></dbp-country-select>
-                                        </div>
-                                    </div>
+                                                id="tf-add-recipient-country-select"
+                                                @change=${
+                                                    this.onCountryChange
+                                                }></dbp-country-select>
                                 </div>
                             </div>
                         </main>
@@ -3003,13 +3040,23 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         let button = event.target;
                                         button.disabled = true;
 
-                                        let validcountry = this.checkValidity(this._('#tf-'));
+                                        const countrySelect = this.renderRoot.querySelector(
+                                            '#tf-add-recipient-country-select',
+                                        );
+
+                                        let validpc = countrySelect.shadowRoot
+                                            .querySelector('select')
+                                            .checkValidity();
+
+                                        /*let validcountry = this.checkValidity(
+                                            this._('#tf-add-recipient-country-select'),
+                                        );*/
                                         let validal = this.checkValidity(
                                             this._('#tf-add-recipient-al-dialog'),
                                         );
-                                        let validpc = this.checkValidity(
+                                        /*let validpc = this.checkValidity(
                                             this._('#tf-add-recipient-pc-dialog'),
-                                        );
+                                        );*/
                                         let validsa = this.checkValidity(
                                             this._('#tf-add-recipient-sa-dialog'),
                                         );
@@ -3032,7 +3079,6 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                         if (
                                             validgn &&
                                             validfn &&
-                                            validcountry &&
                                             validpc &&
                                             validal &&
                                             validsa &&
@@ -3050,7 +3096,7 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                                 ).value;
                                             this.currentRecipient.addressCountry =
                                                 /** @type {HTMLInputElement } */ (
-                                                    this._('#tf-')
+                                                    this._('#tf-add-recipient-country-select')
                                                 ).value;
                                             this.currentRecipient.postalCode =
                                                 /** @type {HTMLInputElement } */ (
