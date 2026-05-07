@@ -1112,10 +1112,6 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                     /** @type {HTMLInputElement} */ (
                         this._('#tf-edit-recipient-birthdate-year')
                     ).value = this.currentRecipient.birthDateYear;
-
-                    /*/** @type {HTMLInputElement} */ /*(
-                        this._('#tf-edit-recipient-country-select')
-                    ).value = 'AT';*/
                     /** @type {HTMLInputElement} */ this._(
                         '#tf-edit-recipient-country-select',
                     ).value = 'AT';
@@ -1543,8 +1539,6 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                     : '';
 
             let groupId = this.groupId;
-
-            //let e = /** @type {HTMLSelectElement} */ (this._('#edit-sender-country-select'));
             let e = this.shadowRoot.querySelector('#edit-sender-country-select');
             const select_div = e.shadowRoot.querySelector('.select2-control');
             const select = select_div.querySelector('.select');
@@ -2652,16 +2646,11 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                     class="button select-button is-primary"
                                     id="edit-sender-confirm-btn"
                                     @click="${() => {
-                                        const countrySelect = this.renderRoot.querySelector(
-                                            '#edit-sender-country-select',
-                                        );
-
-                                        let validpc = countrySelect.shadowRoot
-                                            .querySelector('select')
-                                            .checkValidity();
-
                                         let validbn = this.checkValidity(
                                             this._('#tf-edit-sender-al-dialog'),
+                                        );
+                                        let validpc = this.checkValidity(
+                                            this._('#tf-add-recipient-pc-dialog'),
                                         );
                                         let validsa = this.checkValidity(
                                             this._('#tf-edit-sender-pc-dialog'),
@@ -3045,24 +3034,12 @@ export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitEle
                                     @click="${(event) => {
                                         let button = event.target;
                                         button.disabled = true;
-
-                                        const countrySelect = this.renderRoot.querySelector(
-                                            '#tf-add-recipient-country-select',
-                                        );
-
-                                        let validpc = countrySelect.shadowRoot
-                                            .querySelector('select')
-                                            .checkValidity();
-
-                                        /*let validcountry = this.checkValidity(
-                                            this._('#tf-add-recipient-country-select'),
-                                        );*/
                                         let validal = this.checkValidity(
                                             this._('#tf-add-recipient-al-dialog'),
                                         );
-                                        /*let validpc = this.checkValidity(
+                                        let validpc = this.checkValidity(
                                             this._('#tf-add-recipient-pc-dialog'),
-                                        );*/
+                                        );
                                         let validsa = this.checkValidity(
                                             this._('#tf-add-recipient-sa-dialog'),
                                         );
