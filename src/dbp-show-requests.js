@@ -20,13 +20,6 @@ import * as dispatchStyles from './styles';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
 import {CustomPersonSelect} from './person-select.js';
-import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
-import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
-import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
-import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
-import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
-import {DispatchAddRecipientModal} from './dialogs/add-recipient-modal.js';
-import {DispatchShowRecipientModal} from './dialogs/show-recipient-modal.js';
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -94,6 +87,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     static get scopedElements() {
         return {
+            ...super.scopedElements,
             'dbp-icon': Icon,
             'dbp-mini-spinner': MiniSpinner,
             'dbp-loading-button': LoadingButton,
@@ -107,13 +101,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-tooltip': TooltipElement,
             'dbp-tabulator-table': TabulatorTable,
             'dbp-select': DBPSelect,
-            'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
-            'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
-            'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
-            'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
-            'dbp-dispatch-edit-recipient-modal': DispatchEditRecipientModal,
-            'dbp-dispatch-add-recipient-modal': DispatchAddRecipientModal,
-            'dbp-dispatch-show-recipient-modal': DispatchShowRecipientModal,
         };
     }
 
