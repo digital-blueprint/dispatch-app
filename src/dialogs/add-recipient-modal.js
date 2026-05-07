@@ -79,6 +79,29 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
         this.recipient = {};
         this.personSelectorIsDisabled = false;
         this.updateComplete.then(() => {
+            [
+                '#given-name',
+                '#family-name',
+                '#birthdate-day',
+                '#birthdate-month',
+                '#birthdate-year',
+                '#street-address',
+                '#postal-code',
+                '#address-locality',
+            ].forEach((selector) => {
+                const input = this._(selector);
+                if (input) {
+                    input.value = '';
+                    input.removeAttribute('aria-invalid');
+                }
+            });
+
+            const countrySelect = this._('#address-country');
+            if (countrySelect) {
+                countrySelect.value = 'AT';
+                countrySelect.removeAttribute('aria-invalid');
+            }
+
             const selector = this._('#recipient-selector');
             if (selector) {
                 selector.clear();
