@@ -10,13 +10,6 @@ import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {getReferenceNumberFromPDF} from './utils';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
-import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
-import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
-import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
-import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
-import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
-import {DispatchAddRecipientModal} from './dialogs/add-recipient-modal.js';
-import {DispatchShowRecipientModal} from './dialogs/show-recipient-modal.js';
 
 export default class DBPDispatchLitElement extends DBPLitElement {
     constructor() {
@@ -60,13 +53,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             'dbp-file-sink': FileSink,
             'dbp-resource-select': ResourceSelect,
             'dbp-icon-button': IconButton,
-            'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
-            'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
-            'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
-            'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
-            'dbp-dispatch-edit-recipient-modal': DispatchEditRecipientModal,
-            'dbp-dispatch-add-recipient-modal': DispatchAddRecipientModal,
-            'dbp-dispatch-show-recipient-modal': DispatchShowRecipientModal,
         };
     }
 
@@ -760,9 +746,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 }
             } else if (this.addFileViaButton) {
                 // If added via "Edit request" "add Files" button
-                let rows = this.currentTable.getRows();
-                if (Array.isArray(rows) && rows.length > 0) {
-                    this.currentTable.updateRow(rows[this.currentRowIndex], {
+                const row = this._getCurrentTableRow();
+                if (row) {
+                    this.currentTable.updateRow(row, {
                         files: this.createFormattedFilesList(this.currentItem.files),
                     });
                 }
@@ -802,10 +788,12 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let responseBody = await resp.json();
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
-                        let rows = this.currentTable.getRows();
-                        this.currentTable.updateRow(rows[this.currentRowIndex], {
-                            files: this.createFormattedFilesList(this.currentItem.files),
-                        });
+                        const row = this._getCurrentTableRow();
+                        if (row) {
+                            this.currentTable.updateRow(row, {
+                                files: this.createFormattedFilesList(this.currentItem.files),
+                            });
+                        }
                     }
                 } else {
                     // TODO error handling
@@ -935,10 +923,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 if (responseBody !== undefined && responseBody.status !== 403) {
                     this.currentItem = responseBody;
                     this.currentRecipient = {};
-                    let rows = this.currentTable.getRows();
-                    this.currentTable.updateRow(rows[this.currentRowIndex], {
-                        recipients: this.createFormattedRecipientsList(this.currentItem.recipients),
-                    });
+                    const row = this._getCurrentTableRow();
+                    if (row) {
+                        this.currentTable.updateRow(row, {
+                            recipients: this.createFormattedRecipientsList(
+                                this.currentItem.recipients,
+                            ),
+                        });
+                    }
                 }
                 this.requestUpdate();
             } else {
@@ -1036,12 +1028,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
                         this.currentRecipient = {};
-                        let rows = this.currentTable.getRows();
-                        this.currentTable.updateRow(rows[this.currentRowIndex], {
-                            recipients: this.createFormattedRecipientsList(
-                                this.currentItem.recipients,
-                            ),
-                        });
+                        const row = this._getCurrentTableRow();
+                        if (row) {
+                            this.currentTable.updateRow(row, {
+                                recipients: this.createFormattedRecipientsList(
+                                    this.currentItem.recipients,
+                                ),
+                            });
+                        }
                     }
 
                     this.currentRecipient = {};
@@ -1095,12 +1089,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     if (responseBody !== undefined && responseBody.status !== 403) {
                         this.currentItem = responseBody;
                         this.requestCreated = false;
-                        let rows = this.currentTable.getRows();
-                        this.currentTable.updateRow(rows[this.currentRowIndex], {
-                            recipients: this.createFormattedRecipientsList(
-                                this.currentItem.recipients,
-                            ),
-                        });
+                        const row = this._getCurrentTableRow();
+                        if (row) {
+                            this.currentTable.updateRow(row, {
+                                recipients: this.createFormattedRecipientsList(
+                                    this.currentItem.recipients,
+                                ),
+                            });
+                        }
                     }
                 } else {
                     send({
@@ -1490,17 +1486,40 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async confirmEditSubject(subject) {
-        let rows = this.currentTable.getRows();
-        this.currentTable.updateRow(rows[this.currentRowIndex], {subject: subject});
+        // The detail view can be reached without going through the table
+        // (e.g. via a deep link), in which case there is no current table row
+        // to update. Skip the optimistic table update in that case.
+        const row = this._getCurrentTableRow();
+        if (row) {
+            this.currentTable.updateRow(row, {subject: subject});
+        }
         let id = this.currentItem.identifier;
         await this.changeSubjectRequest(id, subject);
     }
 
     async confirmEditReferenceNumber(referenceNumber) {
-        let rows = this.currentTable.getRows();
-        this.currentTable.updateRow(rows[this.currentRowIndex], {gz: referenceNumber});
+        const row = this._getCurrentTableRow();
+        if (row) {
+            this.currentTable.updateRow(row, {gz: referenceNumber});
+        }
         let id = this.currentItem.identifier;
         await this.changeReferenceNumberRequest(id, referenceNumber);
+    }
+
+    /**
+     * Returns the current Tabulator row matching `currentRowIndex`, or null when
+     * the detail view was not entered through the table (e.g. via a deep link).
+     */
+    _getCurrentTableRow() {
+        if (!this.currentTable || typeof this.currentTable.getRows !== 'function') {
+            return null;
+        }
+        const index = this.currentRowIndex;
+        if (index === undefined || index === null || index === '') {
+            return null;
+        }
+        const rows = this.currentTable.getRows();
+        return rows?.[index] ?? null;
     }
 
     async confirmAddSubject(subject) {

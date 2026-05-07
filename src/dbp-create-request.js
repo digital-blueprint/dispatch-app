@@ -17,7 +17,14 @@ import {classMap} from 'lit/directives/class-map.js';
 import * as dispatchStyles from './styles';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
+import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
+import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
 import {DispatchAddSubjectModal} from './dialogs/add-subject-modal.js';
+import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
+import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
+import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
+import {DispatchAddRecipientModal} from './dialogs/add-recipient-modal.js';
+import {DispatchShowRecipientModal} from './dialogs/show-recipient-modal.js';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -107,7 +114,14 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-tabulator-table': TabulatorTable,
+            'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
+            'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
             'dbp-dispatch-add-subject-modal': DispatchAddSubjectModal,
+            'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
+            'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
+            'dbp-dispatch-edit-recipient-modal': DispatchEditRecipientModal,
+            'dbp-dispatch-add-recipient-modal': DispatchAddRecipientModal,
+            'dbp-dispatch-show-recipient-modal': DispatchShowRecipientModal,
         };
     }
 
