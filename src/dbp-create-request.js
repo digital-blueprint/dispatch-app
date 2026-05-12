@@ -831,7 +831,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             ?disabled="${!this.mayWrite}"
                             class="${classMap({
                                 hidden: this.showDetailsView,
-                            })}"></dbp-loading-button>
+                            })}">
+                            <dbp-icon name="select-all" aria-hidden="true"></dbp-icon>
+                            ${i18n.t('create-request.create-request-button-text')}
+                        </dbp-loading-button>
                     </div>
                     <label id="multiple-requests-checkbox" class="button-container">
                         ${i18n.t('create-request.multiple-requests-text')}
