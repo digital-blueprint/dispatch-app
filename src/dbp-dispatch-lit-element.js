@@ -6,7 +6,6 @@ import MicroModal from './micromodal.es';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {html} from 'lit';
 import * as dispatchHelper from './utils';
-import '@dbp-toolkit/country-select';
 import {CustomCountrySelect} from './country-select';
 import {CustomPersonSelect} from './person-select';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
