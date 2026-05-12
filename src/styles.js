@@ -522,7 +522,7 @@ export function getDispatchRequestStyles() {
         .request-buttons {
             display: flex;
             justify-content: flex-end;
-            gap: 3px;
+            gap: 0.5em;
             margin-top: -1.5em;
             padding-bottom: 1.5em;
         }

@@ -124,7 +124,7 @@
         "error-reference-number-auto-update-success-text": "Die Geschäftszahl wurde erfolgreich aus dem PDF gelesen und gespeichert!",
         "error-reference-number-auto-update-success-title": "Geschäftszahl erfolgreich gespeichert",
         "expand-all": "Alles aufklappen",
-        "export": "Export",
+        "export": "Exportieren",
         "export-all-organizations": "Metadaten von allen Organizationen",
         "export-current-organization": "Nur diese Organization",
         "export-error-text": "Beim Exportieren der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",

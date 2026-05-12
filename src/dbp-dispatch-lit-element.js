@@ -2437,6 +2437,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                       this.openFileSource();
                                   }}"
                                   title="${i18n.t('show-requests.add-files-button-text')}">
+                                  <dbp-icon name="plus" aria-hidden="true"></dbp-icon>
                                   ${i18n.t('show-requests.add-files-button-text')}
                               </dbp-loading-button>
                           `

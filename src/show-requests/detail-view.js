@@ -124,6 +124,7 @@ export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
                                           c.deleteRequest(c.currentTable, event, c.currentItem);
                                       }}"
                                       title="${i18n.t('show-requests.delete-button-text')}">
+                                      <dbp-icon name="trash" aria-label="hidden"></dbp-icon>
                                       ${i18n.t('show-requests.delete-button-text')}
                                   </dbp-loading-button>
                               </div>
@@ -139,6 +140,7 @@ export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
                                           c.submitRequest(c.currentTable, event, c.currentItem);
                                       }}"
                                       title="${i18n.t('show-requests.submit-button-text')}">
+                                      <dbp-icon name="send-diagonal" aria-label="hidden"></dbp-icon>
                                       ${i18n.t('show-requests.submit-button-text')}
                                   </dbp-loading-button>
                               </div>
@@ -280,6 +282,9 @@ export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
                                                     title="${i18n.t(
                                                         'show-requests.add-recipient-button-text',
                                                     )}">
+                                                    <dbp-icon
+                                                        name="user"
+                                                        aria-hidden="true"></dbp-icon>
                                                     ${i18n.t(
                                                         'show-requests.add-recipient-button-text',
                                                     )}
@@ -291,96 +296,98 @@ export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
                                   <div class="recipients-data">
                                       ${c.sortRecipients(c.currentItem.recipients).map(
                                           (recipient) => html`
+                                              <div class="recipient card">
+                                                  ${c.addRecipientCardLeftSideContent(recipient)}
 
-                                        <div class="recipient card">
-
-                                            ${c.addRecipientCardLeftSideContent(recipient)}
-
-                                            <div class="right-side">
-                                                <dbp-icon-button id="show-recipient-btn"
-                                                    @click="${(event) => {
-                                                        let button = event.target;
-                                                        button.start();
-                                                        c.currentRecipient = recipient;
-                                                        try {
-                                                            c.fetchDetailedRecipientInformation(
-                                                                recipient.identifier,
-                                                            ).then(() => {
-                                                                c._('#show-recipient-modal').open(
-                                                                    c.currentRecipient,
-                                                                );
-                                                                c.button = button;
-                                                            });
-                                                        } catch {
-                                                            button.stop();
-                                                        } finally {
-                                                            button.stop();
-                                                        }
-                                                    }}"
-                                                    aria-label="${i18n.t('show-requests.show-recipient-button-text')}"
-                                                    title="${i18n.t('show-requests.show-recipient-button-text')}"
-                                                    icon-name="keyword-research"></dbp-icon></dbp-icon-button>
-                                                ${
-                                                    !c.currentItem.dateSubmitted
-                                                        ? html`
-                                                              <dbp-icon-button
-                                                                  id="edit-recipient-btn"
-                                                                  ?disabled="${c.loading ||
-                                                                  c.currentItem.dateSubmitted ||
-                                                                  !c.mayWrite ||
-                                                                  (recipient.personIdentifier &&
-                                                                      (recipient.electronicallyDeliverable ||
-                                                                          recipient.postalDeliverable))}"
-                                                                  @click="${(event) => {
-                                                                      let button = event.target;
-                                                                      button.start();
-                                                                      c.currentRecipient =
-                                                                          recipient;
-                                                                      try {
-                                                                          c.fetchDetailedRecipientInformation(
-                                                                              recipient.identifier,
-                                                                          ).then(() => {
-                                                                              c._(
-                                                                                  '#edit-recipient-modal',
-                                                                              ).open(
-                                                                                  c.currentRecipient,
-                                                                              );
-                                                                              c.button = button;
-                                                                          });
-                                                                      } finally {
-                                                                          button.stop();
-                                                                      }
-                                                                  }}"
-                                                                  aria-label="${i18n.t(
-                                                                      'show-requests.edit-recipients-button-text',
-                                                                  )}"
-                                                                  title="${i18n.t(
-                                                                      'show-requests.edit-recipients-button-text',
-                                                                  )}"
-                                                                  icon-name="pencil"></dbp-icon-button>
-                                                              <dbp-icon-button
-                                                                  id="delete-recipient-btn"
-                                                                  ?disabled="${c.loading ||
-                                                                  c.currentItem.dateSubmitted ||
-                                                                  !c.mayWrite}"
-                                                                  @click="${(event) => {
-                                                                      c.deleteRecipient(
-                                                                          event,
-                                                                          recipient,
-                                                                      );
-                                                                  }}"
-                                                                  aria-label="${i18n.t(
-                                                                      'show-requests.delete-recipient-button-text',
-                                                                  )}"
-                                                                  title="${i18n.t(
-                                                                      'show-requests.delete-recipient-button-text',
-                                                                  )}"
-                                                                  icon-name="trash"></dbp-icon-button>
-                                                          `
-                                                        : ``
-                                                }
-                                            </div>
-                                        </div>`,
+                                                  <div class="right-side">
+                                                      <dbp-icon-button
+                                                          id="show-recipient-btn"
+                                                          @click="${(event) => {
+                                                              let button = event.target;
+                                                              button.start();
+                                                              c.currentRecipient = recipient;
+                                                              try {
+                                                                  c.fetchDetailedRecipientInformation(
+                                                                      recipient.identifier,
+                                                                  ).then(() => {
+                                                                      c._(
+                                                                          '#show-recipient-modal',
+                                                                      ).open(c.currentRecipient);
+                                                                      c.button = button;
+                                                                  });
+                                                              } catch {
+                                                                  button.stop();
+                                                              } finally {
+                                                                  button.stop();
+                                                              }
+                                                          }}"
+                                                          aria-label="${i18n.t(
+                                                              'show-requests.show-recipient-button-text',
+                                                          )}"
+                                                          title="${i18n.t(
+                                                              'show-requests.show-recipient-button-text',
+                                                          )}"
+                                                          icon-name="keyword-research"></dbp-icon-button>
+                                                      ${!c.currentItem.dateSubmitted
+                                                          ? html`
+                                                                <dbp-icon-button
+                                                                    id="edit-recipient-btn"
+                                                                    ?disabled="${c.loading ||
+                                                                    c.currentItem.dateSubmitted ||
+                                                                    !c.mayWrite ||
+                                                                    (recipient.personIdentifier &&
+                                                                        (recipient.electronicallyDeliverable ||
+                                                                            recipient.postalDeliverable))}"
+                                                                    @click="${(event) => {
+                                                                        let button = event.target;
+                                                                        button.start();
+                                                                        c.currentRecipient =
+                                                                            recipient;
+                                                                        try {
+                                                                            c.fetchDetailedRecipientInformation(
+                                                                                recipient.identifier,
+                                                                            ).then(() => {
+                                                                                c._(
+                                                                                    '#edit-recipient-modal',
+                                                                                ).open(
+                                                                                    c.currentRecipient,
+                                                                                );
+                                                                                c.button = button;
+                                                                            });
+                                                                        } finally {
+                                                                            button.stop();
+                                                                        }
+                                                                    }}"
+                                                                    aria-label="${i18n.t(
+                                                                        'show-requests.edit-recipients-button-text',
+                                                                    )}"
+                                                                    title="${i18n.t(
+                                                                        'show-requests.edit-recipients-button-text',
+                                                                    )}"
+                                                                    icon-name="pencil"></dbp-icon-button>
+                                                                <dbp-icon-button
+                                                                    id="delete-recipient-btn"
+                                                                    ?disabled="${c.loading ||
+                                                                    c.currentItem.dateSubmitted ||
+                                                                    !c.mayWrite}"
+                                                                    @click="${(event) => {
+                                                                        c.deleteRecipient(
+                                                                            event,
+                                                                            recipient,
+                                                                        );
+                                                                    }}"
+                                                                    aria-label="${i18n.t(
+                                                                        'show-requests.delete-recipient-button-text',
+                                                                    )}"
+                                                                    title="${i18n.t(
+                                                                        'show-requests.delete-recipient-button-text',
+                                                                    )}"
+                                                                    icon-name="trash"></dbp-icon-button>
+                                                            `
+                                                          : ``}
+                                                  </div>
+                                              </div>
+                                          `,
                                       )}
                                       <div
                                           class="no-recipients ${classMap({

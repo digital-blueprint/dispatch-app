@@ -1,5 +1,5 @@
 import {css, html} from 'lit';
-import {Modal, ScopedElementsMixin} from '@dbp-toolkit/common';
+import {Icon, Modal, ScopedElementsMixin} from '@dbp-toolkit/common';
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import * as commonStyles from '@dbp-toolkit/common/styles';
 import {createInstance} from '../i18n.js';
@@ -15,6 +15,7 @@ export class DispatchEditReferenceNumberModal extends ScopedElementsMixin(DBPLit
     static get scopedElements() {
         return {
             'dbp-modal': Modal,
+            'dbp-icon': Icon,
         };
     }
 
@@ -120,9 +121,11 @@ export class DispatchEditReferenceNumberModal extends ScopedElementsMixin(DBPLit
                         class="button"
                         aria-label="Close this dialog window"
                         @click="${this._onCancel}">
+                        <dbp-icon name="close" aria-hidden="true"></dbp-icon>
                         ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
                     </button>
                     <button class="button select-button is-primary" @click="${this._onConfirm}">
+                        <dbp-icon name="checkmark" aria-hidden="true"></dbp-icon>
                         ${i18n.t('show-requests.edit-reference-number-dialog-button-ok')}
                     </button>
                 </menu>

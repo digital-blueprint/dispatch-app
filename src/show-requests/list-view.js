@@ -1,6 +1,7 @@
 import {css, html, LitElement} from 'lit';
 import {classMap} from 'lit/directives/class-map.js';
 import {
+    Icon,
     DBPSelect,
     IconButton,
     InlineNotification,
@@ -17,6 +18,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
     static get scopedElements() {
         return {
             'dbp-select': DBPSelect,
+            'dbp-icon': Icon,
             'dbp-icon-button': IconButton,
             'dbp-inline-notification': InlineNotification,
             'dbp-loading-button': LoadingButton,
@@ -444,6 +446,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                                               );
                                           }}"
                                           title="${i18n.t('show-requests.select-all')}">
+                                          <dbp-icon name="select-all" aria-hidden="true"></dbp-icon>
                                           ${i18n.t('show-requests.select-all')}
                                       </dbp-loading-button>
                                       <dbp-loading-button
@@ -459,6 +462,9 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                                               );
                                           }}"
                                           title="${i18n.t('show-requests.deselect-all')}">
+                                          <dbp-icon
+                                              name="deselect-all"
+                                              aria-hidden="true"></dbp-icon>
                                           ${i18n.t('show-requests.deselect-all')}
                                       </dbp-loading-button>
                                       <dbp-loading-button
@@ -470,6 +476,9 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                                               c.expandAll();
                                           }}"
                                           title="${i18n.t('show-requests.expand-all')}">
+                                          <dbp-icon
+                                              name="chevron-down"
+                                              aria-hidden="true"></dbp-icon>
                                           ${i18n.t('show-requests.expand-all')}
                                       </dbp-loading-button>
                                       <dbp-loading-button
@@ -481,6 +490,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                                               c.collapseAll();
                                           }}"
                                           title="${i18n.t('show-requests.collapse-all')}">
+                                          <dbp-icon name="chevron-up" aria-hidden="true"></dbp-icon>
                                           ${i18n.t('show-requests.collapse-all')}
                                       </dbp-loading-button>
                                       <dbp-loading-button
@@ -494,6 +504,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                                               );
                                           }}"
                                           title="${i18n.t('show-requests.delete-button-text')}">
+                                          <dbp-icon name="trash" aria-hidden="true"></dbp-icon>
                                           ${i18n.t('show-requests.delete-button-text')}
                                       </dbp-loading-button>
                                       <dbp-loading-button
@@ -508,6 +519,9 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                                               );
                                           }}"
                                           title="${i18n.t('show-requests.submit-button-text')}">
+                                          <dbp-icon
+                                              name="send-diagonal"
+                                              aria-hidden="true"></dbp-icon>
                                           ${i18n.t('show-requests.submit-button-text')}
                                       </dbp-loading-button>
                                   `
