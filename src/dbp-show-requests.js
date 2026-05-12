@@ -14,16 +14,21 @@ import {
 } from '@dbp-toolkit/common';
 import {send} from '@dbp-toolkit/common/notification';
 import {classMap} from 'lit/directives/class-map.js';
-import MicroModal from './micromodal.es';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import * as dispatchStyles from './styles';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
 import {CustomPersonSelect} from './person-select.js';
-
-// NOTE: pdf-viewer is loading the pdfjs worker also for getBusinessNumberFromPDF!
-import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
+import {ShowRequestsListView} from './show-requests/list-view.js';
+import {ShowRequestsDetailView} from './show-requests/detail-view.js';
+import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
+import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
+import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
+import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
+import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
+import {DispatchAddRecipientModal} from './dialogs/add-recipient-modal.js';
+import {DispatchShowRecipientModal} from './dialogs/show-recipient-modal.js';
 
 class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -87,6 +92,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.tableLoading = false;
         this.expandedTabulator = false;
         this.allSelected = false;
+        this._lastRoutingIdentifier = '';
+        this._routingRequestLoading = false;
+        this._routingRequestLoadingIdentifier = '';
     }
 
     static get scopedElements() {
@@ -103,9 +111,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-resource-select': ResourceSelect,
             'dbp-info-tooltip': InfoTooltip,
             'dbp-tooltip': TooltipElement,
-            'dbp-pdf-viewer': PdfViewer,
             'dbp-tabulator-table': TabulatorTable,
             'dbp-select': DBPSelect,
+            'dbp-show-requests-list-view': ShowRequestsListView,
+            'dbp-show-requests-detail-view': ShowRequestsDetailView,
+            'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
+            'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
+            'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
+            'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
+            'dbp-dispatch-edit-recipient-modal': DispatchEditRecipientModal,
+            'dbp-dispatch-add-recipient-modal': DispatchAddRecipientModal,
+            'dbp-dispatch-show-recipient-modal': DispatchShowRecipientModal,
         };
     }
 
@@ -146,6 +162,37 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         };
     }
 
+    _getViewRoots() {
+        return ['dbp-show-requests-list-view', 'dbp-show-requests-detail-view']
+            .map((selector) => this.renderRoot.querySelector(selector)?.shadowRoot)
+            .filter((root) => root !== undefined && root !== null);
+    }
+
+    _(selector) {
+        // Prefer the parent shadow root for any element that resolves there
+        // (dialogs, file pickers, etc. live in the controller's render root).
+        const parentMatch = this.renderRoot.querySelector(selector);
+        if (parentMatch !== null) {
+            return parentMatch;
+        }
+        // Fall back to the extracted view shadow roots so existing controller
+        // queries like `#tabulator-table-orders` and `#searchbar` keep working.
+        for (const root of this._getViewRoots()) {
+            const match = root.querySelector(selector);
+            if (match !== null) {
+                return match;
+            }
+        }
+        return null;
+    }
+
+    _a(selector) {
+        return [
+            ...this.renderRoot.querySelectorAll(selector),
+            ...this._getViewRoots().flatMap((root) => [...root.querySelectorAll(selector)]),
+        ];
+    }
+
     update(changedProperties) {
         changedProperties.forEach((oldValue, propName) => {
             switch (propName) {
@@ -160,10 +207,26 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         });
                     }
                     break;
+                case 'routingUrl':
+                case 'auth':
+                case 'entryPointUrl':
+                    this.updateComplete.then(() => this.handleRoutingUrlChange());
+                    break;
             }
         });
 
         super.update(changedProperties);
+    }
+
+    updated(changedProperties) {
+        super.updated?.(changedProperties);
+        // Forward parent state updates to extracted view components so they re-render.
+        // The views receive `.controller=${this}` which never changes identity, so we
+        // must trigger their updates explicitly when relevant state on the controller changes.
+        for (const selector of ['dbp-show-requests-list-view', 'dbp-show-requests-detail-view']) {
+            const view = this.renderRoot.querySelector(selector);
+            view?.requestUpdate?.();
+        }
     }
 
     disconnectedCallback() {
@@ -208,8 +271,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      */
     pressEnterAndSubmitSearch(event) {
         if (event.keyCode === 13) {
-            const activeElement = this.shadowRoot.activeElement;
-            if (activeElement && activeElement.id === 'searchbar') {
+            const searchbar = this._('#searchbar');
+            if (searchbar && searchbar.matches(':focus')) {
                 event.preventDefault();
                 this.filterTable();
                 this.hideAdditionalSearchMenu(event);
@@ -380,7 +443,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         options[0] = html`
             <option value="all">${i18n.t('show-requests.all-columns')}</option>
         `;
-        let lang = table.getLang().columns;
+        let lang = table.getLang()?.columns;
+        if (!lang) return options;
+
         Object.entries(lang).forEach(([key, value], counter) => {
             if (key !== 'actions') {
                 options[counter + 1] = html`
@@ -841,7 +906,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     /**
      * Escapes CSV values properly for Excel
-     * @param {*} value - Value to escape
+     * @param {string|number|boolean|null|undefined} value - Value to escape
      * @returns {string} Escaped value
      */
     escapeCSVValue(value) {
@@ -882,6 +947,162 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.expanded = false;
         let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
         table.collapseAll();
+    }
+
+    async getListOfRequests() {
+        if (!this.groupId) {
+            this.initialRequestsLoading = false;
+            this._initialFetchDone = true;
+            return;
+        }
+
+        await super.getListOfRequests();
+    }
+
+    getRoutingIdentifierFromUrl() {
+        const routingUrl = this.routingUrl || '';
+        const path = routingUrl.split(/[?#]/)[0].replace(/^\/+/, '');
+        const identifier = path.split('/')[0] || '';
+        return identifier ? decodeURIComponent(identifier) : '';
+    }
+
+    handleRoutingUrlChange() {
+        const identifier = this.getRoutingIdentifierFromUrl();
+        if (identifier === '') {
+            this._lastRoutingIdentifier = '';
+            if (this.showDetailsView) {
+                this.returnToList(false);
+            }
+            return;
+        }
+
+        if (
+            !this.isLoggedIn() ||
+            this.isLoading() ||
+            !this.auth?.token ||
+            !this.entryPointUrl ||
+            this._routingRequestLoading ||
+            this._lastRoutingIdentifier === identifier
+        ) {
+            return;
+        }
+
+        this.openRequestByIdentifier(identifier);
+    }
+
+    async openRequestByIdentifier(identifier) {
+        if (this._routingRequestLoading && this._routingRequestLoadingIdentifier === identifier) {
+            return;
+        }
+
+        this._routingRequestLoading = true;
+        this._routingRequestLoadingIdentifier = identifier;
+
+        try {
+            let response = await this.getDispatchRequest(identifier);
+            let responseBody = response.status === 200 ? await response.json() : undefined;
+            if (responseBody !== undefined && response.status === 200) {
+                this.currentItem = responseBody;
+                this._lastRoutingIdentifier = identifier;
+                this.organizationSet = true;
+                if (!this.mayRead && !this.mayReadMetadata && !this.mayWrite) {
+                    this.mayRead = true;
+                }
+            } else {
+                this._lastRoutingIdentifier = '';
+                return;
+            }
+
+            if (this.currentItem?.recipients) {
+                this.currentItem.recipients.forEach((element) => {
+                    this.fetchDetailedRecipientInformation(element.identifier).then((result) => {
+                        // TODO
+                    });
+                });
+            }
+
+            if (this.currentItem?.personIdentifier) {
+                await this.loadLastModifiedName(this.currentItem.personIdentifier);
+            }
+
+            this.showListView = false;
+            this.showDetailsView = true;
+            this.expanded = false;
+        } finally {
+            this._routingRequestLoading = false;
+            this._routingRequestLoadingIdentifier = '';
+        }
+    }
+
+    async editRequest(event, item, index = 0) {
+        const identifier = item?.identifier;
+        if (!identifier) {
+            return;
+        }
+
+        const button = event.currentTarget || event.target;
+        button.start?.();
+
+        try {
+            this.sendSetPropertyEvent('routing-url', '/' + encodeURIComponent(identifier), true);
+            await this.openRequestByIdentifier(identifier);
+        } finally {
+            button.stop?.();
+        }
+    }
+
+    addSubHeader() {
+        const i18n = this._i18n;
+
+        return html`
+            <div class="details header sub">
+                <div>
+                    <div class="section-titles">${i18n.t('show-requests.date-created')}</div>
+                    <div>${this.convertToReadableDate(this.currentItem.dateCreated)}</div>
+                </div>
+                <div class="line"></div>
+                <div>
+                    <div class="section-titles">${i18n.t('show-requests.modified-from')}</div>
+                    <div>
+                        ${this.lastModifiedName
+                            ? this.lastModifiedName
+                            : this.currentItem.personIdentifier}
+                    </div>
+                </div>
+                <div class="line"></div>
+                <div>
+                    <div class="section-titles">${i18n.t('show-requests.table-header-id')}</div>
+                    <div>${this.currentItem.identifier}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    returnToList(updateRouting = true) {
+        let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
+        let currentPage = table ? table.getPage() : 1;
+        if (this.groupId) {
+            this.getListOfRequests().then(() => {
+                table ? table.setPage(currentPage) : null;
+            });
+        }
+        this.showListView = true;
+        this.showDetailsView = false;
+        this.currentItem = {};
+        this.currentItem.files = [];
+        this.currentItem.recipients = [];
+        this.currentRecipient = {};
+        this.currentItem.senderOrganizationName = '';
+        this.currentItem.senderFullName = '';
+        this.currentItem.senderAddressCountry = '';
+        this.currentItem.senderPostalCode = '';
+        this.currentItem.senderAddressLocality = '';
+        this.currentItem.senderStreetAddress = '';
+        this.currentItem.senderBuildingNumber = '';
+        this._lastRoutingIdentifier = '';
+        if (updateRouting) {
+            this.sendSetPropertyEvent('routing-url', '/', true);
+        }
     }
 
     _onLoginClicked(e) {
@@ -1142,7 +1363,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             !this.isLoading() &&
             !this._initialFetchDone &&
             !this.initialRequestsLoading &&
-            this.organizationSet
+            this.organizationSet &&
+            this.showListView &&
+            this.groupId
         ) {
             this.getListOfRequests();
         }
@@ -1312,795 +1535,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     </p>
                 </slot>
 
-                 <div class="${classMap({hidden: this.showDetailsView})}">
-                    ${i18n.t('show-requests.organization-select-description')}
-                    <div class="choose-and-create-btns">
-                        <dbp-resource-select
-                                    id="show-resource-select"
-                                    subscribe="lang,entry-point-url,auth"
-                                    lang="${this.lang}"
-                                    resource-path="dispatch/groups"
-                                    value="${this.groupValue}"
-                                    @change=${(event) => {
-                                        if (this.isLoggedIn() && !this.isLoading()) {
-                                            this.processSelectedOrganization(event).then(() => {});
-                                        }
-                                    }}
-                        ></dbp-resource-select>
-                        ${
-                            this.mayReadMetadata
-                                ? html`
-                                      <dbp-select
-                                          id="export-dropdown"
-                                          label="${i18n.t('show-requests.export')}"
-                                          @change="${this.handleExportSelection}"></dbp-select>
-                                  `
-                                : ``
-                        }
-                    </div>
-                </div>
-
-                <div class="no-access-notification">
-                    <dbp-inline-notification class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.mayWrite || !this.organizationSet})}"
-                                             type="${this.mayRead || this.mayReadMetadata ? 'warning' : 'danger'}"
-                                             body="${this.mayRead || this.mayReadMetadata ? i18n.t('error-no-writes') : i18n.t('error-no-read')}">
-                    </dbp-inline-notification>
-                </div>
-
-                <h3 class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.showDetailsView || !this.organizationSet || this.loadingTranslations})}">
-                    ${i18n.t('show-requests.dispatch-orders')}
-                </h3>
-
-
-
-
-                <div class="${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet || (!this.mayRead && !this.mayReadMetadata)})}">
-                    <div class="table-wrapper">
-                        <div class="selected-buttons">
-                                <div class="filter-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView || !this.organizationSet})}"
-                                    <div class="search-wrapper ">
-                                        <div id="extendable-searchbar">
-                                            <input type="text" id="searchbar" placeholder="${i18n.t('show-requests.search-box-text')}" @click='${() => {
-                                                this.toggleSearchMenu();
-                                            }}'>
-                                            <dbp-icon-button id="search-button"
-                                                title="${i18n.t('show-requests.search-box-text')}"
-                                                icon-name="search"
-                                                aria-label="${i18n.t(
-                                                    'show-requests.search-box-text',
-                                                )}"
-                                                @click='${() => {
-                                                    this.filterTable();
-                                                }}'></dbp-icon-button>
-                                            <ul class='extended-menu hidden' id='searchbar-menu'>
-                                                <label for='search-select'>${i18n.t('show-requests.search-in')}:</label>
-                                                <select id='search-select' class='button dropdown-menu'
-                                                        title='${i18n.t('show-requests.search-in-column')}:'>
-                                                    ${this.getTableHeaderOptions()}
-                                                </select>
-
-                                                <label for='search-operator'>${i18n.t('show-requests.search-operator')}
-                                                    :</label>
-                                                <select id='search-operator' class='button dropdown-menu'>
-                                                    <option value='like'>${i18n.t('show-requests.search-operator-like')}
-                                                    </option>
-                                                    <option value='='>${i18n.t('show-requests.search-operator-equal')}</option>
-                                                    <option value='!='>${i18n.t('show-requests.search-operator-notequal')}
-                                                    </option>
-                                                    <option value='starts'>${i18n.t('show-requests.search-operator-starts')}
-                                                    </option>
-                                                    <option value='ends'>${i18n.t('show-requests.search-operator-ends')}
-                                                    </option>
-                                                    <option value='<'>${i18n.t('show-requests.search-operator-less')}</option>
-                                                    <option value='<='>
-                                                        ${i18n.t('show-requests.search-operator-lessthanorequal')}
-                                                    </option>
-                                                    <option value='>'>${i18n.t('show-requests.search-operator-greater')}
-                                                    </option>
-                                                    <option value='>='>
-                                                        ${i18n.t('show-requests.search-operator-greaterorequal')}
-                                                    </option>
-                                                    <option value='regex'>${i18n.t('show-requests.search-operator-regex')}
-                                                    </option>
-                                                    <option value='keywords'>
-                                                        ${i18n.t('show-requests.search-operator-keywords')}
-                                                    </option>
-                                                </select>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <dbp-icon-button class="hidden ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}" id="open-settings-btn"
-                                        ?disabled="${this.loading}"
-                                        @click="${() => {}}"
-                                        title="TODO"
-                                        icon-name="iconoir_settings"></dbp-icon-button>
-                                </div>
-                                <div class="edit-selection-buttons ${classMap({hidden: !this.isLoggedIn() || this.isLoading() || this.loadingTranslations || this.showDetailsView})}">
-                                ${
-                                    this.mayWrite
-                                        ? html`
-                                              <dbp-loading-button
-                                                  id="select-all-btn"
-                                                  class="${classMap({hidden: this.allSelected})}"
-                                                  value="${i18n.t('show-requests.select-all')}"
-                                                  @click="${() => {
-                                                      this.allSelected = true;
-                                                      const table = /** @type {TabulatorTable} */ (
-                                                          this._('#tabulator-table-orders')
-                                                      );
-                                                      table.selectAllVisibleRows();
-                                                      this.toggleDeleteAndSubmitButtons(
-                                                          '#tabulator-table-orders',
-                                                      );
-                                                  }}"
-                                                  title="${i18n.t('show-requests.select-all')}">
-                                                  ${i18n.t('show-requests.select-all')}
-                                              </dbp-loading-button>
-                                              <dbp-loading-button
-                                                  id="deselect-all-btn"
-                                                  class="${classMap({hidden: !this.allSelected})}"
-                                                  value="${i18n.t('show-requests.deselect-all')}"
-                                                  @click="${() => {
-                                                      this.allSelected = false;
-                                                      const table = /** @type {TabulatorTable} */ (
-                                                          this._('#tabulator-table-orders')
-                                                      );
-                                                      table.deselectAllRows();
-                                                      this.toggleDeleteAndSubmitButtons(
-                                                          '#tabulator-table-orders',
-                                                      );
-                                                  }}"
-                                                  title="${i18n.t('show-requests.deselect-all')}">
-                                                  ${i18n.t('show-requests.deselect-all')}
-                                              </dbp-loading-button>
-                                              <dbp-loading-button
-                                                  id="expand-all-btn"
-                                                  class="${classMap({hidden: this.expanded})}"
-                                                  ?disabled="${this.loading}"
-                                                  value="${i18n.t('show-requests.expand-all')}"
-                                                  @click="${() => {
-                                                      this.expandAll();
-                                                  }}"
-                                                  title="${i18n.t('show-requests.expand-all')}">
-                                                  ${i18n.t('show-requests.expand-all')}
-                                              </dbp-loading-button>
-                                              <dbp-loading-button
-                                                  id="collapse-all-btn"
-                                                  class="${classMap({hidden: !this.expanded})}"
-                                                  ?disabled="${this.loading}"
-                                                  value="${i18n.t('show-requests.collapse-all')}"
-                                                  @click="${() => {
-                                                      this.collapseAll();
-                                                  }}"
-                                                  title="${i18n.t('show-requests.collapse-all')}">
-                                                  ${i18n.t('show-requests.collapse-all')}
-                                              </dbp-loading-button>
-                                              <dbp-loading-button
-                                                  id="delete-all-btn"
-                                                  disabled
-                                                  value="${i18n.t(
-                                                      'show-requests.delete-button-text',
-                                                  )}"
-                                                  @click="${async (event) => {
-                                                      await this.deleteSelected();
-                                                      this.toggleDeleteAndSubmitButtons(
-                                                          '#tabulator-table-orders',
-                                                      );
-                                                  }}"
-                                                  title="${i18n.t(
-                                                      'show-requests.delete-button-text',
-                                                  )}">
-                                                  ${i18n.t('show-requests.delete-button-text')}
-                                              </dbp-loading-button>
-                                              <dbp-loading-button
-                                                  id="submit-all-btn"
-                                                  disabled
-                                                  type="is-primary"
-                                                  value="${i18n.t(
-                                                      'show-requests.submit-button-text',
-                                                  )}"
-                                                  @click="${async (event) => {
-                                                      await this.submitSelected();
-                                                      this.toggleDeleteAndSubmitButtons(
-                                                          '#tabulator-table-orders',
-                                                      );
-                                                  }}"
-                                                  title="${i18n.t(
-                                                      'show-requests.submit-button-text',
-                                                  )}">
-                                                  ${i18n.t('show-requests.submit-button-text')}
-                                              </dbp-loading-button>
-                                          `
-                                        : ``
-                                }
-
-                            </div>
-                        </div>
-
-                    <div class="container">
-                        <dbp-tabulator-table
-                                lang="${this.lang}"
-                                class="tabulator-table"
-                                id="tabulator-table-orders"
-                                identifier="orders-table"
-                                collapse-enabled
-                                pagination-size="10"
-                                pagination-enabled
-                                select-rows-enabled
-                                sticky-header
-                                .options=${options}>
-                        </dbp-tabulator-table>
-
-                        </div>
-                            <div class="control table ${classMap({hidden: !this.initialRequestsLoading && !this.tableLoading})}">
-                                <span class="loading">
-                                    <dbp-mini-spinner text=${i18n.t('show-requests.loading-table-message')}></dbp-mini-spinner>
-                                </span>
-                            </div>
-
-                        </div>
-                    </div>
-                ${
-                    this.mayRead || this.mayReadMetadata
-                        ? html`
-                              <div class="back-container">
-                                  <span
-                                      class="back-navigation ${classMap({
-                                          hidden:
-                                              !this.isLoggedIn() ||
-                                              this.isLoading() ||
-                                              this.loadingTranslations ||
-                                              this.showListView ||
-                                              !this.organizationSet,
-                                      })}">
-                                      <a
-                                          href="#"
-                                          title="${i18n.t('show-requests.back-to-list')}"
-                                          @click="${() => {
-                                              let table = /** @type {TabulatorTable} */ (
-                                                  this._('#tabulator-table-orders')
-                                              );
-                                              let currentPage = table ? table.getPage() : 1;
-                                              this.getListOfRequests().then(() => {
-                                                  table ? table.setPage(currentPage) : null;
-                                              });
-                                              this.showListView = true;
-                                              this.showDetailsView = false;
-                                              this.currentItem = {};
-                                              this.currentItem.files = [];
-                                              this.currentItem.recipients = [];
-                                              this.currentRecipient = {};
-                                              this.currentItem.senderOrganizationName = '';
-                                              this.currentItem.senderFullName = '';
-                                              this.currentItem.senderAddressCountry = '';
-                                              this.currentItem.senderPostalCode = '';
-                                              this.currentItem.senderAddressLocality = '';
-                                              this.currentItem.senderStreetAddress = '';
-                                              this.currentItem.senderBuildingNumber = '';
-                                          }}">
-                                          <dbp-icon name="chevron-left"></dbp-icon>
-                                          ${i18n.t('show-requests.back-to-list')}
-                                      </a>
-                                  </span>
-                              </div>
-
-                              <h3
-                                  class="${classMap({
-                                      hidden:
-                                          !this.isLoggedIn() ||
-                                          this.isLoading() ||
-                                          this.loadingTranslations ||
-                                          this.showListView ||
-                                          !this.organizationSet,
-                                  })}">
-                                  ${(this.currentItem && this.currentItem.dateSubmitted) ||
-                                  !this.mayWrite
-                                      ? i18n.t('show-requests.show-detailed-dispatch-order', {
-                                            id: this.currentItem.identifier,
-                                        })
-                                      : i18n.t('show-requests.detailed-dispatch-order', {
-                                            id: this.currentItem.identifier,
-                                        })}:
-                              </h3>
-
-                              <div
-                                  class="${classMap({
-                                      hidden:
-                                          !this.isLoggedIn() ||
-                                          this.isLoading() ||
-                                          this.loadingTranslations ||
-                                          this.showListView ||
-                                          !this.organizationSet,
-                                  })}">
-                                  ${this.currentItem && !this.currentItem.dateSubmitted
-                                      ? html`
-                                            <div class="request-buttons">
-                                                <div class="edit-buttons">
-                                                    <dbp-loading-button
-                                                        id="delete-btn"
-                                                        ?disabled="${this.loading ||
-                                                        this.currentItem.dateSubmitted ||
-                                                        !this.mayWrite}"
-                                                        value="${i18n.t(
-                                                            'show-requests.delete-button-text',
-                                                        )}"
-                                                        @click="${(event) => {
-                                                            this.deleteRequest(
-                                                                this.currentTable,
-                                                                event,
-                                                                this.currentItem,
-                                                            );
-                                                        }}"
-                                                        title="${i18n.t(
-                                                            'show-requests.delete-button-text',
-                                                        )}">
-                                                        ${i18n.t(
-                                                            'show-requests.delete-button-text',
-                                                        )}
-                                                    </dbp-loading-button>
-                                                </div>
-                                                <div class="submit-button">
-                                                    <dbp-loading-button
-                                                        type="is-primary"
-                                                        id="submit-btn"
-                                                        ?disabled="${this.loading ||
-                                                        this.currentItem.dateSubmitted ||
-                                                        !this.mayWrite}"
-                                                        value="${i18n.t(
-                                                            'show-requests.submit-button-text',
-                                                        )}"
-                                                        @click="${(event) => {
-                                                            this.submitRequest(
-                                                                this.currentTable,
-                                                                event,
-                                                                this.currentItem,
-                                                            );
-                                                        }}"
-                                                        title="${i18n.t(
-                                                            'show-requests.submit-button-text',
-                                                        )}">
-                                                        ${i18n.t(
-                                                            'show-requests.submit-button-text',
-                                                        )}
-                                                    </dbp-loading-button>
-                                                </div>
-                                            </div>
-                                        `
-                                      : ``}
-                                  ${this.currentItem
-                                      ? html`
-                                            <div class="request-item details">
-                                                <div class="details header">
-                                                    <div>
-                                                        <div class="section-titles">
-                                                            ${i18n.t('show-requests.id')}
-                                                            ${!this.currentItem.dateSubmitted
-                                                                ? html`
-                                                                      <dbp-icon-button
-                                                                          id="edit-subject-btn"
-                                                                          ?disabled="${this
-                                                                              .loading ||
-                                                                          this.currentItem
-                                                                              .dateSubmitted ||
-                                                                          !this.mayWrite}"
-                                                                          @click="${(event) => {
-                                                                              this.subject = this
-                                                                                  .currentItem.name
-                                                                                  ? this.currentItem
-                                                                                        .name
-                                                                                  : '';
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-subject-fn-dialog',
-                                                                                  )
-                                                                              ).value = this
-                                                                                  .currentItem.name
-                                                                                  ? this.currentItem
-                                                                                        .name
-                                                                                  : ``;
-                                                                              // @ts-ignore
-                                                                              MicroModal.show(
-                                                                                  this._(
-                                                                                      '#edit-subject-modal',
-                                                                                  ),
-                                                                                  {
-                                                                                      disableScroll: true,
-                                                                                      onClose: (
-                                                                                          modal,
-                                                                                      ) => {
-                                                                                          //this.loading = false;
-                                                                                      },
-                                                                                  },
-                                                                              );
-                                                                          }}"
-                                                                          aria-label="${i18n.t(
-                                                                              'show-requests.edit-subject-button-text',
-                                                                          )}"
-                                                                          title="${i18n.t(
-                                                                              'show-requests.edit-subject-button-text',
-                                                                          )}"
-                                                                          icon-name="pencil"></dbp-icon-button>
-                                                                  `
-                                                                : ``}
-                                                        </div>
-                                                        <div>
-                                                            ${this.currentItem.name
-                                                                ? html`
-                                                                      ${this.currentItem.name}
-                                                                  `
-                                                                : html`
-                                                                      ${this.mayReadMetadata &&
-                                                                      !this.mayRead &&
-                                                                      !this.mayWrite
-                                                                          ? i18n.t(
-                                                                                'show-requests.metadata-subject-text',
-                                                                            )
-                                                                          : i18n.t(
-                                                                                'show-requests.no-subject-found',
-                                                                            )}
-                                                                  `}
-                                                        </div>
-                                                    </div>
-                                                    <div class="line"></div>
-                                                    <div>
-                                                        <div class="section-titles">
-                                                            ${i18n.t('show-requests.submit-status')}
-                                                        </div>
-                                                        <div>
-                                                            ${this.currentItem.dateSubmitted
-                                                                ? html`
-                                                                      ${this.checkRecipientStatus(
-                                                                          this.currentItem
-                                                                              .recipients,
-                                                                      )[0]}
-                                                                  `
-                                                                : html`
-                                                                      <span class="status-orange">
-                                                                          ●
-                                                                      </span>
-                                                                      ${i18n.t(
-                                                                          'show-requests.empty-date-submitted',
-                                                                      )}
-                                                                  `}
-                                                        </div>
-                                                    </div>
-                                                    <div class="line"></div>
-                                                    <div>
-                                                        <div class="section-titles">
-                                                            ${i18n.t(
-                                                                'show-requests.reference-number',
-                                                            )}
-                                                            ${!this.currentItem.dateSubmitted
-                                                                ? html`
-                                                                      <dbp-icon-button
-                                                                          id="edit-reference-number-btn"
-                                                                          ?disabled="${this
-                                                                              .loading ||
-                                                                          this.currentItem
-                                                                              .dateSubmitted ||
-                                                                          !this.mayWrite}"
-                                                                          @click="${(event) => {
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-reference-number-fn-dialog',
-                                                                                  )
-                                                                              ).value =
-                                                                                  this.currentItem
-                                                                                      .referenceNumber ??
-                                                                                  ``;
-                                                                              // @ts-ignore
-                                                                              MicroModal.show(
-                                                                                  this._(
-                                                                                      '#edit-reference-number-modal',
-                                                                                  ),
-                                                                                  {
-                                                                                      disableScroll: true,
-                                                                                      onClose: (
-                                                                                          modal,
-                                                                                      ) => {
-                                                                                          //this.loading = false;
-                                                                                      },
-                                                                                  },
-                                                                              );
-                                                                          }}"
-                                                                          aria-label="${i18n.t(
-                                                                              'show-requests.edit-reference-number-button-text',
-                                                                          )}"
-                                                                          title="${i18n.t(
-                                                                              'show-requests.edit-reference-number-button-text',
-                                                                          )}"
-                                                                          icon-name="pencil"></dbp-icon-button>
-                                                                  `
-                                                                : ``}
-                                                        </div>
-                                                        <div>
-                                                            ${this.currentItem.referenceNumber
-                                                                ? html`
-                                                                      ${this.currentItem
-                                                                          .referenceNumber}
-                                                                  `
-                                                                : html`
-                                                                      ${i18n.t(
-                                                                          'show-requests.empty-reference-number',
-                                                                      )}
-                                                                  `}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                ${this.addSubHeader()} ${this.addSenderDetails()}
-
-                                                <div class="details recipients">
-                                                    <div class="header-btn">
-                                                        <div class="section-titles">
-                                                            ${i18n.t('show-requests.recipients')}
-                                                            <span class="section-title-counts">
-                                                                ${this.currentItem.recipients
-                                                                    .length !== 0
-                                                                    ? `(` +
-                                                                      this.currentItem.recipients
-                                                                          .length +
-                                                                      `)`
-                                                                    : ``}
-                                                            </span>
-                                                        </div>
-                                                        ${!this.currentItem.dateSubmitted
-                                                            ? html`
-                                                                  <dbp-loading-button
-                                                                      id="add-recipient-btn"
-                                                                      ?disabled="${this.loading ||
-                                                                      this.currentItem
-                                                                          .dateSubmitted ||
-                                                                      !this.mayWrite}"
-                                                                      value="${i18n.t(
-                                                                          'show-requests.add-recipient-button-text',
-                                                                      )}"
-                                                                      @click="${(event) => {
-                                                                          this.currentRecipient =
-                                                                              {};
-                                                                          // @ts-ignore
-                                                                          MicroModal.show(
-                                                                              this._(
-                                                                                  '#add-recipient-modal',
-                                                                              ),
-                                                                              {
-                                                                                  disableScroll: true,
-                                                                                  onClose: (
-                                                                                      modal,
-                                                                                  ) => {
-                                                                                      //this.loading = false;
-                                                                                  },
-                                                                              },
-                                                                          );
-                                                                      }}"
-                                                                      title="${i18n.t(
-                                                                          'show-requests.add-recipient-button-text',
-                                                                      )}">
-                                                                      ${i18n.t(
-                                                                          'show-requests.add-recipient-button-text',
-                                                                      )}
-                                                                  </dbp-loading-button>
-                                                              `
-                                                            : ``}
-                                                    </div>
-
-                                                    <div class="recipients-data">
-                                                        ${this.sortRecipients(
-                                                            this.currentItem.recipients,
-                                                        ).map(
-                                                            (recipient) => html`
-
-                                        <div class="recipient card">
-
-                                            ${this.addRecipientCardLeftSideContent(recipient)}
-
-                                            <div class="right-side">
-                                                <dbp-icon-button id="show-recipient-btn"
-                                                    @click="${(event) => {
-                                                        let button = event.target;
-                                                        button.start();
-                                                        this.currentRecipient = recipient;
-                                                        try {
-                                                            this.fetchDetailedRecipientInformation(
-                                                                recipient.identifier,
-                                                            ).then(() => {
-                                                                // @ts-ignore
-                                                                MicroModal.show(
-                                                                    this._('#show-recipient-modal'),
-                                                                    {
-                                                                        disableScroll: true,
-                                                                        onShow: (modal) => {
-                                                                            this.button = button;
-                                                                        },
-                                                                        onClose: (modal) => {
-                                                                            //this.loading = false;
-                                                                            this.currentRecipient =
-                                                                                {};
-                                                                            button.stop();
-                                                                        },
-                                                                    },
-                                                                );
-                                                            });
-                                                        } catch {
-                                                            button.stop();
-                                                        } finally {
-                                                            button.stop();
-                                                        }
-                                                    }}"
-                                                    aria-label="${i18n.t('show-requests.show-recipient-button-text')}"
-                                                    title="${i18n.t('show-requests.show-recipient-button-text')}"
-                                                    icon-name="keyword-research"></dbp-icon></dbp-icon-button>
-                                                ${
-                                                    !this.currentItem.dateSubmitted
-                                                        ? html`
-                                                              <dbp-icon-button
-                                                                  id="edit-recipient-btn"
-                                                                  ?disabled="${this.loading ||
-                                                                  this.currentItem.dateSubmitted ||
-                                                                  !this.mayWrite ||
-                                                                  (recipient.personIdentifier &&
-                                                                      (recipient.electronicallyDeliverable ||
-                                                                          recipient.postalDeliverable))}"
-                                                                  @click="${(event) => {
-                                                                      let button = event.target;
-                                                                      button.start();
-                                                                      this.currentRecipient =
-                                                                          recipient;
-                                                                      try {
-                                                                          this.fetchDetailedRecipientInformation(
-                                                                              recipient.identifier,
-                                                                          ).then(() => {
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-recipient-country-select',
-                                                                                  )
-                                                                              ).value =
-                                                                                  this.currentRecipient.addressCountry;
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-recipient-birthdate-day',
-                                                                                  )
-                                                                              ).value =
-                                                                                  this.currentRecipient.birthDateDay;
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-recipient-birthdate-month',
-                                                                                  )
-                                                                              ).value =
-                                                                                  this.currentRecipient.birthDateMonth;
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-recipient-birthdate-year',
-                                                                                  )
-                                                                              ).value =
-                                                                                  this.currentRecipient.birthDateYear;
-
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-recipient-gn-dialog',
-                                                                                  )
-                                                                              ).value =
-                                                                                  this.currentRecipient.givenName;
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-recipient-fn-dialog',
-                                                                                  )
-                                                                              ).value =
-                                                                                  this.currentRecipient.familyName;
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-recipient-pc-dialog',
-                                                                                  )
-                                                                              ).value = this
-                                                                                  .currentRecipient
-                                                                                  .postalCode
-                                                                                  ? this
-                                                                                        .currentRecipient
-                                                                                        .postalCode
-                                                                                  : '';
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-recipient-al-dialog',
-                                                                                  )
-                                                                              ).value = this
-                                                                                  .currentRecipient
-                                                                                  .addressLocality
-                                                                                  ? this
-                                                                                        .currentRecipient
-                                                                                        .addressLocality
-                                                                                  : '';
-                                                                              /** @type {HTMLInputElement } */ (
-                                                                                  this._(
-                                                                                      '#tf-edit-recipient-sa-dialog',
-                                                                                  )
-                                                                              ).value = this
-                                                                                  .currentRecipient
-                                                                                  .streetAddress
-                                                                                  ? this
-                                                                                        .currentRecipient
-                                                                                        .streetAddress
-                                                                                  : '';
-                                                                              // @ts-ignore
-                                                                              MicroModal.show(
-                                                                                  this._(
-                                                                                      '#edit-recipient-modal',
-                                                                                  ),
-                                                                                  {
-                                                                                      disableScroll: true,
-                                                                                      onShow: (
-                                                                                          modal,
-                                                                                      ) => {
-                                                                                          this.button =
-                                                                                              button;
-                                                                                      },
-                                                                                      onClose: (
-                                                                                          modal,
-                                                                                      ) => {
-                                                                                          //this.loading = false;
-                                                                                          this.currentRecipient =
-                                                                                              {};
-                                                                                      },
-                                                                                  },
-                                                                              );
-                                                                          });
-                                                                      } finally {
-                                                                          button.stop();
-                                                                      }
-                                                                  }}"
-                                                                  aria-label="${i18n.t(
-                                                                      'show-requests.edit-recipients-button-text',
-                                                                  )}"
-                                                                  title="${i18n.t(
-                                                                      'show-requests.edit-recipients-button-text',
-                                                                  )}"
-                                                                  icon-name="pencil"></dbp-icon-button>
-                                                              <dbp-icon-button
-                                                                  id="delete-recipient-btn"
-                                                                  ?disabled="${this.loading ||
-                                                                  this.currentItem.dateSubmitted ||
-                                                                  !this.mayWrite}"
-                                                                  @click="${(event) => {
-                                                                      this.deleteRecipient(
-                                                                          event,
-                                                                          recipient,
-                                                                      );
-                                                                  }}"
-                                                                  aria-label="${i18n.t(
-                                                                      'show-requests.delete-recipient-button-text',
-                                                                  )}"
-                                                                  title="${i18n.t(
-                                                                      'show-requests.delete-recipient-button-text',
-                                                                  )}"
-                                                                  icon-name="trash"></dbp-icon-button>
-                                                          `
-                                                        : ``
-                                                }
-                                            </div>
-                                        </div>`,
-                                                        )}
-                                                        <div
-                                                            class="no-recipients ${classMap({
-                                                                hidden:
-                                                                    !this.isLoggedIn() ||
-                                                                    this.currentItem.recipients
-                                                                        .length !== 0,
-                                                            })}">
-                                                            ${i18n.t(
-                                                                'show-requests.no-recipients-text',
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                ${this.addDetailedFilesView()}
-                                            </div>
-                                        `
-                                      : ``}
-                              </div>
-                          `
-                        : ``
-                }
+                <dbp-show-requests-list-view
+                    .controller=${this}
+                    .options=${options}></dbp-show-requests-list-view>
+                <dbp-show-requests-detail-view
+                    .controller=${this}></dbp-show-requests-detail-view>
                 </div>
             </div>
 

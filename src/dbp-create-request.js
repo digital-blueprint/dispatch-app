@@ -1,15 +1,16 @@
 import {createInstance, setOverridesByGlobalCache} from './i18n.js';
 import {css, html} from 'lit';
-import {ScopedElementsMixin} from '@dbp-toolkit/common';
 import DBPDispatchLitElement from './dbp-dispatch-lit-element';
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
+import {send} from '@dbp-toolkit/common/notification';
 import {
     LoadingButton,
     IconButton,
     Icon,
     MiniSpinner,
     InlineNotification,
+    ScopedElementsMixin,
 } from '@dbp-toolkit/common';
 import {CountrySelect} from '@dbp-toolkit/country-select';
 import {CustomPersonSelect} from './person-select';
@@ -17,9 +18,15 @@ import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {classMap} from 'lit/directives/class-map.js';
 import * as dispatchStyles from './styles';
 import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
-import MicroModal from './micromodal.es';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
-import {PdfViewer} from '@dbp-toolkit/pdf-viewer';
+import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
+import {DispatchEditReferenceNumberModal} from './dialogs/edit-reference-number-modal.js';
+import {DispatchAddSubjectModal} from './dialogs/add-subject-modal.js';
+import {DispatchFileViewerModal} from './dialogs/file-viewer-modal.js';
+import {DispatchEditSenderModal} from './dialogs/edit-sender-modal.js';
+import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
+import {DispatchAddRecipientModal} from './dialogs/add-recipient-modal.js';
+import {DispatchShowRecipientModal} from './dialogs/show-recipient-modal.js';
 
 class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
     constructor() {
@@ -109,8 +116,15 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-country-select': CountrySelect,
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
-            'dbp-pdf-viewer': PdfViewer,
             'dbp-tabulator-table': TabulatorTable,
+            'dbp-dispatch-edit-subject-modal': DispatchEditSubjectModal,
+            'dbp-dispatch-edit-reference-number-modal': DispatchEditReferenceNumberModal,
+            'dbp-dispatch-add-subject-modal': DispatchAddSubjectModal,
+            'dbp-dispatch-file-viewer-modal': DispatchFileViewerModal,
+            'dbp-dispatch-edit-sender-modal': DispatchEditSenderModal,
+            'dbp-dispatch-edit-recipient-modal': DispatchEditRecipientModal,
+            'dbp-dispatch-add-recipient-modal': DispatchAddRecipientModal,
+            'dbp-dispatch-show-recipient-modal': DispatchShowRecipientModal,
         };
     }
 
@@ -213,6 +227,171 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     async _onCreateRequestButtonClicked(event) {
         this.openFileSource();
+    }
+
+    async confirmAddSubject(subject) {
+        this.subject =
+            subject && subject !== '' ? subject : this._i18n.t('create-request.default-subject');
+
+        await this.processCreateDispatchRequest();
+
+        this.showDetailsView = true;
+        this.hasSubject = true;
+
+        this.hasSender = true;
+    }
+
+    async processSelectedSender(event) {
+        this.storeGroupValue(event.detail.value);
+        const i18n = this._i18n;
+        this.organizationLoaded = true;
+
+        if (event.target.valueObject.accessRights) {
+            this.mayReadAddress = event.target.valueObject.accessRights.includes('wra');
+            this.mayReadMetadata = event.target.valueObject.accessRights.includes('rm');
+
+            let mayWrite = event.target.valueObject.accessRights.includes('w');
+            if (!mayWrite && !this.requestCreated) {
+                this.mayRead = event.target.valueObject.accessRights.includes('rc');
+                this.mayWrite = mayWrite;
+            } else if (!mayWrite && this.requestCreated) {
+                if (Object.keys(this.tempItem).length !== 0) {
+                    this.currentItem = this.tempItem;
+                    this.tempChange = true;
+                    /** @type {ResourceSelect} */ (this._('#create-resource-select')).value =
+                        this.tempValue;
+
+                    send({
+                        summary: i18n.t('create-request.create-not-allowed-title'),
+                        body: i18n.t('create-request.create-not-allowed-text'),
+                        type: 'danger',
+                        timeout: 5,
+                    });
+                }
+                this.mayRead = event.target.valueObject.accessRights.includes('rc');
+                this.mayWrite = mayWrite;
+                return;
+            } else if (mayWrite && this.requestCreated && !this.tempChange) {
+                let senderFullName = this.currentItem.senderFullName
+                    ? this.currentItem.senderFullName
+                    : i18n.t('create-request.sender-full-name')
+                      ? i18n.t('create-request.sender-full-name')
+                      : '';
+                let senderOrganizationName = event.target.valueObject.name;
+                let senderAddressCountry = event.target.valueObject.country;
+                let senderStreetAddress = event.target.valueObject.street;
+                let senderAddressLocality = event.target.valueObject.locality;
+                let senderPostalCode = event.target.valueObject.postalCode;
+                let groupId = event.target.valueObject.identifier;
+                let mayRead = event.target.valueObject.accessRights.includes('rc');
+
+                let response = await this.sendEditDispatchRequest(
+                    this.currentItem.identifier,
+                    senderOrganizationName,
+                    senderFullName,
+                    senderAddressCountry,
+                    senderPostalCode,
+                    senderAddressLocality,
+                    senderStreetAddress,
+                    groupId,
+                );
+
+                let responseBody = await response.json();
+                if (responseBody !== undefined && response.status === 200) {
+                    this.currentItem = responseBody;
+                    this.currentItem.senderFullName = senderFullName;
+                    this.currentItem.senderOrganizationName = senderOrganizationName;
+                    this.currentItem.senderAddressCountry = senderAddressCountry;
+                    this.currentItem.senderStreetAddress = senderStreetAddress;
+                    this.currentItem.senderAddressLocality = senderAddressLocality;
+                    this.currentItem.senderPostalCode = senderPostalCode;
+
+                    this.groupId = groupId;
+
+                    this.mayRead = mayRead;
+                    this.mayWrite = mayWrite;
+
+                    this.tempItem = this.currentItem;
+                    this.tempValue = /** @type {ResourceSelect} */ (
+                        this._('#create-resource-select')
+                    ).value;
+                } else if (response.status === 403) {
+                    send({
+                        summary: i18n.t('create-request.error-requested-title'),
+                        body: i18n.t('error-not-permitted'),
+                        type: 'danger',
+                        timeout: 5,
+                    });
+                }
+            } else {
+                this.currentItem.senderFullName = this.currentItem.senderFullName
+                    ? this.currentItem.senderFullName
+                    : i18n.t('create-request.sender-full-name')
+                      ? i18n.t('create-request.sender-full-name')
+                      : '';
+                this.currentItem.senderOrganizationName = event.target.valueObject.name;
+                this.currentItem.senderAddressCountry = event.target.valueObject.country;
+                this.currentItem.senderStreetAddress = event.target.valueObject.street;
+                this.currentItem.senderAddressLocality = event.target.valueObject.locality;
+                this.currentItem.senderPostalCode = event.target.valueObject.postalCode;
+
+                this.groupId = event.target.valueObject.identifier;
+                this.mayRead = event.target.valueObject.accessRights.includes('rc');
+                this.mayWrite = event.target.valueObject.accessRights.includes('w');
+
+                this.tempItem = this.currentItem;
+                this.tempValue = /** @type {ResourceSelect} */ (
+                    this._('#create-resource-select')
+                ).value;
+            }
+        }
+
+        this.tempChange = false;
+    }
+
+    async getCreatedDispatchRequests() {
+        this.createRequestsLoading = !this._initialFetchDone;
+        this.tableLoading = true;
+
+        this.createdRequestsList = [];
+        let createdRequestsIds = this.createdRequestsIds;
+
+        if (createdRequestsIds !== undefined) {
+            for (let i = 0; i < createdRequestsIds.length; i++) {
+                try {
+                    let response = await this.getDispatchRequest(createdRequestsIds[i]);
+                    let responseBody = await response.json();
+                    if (responseBody !== undefined && responseBody.status !== 403) {
+                        this.createdRequestsList.push(responseBody);
+                    } else {
+                        if (response.status === 500) {
+                            send({
+                                summary: 'Error!',
+                                body: 'Could not fetch dispatch requests. Response code: 500',
+                                type: 'danger',
+                                timeout: 5,
+                            });
+                        } else if (response.status === 403) {
+                            // TODO
+                        }
+                    }
+                } catch (e) {
+                    console.error(`${e.name}: ${e.message}`);
+                    send({
+                        summary: 'Error!',
+                        body: 'Could not fetch dispatch requests.',
+                        type: 'danger',
+                        timeout: 5,
+                    });
+                }
+            }
+        }
+
+        this.tableLoading = false;
+        this.createRequestsLoading = false;
+        this._initialFetchDone = true;
+        this.showListView = true;
+        return this.createdRequestsList;
     }
 
     getCurrentTime() {
@@ -654,7 +833,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             ?disabled="${!this.mayWrite}"
                             class="${classMap({
                                 hidden: this.showDetailsView,
-                            })}"></dbp-loading-button>
+                            })}">
+                            <dbp-icon name="select-all" aria-hidden="true"></dbp-icon>
+                            ${i18n.t('create-request.create-request-button-text')}
+                        </dbp-loading-button>
                     </div>
                     <label id="multiple-requests-checkbox" class="button-container">
                         ${i18n.t('create-request.multiple-requests-text')}
@@ -971,22 +1153,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                 this.subject = this.currentItem.name
                                                                     ? this.currentItem.name
                                                                     : '';
-                                                                /** @type {HTMLInputElement} */ (
-                                                                    this._(
-                                                                        '#tf-edit-subject-fn-dialog',
-                                                                    )
-                                                                ).value = this.currentItem.name
-                                                                    ? this.currentItem.name
-                                                                    : ``;
-                                                                MicroModal.show(
-                                                                    // @ts-ignore
-                                                                    this._('#edit-subject-modal'),
-                                                                    {
-                                                                        disableScroll: true,
-                                                                        onClose: (modal) => {
-                                                                            this.loading = false;
-                                                                        },
-                                                                    },
+                                                                this._('#edit-subject-modal').open(
+                                                                    this.subject,
                                                                 );
                                                             }}"
                                                             aria-label="${i18n.t(
@@ -1050,24 +1218,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             this.currentItem.dateSubmitted ||
                                                             !this.mayWrite}"
                                                             @click="${(event) => {
-                                                                /** @type {HTMLInputElement} */ (
-                                                                    this._(
-                                                                        '#tf-edit-reference-number-fn-dialog',
-                                                                    )
-                                                                ).value =
+                                                                this._(
+                                                                    '#edit-reference-number-modal',
+                                                                ).open(
                                                                     this.currentItem
-                                                                        .referenceNumber ?? ``;
-                                                                MicroModal.show(
-                                                                    // @ts-ignore
-                                                                    this._(
-                                                                        '#edit-reference-number-modal',
-                                                                    ),
-                                                                    {
-                                                                        disableScroll: true,
-                                                                        onClose: (modal) => {
-                                                                            this.loading = false;
-                                                                        },
-                                                                    },
+                                                                        .referenceNumber ?? ``,
                                                                 );
                                                             }}"
                                                             aria-label="${i18n.t(
@@ -1122,16 +1277,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         )}"
                                                         @click="${(event) => {
                                                             this.currentRecipient = {};
-                                                            // @ts-ignore
-                                                            MicroModal.show(
-                                                                this._('#add-recipient-modal'),
-                                                                {
-                                                                    disableScroll: true,
-                                                                    onClose: (modal) => {
-                                                                        //this.loading = false;
-                                                                    },
-                                                                },
-                                                            );
+                                                            this._('#add-recipient-modal').open({});
                                                         }}"
                                                         title="${i18n.t(
                                                             'show-requests.add-recipient-button-text',
@@ -1163,29 +1309,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                      this.fetchDetailedRecipientInformation(
                                                                          recipient.identifier,
                                                                      ).then(() => {
-                                                                         MicroModal.show(
-                                                                             // @ts-ignore
-                                                                             this._(
-                                                                                 '#show-recipient-modal',
-                                                                             ),
-                                                                             {
-                                                                                 disableScroll: true,
-                                                                                 onShow: (
-                                                                                     modal,
-                                                                                 ) => {
-                                                                                     this.button =
-                                                                                         button;
-                                                                                 },
-                                                                                 onClose: (
-                                                                                     modal,
-                                                                                 ) => {
-                                                                                     this.loading = false;
-                                                                                     this.currentRecipient =
-                                                                                         {};
-                                                                                     button.stop();
-                                                                                 },
-                                                                             },
+                                                                         this._(
+                                                                             '#show-recipient-modal',
+                                                                         ).open(
+                                                                             this.currentRecipient,
                                                                          );
+                                                                         this.button = button;
                                                                      });
                                                                  } catch {
                                                                      button.stop();
@@ -1214,98 +1343,12 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                       this.fetchDetailedRecipientInformation(
                                                                           recipient.identifier,
                                                                       ).then(() => {
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-country-select',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.addressCountry;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-birthdate-day',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.birthDateDay;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-birthdate-month',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.birthDateMonth;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-birthdate-year',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.birthDateYear;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-gn-dialog',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.givenName;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-fn-dialog',
-                                                                              )
-                                                                          ).value =
-                                                                              this.currentRecipient.familyName;
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-pc-dialog',
-                                                                              )
-                                                                          ).value = this
-                                                                              .currentRecipient
-                                                                              .postalCode
-                                                                              ? this
-                                                                                    .currentRecipient
-                                                                                    .postalCode
-                                                                              : '';
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-al-dialog',
-                                                                              )
-                                                                          ).value = this
-                                                                              .currentRecipient
-                                                                              .addressLocality
-                                                                              ? this
-                                                                                    .currentRecipient
-                                                                                    .addressLocality
-                                                                              : '';
-                                                                          /** @type {HTMLInputElement} */ (
-                                                                              this._(
-                                                                                  '#tf-edit-recipient-sa-dialog',
-                                                                              )
-                                                                          ).value = this
-                                                                              .currentRecipient
-                                                                              .streetAddress
-                                                                              ? this
-                                                                                    .currentRecipient
-                                                                                    .streetAddress
-                                                                              : '';
-
-                                                                          MicroModal.show(
-                                                                              // @ts-ignore
-                                                                              this._(
-                                                                                  '#edit-recipient-modal',
-                                                                              ),
-                                                                              {
-                                                                                  disableScroll: true,
-                                                                                  onShow: (
-                                                                                      modal,
-                                                                                  ) => {
-                                                                                      this.button =
-                                                                                          button;
-                                                                                  },
-                                                                                  onClose: (
-                                                                                      modal,
-                                                                                  ) => {
-                                                                                      this.loading = false;
-                                                                                      this.currentRecipient =
-                                                                                          {};
-                                                                                  },
-                                                                              },
+                                                                          this._(
+                                                                              '#edit-recipient-modal',
+                                                                          ).open(
+                                                                              this.currentRecipient,
                                                                           );
+                                                                          this.button = button;
                                                                       });
                                                                   } catch {
                                                                       button.stop();
@@ -1367,80 +1410,15 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             ${this.addEditSubjectModal()} ${this.addEditReferenceNumberModal()}
             ${this.addFileViewerModal()}
 
-            <div class="modal micromodal-slide" id="add-subject-modal" aria-hidden="true">
-                <div class="modal-overlay" tabindex="-2" data-micromodal-close>
-                    <div
-                        class="modal-container"
-                        id="add-subject-modal-box"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="add-subject-modal-title">
-                        <header class="modal-header">
-                            <h3 id="add-subject-modal-title">
-                                ${i18n.t('create-request.empty-subject')}
-                            </h3>
-                            <button
-                                title="${i18n.t('show-requests.modal-close')}"
-                                class="modal-close"
-                                aria-label="${i18n.t('show-requests.modal-close')}"
-                                @click="${() => {
-                                    // @ts-ignore
-                                    MicroModal.close(this._('#add-subject-modal'));
-                                }}">
-                                <dbp-icon
-                                    title="${i18n.t('show-requests.modal-close')}"
-                                    name="close"
-                                    class="close-icon"></dbp-icon>
-                            </button>
-                        </header>
-                        <main class="modal-content" id="add-subject-modal-content">
-                            <div class="modal-content-item">
-                                <div>
-                                    <input
-                                        type="text"
-                                        class="input"
-                                        name="tf-add-subject-fn-dialog"
-                                        id="tf-add-subject-fn-dialog"
-                                        value="${this.subject ? this.subject : ``}"
-                                        @input="${() => {
-                                            // TODO
-                                        }}" />
-                                </div>
-                            </div>
-                            <div class="modal-content-item">
-                                <div>${i18n.t('show-requests.add-subject-description')}</div>
-                            </div>
-                        </main>
-                        <footer class="modal-footer">
-                            <div class="modal-footer-btn">
-                                <button
-                                    class="button"
-                                    data-micromodal-close
-                                    aria-label="Close this dialog window"
-                                    @click="${() => {
-                                        // @ts-ignore
-                                        MicroModal.close(this._('#add-subject-modal'));
-                                    }}">
-                                    ${i18n.t('show-requests.edit-recipient-dialog-button-cancel')}
-                                </button>
-                                <button
-                                    class="button select-button is-primary"
-                                    id="add-subject-confirm-btn"
-                                    @click="${() => {
-                                        /** @type {HTMLButtonElement} */ (
-                                            this._('#add-subject-confirm-btn')
-                                        ).disabled = true;
-                                        // @ts-ignore
-                                        MicroModal.close(this._('#add-subject-modal'));
-                                        this.confirmAddSubject();
-                                    }}">
-                                    ${i18n.t('show-requests.add-subject-dialog-button-ok')}
-                                </button>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </div>
+            <dbp-dispatch-add-subject-modal
+                id="add-subject-modal"
+                lang="${this.lang}"
+                .subject=${this.subject}
+                @confirm="${async (event) => {
+                    const modal = event.currentTarget;
+                    await this.confirmAddSubject(event.detail.subject);
+                    modal.close();
+                }}"></dbp-dispatch-add-subject-modal>
         `;
     }
 }

@@ -504,10 +504,6 @@ export function getDispatchRequestStyles() {
             color: var(--dbp-muted);
         }
 
-        .modal-overlay {
-            z-index: 9000;
-        }
-
         .no-access-notification {
             margin-top: 1.3em;
             margin-bottom: 1.3em;
@@ -526,7 +522,7 @@ export function getDispatchRequestStyles() {
         .request-buttons {
             display: flex;
             justify-content: flex-end;
-            gap: 3px;
+            gap: 0.5em;
             margin-top: -1.5em;
             padding-bottom: 1.5em;
         }
@@ -631,211 +627,8 @@ export function getDispatchRequestStyles() {
             margin-bottom: 10px;
         }
 
-        #edit-sender-modal-box,
-        #add-sender-modal-box,
-        #add-recipient-modal-box,
-        #edit-recipient-modal-box,
-        #add-subject-modal-box,
-        #edit-subject-modal-box,
-        #edit-reference-number-modal-box,
-        #show-recipient-modal-box,
-        #file-viewer-modal-box {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 15px 20px 20px;
-            min-width: 320px;
-        }
-
-        .modal-content {
-            container-type: inline-size;
-        }
-
-        .modal-content-container {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        /* #add-recipient-modal-box h4 { */
-        .modal-content-container h4 {
-            margin-top: 0;
-        }
-
-        .modal-content-right {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4em;
-            padding-left: 20px;
-        }
-
-        .modal-content-left {
-            border-right: var(--dbp-border);
-            padding-right: 20px;
-        }
-
-        @container (max-width: 490px) {
-            .modal-content-container {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .modal-content-right {
-                padding-left: 0;
-            }
-
-            .modal-content-left h4 {
-                margin-top: 0;
-                margin-bottom: 15px;
-            }
-
-            .modal-content-right h4 {
-                margin-top: 30px;
-                margin-bottom: 10px;
-            }
-
-            .modal-content-left {
-                padding-right: 0;
-                border-right: 0;
-                padding-bottom: 20px;
-                border-bottom: 1px solid var(--dbp-content);
-            }
-        }
-
-        #edit-recipient-modal-box {
-            height: auto;
-            min-height: fit-content;
-            max-width: 400px;
-            gap: 20px;
-        }
-
-        #add-recipient-modal-box {
-            height: auto;
-            min-height: fit-content;
-            max-width: 736px;
-            gap: 20px;
-        }
-
-        #add-subject-modal-box,
-        #edit-subject-modal-box,
-        #edit-reference-number-modal-box {
-            height: auto;
-            min-height: 185px;
-            max-width: 500px;
-        }
-
-        #edit-sender-modal-box {
-            height: auto;
-            min-height: fit-content;
-            max-width: 400px;
-            gap: 20px;
-        }
-
-        #show-recipient-modal-box {
-            height: auto;
-            width: 90vw;
-            max-width: 800px;
-        }
-
-        #edit-sender-modal-box header.modal-header,
-        #add-sender-modal-box header.modal-header,
-        #add-recipient-modal-box header.modal-header,
-        #edit-recipient-modal-box header.modal-header,
-        #show-recipient-modal-box header.modal-header,
-        #add-subject-modal-box header.modal-header,
-        #edit-subject-modal-box header.modal-header,
-        #edit-reference-number-modal-box header.modal-header,
-        #file-viewer-modal-box header.modal-header {
-            padding: 0px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #show-recipient-modal-box header.modal-header {
-            padding: 0 10px 20px 0;
-        }
-
-        #edit-sender-modal-box footer.modal-footer .modal-footer-btn,
-        #add-sender-modal-box footer.modal-footer .modal-footer-btn,
-        #add-recipient-modal-box footer.modal-footer .modal-footer-btn,
-        #edit-recipient-modal-box footer.modal-footer .modal-footer-btn,
-        #show-recipient-modal-box footer.modal-footer .modal-footer-btn,
-        #add-subject-modal-box footer.modal-footer .modal-footer-btn,
-        #edit-subject-modal-box footer.modal-footer .modal-footer-btn,
-        #edit-reference-number-modal-box footer.modal-footer .modal-footer-btn {
-            padding: 0px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #show-recipient-modal-box footer.modal-footer .modal-footer-btn {
-            padding: 0 10px 10px 0;
-        }
-
-        #edit-sender-modal-content,
-        #add-sender-modal-content,
-        #add-recipient-modal-content,
-        #edit-recipient-modal-content,
-        #add-subject-modal-content,
-        #edit-subject-modal-content,
-        #edit-reference-number-modal-content,
-        #file-viewer-modal-modal-content {
-            display: flex;
-            padding-left: 0px;
-            padding-right: 0px;
-            overflow: unset;
-            gap: 1em;
-            flex-direction: column;
-        }
-
-        #add-subject-modal-content,
-        #edit-subject-modal-content,
-        #edit-reference-number-modal-content {
-            gap: 0;
-        }
-
-        #edit-sender-modal-content div .input,
-        #add-sender-modal-content div .input,
-        #add-recipient-modal-content div .input,
-        #edit-recipient-modal-content div .input,
-        #add-subject-modal-content div .input,
-        #edit-subject-modal-content div .input,
-        #edit-reference-number-modal-content div .input {
-            width: 100%;
-        }
-
-        #edit-sender-modal-content .nf-label,
-        #add-sender-modal-content .nf-label,
-        #add-recipient-modal-content .nf-label,
-        #edit-recipient-modal-content .nf-label,
-        #add-subject-modal-content .nf-label,
-        #edit-subject-modal-content .nf-label,
-        #edit-reference-number-modal-content .nf-label {
-            padding-bottom: 2px;
-        }
-
         .muted {
             color: var(--dbp-muted);
-        }
-
-        #edit-sender-modal-title,
-        #add-sender-modal-title,
-        #add-recipient-modal-title,
-        #edit-recipient-modal-title,
-        #show-recipient-modal-title,
-        #add-subject-modal-title,
-        #edit-subject-modal-title,
-        #edit-reference-number-modal-title,
-        #file-viewer-modal-title {
-            margin: 0;
-            padding: 0.25em 0 0 0;
-        }
-
-        #tf-add-recipient-birthdate-day,
-        #tf-add-recipient-birthdate-month {
-            flex: 1;
-        }
-
-        #tf-add-recipient-birthdate-year {
-            flex: 2;
         }
 
         .birthdate-input {
@@ -843,18 +636,6 @@ export function getDispatchRequestStyles() {
             flex-direction: row;
             gap: 0.5em;
             width: 100%;
-        }
-
-        #edit-recipient-modal-content .birthdate-input {
-            width: 100%;
-        }
-
-        #file-viewer-modal-box {
-            justify-content: unset;
-            gap: 1em;
-            height: 90%;
-            width: 90%;
-            max-width: 90%;
         }
 
         .line {
@@ -981,109 +762,8 @@ export function getDispatchRequestStyles() {
             font-style: italic;
         }
 
-        .element-left {
-            background-color: var(--dbp-primary-surface);
-            border: var(--dbp-border);
-            border-color: var(--dbp-primary-surface-border-color);
-            color: var(--dbp-on-primary-surface);
-            padding: 0px 20px 12px 40px;
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .element-left.first,
-        .element-right.first {
-            padding-top: 12px;
-        }
-
-        .element-right {
-            text-align: left;
-            margin-left: 12px;
-            padding: 0px 0px 12px;
-        }
-
-        .detailed-recipient-modal-content-wrapper {
-            display: grid;
-            grid-template-columns: min-content auto;
-            grid-template-rows: auto;
-            max-height: calc(100vh - 149px);
-            overflow-y: auto;
-            width: 100%;
-        }
-
         input[type='date'] {
             width: 100%;
-        }
-
-        .modal-content:not(:has(.scroll)) .notification-container {
-            margin-top: 12px;
-        }
-
-        .notification-container label {
-            font-weight: bold;
-        }
-
-        .recipient-status {
-            margin-bottom: 2em;
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .status-container {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .recipient-status .status-detail {
-            font-weight: bolder;
-        }
-
-        .return-receipt-widget {
-            min-width: 220px;
-            background-color: var(--dbp-background);
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            /* Align right. */
-            align-items: flex-end;
-        }
-
-        .return-receipt-widget__title {
-            margin: 0;
-        }
-
-        .return-receipt-widget__upload-date {
-            display: block;
-            font-size: 14px;
-            text-align: right;
-        }
-
-        .return-receipt__buttons {
-            display: flex;
-            flex-direction: row;
-            /* margin-left: -8px; */
-            /* Align right. */
-            margin-right: -11px;
-        }
-
-        .upload-btn {
-            margin-left: -2px;
-        }
-
-        .download-btn {
-            margin-top: auto;
-            margin-bottom: auto;
-        }
-
-        .new-line-content {
-            white-space: pre-line;
-        }
-
-        .scroll {
-            overflow-y: auto;
-            overflow-x: clip;
         }
 
         .dispatch-status {
@@ -1111,47 +791,8 @@ export function getDispatchRequestStyles() {
                 width: calc(100% - 45px);
             }
 
-            #show-recipient-modal-box {
-                height: 100%;
-            }
-
-            #show-recipient-modal-box header.modal-header {
-                padding: 0;
-            }
-
-            #show-recipient-modal-box .detailed-recipient-modal-content-wrapper {
-                grid-template-columns: unset;
-                max-height: 100%;
-            }
-
             .mobile-hidden {
                 display: none;
-            }
-
-            /* inputs */
-            .element-right {
-                border: 1px solid var(--dbp-muted);
-                padding: 5px;
-                margin: 0;
-            }
-
-            .element-right.first {
-                padding-top: 5px;
-            }
-
-            /* labels */
-            .element-left {
-                margin-top: 8px;
-                font-weight: bold;
-                text-align: left;
-                padding: 5px 5px 5px 0;
-                background: initial;
-                color: var(--dbp-content);
-                border: 0 none;
-            }
-
-            .element-left.first {
-                padding-top: 5px;
             }
 
             .btn-row-left {
@@ -1204,28 +845,6 @@ export function getDispatchRequestStyles() {
 
             .sender-data {
                 margin-bottom: 0;
-            }
-
-            .return-receipt-widget__upload-date {
-                max-width: 180px;
-            }
-        }
-
-        @media only screen and (max-width: 650px) {
-            .recipient-status {
-                flex-direction: column;
-            }
-
-            .return-receipt-widget {
-                align-items: flex-start;
-            }
-
-            .return-receipt-widget__upload-date {
-                text-align: left;
-            }
-
-            .return-receipt__buttons {
-                margin-left: -8px;
             }
         }
 
