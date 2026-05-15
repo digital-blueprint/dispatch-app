@@ -849,7 +849,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             i18n.t('show-requests.table-header-date-created'),
             i18n.t('show-requests.date-submitted'),
             i18n.t('show-requests.electronically-deliverable'),
-            i18n.t('show-requests.app-delivery-id'),
         ];
 
         if (data[0] && data[0].organizationName !== undefined) {
@@ -904,7 +903,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         ? recipient.electronicallyDeliverable
                         : '',
                 ),
-                this.escapeCSVValue(recipient.appDeliveryID || recipient.appDeliveryId || ''),
             );
 
             csvRows.push(row.join(';'));
