@@ -198,6 +198,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             switch (propName) {
                 case 'lang':
                     this._i18n.changeLanguage(this.lang);
+                    if (this.mayReadMetadata) {
+                        this.updateComplete.then(() => {
+                            this.setupExportDropdown();
+                        });
+                    }
                     break;
                 case 'mayReadMetadata':
                     // Setup export dropdown when metadata permission changes
@@ -585,8 +590,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     /**
      * Sets up the export dropdown options
      */
-    setupExportDropdown() {
+    async setupExportDropdown() {
         const i18n = this._i18n;
+        const listView = this.renderRoot.querySelector('dbp-show-requests-list-view');
+        await listView?.updateComplete;
+
         const exportDropdown = this._('#export-dropdown');
         if (exportDropdown && this.mayReadMetadata) {
             exportDropdown.setOptions([

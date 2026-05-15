@@ -280,6 +280,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                               <dbp-select
                                   id="export-dropdown"
                                   label="${i18n.t('show-requests.export')}"
+                                  subscribe="lang"
                                   @change="${c.handleExportSelection}"></dbp-select>
                           `
                         : ``}
