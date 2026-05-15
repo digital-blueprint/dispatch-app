@@ -31,6 +31,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
     static get properties() {
         return {
             controller: {attribute: false},
+            exportLoading: {type: Boolean, attribute: false},
             options: {attribute: false},
         };
     }
@@ -66,6 +67,13 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
             }
 
             .choose-and-create-btns dbp-select {
+                margin-left: 10px;
+            }
+
+            .export-loading {
+                display: flex;
+                align-items: center;
+                font-size: 1rem;
                 margin-left: 10px;
             }
 
@@ -281,7 +289,18 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                                   id="export-dropdown"
                                   label="${i18n.t('show-requests.export')}"
                                   subscribe="lang"
+                                  ?disabled="${this.exportLoading}"
                                   @change="${c.handleExportSelection}"></dbp-select>
+                              ${this.exportLoading
+                                  ? html`
+                                        <span class="export-loading">
+                                            <dbp-mini-spinner
+                                                text=${i18n.t(
+                                                    'show-requests.export-loading-message',
+                                                )}></dbp-mini-spinner>
+                                        </span>
+                                    `
+                                  : ``}
                           `
                         : ``}
                 </div>

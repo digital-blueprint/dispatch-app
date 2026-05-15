@@ -90,6 +90,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.langDir = undefined;
         this.loadingTranslations = false;
         this.tableLoading = false;
+        this.exportLoading = false;
         this.expandedTabulator = false;
         this.allSelected = false;
         this._lastRoutingIdentifier = '';
@@ -133,6 +134,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             loading: {type: Boolean, attribute: false},
             initialRequestsLoading: {type: Boolean, attribute: false},
             tableLoading: {type: Boolean, attribute: false},
+            exportLoading: {type: Boolean, attribute: false},
             requestList: {type: Array, attribute: false},
 
             showListView: {type: Boolean, attribute: false},
@@ -616,10 +618,22 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      */
     handleExportSelection = async (event) => {
         const exportType = event.detail.value;
-        if (exportType === 'all-organizations') {
-            await this.exportAllOrganizations();
-        } else if (exportType === 'current-organization') {
-            await this.exportCurrentOrganization();
+        if (
+            this.exportLoading ||
+            !['all-organizations', 'current-organization'].includes(exportType)
+        ) {
+            return;
+        }
+
+        this.exportLoading = true;
+        try {
+            if (exportType === 'all-organizations') {
+                await this.exportAllOrganizations();
+            } else if (exportType === 'current-organization') {
+                await this.exportCurrentOrganization();
+            }
+        } finally {
+            this.exportLoading = false;
         }
     };
 
@@ -1545,6 +1559,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
                 <dbp-show-requests-list-view
                     .controller=${this}
+                    .exportLoading=${this.exportLoading}
                     .options=${options}></dbp-show-requests-list-view>
                 <dbp-show-requests-detail-view
                     .controller=${this}></dbp-show-requests-detail-view>

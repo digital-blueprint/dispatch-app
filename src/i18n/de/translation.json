@@ -129,6 +129,7 @@
         "export-current-organization": "Nur diese Organization",
         "export-error-text": "Beim Exportieren der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
         "export-error-title": "Export fehlgeschlagen",
+        "export-loading-message": "Metadaten werden exportiert...",
         "export-no-data-text": "Es gibt keine Empfänger zum Exportieren für die ausgewählte Option.",
         "export-no-data-title": "Keine Daten zum Exportieren",
         "failure": "Fehler",
