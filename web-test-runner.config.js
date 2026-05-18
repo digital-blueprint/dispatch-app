@@ -1,7 +1,7 @@
 import process from 'node:process';
 import {playwrightLauncher} from '@web/test-runner-playwright';
 
-import {installBrowsersForNpmInstall, registry} from 'playwright-core/lib/server';
+import {registry} from 'playwright-core/lib/coreBundle';
 
 async function setup() {
     const browsersToInstall = [];
@@ -12,13 +12,13 @@ async function setup() {
         browsersToInstall.push('chromium');
     }
     if (browsersToInstall.length > 0) {
-        await installBrowsersForNpmInstall(browsersToInstall);
+        await registry.installBrowsersForNpmInstall(browsersToInstall);
     }
     if (!process.env.FIREFOX_BIN) {
-        process.env.FIREFOX_BIN = registry.findExecutable('firefox').executablePath();
+        process.env.FIREFOX_BIN = registry.registry.findExecutable('firefox').executablePath();
     }
     if (!process.env.CHROMIUM_BIN) {
-        process.env.CHROMIUM_BIN = registry.findExecutable('chromium').executablePath();
+        process.env.CHROMIUM_BIN = registry.registry.findExecutable('chromium').executablePath();
     }
 }
 
