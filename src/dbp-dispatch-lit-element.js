@@ -6,7 +6,6 @@ import {html} from 'lit';
 import * as dispatchHelper from './utils';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {IconButton, LoadingButton} from '@dbp-toolkit/common';
-import {CountrySelect} from '@dbp-toolkit/country-select';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {getReferenceNumberFromPDF} from './utils';
@@ -50,7 +49,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     static get scopedElements() {
         return {
-            'dbp-country-select': CountrySelect,
             'dbp-file-source': FileSource,
             'dbp-file-sink': FileSink,
             'dbp-resource-select': ResourceSelect,

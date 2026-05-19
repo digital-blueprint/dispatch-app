@@ -1,5 +1,6 @@
 import {css, html} from 'lit';
 import {Icon, Modal, ScopedElementsMixin} from '@dbp-toolkit/common';
+import {CountrySelect} from '@dbp-toolkit/country-select';
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import * as commonStyles from '@dbp-toolkit/common/styles';
 import * as dispatchHelper from '../utils.js';
@@ -15,6 +16,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
 
     static get scopedElements() {
         return {
+            'dbp-country-select': CountrySelect,
             'dbp-modal': Modal,
             'dbp-icon': Icon,
         };
@@ -132,6 +134,10 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                 margin: 1em 0 0 0;
                 padding: 0;
             }
+
+            #sender-address-country {
+                z-index: 1000;
+            }
         `;
     }
 
@@ -235,17 +241,18 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                         <div class="nf-label">
                             ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                         </div>
-                        <select required id="sender-address-country">
+                        <dbp-country-select id="sender-address-country"></dbp-country-select>
+                        <!--<select required id="sender-address-country">
                             ${Object.entries(countries).map(
-                                ([code, name]) => html`
-                                    <option
-                                        value=${code}
-                                        ?selected=${code === (sender.senderAddressCountry || 'AT')}>
-                                        ${name}
-                                    </option>
-                                `,
-                            )}
-                        </select>
+                            ([code, name]) => html`
+                                <option
+                                    value=${code}
+                                    ?selected=${code === (sender.senderAddressCountry || 'AT')}>
+                                    ${name}
+                                </option>
+                            `,
+                        )}
+                        </select>-->
                     </div>
                 </div>
 
