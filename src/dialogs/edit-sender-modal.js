@@ -134,10 +134,6 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                 margin: 1em 0 0 0;
                 padding: 0;
             }
-
-            #sender-address-country {
-                z-index: 1000;
-            }
         `;
     }
 
@@ -159,6 +155,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                     --dbp-modal-max-width: 400px;
                     --dbp-modal-min-height: fit-content;
                     --dbp-modal-content-overflow-y: unset;
+                    --dbp-modal-overflow: visible;
                 "
                 lang="${this.lang}">
                 <div slot="content" class="content">
