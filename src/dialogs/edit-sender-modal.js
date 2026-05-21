@@ -11,6 +11,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
         this._i18n = createInstance();
         this.lang = this._i18n.language;
         this.sender = {};
+        this.selectedCountry = 'AU';
     }
 
     static get scopedElements() {
@@ -53,23 +54,22 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
         return isValid;
     }
 
+    handleCountryChange(event) {
+        this.selectedCountry = event.detail.value;
+    }
+
     _onCancel() {
         this.dispatchEvent(new CustomEvent('cancel', {bubbles: true, composed: true}));
         this.close();
     }
 
     _onConfirm() {
-        const countrySelectContainer =
-            this._('#address-country').shadowRoot.querySelector('.select2-control');
-        const countrySelect = countrySelectContainer.querySelector('.select');
-
         const fields = [
             this._('#sender-organization-name'),
             this._('#sender-full-name'),
             this._('#sender-street-address'),
             this._('#sender-postal-code'),
             this._('#sender-address-locality'),
-            countrySelect,
         ];
 
         if (!fields.every((field) => this.checkValidity(field))) {
@@ -82,7 +82,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                 detail: {
                     senderOrganizationName: this._('#sender-organization-name').value,
                     senderFullName: this._('#sender-full-name').value,
-                    senderAddressCountry: countrySelect.value,
+                    senderAddressCountry: this.selectedCountry,
                     senderPostalCode: this._('#sender-postal-code').value,
                     senderAddressLocality: this._('#sender-address-locality').value,
                     senderStreetAddress: this._('#sender-street-address').value,
@@ -238,7 +238,9 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                         <div class="nf-label">
                             ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                         </div>
-                        <dbp-country-select id="address-country"></dbp-country-select>
+                        <dbp-country-select
+                            lang="${this.lang}"
+                            @change="${this.handleCountryChange}"></dbp-country-select>
                     </div>
                 </div>
 
