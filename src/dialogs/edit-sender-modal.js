@@ -3,7 +3,6 @@ import {Icon, Modal, ScopedElementsMixin} from '@dbp-toolkit/common';
 import {CountrySelect} from '@dbp-toolkit/country-select';
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import * as commonStyles from '@dbp-toolkit/common/styles';
-import * as dispatchHelper from '../utils.js';
 import {createInstance} from '../i18n.js';
 
 export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) {
@@ -67,6 +66,8 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
             this._('#sender-address-locality'),
             this._('#sender-address-country'),
         ];
+
+        console.log(fields);
 
         if (!fields.every((field) => this.checkValidity(field))) {
             return;
@@ -140,10 +141,6 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
     render() {
         const i18n = this._i18n;
         const sender = this.sender || {};
-        const countries =
-            this.lang === 'en'
-                ? dispatchHelper.getEnglishCountryList()
-                : dispatchHelper.getGermanCountryList();
 
         return html`
             <dbp-modal
@@ -239,17 +236,6 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                             ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                         </div>
                         <dbp-country-select id="sender-address-country"></dbp-country-select>
-                        <!--<select required id="sender-address-country">
-                            ${Object.entries(countries).map(
-                            ([code, name]) => html`
-                                <option
-                                    value=${code}
-                                    ?selected=${code === (sender.senderAddressCountry || 'AT')}>
-                                    ${name}
-                                </option>
-                            `,
-                        )}
-                        </select>-->
                     </div>
                 </div>
 
