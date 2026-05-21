@@ -1,8 +1,8 @@
 import {css, html} from 'lit';
 import {Icon, Modal, ScopedElementsMixin} from '@dbp-toolkit/common';
+import {CountrySelect} from '@dbp-toolkit/country-select';
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import * as commonStyles from '@dbp-toolkit/common/styles';
-import * as dispatchHelper from '../utils.js';
 import {createInstance} from '../i18n.js';
 
 export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElement) {
@@ -15,6 +15,7 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
 
     static get scopedElements() {
         return {
+            'dbp-country-select': CountrySelect,
             'dbp-modal': Modal,
             'dbp-icon': Icon,
         };
@@ -58,6 +59,10 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
     }
 
     _onConfirm() {
+        const countrySelectContainer =
+            this._('#address-country').shadowRoot.querySelector('.select2-control');
+        const countrySelect = countrySelectContainer.querySelector('.select');
+
         const fields = [
             this._('#given-name'),
             this._('#family-name'),
@@ -67,7 +72,7 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
             this._('#street-address'),
             this._('#postal-code'),
             this._('#address-locality'),
-            this._('#address-country'),
+            countrySelect,
         ];
 
         if (!fields.every((field) => this.checkValidity(field))) {
@@ -79,7 +84,7 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
                 detail: {
                     givenName: this._('#given-name').value,
                     familyName: this._('#family-name').value,
-                    addressCountry: this._('#address-country').value,
+                    addressCountry: countrySelect.value,
                     postalCode: this._('#postal-code').value,
                     addressLocality: this._('#address-locality').value,
                     streetAddress: this._('#street-address').value,
@@ -159,10 +164,6 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
     render() {
         const i18n = this._i18n;
         const recipient = this.recipient || {};
-        const countries =
-            this.lang === 'en'
-                ? dispatchHelper.getEnglishCountryList()
-                : dispatchHelper.getGermanCountryList();
 
         return html`
             <dbp-modal
@@ -174,6 +175,7 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
                     --dbp-modal-max-width: 400px;
                     --dbp-modal-min-height: fit-content;
                     --dbp-modal-content-overflow-y: unset;
+                    --dbp-modal-overflow: visible;
                 "
                 lang="${this.lang}">
                 <div slot="content" class="content">
@@ -282,17 +284,7 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
                         <div class="nf-label">
                             ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                         </div>
-                        <select required id="address-country">
-                            ${Object.entries(countries).map(
-                                ([code, name]) => html`
-                                    <option
-                                        value=${code}
-                                        ?selected=${code === (recipient.addressCountry || 'AT')}>
-                                        ${name}
-                                    </option>
-                                `,
-                            )}
-                        </select>
+                        <dbp-country-select id="address-country"></dbp-country-select>
                     </div>
                 </div>
 

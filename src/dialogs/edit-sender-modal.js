@@ -65,6 +65,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
 
         const fields = [
             this._('#sender-organization-name'),
+            this._('#sender-full-name'),
             this._('#sender-street-address'),
             this._('#sender-postal-code'),
             this._('#sender-address-locality'),
