@@ -11,6 +11,7 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
         this._i18n = createInstance();
         this.lang = this._i18n.language;
         this.recipient = {};
+        this.selectedCountry = '';
     }
 
     static get scopedElements() {
@@ -53,16 +54,16 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
         return isValid;
     }
 
+    handleCountryChange(event) {
+        this.selectedCountry = event.detail.value;
+    }
+
     _onCancel() {
         this.dispatchEvent(new CustomEvent('cancel', {bubbles: true, composed: true}));
         this.close();
     }
 
     _onConfirm() {
-        const countrySelectContainer =
-            this._('#address-country').shadowRoot.querySelector('.select2-control');
-        const countrySelect = countrySelectContainer.querySelector('.select');
-
         const fields = [
             this._('#given-name'),
             this._('#family-name'),
@@ -72,7 +73,6 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
             this._('#street-address'),
             this._('#postal-code'),
             this._('#address-locality'),
-            countrySelect,
         ];
 
         if (!fields.every((field) => this.checkValidity(field))) {
@@ -84,7 +84,7 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
                 detail: {
                     givenName: this._('#given-name').value,
                     familyName: this._('#family-name').value,
-                    addressCountry: countrySelect.value,
+                    addressCountry: this.selectedCountry,
                     postalCode: this._('#postal-code').value,
                     addressLocality: this._('#address-locality').value,
                     streetAddress: this._('#street-address').value,
@@ -284,7 +284,10 @@ export class DispatchEditRecipientModal extends ScopedElementsMixin(DBPLitElemen
                         <div class="nf-label">
                             ${i18n.t('show-requests.edit-recipient-ac-dialog-label')}
                         </div>
-                        <dbp-country-select id="address-country"></dbp-country-select>
+                        <dbp-country-select
+                            lang="${this.lang}"
+                            @change="${this.handleCountryChange}"
+                            value="${recipient.senderAddressCountry || 'AU'}"></dbp-country-select>
                     </div>
                 </div>
 
