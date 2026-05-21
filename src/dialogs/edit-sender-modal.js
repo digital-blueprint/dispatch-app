@@ -59,15 +59,17 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
     }
 
     _onConfirm() {
+        const countrySelectContainer =
+            this._('#address-country').shadowRoot.querySelector('.select2-control');
+        const countrySelect = countrySelectContainer.querySelector('.select');
+
         const fields = [
             this._('#sender-organization-name'),
             this._('#sender-street-address'),
             this._('#sender-postal-code'),
             this._('#sender-address-locality'),
-            this._('#sender-address-country'),
+            countrySelect,
         ];
-
-        console.log(fields);
 
         if (!fields.every((field) => this.checkValidity(field))) {
             return;
@@ -79,7 +81,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                 detail: {
                     senderOrganizationName: this._('#sender-organization-name').value,
                     senderFullName: this._('#sender-full-name').value,
-                    senderAddressCountry: this._('#sender-address-country').value,
+                    senderAddressCountry: countrySelect.value,
                     senderPostalCode: this._('#sender-postal-code').value,
                     senderAddressLocality: this._('#sender-address-locality').value,
                     senderStreetAddress: this._('#sender-street-address').value,
@@ -235,7 +237,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                         <div class="nf-label">
                             ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                         </div>
-                        <dbp-country-select id="sender-address-country"></dbp-country-select>
+                        <dbp-country-select id="address-country"></dbp-country-select>
                     </div>
                 </div>
 

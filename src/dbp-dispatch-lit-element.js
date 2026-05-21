@@ -2094,12 +2094,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         `;
     }
 
-    checkValidity(input) {
-        const isValid = input.reportValidity();
-        input.setAttribute('aria-invalid', !isValid);
-        return isValid;
-    }
-
     addEditSenderModal() {
         return html`
             <dbp-dispatch-edit-sender-modal
