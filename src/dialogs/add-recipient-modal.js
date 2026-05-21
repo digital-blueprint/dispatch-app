@@ -14,6 +14,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
         this.entryPointUrl = '';
         this.recipient = {};
         this.personSelectorIsDisabled = false;
+        this.selectedCountry = 'AT';
     }
 
     static get scopedElements() {
@@ -99,19 +100,15 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                 }
             });
 
-            const countrySelectContainer =
-                this._('#address-country').shadowRoot.querySelector('.select2-control');
-            const countrySelect = countrySelectContainer.querySelector('.select');
-            if (countrySelect) {
-                countrySelect.value = 'AT';
-                countrySelect.removeAttribute('aria-invalid');
-            }
-
             const selector = this._('#recipient-selector');
             if (selector) {
                 selector.clear();
             }
         });
+    }
+
+    handleCountryChange(event) {
+        this.selectedCountry = event.detail.value;
     }
 
     _onCancel() {
@@ -123,9 +120,6 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
     _onConfirm(event) {
         const button = event.target;
         const hasPerson = this.recipient && this.recipient.personIdentifier;
-        const countrySelectContainer =
-            this._('#address-country').shadowRoot.querySelector('.select2-control');
-        const countrySelect = countrySelectContainer.querySelector('.select');
 
         const fields = hasPerson
             ? [this._('#address-country')]
@@ -138,7 +132,6 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                   this._('#street-address'),
                   this._('#postal-code'),
                   this._('#address-locality'),
-                  countrySelect,
               ];
 
         if (!fields.every((field) => this.checkValidity(field))) {
@@ -154,7 +147,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
             : {
                   givenName: this._('#given-name').value,
                   familyName: this._('#family-name').value,
-                  addressCountry: countrySelect.value,
+                  addressCountry: this.selectedCountry,
                   postalCode: this._('#postal-code').value,
                   addressLocality: this._('#address-locality').value,
                   streetAddress: this._('#street-address').value,
@@ -447,7 +440,10 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                             <div class="nf-label no-selector">
                                 ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                             </div>
-                            <dbp-country-select id="address-country"></dbp-country-select>
+                            <dbp-country-select
+                                lang="${this.lang}"
+                                @change="${this.handleCountryChange}"
+                                value="AT"></dbp-country-select>
                         </div>
                     </div>
                 </div>
