@@ -751,7 +751,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     summary: i18n.t('show-requests.export-no-data-title'),
                     body: i18n.t('show-requests.export-no-data-text'),
                     type: 'warning',
-                    timeout: 5,
+                    timeout: 0,
                 });
                 return;
             }
@@ -763,7 +763,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 summary: i18n.t('show-requests.export-error-title'),
                 body: i18n.t('show-requests.export-error-text'),
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
         }
     }
@@ -800,7 +800,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     summary: i18n.t('show-requests.export-no-data-title'),
                     body: i18n.t('show-requests.export-no-data-text'),
                     type: 'warning',
-                    timeout: 5,
+                    timeout: 0,
                 });
                 return;
             }
@@ -812,7 +812,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                 summary: i18n.t('show-requests.export-error-title'),
                 body: i18n.t('show-requests.export-error-text'),
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
         }
     }

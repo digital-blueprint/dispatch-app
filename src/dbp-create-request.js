@@ -263,7 +263,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         summary: i18n.t('create-request.create-not-allowed-title'),
                         body: i18n.t('create-request.create-not-allowed-text'),
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
                 this.mayRead = event.target.valueObject.accessRights.includes('rc');
@@ -318,7 +318,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         summary: i18n.t('create-request.error-requested-title'),
                         body: i18n.t('error-not-permitted'),
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
             } else {
@@ -367,7 +367,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 summary: 'Error!',
                                 body: 'Could not fetch dispatch requests. Response code: 500',
                                 type: 'danger',
-                                timeout: 5,
+                                timeout: 0,
                             });
                         } else if (response.status === 403) {
                             // TODO
@@ -379,7 +379,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                         summary: 'Error!',
                         body: 'Could not fetch dispatch requests.',
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
             }
