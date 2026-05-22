@@ -581,7 +581,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: i18n.t('create-request.error-requested-title'),
                 body: i18n.t('create-request.error-requested-text'),
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
         }
         this.errorCreatingRequest = false;
@@ -620,7 +620,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: 'Error!',
                 body: 'There was an error.',
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
         } finally {
             this.tableLoading = false;
@@ -655,7 +655,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     ),
                     body: i18n.t('show-requests.error-reference-number-auto-update-failed-text'),
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             } else {
                 this.currentItem.referenceNumber = referenceNumber;
@@ -715,7 +715,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     summary: 'Error!',
                     body: 'File could not be added.',
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             }
         }
@@ -757,7 +757,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         summary: 'Error!',
                         body: 'File could not be deleted.',
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
             } finally {
@@ -895,7 +895,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     summary: 'Error!',
                     body: 'Could not add recipient. Response code: ' + response.status,
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             }
         } catch (e) {
@@ -904,7 +904,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: 'Error!',
                 body: 'Could not add recipient.',
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
         } finally {
             addRecipientButton.stop();
@@ -1006,7 +1006,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: 'Error!',
                 body: 'Could not add recipient.',
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
         } finally {
             if (hasError) {
@@ -1014,7 +1014,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     summary: 'Error!',
                     body: 'Could not add recipient.',
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             }
             this.requestUpdate();
@@ -1058,7 +1058,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         summary: 'Error!',
                         body: 'Could not delete recipient. Response code: ' + response.status,
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
             } finally {
@@ -1114,7 +1114,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: i18n.t('show-requests.delete-not-allowed-title'),
                 body: i18n.t('show-requests.delete-not-allowed-text'),
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
             return;
         }
@@ -1139,7 +1139,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         summary: 'Error!',
                         body: 'Could not delete request. Response code: ' + response.status,
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
             } catch (e) {
@@ -1164,7 +1164,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: i18n.t('show-requests.missing-files.title'),
                 body: i18n.t('show-requests.missing-files.text'),
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
             return false;
         }
@@ -1176,7 +1176,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: i18n.t('show-requests.missing-recipients.title'),
                 body: i18n.t('show-requests.missing-recipients.text'),
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
             return false;
         }
@@ -1187,7 +1187,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: i18n.t('show-requests.missing-reference-number.title'),
                 body: i18n.t('show-requests.missing-reference-number.text'),
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
             return false;
         }
@@ -1198,7 +1198,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: i18n.t('show-requests.missing-subject.title'),
                 body: i18n.t('show-requests.missing-subject.text'),
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
             return false;
         }
@@ -1229,7 +1229,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: i18n.t('show-requests.submit-not-allowed-title'),
                 body: i18n.t('show-requests.submit-not-allowed-text'),
                 type: 'danger',
-                timeout: 5,
+                timeout: 0,
             });
             return;
         }
@@ -1300,21 +1300,21 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         summary: i18n.t('error-delivery-channel-title'),
                         body: i18n.t('error-delivery-channel-text'),
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 } else if (response.status === 403) {
                     send({
                         summary: i18n.t('create-request.error-requested-title'),
                         body: i18n.t('error-not-permitted'),
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 } else {
                     send({
                         summary: 'Error!',
                         body: 'Could not submit request. Response code: ' + response.status,
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
             } catch (e) {
@@ -1348,7 +1348,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     summary: i18n.t('create-request.error-requested-title'),
                     body: i18n.t('error-not-permitted'),
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             } else {
                 // TODO show error code specific notification
@@ -1356,7 +1356,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     summary: i18n.t('create-request.error-changed-subject-title'),
                     body: i18n.t('create-request.error-changed-subject-text'),
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             }
         } finally {
@@ -1388,7 +1388,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     summary: i18n.t('create-request.error-requested-title'),
                     body: i18n.t('error-not-permitted'),
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             } else {
                 // TODO show error code specific notification
@@ -1396,7 +1396,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     summary: i18n.t('create-request.error-changed-reference-number-title'),
                     body: i18n.t('create-request.error-changed-reference-number-text'),
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             }
         } finally {
@@ -1439,14 +1439,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     summary: i18n.t('create-request.error-requested-title'),
                     body: i18n.t('error-not-permitted'),
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             } else {
                 send({
                     summary: 'Error!',
                     body: 'Could not edit sender. Response code: ' + response.status,
                     type: 'danger',
-                    timeout: 5,
+                    timeout: 0,
                 });
             }
         } finally {
@@ -1568,7 +1568,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         summary: i18n.t('show-requests.submit-not-allowed-title'),
                         body: i18n.t('show-requests.submit-not-allowed-text'),
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                     somethingWentWrong = true;
                     break;
@@ -1661,7 +1661,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         summary: 'Error!',
                         body: 'Could not submit request.',
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
             }
@@ -1690,7 +1690,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         summary: i18n.t('show-requests.delete-not-allowed-title'),
                         body: i18n.t('show-requests.delete-not-allowed-text'),
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                     somethingWentWrong = true;
                     break;
@@ -1767,7 +1767,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         summary: 'Error!',
                         body: 'Could not delete request.',
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
             }
@@ -1913,14 +1913,14 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         summary: 'Error!',
                         body: 'Could not fetch dispatch requests. Response code: 500',
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 } else if (response.status === 403) {
                     send({
                         summary: i18n.t('create-request.error-requested-title'),
                         body: i18n.t('error-not-permitted'),
                         type: 'danger',
-                        timeout: 5,
+                        timeout: 0,
                     });
                 }
             }
@@ -2215,7 +2215,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     summary: 'Error',
                     body: 'No file could not be displayed',
                     type: 'danger',
-                    timeout: 10,
+                    timeout: 0,
                 });
             }
         } finally {
@@ -2248,7 +2248,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: 'Error',
                 body: i18n.t('show-requests.return-receipt.file-delete-error-text') + error,
                 type: 'error',
-                timeout: 5,
+                timeout: 0,
             });
         } finally {
             button.stop();
@@ -2280,7 +2280,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: 'Bad statusType',
                 body: i18n.t('show-requests.return-receipt.upload-not-allowed'),
                 type: 'danger',
-                timeout: 10,
+                timeout: 0,
             });
             return;
         }
@@ -2291,7 +2291,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: 'Error',
                 body: i18n.t('show-requests.return-receipt.delete-before-uploading'),
                 type: 'danger',
-                timeout: 10,
+                timeout: 0,
             });
             return;
         }
@@ -2301,7 +2301,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: 'Error',
                 body: i18n.t('show-requests.return-receipt.file-not-received'),
                 type: 'danger',
-                timeout: 10,
+                timeout: 0,
             });
             return;
         }
@@ -2337,7 +2337,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 summary: i18n.t('show-requests.return-receipt.file-upload-error-title'),
                 body: response.status + ' - ' + response.statusText,
                 type: 'danger',
-                timeout: 10,
+                timeout: 0,
             });
         }
     }
