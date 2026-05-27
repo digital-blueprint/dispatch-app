@@ -12,6 +12,7 @@ import {
     InlineNotification,
     ScopedElementsMixin,
 } from '@dbp-toolkit/common';
+import {CountrySelect} from '@dbp-toolkit/country-select';
 import {CustomPersonSelect} from './person-select';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {classMap} from 'lit/directives/class-map.js';
@@ -112,6 +113,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-inline-notification': InlineNotification,
             'dbp-file-source': FileSource,
             'dbp-file-sink': FileSink,
+            'dbp-country-select': CountrySelect,
             'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-tabulator-table': TabulatorTable,

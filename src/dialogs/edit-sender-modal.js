@@ -1,8 +1,8 @@
 import {css, html} from 'lit';
 import {Icon, Modal, ScopedElementsMixin} from '@dbp-toolkit/common';
+import {CountrySelect} from '@dbp-toolkit/country-select';
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import * as commonStyles from '@dbp-toolkit/common/styles';
-import * as dispatchHelper from '../utils.js';
 import {createInstance} from '../i18n.js';
 
 export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) {
@@ -11,10 +11,12 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
         this._i18n = createInstance();
         this.lang = this._i18n.language;
         this.sender = {};
+        this.selectedCountry = '';
     }
 
     static get scopedElements() {
         return {
+            'dbp-country-select': CountrySelect,
             'dbp-modal': Modal,
             'dbp-icon': Icon,
         };
@@ -52,6 +54,10 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
         return isValid;
     }
 
+    handleCountryChange(event) {
+        this.selectedCountry = event.detail.value;
+    }
+
     _onCancel() {
         this.dispatchEvent(new CustomEvent('cancel', {bubbles: true, composed: true}));
         this.close();
@@ -60,10 +66,10 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
     _onConfirm() {
         const fields = [
             this._('#sender-organization-name'),
+            this._('#sender-full-name'),
             this._('#sender-street-address'),
             this._('#sender-postal-code'),
             this._('#sender-address-locality'),
-            this._('#sender-address-country'),
         ];
 
         if (!fields.every((field) => this.checkValidity(field))) {
@@ -76,7 +82,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                 detail: {
                     senderOrganizationName: this._('#sender-organization-name').value,
                     senderFullName: this._('#sender-full-name').value,
-                    senderAddressCountry: this._('#sender-address-country').value,
+                    senderAddressCountry: this.selectedCountry,
                     senderPostalCode: this._('#sender-postal-code').value,
                     senderAddressLocality: this._('#sender-address-locality').value,
                     senderStreetAddress: this._('#sender-street-address').value,
@@ -138,10 +144,6 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
     render() {
         const i18n = this._i18n;
         const sender = this.sender || {};
-        const countries =
-            this.lang === 'en'
-                ? dispatchHelper.getEnglishCountryList()
-                : dispatchHelper.getGermanCountryList();
 
         return html`
             <dbp-modal
@@ -153,6 +155,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                     --dbp-modal-max-width: 400px;
                     --dbp-modal-min-height: fit-content;
                     --dbp-modal-content-overflow-y: unset;
+                    --dbp-modal-overflow: visible;
                 "
                 lang="${this.lang}">
                 <div slot="content" class="content">
@@ -235,17 +238,10 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                         <div class="nf-label">
                             ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                         </div>
-                        <select required id="sender-address-country">
-                            ${Object.entries(countries).map(
-                                ([code, name]) => html`
-                                    <option
-                                        value=${code}
-                                        ?selected=${code === (sender.senderAddressCountry || 'AT')}>
-                                        ${name}
-                                    </option>
-                                `,
-                            )}
-                        </select>
+                        <dbp-country-select
+                            lang="${this.lang}"
+                            @change="${this.handleCountryChange}"
+                            value="${sender.senderAddressCountry || 'AU'}"></dbp-country-select>
                     </div>
                 </div>
 

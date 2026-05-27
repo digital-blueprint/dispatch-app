@@ -65,6 +65,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             currentItemTabulator: {type: Object, attribute: false},
             currentRecipient: {type: Object, attribute: false},
             personSelectorIsDisabled: {type: Boolean, attribute: false},
+            selectedCountry: {type: String, attribute: false},
             subject: {type: String, attribute: false},
             groupId: {type: String, attribute: false},
             tempItem: {type: Object, attribute: false},
@@ -2091,12 +2092,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     'show-requests.return-receipt.upload-pdf-text',
                 )}"></dbp-file-source>
         `;
-    }
-
-    checkValidity(input) {
-        const isValid = input.reportValidity();
-        input.setAttribute('aria-invalid', !isValid);
-        return isValid;
     }
 
     addEditSenderModal() {

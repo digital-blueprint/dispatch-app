@@ -1,8 +1,8 @@
 import {css, html} from 'lit';
 import {Icon, Modal, ScopedElementsMixin} from '@dbp-toolkit/common';
+import {CountrySelect} from '@dbp-toolkit/country-select';
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import * as commonStyles from '@dbp-toolkit/common/styles';
-import * as dispatchHelper from '../utils.js';
 import {CustomPersonSelect} from '../person-select.js';
 import {createInstance} from '../i18n.js';
 
@@ -14,10 +14,12 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
         this.entryPointUrl = '';
         this.recipient = {};
         this.personSelectorIsDisabled = false;
+        this.selectedCountry = 'AT';
     }
 
     static get scopedElements() {
         return {
+            'dbp-country-select': CountrySelect,
             'dbp-modal': Modal,
             'dbp-icon': Icon,
             'dbp-person-select': CustomPersonSelect,
@@ -79,6 +81,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
     _resetFields() {
         this.recipient = {};
         this.personSelectorIsDisabled = false;
+
         this.updateComplete.then(() => {
             [
                 '#given-name',
@@ -97,17 +100,15 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                 }
             });
 
-            const countrySelect = this._('#address-country');
-            if (countrySelect) {
-                countrySelect.value = 'AT';
-                countrySelect.removeAttribute('aria-invalid');
-            }
-
             const selector = this._('#recipient-selector');
             if (selector) {
                 selector.clear();
             }
         });
+    }
+
+    handleCountryChange(event) {
+        this.selectedCountry = event.detail.value;
     }
 
     _onCancel() {
@@ -119,6 +120,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
     _onConfirm(event) {
         const button = event.target;
         const hasPerson = this.recipient && this.recipient.personIdentifier;
+
         const fields = hasPerson
             ? [this._('#address-country')]
             : [
@@ -130,7 +132,6 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                   this._('#street-address'),
                   this._('#postal-code'),
                   this._('#address-locality'),
-                  this._('#address-country'),
               ];
 
         if (!fields.every((field) => this.checkValidity(field))) {
@@ -146,7 +147,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
             : {
                   givenName: this._('#given-name').value,
                   familyName: this._('#family-name').value,
-                  addressCountry: this._('#address-country').value,
+                  addressCountry: this.selectedCountry,
                   postalCode: this._('#postal-code').value,
                   addressLocality: this._('#address-locality').value,
                   streetAddress: this._('#street-address').value,
@@ -284,10 +285,6 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
         const i18n = this._i18n;
         const recipient = this.recipient || {};
         const hasPerson = recipient.personIdentifier;
-        const countries =
-            this.lang === 'en'
-                ? dispatchHelper.getEnglishCountryList()
-                : dispatchHelper.getGermanCountryList();
 
         return html`
             <dbp-modal
@@ -299,6 +296,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                     --dbp-modal-max-width: 736px;
                     --dbp-modal-min-height: fit-content;
                     --dbp-modal-content-overflow-y: unset;
+                    --dbp-modal-overflow: visible;
                 "
                 lang="${this.lang}">
                 <div slot="content" class="content-container">
@@ -442,18 +440,10 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                             <div class="nf-label no-selector">
                                 ${i18n.t('show-requests.add-recipient-ac-dialog-label')}
                             </div>
-                            <select required id="address-country">
-                                ${Object.entries(countries).map(
-                                    ([code, name]) => html`
-                                        <option
-                                            value=${code}
-                                            ?selected=${code ===
-                                            (recipient.addressCountry || 'AT')}>
-                                            ${name}
-                                        </option>
-                                    `,
-                                )}
-                            </select>
+                            <dbp-country-select
+                                lang="${this.lang}"
+                                @change="${this.handleCountryChange}"
+                                value="AT"></dbp-country-select>
                         </div>
                     </div>
                 </div>
