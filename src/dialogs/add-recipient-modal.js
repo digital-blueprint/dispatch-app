@@ -122,7 +122,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
         const hasPerson = this.recipient && this.recipient.personIdentifier;
 
         const fields = hasPerson
-            ? [this._('#address-country')]
+            ? null
             : [
                   this._('#given-name'),
                   this._('#family-name'),
@@ -134,7 +134,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                   this._('#address-locality'),
               ];
 
-        if (!fields.every((field) => this.checkValidity(field))) {
+        if (fields && !fields.every((field) => this.checkValidity(field))) {
             return;
         }
 
@@ -142,7 +142,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
         const recipient = hasPerson
             ? {
                   personIdentifier: this.recipient.personIdentifier,
-                  addressCountry: this._('#address-country').value,
+                  addressCountry: this._('dbp-country-select').value,
               }
             : {
                   givenName: this._('#given-name').value,
