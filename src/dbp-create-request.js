@@ -1295,7 +1295,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                             'show-requests.add-recipient-button-text',
                                                         )}">
                                                         <dbp-icon
-                                                            name="plus"
+                                                            name="user"
                                                             aria-hidden="true"></dbp-icon>
                                                         ${i18n.t(
                                                             'show-requests.add-recipient-button-text',
