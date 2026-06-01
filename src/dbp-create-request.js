@@ -969,6 +969,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         );
                                     }}"
                                     title="${i18n.t('show-requests.select-all')}">
+                                    <dbp-icon name="select-all" aria-hidden="true"></dbp-icon>
                                     ${i18n.t('show-requests.select-all')}
                                 </dbp-loading-button>
 
@@ -987,6 +988,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         );
                                     }}"
                                     title="${i18n.t('show-requests.deselect-all')}">
+                                    <dbp-icon name="deselect-all" aria-hidden="true"></dbp-icon>
                                     ${i18n.t('show-requests.deselect-all')}
                                 </dbp-loading-button>
                                 <dbp-loading-button
@@ -998,6 +1000,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         this.expandAll();
                                     }}"
                                     title="${i18n.t('show-requests.expand-all')}">
+                                    <dbp-icon name="chevron-down" aria-hidden="true"></dbp-icon>
                                     ${i18n.t('show-requests.expand-all')}
                                 </dbp-loading-button>
 
@@ -1010,6 +1013,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         this.collapseAll();
                                     }}"
                                     title="${i18n.t('show-requests.collapse-all')}">
+                                    <dbp-icon name="chevron-up" aria-hidden="true"></dbp-icon>
                                     ${i18n.t('show-requests.collapse-all')}
                                 </dbp-loading-button>
 
@@ -1026,6 +1030,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                   );
                                               }}"
                                               title="${i18n.t('show-requests.delete-button-text')}">
+                                              <dbp-icon name="trash" aria-hidden="true"></dbp-icon>
                                               ${i18n.t('show-requests.delete-button-text')}
                                           </dbp-loading-button>
 
@@ -1041,6 +1046,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                   );
                                               }}"
                                               title="${i18n.t('show-requests.submit-button-text')}">
+                                              <dbp-icon
+                                                  name="send-diagonal"
+                                                  aria-hidden="true"></dbp-icon>
                                               ${i18n.t('show-requests.submit-button-text')}
                                           </dbp-loading-button>
                                       `
@@ -1109,6 +1117,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               this.deleteRequest(table, event, this.currentItem);
                                           }}"
                                           title="${i18n.t('show-requests.delete-button-text')}">
+                                          <dbp-icon name="trash" aria-hidden="true"></dbp-icon>
                                           ${i18n.t('show-requests.delete-button-text')}
                                       </dbp-loading-button>
                                   </div>
@@ -1127,6 +1136,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               );
                                           }}"
                                           title="${i18n.t('show-requests.submit-button-text')}">
+                                          <dbp-icon
+                                              name="send-diagonal"
+                                              aria-hidden="true"></dbp-icon>
                                           ${i18n.t('show-requests.submit-button-text')}
                                       </dbp-loading-button>
                                   </div>
@@ -1282,6 +1294,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                         title="${i18n.t(
                                                             'show-requests.add-recipient-button-text',
                                                         )}">
+                                                        <dbp-icon
+                                                            name="plus"
+                                                            aria-hidden="true"></dbp-icon>
                                                         ${i18n.t(
                                                             'show-requests.add-recipient-button-text',
                                                         )}
