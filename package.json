@@ -31,7 +31,7 @@
         "@web/test-runner-playwright": "^0.11.1",
         "chai": "^6.0.0",
         "eslint": "^10.0.0",
-        "eslint-plugin-jsdoc": "^62.0.0",
+        "eslint-plugin-jsdoc": "^63.0.0",
         "globals": "^17.0.0",
         "i18next-cli": "^1.9.0",
         "mocha": "^11.0.0",
