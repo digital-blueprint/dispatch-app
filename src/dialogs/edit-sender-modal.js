@@ -39,6 +39,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
 
     open(sender = this.sender) {
         this.sender = {...(sender || {})};
+        this.selectedCountry = this.sender.senderAddressCountry || 'AT';
         this.updateComplete.then(() => {
             this._('#modal').open();
         });
@@ -241,7 +242,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                         <dbp-country-select
                             lang="${this.lang}"
                             @change="${this.handleCountryChange}"
-                            value="${sender.senderAddressCountry || 'AU'}"></dbp-country-select>
+                            value="${sender.senderAddressCountry || 'AT'}"></dbp-country-select>
                     </div>
                 </div>
 
