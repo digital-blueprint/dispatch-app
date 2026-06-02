@@ -61,8 +61,24 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
         return isValid;
     }
 
-    _disablePersonSelector() {
-        this.personSelectorIsDisabled = true;
+    _updatePersonSelectorState() {
+        const selectors = [
+            '#given-name',
+            '#family-name',
+            '#birthdate-day',
+            '#birthdate-month',
+            '#birthdate-year',
+            '#street-address',
+            '#postal-code',
+            '#address-locality',
+        ];
+
+        const hasAnyValue = selectors.some((selector) => {
+            const input = this._(selector);
+            return input && input.value.trim() !== '';
+        });
+
+        this.personSelectorIsDisabled = hasAnyValue;
     }
 
     _onPersonSelected(event) {
@@ -330,7 +346,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                                 class="input"
                                 id="given-name"
                                 .value=${recipient.givenName || ''}
-                                @input="${this._disablePersonSelector}" />
+                                @input="${this._updatePersonSelectorState}" />
                         </div>
 
                         <div>
@@ -344,7 +360,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                                 class="input"
                                 id="family-name"
                                 .value=${recipient.familyName || ''}
-                                @input="${this._disablePersonSelector}" />
+                                @input="${this._updatePersonSelectorState}" />
                         </div>
 
                         <div>
@@ -364,7 +380,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                                         'show-requests.add-recipient-birthdate-dialog-placeholder-day',
                                     )}"
                                     .value=${recipient.birthDateDay || ''}
-                                    @input="${this._disablePersonSelector}" />
+                                    @input="${this._updatePersonSelectorState}" />
                                 <input
                                     ?disabled=${hasPerson}
                                     type="number"
@@ -377,7 +393,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                                         'show-requests.add-recipient-birthdate-dialog-placeholder-month',
                                     )}"
                                     .value=${recipient.birthDateMonth || ''}
-                                    @input="${this._disablePersonSelector}" />
+                                    @input="${this._updatePersonSelectorState}" />
                                 <input
                                     ?disabled=${hasPerson}
                                     type="number"
@@ -390,7 +406,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                                         'show-requests.add-recipient-birthdate-dialog-placeholder-year',
                                     )}"
                                     .value=${recipient.birthDateYear || ''}
-                                    @input="${this._disablePersonSelector}" />
+                                    @input="${this._updatePersonSelectorState}" />
                             </div>
                         </div>
 
@@ -405,7 +421,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                                 class="input"
                                 id="street-address"
                                 .value=${recipient.streetAddress || ''}
-                                @input="${this._disablePersonSelector}" />
+                                @input="${this._updatePersonSelectorState}" />
                         </div>
 
                         <div>
@@ -419,7 +435,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                                 class="input"
                                 id="postal-code"
                                 .value=${recipient.postalCode || ''}
-                                @input="${this._disablePersonSelector}" />
+                                @input="${this._updatePersonSelectorState}" />
                         </div>
 
                         <div>
@@ -433,7 +449,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                                 class="input"
                                 id="address-locality"
                                 .value=${recipient.addressLocality || ''}
-                                @input="${this._disablePersonSelector}" />
+                                @input="${this._updatePersonSelectorState}" />
                         </div>
 
                         <div>
