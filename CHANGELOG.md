@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.6.0
+
+- Lots of [changes](https://github.com/digital-blueprint/dispatch-app/compare/fd00a8eb3fcf6f5e4fbe83846cf45faf62f50fc8...564783d8e7c99d1b8073eeb4eec97ddac8c26e05)
+- Migrate dialogs from MicroModal to dbp-modal and split them into dedicated web components
+- Split the show requests page into list and detail web components and integrate routing-url
+- Add recipient metadata export with localized column headers, additional request/status/delivery fields,
+  Excel-friendly CSV output, a loading spinner and warning/error notifications
+- Add icons and translations to buttons and align button styling with the new dbp UI guidelines
+- Add real-time submit eligibility checks for requests
+- Fix recipient and sender country selection, add-recipient reset/validation/person-selector behavior,
+  tabulator language handling, select handling, URL encoding and ISO birth date submission
+- Keep error and danger notifications visible until dismissed
+- Normalize newlines in status descriptions and update their styling
+- Update toolkit, signature, pdf.js, app templates, development tooling, CI and package dependencies
+
 ## v1.5.1
 
 - App menu accessibility improvements
