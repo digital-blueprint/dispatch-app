@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.6.2
+
+- Fix --dbp-selected variable in dark mode
+
 ## v1.6.1
 
 - Fixed broken show-requests page when there was an error
