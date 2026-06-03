@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.6.1
+
+- Fixed broken show-requests page when there was an error
+
 ## v1.6.0
 
 - Lots of [changes](https://github.com/digital-blueprint/dispatch-app/compare/fd00a8eb3fcf6f5e4fbe83846cf45faf62f50fc8...564783d8e7c99d1b8073eeb4eec97ddac8c26e05)
