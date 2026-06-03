@@ -2612,7 +2612,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     addRecipientCardLeftSideContent(recipient) {
         const i18n = this._i18n;
-        console.log('addRecipientCardLeftSideContent');
+        const dispatchStatus = recipient.lastStatusChange?.dispatchStatus;
+
         return html`
             <div class="left-side">
                 <div>${recipient.givenName} ${recipient.familyName}</div>
@@ -2660,9 +2661,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                           </div>
                       `
                     : ``}
-                ${this.currentItem.dateSubmitted &&
-                recipient.lastStatusChange.dispatchStatus &&
-                recipient.lastStatusChange.dispatchStatus === 'failure'
+                ${this.currentItem.dateSubmitted && dispatchStatus === 'failure'
                     ? html`
                           <div class="dispatch-status">
                               <span class="status-title">
@@ -2672,9 +2671,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                           </div>
                       `
                     : ``}
-                ${this.currentItem.dateSubmitted &&
-                recipient.lastStatusChange.dispatchStatus &&
-                recipient.lastStatusChange.dispatchStatus === 'success'
+                ${this.currentItem.dateSubmitted && dispatchStatus === 'success'
                     ? html`
                           <div class="dispatch-status">
                               <span class="status-title">
@@ -2692,9 +2689,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                           </div>
                       `
                     : ``}
-                ${this.currentItem.dateSubmitted &&
-                recipient.lastStatusChange.dispatchStatus &&
-                recipient.lastStatusChange.dispatchStatus === 'pending'
+                ${this.currentItem.dateSubmitted && dispatchStatus === 'pending'
                     ? html`
                           <div class="dispatch-status">
                               <span class="status-title">
@@ -2705,8 +2700,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                       `
                     : ``}
                 ${this.currentItem.dateSubmitted &&
-                recipient.lastStatusChange.dispatchStatus &&
-                recipient.lastStatusChange.dispatchStatus === 'unknown'
+                (!dispatchStatus || dispatchStatus === 'unknown')
                     ? html`
                           <div class="dispatch-status">
                               <span class="status-title">
@@ -2743,7 +2737,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         for (let i = 0; i < recipients.length; i++) {
             let recipient = recipients[i];
-            console.log('checkRecipientStatus recipient', recipient);
 
             let status;
             if (recipient.lastStatusChange) {
