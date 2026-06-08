@@ -908,8 +908,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             csvRows.push(row.join(';'));
         }
 
-        // Add delimiter hint for Excel and explicit UTF-8 BOM bytes for encoding detection.
-        csvRows.unshift('sep=;');
+        // Add explicit UTF-8 BOM bytes for encoding detection.
         const utf8Bom = new Uint8Array([0xef, 0xbb, 0xbf]);
         const csvContent = csvRows.join('\r\n');
 
