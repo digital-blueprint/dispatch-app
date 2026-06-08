@@ -908,14 +908,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             csvRows.push(row.join(';'));
         }
 
-        // Add delimiter hint for Excel and BOM for UTF-8 compatibility
+        // Add delimiter hint for Excel and explicit UTF-8 BOM bytes for encoding detection.
         csvRows.unshift('sep=;');
-        const BOM = '\uFEFF';
-        const csvContent = BOM + csvRows.join('\r\n');
+        const utf8Bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+        const csvContent = csvRows.join('\r\n');
 
-        // Create blob and use file-sink for download
-        const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
-        const file = new File([blob], filename, {type: 'text/csv;charset=utf-8;'});
+        // Create file and use file-sink for download
+        const file = new File([utf8Bom, csvContent], filename, {type: 'text/csv;charset=utf-8'});
 
         // Use dbp-file-sink to download the file
         const fileSink = /** @type {FileSink} */ (this._('#file-sink-export'));
