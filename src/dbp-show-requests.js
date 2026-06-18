@@ -19,7 +19,6 @@ import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import * as dispatchStyles from './styles';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {InfoTooltip, TooltipElement} from '@dbp-toolkit/tooltip';
-import {CustomPersonSelect} from './person-select.js';
 import {ShowRequestsListView} from './show-requests/list-view.js';
 import {ShowRequestsDetailView} from './show-requests/detail-view.js';
 import {DispatchEditSubjectModal} from './dialogs/edit-subject-modal.js';
@@ -108,7 +107,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-inline-notification': InlineNotification,
             'dbp-file-sink': FileSink,
             'dbp-file-source': FileSource,
-            'dbp-person-select': CustomPersonSelect,
             'dbp-resource-select': ResourceSelect,
             'dbp-info-tooltip': InfoTooltip,
             'dbp-tooltip': TooltipElement,

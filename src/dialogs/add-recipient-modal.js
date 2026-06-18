@@ -3,7 +3,7 @@ import {Icon, Modal, ScopedElementsMixin} from '@dbp-toolkit/common';
 import {CountrySelect} from '@dbp-toolkit/country-select';
 import DBPLitElement from '@dbp-toolkit/common/dbp-lit-element';
 import * as commonStyles from '@dbp-toolkit/common/styles';
-import {CustomPersonSelect} from '../person-select.js';
+import {PersonResourceSelect} from '../person-resource-select.js';
 import {createInstance} from '../i18n.js';
 
 export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement) {
@@ -22,7 +22,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
             'dbp-country-select': CountrySelect,
             'dbp-modal': Modal,
             'dbp-icon': Icon,
-            'dbp-person-select': CustomPersonSelect,
+            'dbp-resource-select': PersonResourceSelect,
         };
     }
 
@@ -82,14 +82,13 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
     }
 
     _onPersonSelected(event) {
-        const personData = event.target.dataset.object;
-        if (!personData) {
+        const person = event.detail.object;
+        if (!person) {
             this.recipient = {};
             this.requestUpdate();
             return;
         }
 
-        const person = JSON.parse(personData);
         this.recipient = {personIdentifier: person.identifier};
         this.requestUpdate();
     }
@@ -118,7 +117,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
 
             const selector = this._('#recipient-selector');
             if (selector) {
-                selector.clear();
+                selector.value = null;
             }
         });
     }
@@ -318,16 +317,15 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
                 <div slot="content" class="content-container">
                     <div class="content-left">
                         <div class="nf-label selector">
-                            <h4>${i18n.t('show-requests.add-recipient-person-select-label')}</h4>
+                            <h4>${i18n.t('show-requests.add-recipient-person-search-label')}</h4>
                         </div>
-                        <dbp-person-select
+                        <dbp-resource-select
                             id="recipient-selector"
                             subscribe="auth"
                             lang="${this.lang}"
                             entry-point-url="${this.entryPointUrl}"
-                            show-reload-button
                             ?disabled=${this.personSelectorIsDisabled}
-                            @change="${this._onPersonSelected}"></dbp-person-select>
+                            @change="${this._onPersonSelected}"></dbp-resource-select>
                     </div>
 
                     <div class="content-right">
