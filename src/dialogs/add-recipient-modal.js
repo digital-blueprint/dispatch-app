@@ -46,7 +46,12 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
     open(recipient = {}) {
         this.recipient = {...recipient};
         this.personSelectorIsDisabled = false;
-        this.updateComplete.then(() => {
+        this.updateComplete.then(async () => {
+            const selector = this._('#recipient-selector');
+            if (selector) {
+                await selector.reset();
+            }
+
             this._('#modal').open();
         });
     }
@@ -97,7 +102,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
         this.recipient = {};
         this.personSelectorIsDisabled = false;
 
-        this.updateComplete.then(() => {
+        this.updateComplete.then(async () => {
             [
                 '#given-name',
                 '#family-name',
@@ -117,7 +122,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
 
             const selector = this._('#recipient-selector');
             if (selector) {
-                selector.value = null;
+                await selector.reset();
             }
         });
     }
