@@ -862,9 +862,11 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                 !this.organizationLoaded,
                         })}"
                         type="danger"
-                        body="${this.mayRead || this.mayReadMetadata
-                            ? i18n.t('create-request.error-no-writes')
-                            : i18n.t('error-no-read')}"></dbp-inline-notification>
+                        body="${
+                            this.mayRead || this.mayReadMetadata
+                                ? i18n.t('create-request.error-no-writes')
+                                : i18n.t('error-no-read')
+                        }"></dbp-inline-notification>
                 </div>
 
                 <div class="back-container">
@@ -1015,42 +1017,46 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                     ${i18n.t('show-requests.collapse-all')}
                                 </dbp-loading-button>
 
-                                ${this.mayWrite
-                                    ? html`
-                                          <dbp-loading-button
-                                              id="delete-all-btn"
-                                              disabled
-                                              value="${i18n.t('show-requests.delete-button-text')}"
-                                              @click="${async () => {
-                                                  await this.deleteSelected();
-                                                  this.toggleDeleteAndSubmitButtons(
-                                                      '#tabulator-table-created-requests',
-                                                  );
-                                              }}"
-                                              title="${i18n.t('show-requests.delete-button-text')}">
-                                              <dbp-icon name="trash" aria-hidden="true"></dbp-icon>
-                                              ${i18n.t('show-requests.delete-button-text')}
-                                          </dbp-loading-button>
+                                ${
+                                    this.mayWrite
+                                        ? html`
+                                              <dbp-loading-button
+                                                  id="delete-all-btn"
+                                                  disabled
+                                                  value="${i18n.t('show-requests.delete-button-text')}"
+                                                  @click="${async () => {
+                                                      await this.deleteSelected();
+                                                      this.toggleDeleteAndSubmitButtons(
+                                                          '#tabulator-table-created-requests',
+                                                      );
+                                                  }}"
+                                                  title="${i18n.t('show-requests.delete-button-text')}">
+                                                  <dbp-icon
+                                                      name="trash"
+                                                      aria-hidden="true"></dbp-icon>
+                                                  ${i18n.t('show-requests.delete-button-text')}
+                                              </dbp-loading-button>
 
-                                          <dbp-loading-button
-                                              id="submit-all-btn"
-                                              type="is-primary"
-                                              ?disabled="${this.loading || !this.rowsSelected}"
-                                              value="${i18n.t('show-requests.submit-button-text')}"
-                                              @click="${async (event) => {
-                                                  await this.submitSelected();
-                                                  this.toggleDeleteAndSubmitButtons(
-                                                      '#tabulator-table-created-requests',
-                                                  );
-                                              }}"
-                                              title="${i18n.t('show-requests.submit-button-text')}">
-                                              <dbp-icon
-                                                  name="send-diagonal"
-                                                  aria-hidden="true"></dbp-icon>
-                                              ${i18n.t('show-requests.submit-button-text')}
-                                          </dbp-loading-button>
-                                      `
-                                    : ``}
+                                              <dbp-loading-button
+                                                  id="submit-all-btn"
+                                                  type="is-primary"
+                                                  ?disabled="${this.loading || !this.rowsSelected}"
+                                                  value="${i18n.t('show-requests.submit-button-text')}"
+                                                  @click="${async (event) => {
+                                                      await this.submitSelected();
+                                                      this.toggleDeleteAndSubmitButtons(
+                                                          '#tabulator-table-created-requests',
+                                                      );
+                                                  }}"
+                                                  title="${i18n.t('show-requests.submit-button-text')}">
+                                                  <dbp-icon
+                                                      name="send-diagonal"
+                                                      aria-hidden="true"></dbp-icon>
+                                                  ${i18n.t('show-requests.submit-button-text')}
+                                              </dbp-loading-button>
+                                          `
+                                        : ``
+                                }
                             </div>
                         </div>
 
@@ -1099,215 +1105,252 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                     class="${classMap({
                         hidden: !this.isLoggedIn() || this.isLoading() || !this.showDetailsView,
                     })}">
-                    ${this.currentItem && !this.currentItem.dateSubmitted
-                        ? html`
-                              <div class="request-buttons">
-                                  <div class="edit-buttons">
-                                      <dbp-loading-button
-                                          id="delete-btn"
-                                          ?disabled="${this.loading ||
-                                          this.currentItem.dateSubmitted}"
-                                          value="${i18n.t('show-requests.delete-button-text')}"
-                                          @click="${(event) => {
-                                              let table = this._(
-                                                  '#tabulator-table-created-requests',
-                                              );
-                                              this.deleteRequest(table, event, this.currentItem);
-                                          }}"
-                                          title="${i18n.t('show-requests.delete-button-text')}">
-                                          <dbp-icon name="trash" aria-hidden="true"></dbp-icon>
-                                          ${i18n.t('show-requests.delete-button-text')}
-                                      </dbp-loading-button>
-                                  </div>
-                                  <div class="submit-button">
-                                      <dbp-loading-button
-                                          type="is-primary"
-                                          id="submit-btn"
-                                          ?disabled="${this.loading ||
-                                          this.currentItem.dateSubmitted}"
-                                          value="${i18n.t('show-requests.submit-button-text')}"
-                                          @click="${(event) => {
-                                              this.submitRequest(
-                                                  this.currentTable,
-                                                  event,
-                                                  this.currentItem,
-                                              );
-                                          }}"
-                                          title="${i18n.t('show-requests.submit-button-text')}">
-                                          <dbp-icon
-                                              name="send-diagonal"
-                                              aria-hidden="true"></dbp-icon>
-                                          ${i18n.t('show-requests.submit-button-text')}
-                                      </dbp-loading-button>
-                                  </div>
-                              </div>
-                          `
-                        : ``}
-                    ${this.currentItem
-                        ? html`
-                              <div
-                                  class="request-item details ${classMap({
-                                      hidden: !this.showDetailsView,
-                                  })}">
-                                  <div class="details header">
-                                      <div>
-                                          <div class="section-titles">
-                                              ${i18n.t('create-request.request-subject')}
-                                              ${!this.currentItem.dateSubmitted && this.hasSender
-                                                  ? html`
-                                                        <dbp-icon-button
-                                                            id="edit-subject-btn"
-                                                            ?disabled="${this.loading ||
-                                                            this.currentItem.dateSubmitted}"
-                                                            @click="${(event) => {
-                                                                this.subject = this.currentItem.name
-                                                                    ? this.currentItem.name
-                                                                    : '';
-                                                                this._('#edit-subject-modal').open(
-                                                                    this.subject,
-                                                                );
-                                                            }}"
-                                                            aria-label="${i18n.t(
-                                                                'show-requests.edit-subject-button-text',
-                                                            )}"
-                                                            title="${i18n.t(
-                                                                'show-requests.edit-subject-button-text',
-                                                            )}"
-                                                            icon-name="pencil"></dbp-icon-button>
-                                                    `
-                                                  : ``}
-                                          </div>
-                                          <div>${this.currentItem.name}</div>
-                                          <div
-                                              class="no-subject ${classMap({
-                                                  hidden:
-                                                      !this.isLoggedIn() ||
-                                                      this.currentItem.name ||
-                                                      this.currentItem.name !== '',
-                                              })}">
-                                              ${i18n.t('show-requests.empty-subject-text')}
-                                          </div>
+                    ${
+                        this.currentItem && !this.currentItem.dateSubmitted
+                            ? html`
+                                  <div class="request-buttons">
+                                      <div class="edit-buttons">
+                                          <dbp-loading-button
+                                              id="delete-btn"
+                                              ?disabled="${
+                                                  this.loading || this.currentItem.dateSubmitted
+                                              }"
+                                              value="${i18n.t('show-requests.delete-button-text')}"
+                                              @click="${(event) => {
+                                                  let table = this._(
+                                                      '#tabulator-table-created-requests',
+                                                  );
+                                                  this.deleteRequest(
+                                                      table,
+                                                      event,
+                                                      this.currentItem,
+                                                  );
+                                              }}"
+                                              title="${i18n.t('show-requests.delete-button-text')}">
+                                              <dbp-icon name="trash" aria-hidden="true"></dbp-icon>
+                                              ${i18n.t('show-requests.delete-button-text')}
+                                          </dbp-loading-button>
                                       </div>
-
-                                      <div class="line"></div>
-                                      <div>
-                                          <div class="section-titles">
-                                              ${i18n.t('show-requests.submit-status')}
-                                          </div>
-                                          <div>
-                                              ${this.currentItem.dateSubmitted
-                                                  ? html`
-                                                        <span class="status-green">●</span>
-                                                        ${i18n.t(
-                                                            'show-requests.status-completed-date',
-                                                            {
-                                                                date: this.convertToReadableDate(
-                                                                    this.currentItem.dateSubmitted,
-                                                                ),
-                                                            },
-                                                        )}
-                                                    `
-                                                  : html`
-                                                        <span class="status-orange">●</span>
-                                                        ${i18n.t(
-                                                            'show-requests.empty-date-submitted',
-                                                        )}
-                                                    `}
-                                          </div>
-                                      </div>
-
-                                      <div class="line"></div>
-                                      <div>
-                                          <div class="section-titles">
-                                              ${i18n.t('show-requests.reference-number')}
-                                              ${!this.currentItem.dateSubmitted
-                                                  ? html`
-                                                        <dbp-icon-button
-                                                            id="edit-reference-number-btn"
-                                                            ?disabled="${this.loading ||
-                                                            this.currentItem.dateSubmitted ||
-                                                            !this.mayWrite}"
-                                                            @click="${(event) => {
-                                                                this._(
-                                                                    '#edit-reference-number-modal',
-                                                                ).open(
-                                                                    this.currentItem
-                                                                        .referenceNumber ?? ``,
-                                                                );
-                                                            }}"
-                                                            aria-label="${i18n.t(
-                                                                'show-requests.edit-reference-number-button-text',
-                                                            )}"
-                                                            title="${i18n.t(
-                                                                'show-requests.edit-reference-number-button-text',
-                                                            )}"
-                                                            icon-name="pencil"></dbp-icon-button>
-                                                    `
-                                                  : ``}
-                                          </div>
-                                          <div>
-                                              ${this.currentItem.referenceNumber
-                                                  ? html`
-                                                        ${this.currentItem.referenceNumber}
-                                                    `
-                                                  : html`
-                                                        ${i18n.t(
-                                                            'show-requests.empty-reference-number',
-                                                        )}
-                                                    `}
-                                          </div>
+                                      <div class="submit-button">
+                                          <dbp-loading-button
+                                              type="is-primary"
+                                              id="submit-btn"
+                                              ?disabled="${
+                                                  this.loading || this.currentItem.dateSubmitted
+                                              }"
+                                              value="${i18n.t('show-requests.submit-button-text')}"
+                                              @click="${(event) => {
+                                                  this.submitRequest(
+                                                      this.currentTable,
+                                                      event,
+                                                      this.currentItem,
+                                                  );
+                                              }}"
+                                              title="${i18n.t('show-requests.submit-button-text')}">
+                                              <dbp-icon
+                                                  name="send-diagonal"
+                                                  aria-hidden="true"></dbp-icon>
+                                              ${i18n.t('show-requests.submit-button-text')}
+                                          </dbp-loading-button>
                                       </div>
                                   </div>
-
-                                  ${this.addSenderDetails()}
-
+                              `
+                            : ``
+                    }
+                    ${
+                        this.currentItem
+                            ? html`
                                   <div
-                                      class="details recipients ${classMap({
-                                          hidden: !this.hasSender || !this.hasSubject,
+                                      class="request-item details ${classMap({
+                                          hidden: !this.showDetailsView,
                                       })}">
-                                      <div class="header-btn">
-                                          <div class="section-titles">
-                                              ${i18n.t('show-requests.recipients')}
-                                              <span class="section-title-counts">
-                                                  ${this.currentItem.recipients.length !== 0
-                                                      ? `(` +
-                                                        this.currentItem.recipients.length +
-                                                        `)`
-                                                      : ``}
-                                              </span>
+                                      <div class="details header">
+                                          <div>
+                                              <div class="section-titles">
+                                                  ${i18n.t('create-request.request-subject')}
+                                                  ${
+                                                      !this.currentItem.dateSubmitted &&
+                                                      this.hasSender
+                                                          ? html`
+                                                                <dbp-icon-button
+                                                                    id="edit-subject-btn"
+                                                                    ?disabled="${
+                                                                        this.loading ||
+                                                                        this.currentItem
+                                                                            .dateSubmitted
+                                                                    }"
+                                                                    @click="${(event) => {
+                                                                        this.subject = this
+                                                                            .currentItem.name
+                                                                            ? this.currentItem.name
+                                                                            : '';
+                                                                        this._(
+                                                                            '#edit-subject-modal',
+                                                                        ).open(this.subject);
+                                                                    }}"
+                                                                    aria-label="${i18n.t(
+                                                                        'show-requests.edit-subject-button-text',
+                                                                    )}"
+                                                                    title="${i18n.t(
+                                                                        'show-requests.edit-subject-button-text',
+                                                                    )}"
+                                                                    icon-name="pencil"></dbp-icon-button>
+                                                            `
+                                                          : ``
+                                                  }
+                                              </div>
+                                              <div>${this.currentItem.name}</div>
+                                              <div
+                                                  class="no-subject ${classMap({
+                                                      hidden:
+                                                          !this.isLoggedIn() ||
+                                                          this.currentItem.name ||
+                                                          this.currentItem.name !== '',
+                                                  })}">
+                                                  ${i18n.t('show-requests.empty-subject-text')}
+                                              </div>
                                           </div>
-                                          ${!this.currentItem.dateSubmitted
-                                              ? html`
-                                                    <dbp-loading-button
-                                                        id="add-recipient-btn"
-                                                        ?disabled="${this.loading ||
-                                                        this.currentItem.dateSubmitted}"
-                                                        value="${i18n.t(
-                                                            'show-requests.add-recipient-button-text',
-                                                        )}"
-                                                        @click="${(event) => {
-                                                            this.currentRecipient = {};
-                                                            this._('#add-recipient-modal').open({});
-                                                        }}"
-                                                        title="${i18n.t(
-                                                            'show-requests.add-recipient-button-text',
-                                                        )}">
-                                                        <dbp-icon
-                                                            name="user"
-                                                            aria-hidden="true"></dbp-icon>
-                                                        ${i18n.t(
-                                                            'show-requests.add-recipient-button-text',
-                                                        )}
-                                                    </dbp-loading-button>
-                                                `
-                                              : ``}
+
+                                          <div class="line"></div>
+                                          <div>
+                                              <div class="section-titles">
+                                                  ${i18n.t('show-requests.submit-status')}
+                                              </div>
+                                              <div>
+                                                  ${
+                                                      this.currentItem.dateSubmitted
+                                                          ? html`
+                                                                <span class="status-green">●</span>
+                                                                ${i18n.t(
+                                                                    'show-requests.status-completed-date',
+                                                                    {
+                                                                        date: this.convertToReadableDate(
+                                                                            this.currentItem
+                                                                                .dateSubmitted,
+                                                                        ),
+                                                                    },
+                                                                )}
+                                                            `
+                                                          : html`
+                                                                <span class="status-orange">●</span>
+                                                                ${i18n.t(
+                                                                    'show-requests.empty-date-submitted',
+                                                                )}
+                                                            `
+                                                  }
+                                              </div>
+                                          </div>
+
+                                          <div class="line"></div>
+                                          <div>
+                                              <div class="section-titles">
+                                                  ${i18n.t('show-requests.reference-number')}
+                                                  ${
+                                                      !this.currentItem.dateSubmitted
+                                                          ? html`
+                                                                <dbp-icon-button
+                                                                    id="edit-reference-number-btn"
+                                                                    ?disabled="${
+                                                                        this.loading ||
+                                                                        this.currentItem
+                                                                            .dateSubmitted ||
+                                                                        !this.mayWrite
+                                                                    }"
+                                                                    @click="${(event) => {
+                                                                        this._(
+                                                                            '#edit-reference-number-modal',
+                                                                        ).open(
+                                                                            this.currentItem
+                                                                                .referenceNumber ??
+                                                                                ``,
+                                                                        );
+                                                                    }}"
+                                                                    aria-label="${i18n.t(
+                                                                        'show-requests.edit-reference-number-button-text',
+                                                                    )}"
+                                                                    title="${i18n.t(
+                                                                        'show-requests.edit-reference-number-button-text',
+                                                                    )}"
+                                                                    icon-name="pencil"></dbp-icon-button>
+                                                            `
+                                                          : ``
+                                                  }
+                                              </div>
+                                              <div>
+                                                  ${
+                                                      this.currentItem.referenceNumber
+                                                          ? html`
+                                                                ${this.currentItem.referenceNumber}
+                                                            `
+                                                          : html`
+                                                                ${i18n.t(
+                                                                    'show-requests.empty-reference-number',
+                                                                )}
+                                                            `
+                                                  }
+                                              </div>
+                                          </div>
                                       </div>
+
+                                      ${this.addSenderDetails()}
+
                                       <div
-                                          class="recipients-data ${classMap({
+                                          class="details recipients ${classMap({
                                               hidden: !this.hasSender || !this.hasSubject,
                                           })}">
-                                          ${this.sortRecipients(this.currentItem.recipients).map(
-                                              (recipient) => html`
+                                          <div class="header-btn">
+                                              <div class="section-titles">
+                                                  ${i18n.t('show-requests.recipients')}
+                                                  <span class="section-title-counts">
+                                                      ${
+                                                          this.currentItem.recipients.length !== 0
+                                                              ? `(` +
+                                                                this.currentItem.recipients.length +
+                                                                `)`
+                                                              : ``
+                                                      }
+                                                  </span>
+                                              </div>
+                                              ${
+                                                  !this.currentItem.dateSubmitted
+                                                      ? html`
+                                                            <dbp-loading-button
+                                                                id="add-recipient-btn"
+                                                                ?disabled="${
+                                                                    this.loading ||
+                                                                    this.currentItem.dateSubmitted
+                                                                }"
+                                                                value="${i18n.t(
+                                                                    'show-requests.add-recipient-button-text',
+                                                                )}"
+                                                                @click="${(event) => {
+                                                                    this.currentRecipient = {};
+                                                                    this._(
+                                                                        '#add-recipient-modal',
+                                                                    ).open({});
+                                                                }}"
+                                                                title="${i18n.t(
+                                                                    'show-requests.add-recipient-button-text',
+                                                                )}">
+                                                                <dbp-icon
+                                                                    name="user"
+                                                                    aria-hidden="true"></dbp-icon>
+                                                                ${i18n.t(
+                                                                    'show-requests.add-recipient-button-text',
+                                                                )}
+                                                            </dbp-loading-button>
+                                                        `
+                                                      : ``
+                                              }
+                                          </div>
+                                          <div
+                                              class="recipients-data ${classMap({
+                                                  hidden: !this.hasSender || !this.hasSubject,
+                                              })}">
+                                              ${this.sortRecipients(
+                                                  this.currentItem.recipients,
+                                              ).map(
+                                                  (recipient) => html`
                                     <div class="recipient card">
 
                                         ${this.addRecipientCardLeftSideContent(recipient)}
@@ -1343,11 +1386,13 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                     ? html`
                                                           <dbp-icon-button
                                                               id="edit-recipient-btn"
-                                                              ?disabled="${this.loading ||
-                                                              this.currentItem.dateSubmitted ||
-                                                              (recipient.personIdentifier &&
-                                                                  (recipient.electronicallyDeliverable ||
-                                                                      recipient.postalDeliverable))}"
+                                                              ?disabled="${
+                                                                  this.loading ||
+                                                                  this.currentItem.dateSubmitted ||
+                                                                  (recipient.personIdentifier &&
+                                                                      (recipient.electronicallyDeliverable ||
+                                                                          recipient.postalDeliverable))
+                                                              }"
                                                               @click="${(event) => {
                                                                   let button = event.target;
                                                                   button.start();
@@ -1376,8 +1421,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                               icon-name="pencil"></dbp-icon-button>
                                                           <dbp-icon-button
                                                               id="delete-recipient-btn"
-                                                              ?disabled="${this.loading ||
-                                                              this.currentItem.dateSubmitted}"
+                                                              ?disabled="${
+                                                                  this.loading ||
+                                                                  this.currentItem.dateSubmitted
+                                                              }"
                                                               @click="${(event) => {
                                                                   this.deleteRecipient(
                                                                       event,
@@ -1397,24 +1444,25 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                         </div>
                                     </div>
                                 `,
-                                          )}
-                                          <div
-                                              class="no-recipients ${classMap({
-                                                  hidden:
-                                                      !this.isLoggedIn() ||
-                                                      !this.hasSender ||
-                                                      !this.hasSubject ||
-                                                      this.currentItem.recipients.length !== 0,
-                                              })}">
-                                              ${i18n.t('show-requests.no-recipients-text')}
+                                              )}
+                                              <div
+                                                  class="no-recipients ${classMap({
+                                                      hidden:
+                                                          !this.isLoggedIn() ||
+                                                          !this.hasSender ||
+                                                          !this.hasSubject ||
+                                                          this.currentItem.recipients.length !== 0,
+                                                  })}">
+                                                  ${i18n.t('show-requests.no-recipients-text')}
+                                              </div>
                                           </div>
                                       </div>
-                                  </div>
 
-                                  ${this.addDetailedFilesView()}
-                              </div>
-                          `
-                        : ``}
+                                      ${this.addDetailedFilesView()}
+                                  </div>
+                              `
+                            : ``
+                    }
                 </div>
             </div>
 
