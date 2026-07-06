@@ -283,26 +283,30 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                                 c.processSelectedOrganization(event).then(() => {});
                             }
                         }}></dbp-resource-select>
-                    ${c.mayReadMetadata
-                        ? html`
-                              <dbp-select
-                                  id="export-dropdown"
-                                  label="${i18n.t('show-requests.export')}"
-                                  subscribe="lang"
-                                  ?disabled="${this.exportLoading}"
-                                  @change="${c.handleExportSelection}"></dbp-select>
-                              ${this.exportLoading
-                                  ? html`
-                                        <span class="export-loading">
-                                            <dbp-mini-spinner
-                                                text=${i18n.t(
-                                                    'show-requests.export-loading-message',
-                                                )}></dbp-mini-spinner>
-                                        </span>
-                                    `
-                                  : ``}
-                          `
-                        : ``}
+                    ${
+                        c.mayReadMetadata
+                            ? html`
+                                  <dbp-select
+                                      id="export-dropdown"
+                                      label="${i18n.t('show-requests.export')}"
+                                      subscribe="lang"
+                                      ?disabled="${this.exportLoading}"
+                                      @change="${c.handleExportSelection}"></dbp-select>
+                                  ${
+                                      this.exportLoading
+                                          ? html`
+                                                <span class="export-loading">
+                                                    <dbp-mini-spinner
+                                                        text=${i18n.t(
+                                                            'show-requests.export-loading-message',
+                                                        )}></dbp-mini-spinner>
+                                                </span>
+                                            `
+                                          : ``
+                                  }
+                              `
+                            : ``
+                    }
                 </div>
             </div>
 
@@ -317,9 +321,11 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                             !c.organizationSet,
                     })}"
                     type="${c.mayRead || c.mayReadMetadata ? 'warning' : 'danger'}"
-                    body="${c.mayRead || c.mayReadMetadata
-                        ? i18n.t('error-no-writes')
-                        : i18n.t('error-no-read')}"></dbp-inline-notification>
+                    body="${
+                        c.mayRead || c.mayReadMetadata
+                            ? i18n.t('error-no-writes')
+                            : i18n.t('error-no-read')
+                    }"></dbp-inline-notification>
             </div>
 
             <h3
@@ -451,101 +457,107 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                                     c.loadingTranslations ||
                                     c.showDetailsView,
                             })}">
-                            ${c.mayWrite
-                                ? html`
-                                      <dbp-loading-button
-                                          id="select-all-btn"
-                                          class="${classMap({hidden: c.allSelected})}"
-                                          value="${i18n.t('show-requests.select-all')}"
-                                          @click="${() => {
-                                              c.allSelected = true;
-                                              const table = c._('#tabulator-table-orders');
-                                              table.selectAllVisibleRows();
-                                              c.toggleDeleteAndSubmitButtons(
-                                                  '#tabulator-table-orders',
-                                              );
-                                          }}"
-                                          title="${i18n.t('show-requests.select-all')}">
-                                          <dbp-icon name="select-all" aria-hidden="true"></dbp-icon>
-                                          ${i18n.t('show-requests.select-all')}
-                                      </dbp-loading-button>
-                                      <dbp-loading-button
-                                          id="deselect-all-btn"
-                                          class="${classMap({hidden: !c.allSelected})}"
-                                          value="${i18n.t('show-requests.deselect-all')}"
-                                          @click="${() => {
-                                              c.allSelected = false;
-                                              const table = c._('#tabulator-table-orders');
-                                              table.deselectAllRows();
-                                              c.toggleDeleteAndSubmitButtons(
-                                                  '#tabulator-table-orders',
-                                              );
-                                          }}"
-                                          title="${i18n.t('show-requests.deselect-all')}">
-                                          <dbp-icon
-                                              name="deselect-all"
-                                              aria-hidden="true"></dbp-icon>
-                                          ${i18n.t('show-requests.deselect-all')}
-                                      </dbp-loading-button>
-                                      <dbp-loading-button
-                                          id="expand-all-btn"
-                                          class="${classMap({hidden: c.expanded})}"
-                                          ?disabled="${c.loading}"
-                                          value="${i18n.t('show-requests.expand-all')}"
-                                          @click="${() => {
-                                              c.expandAll();
-                                          }}"
-                                          title="${i18n.t('show-requests.expand-all')}">
-                                          <dbp-icon
-                                              name="chevron-down"
-                                              aria-hidden="true"></dbp-icon>
-                                          ${i18n.t('show-requests.expand-all')}
-                                      </dbp-loading-button>
-                                      <dbp-loading-button
-                                          id="collapse-all-btn"
-                                          class="${classMap({hidden: !c.expanded})}"
-                                          ?disabled="${c.loading}"
-                                          value="${i18n.t('show-requests.collapse-all')}"
-                                          @click="${() => {
-                                              c.collapseAll();
-                                          }}"
-                                          title="${i18n.t('show-requests.collapse-all')}">
-                                          <dbp-icon name="chevron-up" aria-hidden="true"></dbp-icon>
-                                          ${i18n.t('show-requests.collapse-all')}
-                                      </dbp-loading-button>
-                                      <dbp-loading-button
-                                          id="delete-all-btn"
-                                          disabled
-                                          value="${i18n.t('show-requests.delete-button-text')}"
-                                          @click="${async (event) => {
-                                              await c.deleteSelected();
-                                              c.toggleDeleteAndSubmitButtons(
-                                                  '#tabulator-table-orders',
-                                              );
-                                          }}"
-                                          title="${i18n.t('show-requests.delete-button-text')}">
-                                          <dbp-icon name="trash" aria-hidden="true"></dbp-icon>
-                                          ${i18n.t('show-requests.delete-button-text')}
-                                      </dbp-loading-button>
-                                      <dbp-loading-button
-                                          id="submit-all-btn"
-                                          disabled
-                                          type="is-primary"
-                                          value="${i18n.t('show-requests.submit-button-text')}"
-                                          @click="${async (event) => {
-                                              await c.submitSelected();
-                                              c.toggleDeleteAndSubmitButtons(
-                                                  '#tabulator-table-orders',
-                                              );
-                                          }}"
-                                          title="${i18n.t('show-requests.submit-button-text')}">
-                                          <dbp-icon
-                                              name="send-diagonal"
-                                              aria-hidden="true"></dbp-icon>
-                                          ${i18n.t('show-requests.submit-button-text')}
-                                      </dbp-loading-button>
-                                  `
-                                : ``}
+                            ${
+                                c.mayWrite
+                                    ? html`
+                                          <dbp-loading-button
+                                              id="select-all-btn"
+                                              class="${classMap({hidden: c.allSelected})}"
+                                              value="${i18n.t('show-requests.select-all')}"
+                                              @click="${() => {
+                                                  c.allSelected = true;
+                                                  const table = c._('#tabulator-table-orders');
+                                                  table.selectAllVisibleRows();
+                                                  c.toggleDeleteAndSubmitButtons(
+                                                      '#tabulator-table-orders',
+                                                  );
+                                              }}"
+                                              title="${i18n.t('show-requests.select-all')}">
+                                              <dbp-icon
+                                                  name="select-all"
+                                                  aria-hidden="true"></dbp-icon>
+                                              ${i18n.t('show-requests.select-all')}
+                                          </dbp-loading-button>
+                                          <dbp-loading-button
+                                              id="deselect-all-btn"
+                                              class="${classMap({hidden: !c.allSelected})}"
+                                              value="${i18n.t('show-requests.deselect-all')}"
+                                              @click="${() => {
+                                                  c.allSelected = false;
+                                                  const table = c._('#tabulator-table-orders');
+                                                  table.deselectAllRows();
+                                                  c.toggleDeleteAndSubmitButtons(
+                                                      '#tabulator-table-orders',
+                                                  );
+                                              }}"
+                                              title="${i18n.t('show-requests.deselect-all')}">
+                                              <dbp-icon
+                                                  name="deselect-all"
+                                                  aria-hidden="true"></dbp-icon>
+                                              ${i18n.t('show-requests.deselect-all')}
+                                          </dbp-loading-button>
+                                          <dbp-loading-button
+                                              id="expand-all-btn"
+                                              class="${classMap({hidden: c.expanded})}"
+                                              ?disabled="${c.loading}"
+                                              value="${i18n.t('show-requests.expand-all')}"
+                                              @click="${() => {
+                                                  c.expandAll();
+                                              }}"
+                                              title="${i18n.t('show-requests.expand-all')}">
+                                              <dbp-icon
+                                                  name="chevron-down"
+                                                  aria-hidden="true"></dbp-icon>
+                                              ${i18n.t('show-requests.expand-all')}
+                                          </dbp-loading-button>
+                                          <dbp-loading-button
+                                              id="collapse-all-btn"
+                                              class="${classMap({hidden: !c.expanded})}"
+                                              ?disabled="${c.loading}"
+                                              value="${i18n.t('show-requests.collapse-all')}"
+                                              @click="${() => {
+                                                  c.collapseAll();
+                                              }}"
+                                              title="${i18n.t('show-requests.collapse-all')}">
+                                              <dbp-icon
+                                                  name="chevron-up"
+                                                  aria-hidden="true"></dbp-icon>
+                                              ${i18n.t('show-requests.collapse-all')}
+                                          </dbp-loading-button>
+                                          <dbp-loading-button
+                                              id="delete-all-btn"
+                                              disabled
+                                              value="${i18n.t('show-requests.delete-button-text')}"
+                                              @click="${async (event) => {
+                                                  await c.deleteSelected();
+                                                  c.toggleDeleteAndSubmitButtons(
+                                                      '#tabulator-table-orders',
+                                                  );
+                                              }}"
+                                              title="${i18n.t('show-requests.delete-button-text')}">
+                                              <dbp-icon name="trash" aria-hidden="true"></dbp-icon>
+                                              ${i18n.t('show-requests.delete-button-text')}
+                                          </dbp-loading-button>
+                                          <dbp-loading-button
+                                              id="submit-all-btn"
+                                              disabled
+                                              type="is-primary"
+                                              value="${i18n.t('show-requests.submit-button-text')}"
+                                              @click="${async (event) => {
+                                                  await c.submitSelected();
+                                                  c.toggleDeleteAndSubmitButtons(
+                                                      '#tabulator-table-orders',
+                                                  );
+                                              }}"
+                                              title="${i18n.t('show-requests.submit-button-text')}">
+                                              <dbp-icon
+                                                  name="send-diagonal"
+                                                  aria-hidden="true"></dbp-icon>
+                                              ${i18n.t('show-requests.submit-button-text')}
+                                          </dbp-loading-button>
+                                      `
+                                    : ``
+                            }
                         </div>
                     </div>
 

@@ -195,21 +195,23 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
                             .value=${sender.senderStreetAddress || ''} />
                     </div>
 
-                    ${sender.senderBuildingNumber
-                        ? html`
-                              <div>
-                                  <div class="nf-label">
-                                      ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
+                    ${
+                        sender.senderBuildingNumber
+                            ? html`
+                                  <div>
+                                      <div class="nf-label">
+                                          ${i18n.t('show-requests.edit-sender-bn-dialog-label')}
+                                      </div>
+                                      <input
+                                          type="text"
+                                          class="input"
+                                          maxlength="10"
+                                          id="sender-building-number"
+                                          .value=${sender.senderBuildingNumber || ''} />
                                   </div>
-                                  <input
-                                      type="text"
-                                      class="input"
-                                      maxlength="10"
-                                      id="sender-building-number"
-                                      .value=${sender.senderBuildingNumber || ''} />
-                              </div>
-                          `
-                        : ''}
+                              `
+                            : ''
+                    }
 
                     <div>
                         <div class="nf-label">

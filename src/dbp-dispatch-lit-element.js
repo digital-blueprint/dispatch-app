@@ -2057,8 +2057,9 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 text="${i18n.t('show-requests.filepicker-context')}"
                 button-label="${i18n.t('show-requests.filepicker-button-title')}"
                 @dbp-file-source-file-selected="${this.onFileSelected}"
-                @dbp-file-source-file-upload-finished="${this
-                    .onFileUploadFinished}"></dbp-file-source>
+                @dbp-file-source-file-upload-finished="${
+                    this.onFileUploadFinished
+                }"></dbp-file-source>
 
             <dbp-file-sink
                 id="file-sink"
@@ -2413,103 +2414,123 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     <div class="section-titles">
                         ${i18n.t('show-requests.files')}
                         <span class="section-title-counts">
-                            ${this.currentItem.files && this.currentItem.files.length !== 0
-                                ? `(` + this.currentItem.files.length + `)`
-                                : ``}
+                            ${
+                                this.currentItem.files && this.currentItem.files.length !== 0
+                                    ? `(` + this.currentItem.files.length + `)`
+                                    : ``
+                            }
                         </span>
                     </div>
-                    ${!this.currentItem.dateSubmitted
-                        ? html`
-                              <dbp-loading-button
-                                  id="add-files-btn"
-                                  ?disabled="${this.loading ||
-                                  this.currentItem.dateSubmitted ||
-                                  !this.mayWrite}"
-                                  value="${i18n.t('show-requests.add-files-button-text')}"
-                                  @click="${(event) => {
-                                      this.requestCreated = true;
-                                      this.addFileViaButton = true;
-                                      this.openFileSource();
-                                  }}"
-                                  title="${i18n.t('show-requests.add-files-button-text')}">
-                                  <dbp-icon name="plus" aria-hidden="true"></dbp-icon>
-                                  ${i18n.t('show-requests.add-files-button-text')}
-                              </dbp-loading-button>
-                          `
-                        : ``}
+                    ${
+                        !this.currentItem.dateSubmitted
+                            ? html`
+                                  <dbp-loading-button
+                                      id="add-files-btn"
+                                      ?disabled="${
+                                          this.loading ||
+                                          this.currentItem.dateSubmitted ||
+                                          !this.mayWrite
+                                      }"
+                                      value="${i18n.t('show-requests.add-files-button-text')}"
+                                      @click="${(event) => {
+                                          this.requestCreated = true;
+                                          this.addFileViaButton = true;
+                                          this.openFileSource();
+                                      }}"
+                                      title="${i18n.t('show-requests.add-files-button-text')}">
+                                      <dbp-icon name="plus" aria-hidden="true"></dbp-icon>
+                                      ${i18n.t('show-requests.add-files-button-text')}
+                                  </dbp-loading-button>
+                              `
+                            : ``
+                    }
                 </div>
                 <div class="files-data">
-                    ${this.currentItem.files
-                        ? this.currentItem.files.map(
-                              (file) => html`
-                                  <div class="file card">
-                                      <div class="left-side">
-                                          <div>${file.name}</div>
-                                          <div>${humanFileSize(file.contentSize)}</div>
-                                          <div>${file.fileFormat}</div>
-                                          <div>${this.convertToReadableDate(file.dateCreated)}</div>
+                    ${
+                        this.currentItem.files
+                            ? this.currentItem.files.map(
+                                  (file) => html`
+                                      <div class="file card">
+                                          <div class="left-side">
+                                              <div>${file.name}</div>
+                                              <div>${humanFileSize(file.contentSize)}</div>
+                                              <div>${file.fileFormat}</div>
+                                              <div>
+                                                  ${this.convertToReadableDate(file.dateCreated)}
+                                              </div>
+                                          </div>
+                                          <div class="right-side">
+                                              <dbp-icon-button
+                                                  id="show-file-btn"
+                                                  @click="${(event) => {
+                                                      this._onShowFileClicked(
+                                                          event,
+                                                          file.identifier,
+                                                      );
+                                                  }}"
+                                                  aria-label="${i18n.t(
+                                                      'show-requests.show-file-button-text',
+                                                  )}"
+                                                  title="${i18n.t(
+                                                      'show-requests.show-file-button-text',
+                                                  )}"
+                                                  icon-name="keyword-research"></dbp-icon-button>
+                                              <dbp-icon-button
+                                                  id="download-file-btn"
+                                                  @click="${(event) => {
+                                                      this._onDownloadRequestFileClicked(
+                                                          event,
+                                                          file.identifier,
+                                                      );
+                                                  }}"
+                                                  aria-label="${i18n.t(
+                                                      'show-requests.download-file-button-text',
+                                                  )}"
+                                                  title="${i18n.t(
+                                                      'show-requests.download-file-button-text',
+                                                  )}"
+                                                  icon-name="download"></dbp-icon-button>
+                                              ${
+                                                  !this.currentItem.dateSubmitted
+                                                      ? html`
+                                                            <dbp-icon-button
+                                                                id="delete-file-btn"
+                                                                ?disabled="${
+                                                                    this.loading ||
+                                                                    this.currentItem
+                                                                        .dateSubmitted ||
+                                                                    !this.mayWrite
+                                                                }"
+                                                                @click="${(event) => {
+                                                                    this.deleteFile(event, file);
+                                                                }}"
+                                                                aria-label="${i18n.t(
+                                                                    'show-requests.delete-file-button-text',
+                                                                )}"
+                                                                title="${i18n.t(
+                                                                    'show-requests.delete-file-button-text',
+                                                                )}"
+                                                                icon-name="trash"></dbp-icon-button>
+                                                        `
+                                                      : ``
+                                              }
+                                          </div>
                                       </div>
-                                      <div class="right-side">
-                                          <dbp-icon-button
-                                              id="show-file-btn"
-                                              @click="${(event) => {
-                                                  this._onShowFileClicked(event, file.identifier);
-                                              }}"
-                                              aria-label="${i18n.t(
-                                                  'show-requests.show-file-button-text',
-                                              )}"
-                                              title="${i18n.t(
-                                                  'show-requests.show-file-button-text',
-                                              )}"
-                                              icon-name="keyword-research"></dbp-icon-button>
-                                          <dbp-icon-button
-                                              id="download-file-btn"
-                                              @click="${(event) => {
-                                                  this._onDownloadRequestFileClicked(
-                                                      event,
-                                                      file.identifier,
-                                                  );
-                                              }}"
-                                              aria-label="${i18n.t(
-                                                  'show-requests.download-file-button-text',
-                                              )}"
-                                              title="${i18n.t(
-                                                  'show-requests.download-file-button-text',
-                                              )}"
-                                              icon-name="download"></dbp-icon-button>
-                                          ${!this.currentItem.dateSubmitted
-                                              ? html`
-                                                    <dbp-icon-button
-                                                        id="delete-file-btn"
-                                                        ?disabled="${this.loading ||
-                                                        this.currentItem.dateSubmitted ||
-                                                        !this.mayWrite}"
-                                                        @click="${(event) => {
-                                                            this.deleteFile(event, file);
-                                                        }}"
-                                                        aria-label="${i18n.t(
-                                                            'show-requests.delete-file-button-text',
-                                                        )}"
-                                                        title="${i18n.t(
-                                                            'show-requests.delete-file-button-text',
-                                                        )}"
-                                                        icon-name="trash"></dbp-icon-button>
-                                                `
-                                              : ``}
-                                      </div>
-                                  </div>
-                              `,
-                          )
-                        : ``}
+                                  `,
+                              )
+                            : ``
+                    }
                     <div
                         class="no-files ${classMap({
                             hidden:
                                 !this.isLoggedIn() ||
                                 (this.currentItem.files && this.currentItem.files.length !== 0),
                         })}">
-                        ${this.mayReadMetadata && !this.mayRead && !this.mayWrite
-                            ? i18n.t('show-requests.metadata-files-text')
-                            : i18n.t('show-requests.empty-files-text')}
+                        ${
+                            this.mayReadMetadata && !this.mayRead && !this.mayWrite
+                                ? i18n.t('show-requests.metadata-files-text')
+                                : i18n.t('show-requests.empty-files-text')
+                        }
                     </div>
                 </div>
             </div>
@@ -2523,88 +2544,108 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             <div class="details sender">
                 <div class="header-btn">
                     <div class="section-titles">${i18n.t('show-requests.sender')}</div>
-                    ${!this.currentItem.dateSubmitted
-                        ? html`
-                              <dbp-icon-button
-                                  id="edit-sender-btn"
-                                  ?disabled="${this.loading ||
-                                  this.currentItem.dateSubmitted ||
-                                  !this.mayWrite}"
-                                  @click="${(event) => {
-                                      this._('#edit-sender-modal').open(this.currentItem);
-                                  }}"
-                                  aria-label="${i18n.t('show-requests.edit-sender-button-text')}"
-                                  title="${i18n.t('show-requests.edit-sender-button-text')}"
-                                  icon-name="pencil"></dbp-icon-button>
-                          `
-                        : ``}
+                    ${
+                        !this.currentItem.dateSubmitted
+                            ? html`
+                                  <dbp-icon-button
+                                      id="edit-sender-btn"
+                                      ?disabled="${
+                                          this.loading ||
+                                          this.currentItem.dateSubmitted ||
+                                          !this.mayWrite
+                                      }"
+                                      @click="${(event) => {
+                                          this._('#edit-sender-modal').open(this.currentItem);
+                                      }}"
+                                      aria-label="${i18n.t('show-requests.edit-sender-button-text')}"
+                                      title="${i18n.t('show-requests.edit-sender-button-text')}"
+                                      icon-name="pencil"></dbp-icon-button>
+                              `
+                            : ``
+                    }
                 </div>
                 <div class="sender-data">
                     <div class="inline-label">
                         ${i18n.t('show-requests.edit-sender-fn-dialog-label')}
                     </div>
-                    ${this.currentItem.senderFullName && this.currentItem.senderOrganizationName
-                        ? html`
-                              ${this.currentItem.senderFullName}
-                          `
-                        : html`
-                              ${this.currentItem.senderFullName
-                                  ? html`
-                                        ${this.currentItem.senderFullName}
-                                    `
-                                  : ``}
-                          `}
+                    ${
+                        this.currentItem.senderFullName && this.currentItem.senderOrganizationName
+                            ? html`
+                                  ${this.currentItem.senderFullName}
+                              `
+                            : html`
+                                  ${
+                                      this.currentItem.senderFullName
+                                          ? html`
+                                                ${this.currentItem.senderFullName}
+                                            `
+                                          : ``
+                                  }
+                              `
+                    }
                     <br />
                     <div class="inline-label">
                         ${i18n.t('show-requests.edit-sender-gn-dialog-label')}
                     </div>
-                    ${this.currentItem.senderOrganizationName
-                        ? html`
-                              ${this.currentItem.senderOrganizationName}
-                          `
-                        : ``}
+                    ${
+                        this.currentItem.senderOrganizationName
+                            ? html`
+                                  ${this.currentItem.senderOrganizationName}
+                              `
+                            : ``
+                    }
                     <br />
                     <div class="inline-label">
                         ${i18n.t('show-requests.edit-sender-sa-dialog-label')}
                     </div>
-                    ${this.currentItem.senderStreetAddress
-                        ? html`
-                              ${this.currentItem.senderStreetAddress}
-                          `
-                        : ``}
+                    ${
+                        this.currentItem.senderStreetAddress
+                            ? html`
+                                  ${this.currentItem.senderStreetAddress}
+                              `
+                            : ``
+                    }
                     <br />
                     <div class="inline-label">
                         ${i18n.t('show-requests.edit-sender-pc-dialog-label')}
                     </div>
-                    ${this.currentItem.senderPostalCode
-                        ? html`
-                              ${this.currentItem.senderPostalCode}
-                          `
-                        : ``}
+                    ${
+                        this.currentItem.senderPostalCode
+                            ? html`
+                                  ${this.currentItem.senderPostalCode}
+                              `
+                            : ``
+                    }
                     <br />
                     <div class="inline-label">
                         ${i18n.t('show-requests.edit-sender-al-dialog-label')}
                     </div>
-                    ${this.currentItem.senderAddressLocality
-                        ? html`
-                              ${this.currentItem.senderAddressLocality}
-                          `
-                        : ``}
+                    ${
+                        this.currentItem.senderAddressLocality
+                            ? html`
+                                  ${this.currentItem.senderAddressLocality}
+                              `
+                            : ``
+                    }
                     <br />
                     <div class="inline-label">
                         ${i18n.t('show-requests.edit-sender-ac-dialog-label')}
                     </div>
-                    ${this.currentItem.senderAddressCountry
-                        ? html`
-                              ${this.lang === 'en'
-                                  ? dispatchHelper.getEnglishCountryMapping()[
-                                        this.currentItem.senderAddressCountry
-                                    ]
-                                  : dispatchHelper.getGermanCountryMapping()[
-                                        this.currentItem.senderAddressCountry
-                                    ]}
-                          `
-                        : ``}
+                    ${
+                        this.currentItem.senderAddressCountry
+                            ? html`
+                                  ${
+                                      this.lang === 'en'
+                                          ? dispatchHelper.getEnglishCountryMapping()[
+                                                this.currentItem.senderAddressCountry
+                                            ]
+                                          : dispatchHelper.getGermanCountryMapping()[
+                                                this.currentItem.senderAddressCountry
+                                            ]
+                                  }
+                              `
+                            : ``
+                    }
                 </div>
             </div>
         `;
@@ -2620,96 +2661,116 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 <div>${recipient.streetAddress}</div>
                 <div>${recipient.postalCode} ${recipient.addressLocality}</div>
                 <div>
-                    ${this.currentItem.senderAddressCountry
-                        ? html`
-                              ${this.lang === 'en'
-                                  ? dispatchHelper.getEnglishCountryMapping()[
-                                        recipient.addressCountry
-                                    ]
-                                  : dispatchHelper.getGermanCountryMapping()[
-                                        recipient.addressCountry
-                                    ]}
-                          `
-                        : ``}
+                    ${
+                        this.currentItem.senderAddressCountry
+                            ? html`
+                                  ${
+                                      this.lang === 'en'
+                                          ? dispatchHelper.getEnglishCountryMapping()[
+                                                recipient.addressCountry
+                                            ]
+                                          : dispatchHelper.getGermanCountryMapping()[
+                                                recipient.addressCountry
+                                            ]
+                                  }
+                              `
+                            : ``
+                    }
                 </div>
-                ${recipient.electronicallyDeliverable
-                    ? html`
-                          <div class="delivery-status">
-                              <span class="status-green">●</span>
-                              ${i18n.t('show-requests.electronically-deliverable')}
-                          </div>
-                      `
-                    : ``}
-                ${!recipient.electronicallyDeliverable && recipient.postalDeliverable
-                    ? html`
-                          <div class="delivery-status">
-                              <span class="status-orange">●</span>
-                              ${i18n.t('show-requests.only-postal-deliverable')}
-                          </div>
-                      `
-                    : ``}
-                ${!recipient.electronicallyDeliverable && !recipient.postalDeliverable
-                    ? html`
-                          <div class="delivery-status">
-                              <span class="status-red">●</span>
-                              ${i18n.t('show-requests.not-deliverable-1')}
-                              <dbp-tooltip
-                                  icon-name="warning-high"
-                                  class="info-tooltip"
-                                  text-content="${i18n.t('show-requests.not-deliverable-2')}"
-                                  interactive></dbp-tooltip>
-                          </div>
-                      `
-                    : ``}
-                ${this.currentItem.dateSubmitted && dispatchStatus === 'failure'
-                    ? html`
-                          <div class="dispatch-status">
-                              <span class="status-title">
-                                  ${i18n.t('show-requests.dispatch-status')}
-                              </span>
-                              <span class="status-red">${i18n.t('show-requests.failure')}</span>
-                          </div>
-                      `
-                    : ``}
-                ${this.currentItem.dateSubmitted && dispatchStatus === 'success'
-                    ? html`
-                          <div class="dispatch-status">
-                              <span class="status-title">
-                                  ${i18n.t('show-requests.dispatch-status')}
-                              </span>
-                              <span class="status-green">
-                                  ${i18n.t(
-                                      DBPDispatchLitElement.isRecipientNotInForeignCountry(
-                                          recipient,
-                                      )
-                                          ? 'show-requests.success'
-                                          : 'show-requests.success-foreign-countries',
-                                  )}
-                              </span>
-                          </div>
-                      `
-                    : ``}
-                ${this.currentItem.dateSubmitted && dispatchStatus === 'pending'
-                    ? html`
-                          <div class="dispatch-status">
-                              <span class="status-title">
-                                  ${i18n.t('show-requests.dispatch-status')}
-                              </span>
-                              <span>${i18n.t('show-requests.pending')}</span>
-                          </div>
-                      `
-                    : ``}
-                ${this.currentItem.dateSubmitted &&
-                (!dispatchStatus || dispatchStatus === 'unknown')
-                    ? html`
-                          <div class="dispatch-status">
-                              <span class="status-title">
-                                  ${i18n.t('show-requests.dispatch-status')}
-                              </span>
-                              <span class="status-orange">${i18n.t('show-requests.unknown')}</span>
-                          </div>
-                      `
-                    : ``}
+                ${
+                    recipient.electronicallyDeliverable
+                        ? html`
+                              <div class="delivery-status">
+                                  <span class="status-green">●</span>
+                                  ${i18n.t('show-requests.electronically-deliverable')}
+                              </div>
+                          `
+                        : ``
+                }
+                ${
+                    !recipient.electronicallyDeliverable && recipient.postalDeliverable
+                        ? html`
+                              <div class="delivery-status">
+                                  <span class="status-orange">●</span>
+                                  ${i18n.t('show-requests.only-postal-deliverable')}
+                              </div>
+                          `
+                        : ``
+                }
+                ${
+                    !recipient.electronicallyDeliverable && !recipient.postalDeliverable
+                        ? html`
+                              <div class="delivery-status">
+                                  <span class="status-red">●</span>
+                                  ${i18n.t('show-requests.not-deliverable-1')}
+                                  <dbp-tooltip
+                                      icon-name="warning-high"
+                                      class="info-tooltip"
+                                      text-content="${i18n.t('show-requests.not-deliverable-2')}"
+                                      interactive></dbp-tooltip>
+                              </div>
+                          `
+                        : ``
+                }
+                ${
+                    this.currentItem.dateSubmitted && dispatchStatus === 'failure'
+                        ? html`
+                              <div class="dispatch-status">
+                                  <span class="status-title">
+                                      ${i18n.t('show-requests.dispatch-status')}
+                                  </span>
+                                  <span class="status-red">${i18n.t('show-requests.failure')}</span>
+                              </div>
+                          `
+                        : ``
+                }
+                ${
+                    this.currentItem.dateSubmitted && dispatchStatus === 'success'
+                        ? html`
+                              <div class="dispatch-status">
+                                  <span class="status-title">
+                                      ${i18n.t('show-requests.dispatch-status')}
+                                  </span>
+                                  <span class="status-green">
+                                      ${i18n.t(
+                                          DBPDispatchLitElement.isRecipientNotInForeignCountry(
+                                              recipient,
+                                          )
+                                              ? 'show-requests.success'
+                                              : 'show-requests.success-foreign-countries',
+                                      )}
+                                  </span>
+                              </div>
+                          `
+                        : ``
+                }
+                ${
+                    this.currentItem.dateSubmitted && dispatchStatus === 'pending'
+                        ? html`
+                              <div class="dispatch-status">
+                                  <span class="status-title">
+                                      ${i18n.t('show-requests.dispatch-status')}
+                                  </span>
+                                  <span>${i18n.t('show-requests.pending')}</span>
+                              </div>
+                          `
+                        : ``
+                }
+                ${
+                    this.currentItem.dateSubmitted &&
+                    (!dispatchStatus || dispatchStatus === 'unknown')
+                        ? html`
+                              <div class="dispatch-status">
+                                  <span class="status-title">
+                                      ${i18n.t('show-requests.dispatch-status')}
+                                  </span>
+                                  <span class="status-orange">
+                                      ${i18n.t('show-requests.unknown')}
+                                  </span>
+                              </div>
+                          `
+                        : ``
+                }
             </div>
         `;
     }

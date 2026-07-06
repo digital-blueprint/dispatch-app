@@ -85,88 +85,98 @@ export class DispatchShowRecipientModal extends ScopedElementsMixin(DBPLitElemen
                 </h4>
 
                 <span class="return-receipt-widget__upload-date">
-                    ${statusChange.fileFormat && statusChange.fileIsUploadedManually
-                        ? i18n.t('show-requests.return-receipt.uploaded-on') +
-                          ' ' +
-                          new Date(statusChange.fileDateAdded).toLocaleString(dateLocal, {})
-                        : ''}
+                    ${
+                        statusChange.fileFormat && statusChange.fileIsUploadedManually
+                            ? i18n.t('show-requests.return-receipt.uploaded-on') +
+                              ' ' +
+                              new Date(statusChange.fileDateAdded).toLocaleString(dateLocal, {})
+                            : ''
+                    }
                 </span>
 
                 <span class="return-receipt__buttons">
-                    ${!statusChange.fileFormat
-                        ? html`
-                              <dbp-icon-button
-                                  class="upload-btn"
-                                  @click="${(event) => {
-                                      this._dispatchAction(
-                                          'upload-return-receipt',
-                                          statusChange,
-                                          event.target,
-                                      );
-                                  }}"
-                                  aria-label="${i18n.t(
-                                      'show-requests.return-receipt.upload-button-text',
-                                  )}"
-                                  title="${i18n.t(
-                                      'show-requests.return-receipt.upload-button-text',
-                                  )}"
-                                  icon-name="add-file"></dbp-icon-button>
-                          `
-                        : ''}
-                    ${statusChange.fileFormat
-                        ? html`
-                              <dbp-icon-button
-                                  class="download-btn"
-                                  @click="${(event) => {
-                                      this._dispatchAction(
-                                          'download-return-receipt',
-                                          statusChange,
-                                          event.target,
-                                      );
-                                  }}"
-                                  aria-label="${i18n.t('show-requests.download-button-text')}"
-                                  title="${i18n.t('show-requests.download-button-text')}"
-                                  icon-name="download"></dbp-icon-button>
-                          `
-                        : ''}
-                    ${statusChange.fileFormat
-                        ? html`
-                              <dbp-icon-button
-                                  class="view-btn"
-                                  @click="${(event) => {
-                                      this._dispatchAction(
-                                          'view-return-receipt',
-                                          statusChange,
-                                          event.target,
-                                      );
-                                  }}"
-                                  aria-label="${i18n.t(
-                                      'show-requests.return-receipt.view-button-text',
-                                  )}"
-                                  title="${i18n.t('show-requests.return-receipt.view-button-text')}"
-                                  icon-name="eye"></dbp-icon-button>
-                          `
-                        : ''}
-                    ${statusChange.fileFormat && statusChange.fileIsUploadedManually
-                        ? html`
-                              <dbp-icon-button
-                                  class="delete-btn"
-                                  @click="${(event) => {
-                                      this._dispatchAction(
-                                          'delete-return-receipt',
-                                          statusChange,
-                                          event.target,
-                                      );
-                                  }}"
-                                  aria-label="${i18n.t(
-                                      'show-requests.return-receipt.delete-button-text',
-                                  )}"
-                                  title="${i18n.t(
-                                      'show-requests.return-receipt.delete-button-text',
-                                  )}"
-                                  icon-name="trash"></dbp-icon-button>
-                          `
-                        : ''}
+                    ${
+                        !statusChange.fileFormat
+                            ? html`
+                                  <dbp-icon-button
+                                      class="upload-btn"
+                                      @click="${(event) => {
+                                          this._dispatchAction(
+                                              'upload-return-receipt',
+                                              statusChange,
+                                              event.target,
+                                          );
+                                      }}"
+                                      aria-label="${i18n.t(
+                                          'show-requests.return-receipt.upload-button-text',
+                                      )}"
+                                      title="${i18n.t(
+                                          'show-requests.return-receipt.upload-button-text',
+                                      )}"
+                                      icon-name="add-file"></dbp-icon-button>
+                              `
+                            : ''
+                    }
+                    ${
+                        statusChange.fileFormat
+                            ? html`
+                                  <dbp-icon-button
+                                      class="download-btn"
+                                      @click="${(event) => {
+                                          this._dispatchAction(
+                                              'download-return-receipt',
+                                              statusChange,
+                                              event.target,
+                                          );
+                                      }}"
+                                      aria-label="${i18n.t('show-requests.download-button-text')}"
+                                      title="${i18n.t('show-requests.download-button-text')}"
+                                      icon-name="download"></dbp-icon-button>
+                              `
+                            : ''
+                    }
+                    ${
+                        statusChange.fileFormat
+                            ? html`
+                                  <dbp-icon-button
+                                      class="view-btn"
+                                      @click="${(event) => {
+                                          this._dispatchAction(
+                                              'view-return-receipt',
+                                              statusChange,
+                                              event.target,
+                                          );
+                                      }}"
+                                      aria-label="${i18n.t(
+                                          'show-requests.return-receipt.view-button-text',
+                                      )}"
+                                      title="${i18n.t('show-requests.return-receipt.view-button-text')}"
+                                      icon-name="eye"></dbp-icon-button>
+                              `
+                            : ''
+                    }
+                    ${
+                        statusChange.fileFormat && statusChange.fileIsUploadedManually
+                            ? html`
+                                  <dbp-icon-button
+                                      class="delete-btn"
+                                      @click="${(event) => {
+                                          this._dispatchAction(
+                                              'delete-return-receipt',
+                                              statusChange,
+                                              event.target,
+                                          );
+                                      }}"
+                                      aria-label="${i18n.t(
+                                          'show-requests.return-receipt.delete-button-text',
+                                      )}"
+                                      title="${i18n.t(
+                                          'show-requests.return-receipt.delete-button-text',
+                                      )}"
+                                      icon-name="trash"></dbp-icon-button>
+                              `
+                            : ''
+                    }
                 </span>
             </div>
         `;
@@ -375,40 +385,50 @@ export class DispatchShowRecipientModal extends ScopedElementsMixin(DBPLitElemen
                             i18n.t('show-requests.edit-recipient-fn-dialog-label'),
                             recipient.familyName,
                         )}
-                        ${hasBirthDate
-                            ? this._renderField(
-                                  i18n.t('show-requests.add-recipient-birthdate-dialog-label'),
-                                  recipient.birthDateYear +
-                                      '-' +
-                                      recipient.birthDateMonth +
-                                      '-' +
-                                      recipient.birthDateDay,
-                              )
-                            : ''}
-                        ${recipient.streetAddress
-                            ? this._renderField(
-                                  i18n.t('show-requests.edit-recipient-sa-dialog-label'),
-                                  recipient.streetAddress,
-                              )
-                            : ''}
-                        ${recipient.postalCode
-                            ? this._renderField(
-                                  i18n.t('show-requests.edit-recipient-pc-dialog-label'),
-                                  recipient.postalCode,
-                              )
-                            : ''}
-                        ${recipient.addressLocality
-                            ? this._renderField(
-                                  i18n.t('show-requests.edit-recipient-al-dialog-label'),
-                                  recipient.addressLocality,
-                              )
-                            : ''}
-                        ${recipient.addressCountry
-                            ? this._renderField(
-                                  i18n.t('show-requests.edit-recipient-ac-dialog-label'),
-                                  recipient.addressCountry,
-                              )
-                            : ''}
+                        ${
+                            hasBirthDate
+                                ? this._renderField(
+                                      i18n.t('show-requests.add-recipient-birthdate-dialog-label'),
+                                      recipient.birthDateYear +
+                                          '-' +
+                                          recipient.birthDateMonth +
+                                          '-' +
+                                          recipient.birthDateDay,
+                                  )
+                                : ''
+                        }
+                        ${
+                            recipient.streetAddress
+                                ? this._renderField(
+                                      i18n.t('show-requests.edit-recipient-sa-dialog-label'),
+                                      recipient.streetAddress,
+                                  )
+                                : ''
+                        }
+                        ${
+                            recipient.postalCode
+                                ? this._renderField(
+                                      i18n.t('show-requests.edit-recipient-pc-dialog-label'),
+                                      recipient.postalCode,
+                                  )
+                                : ''
+                        }
+                        ${
+                            recipient.addressLocality
+                                ? this._renderField(
+                                      i18n.t('show-requests.edit-recipient-al-dialog-label'),
+                                      recipient.addressLocality,
+                                  )
+                                : ''
+                        }
+                        ${
+                            recipient.addressCountry
+                                ? this._renderField(
+                                      i18n.t('show-requests.edit-recipient-ac-dialog-label'),
+                                      recipient.addressCountry,
+                                  )
+                                : ''
+                        }
                         ${this._renderField(
                             i18n.t('show-requests.delivery-service-dialog-label'),
                             recipient.electronicallyDeliverable
@@ -419,66 +439,75 @@ export class DispatchShowRecipientModal extends ScopedElementsMixin(DBPLitElemen
                                     '. ' +
                                     i18n.t('show-requests.not-deliverable-2'),
                         )}
-                        ${recipient.deliveryEndDate
-                            ? this._renderField(
-                                  i18n.t('show-requests.delivery-end-date'),
-                                  convertToReadableDate(recipient.deliveryEndDate),
-                              )
-                            : ''}
+                        ${
+                            recipient.deliveryEndDate
+                                ? this._renderField(
+                                      i18n.t('show-requests.delivery-end-date'),
+                                      convertToReadableDate(recipient.deliveryEndDate),
+                                  )
+                                : ''
+                        }
                         ${this._renderField(
                             i18n.t('show-requests.recipient-id'),
                             recipient.identifier,
                         )}
-                        ${recipient.appDeliveryId
-                            ? this._renderField(
-                                  i18n.t('show-requests.app-delivery-id'),
-                                  recipient.appDeliveryId,
-                              )
-                            : ''}
+                        ${
+                            recipient.appDeliveryId
+                                ? this._renderField(
+                                      i18n.t('show-requests.app-delivery-id'),
+                                      recipient.appDeliveryId,
+                                  )
+                                : ''
+                        }
                     </div>
 
-                    ${recipient.statusChanges && recipient.statusChanges.length > 0
-                        ? html`
-                              <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
-                              <div class="scroll">
-                                  ${recipient.statusChanges.map(
-                                      (statusChange) => html`
-                                          <div class="recipient-status">
-                                              <div class="status-container">
-                                                  <div class="status-date">
-                                                      ${convertToReadableDate(
-                                                          statusChange.dateCreated,
-                                                      )}
-                                                  </div>
-                                                  <div class="status-detail">
-                                                      <span class="new-line-content">
-                                                          ${normalizeNewlines(
-                                                              statusChange.description,
+                    ${
+                        recipient.statusChanges && recipient.statusChanges.length > 0
+                            ? html`
+                                  <h3>${i18n.t('show-requests.delivery-status-changes')}:</h3>
+                                  <div class="scroll">
+                                      ${recipient.statusChanges.map(
+                                          (statusChange) => html`
+                                              <div class="recipient-status">
+                                                  <div class="status-container">
+                                                      <div class="status-date">
+                                                          ${convertToReadableDate(
+                                                              statusChange.dateCreated,
                                                           )}
-                                                      </span>
-                                                      <span>
-                                                          (StatusType ${statusChange.statusType})
-                                                      </span>
+                                                      </div>
+                                                      <div class="status-detail">
+                                                          <span class="new-line-content">
+                                                              ${normalizeNewlines(
+                                                                  statusChange.description,
+                                                              )}
+                                                          </span>
+                                                          <span>
+                                                              (StatusType
+                                                              ${statusChange.statusType})
+                                                          </span>
+                                                      </div>
                                                   </div>
-                                              </div>
 
-                                              ${this._renderReturnReceiptButtons(statusChange)}
-                                          </div>
-                                      `,
-                                  )}
-                              </div>
-                          `
-                        : ''}
-                    ${recipient.addressCountry &&
-                    recipient.addressCountry.length > 0 &&
-                    recipient.addressCountry !== 'AT'
-                        ? html`
-                              <div class="notification-container">
-                                  <label>Info:</label>
-                                  ${i18n.t('create-request.add-recipient-country-warning')}
-                              </div>
-                          `
-                        : ''}
+                                                  ${this._renderReturnReceiptButtons(statusChange)}
+                                              </div>
+                                          `,
+                                      )}
+                                  </div>
+                              `
+                            : ''
+                    }
+                    ${
+                        recipient.addressCountry &&
+                        recipient.addressCountry.length > 0 &&
+                        recipient.addressCountry !== 'AT'
+                            ? html`
+                                  <div class="notification-container">
+                                      <label>Info:</label>
+                                      ${i18n.t('create-request.add-recipient-country-warning')}
+                                  </div>
+                              `
+                            : ''
+                    }
                 </div>
             </dbp-modal>
         `;
