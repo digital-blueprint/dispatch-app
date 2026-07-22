@@ -2,7 +2,7 @@ node_modules
 .idea
 package-lock.json
 vendor
-rollup.config.js
+rolldown.config.js
 _cypress_cache
 scripts
 docker
