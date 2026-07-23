@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.6.3
+
+- Pin to production version of esign activities
+
 ## v1.6.2
 
 - Fix --dbp-selected variable in dark mode
