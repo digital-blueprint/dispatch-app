@@ -1,0 +1,77 @@
+name: Check submodule pins
+
+on:
+  workflow_call:
+    inputs:
+      submodules:
+        description: JSON array of submodule paths and upstream branches
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  check-submodule:
+    name: Check ${{ matrix.submodule.path }} against ${{ matrix.submodule.branch }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        submodule: ${{ fromJSON(inputs.submodules) }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Compare pinned commit with upstream branch
+        env:
+          SUBMODULE_PATH: ${{ matrix.submodule.path }}
+          UPSTREAM_BRANCH: ${{ matrix.submodule.branch }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          submodule_section=""
+          while read -r key configured_path; do
+            if [[ "$configured_path" == "$SUBMODULE_PATH" ]]; then
+              submodule_section="${key%.path}"
+              break
+            fi
+          done < <(git config --file .gitmodules --get-regexp '^submodule\..*\.path$')
+
+          if [[ -z "$submodule_section" ]]; then
+            echo "Submodule '$SUBMODULE_PATH' is not configured in .gitmodules." >&2
+            exit 1
+          fi
+
+          repository_url=$(git config --file .gitmodules --get "${submodule_section}.url")
+          read -r object_mode object_type pinned_commit _ < <(git ls-tree HEAD -- "$SUBMODULE_PATH")
+
+          if [[ "$object_mode" != "160000" || "$object_type" != "commit" ]]; then
+            echo "Path '$SUBMODULE_PATH' is not a submodule in the checked-out commit." >&2
+            exit 1
+          fi
+
+          if ! remote_ref=$(git ls-remote --exit-code "$repository_url" "refs/heads/$UPSTREAM_BRANCH"); then
+            echo "Branch '$UPSTREAM_BRANCH' was not found in '$repository_url'." >&2
+            exit 1
+          fi
+          upstream_commit=${remote_ref%%[[:space:]]*}
+
+          {
+            echo "### Submodule pin: $SUBMODULE_PATH"
+            echo
+            echo "- Repository: \`$repository_url\`"
+            echo "- Upstream branch: \`$UPSTREAM_BRANCH\`"
+            echo "- Pinned commit: \`$pinned_commit\`"
+            echo "- Upstream commit: \`$upstream_commit\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$pinned_commit" != "$upstream_commit" ]]; then
+            echo "Submodule '$SUBMODULE_PATH' is pinned to '$pinned_commit', but '$UPSTREAM_BRANCH' points to '$upstream_commit'." >&2
+            exit 1
+          fi
+
+          echo "Submodule '$SUBMODULE_PATH' matches '$UPSTREAM_BRANCH' at '$pinned_commit'."

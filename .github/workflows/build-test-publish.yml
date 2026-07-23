@@ -2,6 +2,13 @@ name: Build, Test and Publish
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
+  check-submodule-pins:
+    if: github.ref == 'refs/heads/production'
+    uses: ./.github/workflows/check-submodule-pins.yml
+    with:
+      submodules: >-
+        [{"path":"vendor/signature","branch":"production"}]
+
   test:
     runs-on: ubuntu-latest
 
@@ -47,8 +54,12 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [test]
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/production'
+    needs: [check-submodule-pins, test]
+    if: >-
+      always() &&
+      needs.test.result == 'success' &&
+      (github.ref != 'refs/heads/production' || needs.check-submodule-pins.result == 'success') &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/production')
     environment: ${{ github.ref_name }}
 
     permissions:
