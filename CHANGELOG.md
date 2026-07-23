@@ -2,7 +2,12 @@
 
 ## v1.6.3
 
+- Improve UTF-8 detection for recipient CSV exports in Excel
+- Replace the custom person selector with the resource selector and reset it when reopening the add-recipient dialog
+- Use the toolkit login-required component for login notifications
 - Pin to production version of esign activities
+- Rename and update the Rolldown configuration
+- Update toolkit, package dependencies, development tooling and CI actions
 
 ## v1.6.2
 
