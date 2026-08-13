@@ -1132,8 +1132,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         type: 'success',
                         timeout: 5,
                     });
-                    let rows = table.getRows();
-                    table.deleteRow(rows[index]);
+                    this.createdRequestsList = this.createdRequestsList.filter(
+                        (req) => req.identifier !== item.identifier,
+                    );
+                    this.setTabulatorData(this.createdRequestsList);
                     this.clearAll();
                 } else {
                     send({
