@@ -11,7 +11,7 @@ import {
     MiniSpinner,
     InlineNotification,
     ScopedElementsMixin,
-    DBPLoginRequired,
+    DBPLoginRequiredWarning,
 } from '@dbp-toolkit/common';
 import {CountrySelect} from '@dbp-toolkit/country-select';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
@@ -124,7 +124,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             'dbp-dispatch-edit-recipient-modal': DispatchEditRecipientModal,
             'dbp-dispatch-add-recipient-modal': DispatchAddRecipientModal,
             'dbp-dispatch-show-recipient-modal': DispatchShowRecipientModal,
-            'dbp-login-required': DBPLoginRequired,
+            'dbp-login-required-warning': DBPLoginRequiredWarning,
         };
     }
 
@@ -789,9 +789,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 </span>
             </div>
 
-            <dbp-login-required
+            <dbp-login-required-warning
                 subscribe="auth,lang"
-                @dbp-login-requested=${this._onLoginClicked}></dbp-login-required>
+                @dbp-login-requested=${this._onLoginClicked}></dbp-login-required-warning>
 
             <div
                 class="${classMap({
