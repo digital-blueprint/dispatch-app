@@ -530,7 +530,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                         i18n.t('show-requests.delete-request-button-text'),
                     );
                     btn_delete.addEventListener('click', async (event) => {
-                        this.deleteRequest(table, event, item, index);
+                        this.deleteRequest2(table, event, item, index);
+
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_delete);
