@@ -1132,9 +1132,60 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                         type: 'success',
                         timeout: 5,
                     });
-                    let rows = table.getRows();
-                    table.deleteRow(rows[index]);
+                    this.createdRequestsList = this.createdRequestsList.filter(
+                        (req) => req.identifier !== item.identifier,
+                    );
+                    this.setTabulatorData(this.createdRequestsList);
                     this.clearAll();
+                } else {
+                    send({
+                        summary: 'Error!',
+                        body: 'Could not delete request. Response code: ' + response.status,
+                        type: 'danger',
+                        timeout: 0,
+                    });
+                }
+            } catch (e) {
+                console.error(`${e.name}: ${e.message}`);
+            } finally {
+                button.stop();
+            }
+        }
+    }
+
+    async deleteRequest2(table, event, item, index = 0) {
+        const i18n = this._i18n;
+        let button = event.target;
+
+        if (item.dateSubmitted) {
+            send({
+                summary: i18n.t('show-requests.delete-not-allowed-title'),
+                body: i18n.t('show-requests.delete-not-allowed-text'),
+                type: 'danger',
+                timeout: 0,
+            });
+            return;
+        }
+
+        if (confirm(i18n.t('show-requests.delete-dialog-text', {count: 1}))) {
+            button.start();
+
+            try {
+                let response = await this.sendDeleteDispatchRequest(item.identifier);
+                if (response.status === 204) {
+                    send({
+                        summary: i18n.t('show-requests.successfully-deleted-title'),
+                        body: i18n.t('show-requests.successfully-deleted-text'),
+                        type: 'success',
+                        timeout: 5,
+                    });
+
+                    this.requestList = this.requestList.filter(
+                        (req) => req.identifier !== item.identifier,
+                    );
+                    this.setTabulatorData(this.requestList);
+                    this.clearAll();
+                    console.log('this.requestList in dispatch lit elem' + this.requestList.length);
                 } else {
                     send({
                         summary: 'Error!',
