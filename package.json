@@ -26,6 +26,7 @@
         "@babel/core": "^8.0.0",
         "@babel/preset-env": "^8.0.0",
         "@dbp-toolkit/dev-utils": "^0.1.0",
+        "@eslint/js": "^10.0.1",
         "@rollup/plugin-babel": "^7.0.0",
         "@web/test-runner": "^1.0.0",
         "@web/test-runner-playwright": "^1.0.0",
