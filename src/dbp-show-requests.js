@@ -479,7 +479,6 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     }
 
     async processSelectedOrganization(event) {
-        const i18n = this._i18n;
         this.storeGroupValue(event.detail.value);
         this.groupId = event.target.valueObject.identifier;
 
@@ -492,101 +491,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.organizationSet = true;
 
         this.getListOfRequests().then(() => {
-            let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
-            this.currentTable = table;
-            let data = [];
-            this.requestList.forEach((item, index) => {
-                let recipientStatus = item['dateSubmitted']
-                    ? this.checkRecipientStatus(item.recipients)[1]
-                    : i18n.t('show-requests.empty-date-submitted');
-                let controls_div = this.createScopedElement('div');
-                controls_div.classList.add('tabulator-icon-buttons');
-                if (recipientStatus === i18n.t('show-requests.empty-date-submitted')) {
-                    let btn_edit = this.createScopedElement('dbp-icon-button');
-                    btn_edit.setAttribute('icon-name', 'pencil');
-                    btn_edit.setAttribute(
-                        'aria-label',
-                        i18n.t('show-requests.edit-request-button-text'),
-                    );
-                    btn_edit.setAttribute(
-                        'title',
-                        i18n.t('show-requests.edit-request-button-text'),
-                    );
-                    btn_edit.addEventListener('click', async (event) => {
-                        this.currentRowIndex = index.toString();
-                        this.editRequest(event, item);
-                        event.stopPropagation();
-                    });
-                    controls_div.appendChild(btn_edit);
-
-                    let btn_delete = this.createScopedElement('dbp-icon-button');
-                    btn_delete.setAttribute('icon-name', 'trash');
-                    btn_delete.setAttribute(
-                        'aria-label',
-                        i18n.t('show-requests.delete-request-button-text'),
-                    );
-                    btn_delete.setAttribute(
-                        'title',
-                        i18n.t('show-requests.delete-request-button-text'),
-                    );
-                    btn_delete.addEventListener('click', async (event) => {
-                        this.deleteRequest2(table, event, item, index);
-
-                        event.stopPropagation();
-                    });
-                    controls_div.appendChild(btn_delete);
-
-                    let btn_submit = this.createScopedElement('dbp-icon-button');
-                    btn_submit.setAttribute('icon-name', 'send-diagonal');
-                    btn_submit.setAttribute(
-                        'aria-label',
-                        i18n.t('show-requests.send-request-button-text'),
-                    );
-                    btn_submit.setAttribute(
-                        'title',
-                        i18n.t('show-requests.send-request-button-text'),
-                    );
-                    btn_submit.addEventListener('click', async (event) => {
-                        this.currentItem = item;
-                        this.submitRequest(table, event, item, index);
-                        event.stopPropagation();
-                    });
-                    controls_div.appendChild(btn_submit);
-                } else {
-                    let btn_research = this.createScopedElement('dbp-icon-button');
-                    btn_research.setAttribute('icon-name', 'keyword-research');
-                    btn_research.setAttribute(
-                        'aria-label',
-                        i18n.t('show-requests.show-detailed-dispatch-order'),
-                    );
-                    btn_research.setAttribute(
-                        'title',
-                        i18n.t('show-requests.show-detailed-dispatch-order'),
-                    );
-                    btn_research.addEventListener('click', async (event) => {
-                        this.editRequest(event, item);
-                        event.stopPropagation();
-                    });
-                    controls_div.appendChild(btn_research);
-                }
-                let order = {
-                    dateCreated: this.convertToReadableDate(item['dateCreated']),
-                    gz: item['referenceNumber']
-                        ? item['referenceNumber']
-                        : i18n.t('show-requests.empty-reference-number'),
-                    subject: item['name'],
-                    status: recipientStatus,
-                    files: this.createFormattedFilesList(item['files']),
-                    recipients: this.createFormattedRecipientsList(item['recipients']),
-                    dateSubmitted: item['dateSubmitted']
-                        ? this.convertToReadableDate(item['dateSubmitted'])
-                        : i18n.t('show-requests.date-submitted-not-submitted'),
-                    requestId: item['identifier'],
-                    actions: controls_div,
-                };
-                data.push(order);
-            });
-            table.setData(data);
+            this.currentTable = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
+            this.setTabulatorData(this.requestList);
         });
     }
 
@@ -954,7 +860,108 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         table.deleteSelectedRows();
     }
 
-    setTabulatorData() {}
+    removeDeletedRequest(item) {
+        this.requestList = this.requestList.filter(
+            (request) => request.identifier !== item.identifier,
+        );
+        this.setTabulatorData(this.requestList);
+    }
+
+    setTabulatorData(requests) {
+        const i18n = this._i18n;
+        const table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
+        const data = [];
+
+        requests.forEach((item, index) => {
+            const recipientStatus = item['dateSubmitted']
+                ? this.checkRecipientStatus(item.recipients)[1]
+                : i18n.t('show-requests.empty-date-submitted');
+            const controlsDiv = this.createScopedElement('div');
+            controlsDiv.classList.add('tabulator-icon-buttons');
+            if (recipientStatus === i18n.t('show-requests.empty-date-submitted')) {
+                const editButton = this.createScopedElement('dbp-icon-button');
+                editButton.setAttribute('icon-name', 'pencil');
+                editButton.setAttribute(
+                    'aria-label',
+                    i18n.t('show-requests.edit-request-button-text'),
+                );
+                editButton.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
+                editButton.addEventListener('click', async (event) => {
+                    this.currentRowIndex = index.toString();
+                    this.editRequest(event, item);
+                    event.stopPropagation();
+                });
+                controlsDiv.appendChild(editButton);
+
+                const deleteButton = this.createScopedElement('dbp-icon-button');
+                deleteButton.setAttribute('icon-name', 'trash');
+                deleteButton.setAttribute(
+                    'aria-label',
+                    i18n.t('show-requests.delete-request-button-text'),
+                );
+                deleteButton.setAttribute(
+                    'title',
+                    i18n.t('show-requests.delete-request-button-text'),
+                );
+                deleteButton.addEventListener('click', async (event) => {
+                    this.deleteRequest(table, event, item, index);
+                    event.stopPropagation();
+                });
+                controlsDiv.appendChild(deleteButton);
+
+                const submitButton = this.createScopedElement('dbp-icon-button');
+                submitButton.setAttribute('icon-name', 'send-diagonal');
+                submitButton.setAttribute(
+                    'aria-label',
+                    i18n.t('show-requests.send-request-button-text'),
+                );
+                submitButton.setAttribute(
+                    'title',
+                    i18n.t('show-requests.send-request-button-text'),
+                );
+                submitButton.addEventListener('click', async (event) => {
+                    this.currentItem = item;
+                    this.submitRequest(table, event, item, index);
+                    event.stopPropagation();
+                });
+                controlsDiv.appendChild(submitButton);
+            } else {
+                const detailsButton = this.createScopedElement('dbp-icon-button');
+                detailsButton.setAttribute('icon-name', 'keyword-research');
+                detailsButton.setAttribute(
+                    'aria-label',
+                    i18n.t('show-requests.show-detailed-dispatch-order'),
+                );
+                detailsButton.setAttribute(
+                    'title',
+                    i18n.t('show-requests.show-detailed-dispatch-order'),
+                );
+                detailsButton.addEventListener('click', async (event) => {
+                    this.editRequest(event, item);
+                    event.stopPropagation();
+                });
+                controlsDiv.appendChild(detailsButton);
+            }
+
+            data.push({
+                dateCreated: this.convertToReadableDate(item['dateCreated']),
+                gz: item['referenceNumber']
+                    ? item['referenceNumber']
+                    : i18n.t('show-requests.empty-reference-number'),
+                subject: item['name'],
+                status: recipientStatus,
+                files: this.createFormattedFilesList(item['files']),
+                recipients: this.createFormattedRecipientsList(item['recipients']),
+                dateSubmitted: item['dateSubmitted']
+                    ? this.convertToReadableDate(item['dateSubmitted'])
+                    : i18n.t('show-requests.date-submitted-not-submitted'),
+                requestId: item['identifier'],
+                actions: controlsDiv,
+            });
+        });
+
+        table.setData(data);
+    }
 
     expandAll() {
         this.expanded = true;
