@@ -1892,6 +1892,11 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     createFormattedRecipientsList(list) {
         const i18n = this._i18n;
         let output = '';
+        if (!list) {
+            return this.mayReadMetadata && !this.mayRead && !this.mayWrite
+                ? i18n.t('show-requests.metadata-files-text')
+                : i18n.t('show-requests.no-files-attached');
+        }
         list.forEach((recipient) => {
             output += recipient.familyName + ', ' + recipient.givenName + '<br>';
         });
