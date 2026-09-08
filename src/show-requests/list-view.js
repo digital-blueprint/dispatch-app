@@ -184,6 +184,17 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                 top: -4px;
             }
 
+            @media only screen and (max-width: 1250px) {
+                .selected-buttons {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .edit-selection-buttons {
+                    margin-left: 0;
+                }
+            }
+
             @media only screen and (max-width: 1150px) {
                 .table-wrapper {
                     gap: 1em;
@@ -253,7 +264,27 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                 }
 
                 .filter-buttons {
-                    width: calc(100% - 45px);
+                    width: 100%;
+                }
+
+                .search-wrapper {
+                    min-width: 275px;
+                }
+            }
+
+            @media only screen and (max-width: 400px) {
+                .choose-and-create-btns {
+                    align-items: flex-start;
+                    flex-direction: column;
+                }
+
+                .choose-and-create-btns dbp-resource-select {
+                    flex: 1;
+                    width: 100%;
+                }
+
+                .choose-and-create-btns dbp-select {
+                    margin-left: 0;
                 }
             }
         `;

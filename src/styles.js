@@ -141,12 +141,6 @@ export function getDispatchRequestStyles() {
             flex-direction: row-reverse;
         }
 
-        .selected-buttons {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-        }
-
         h2:first-child {
             margin-top: 0;
         }
