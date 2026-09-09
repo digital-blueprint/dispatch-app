@@ -5,7 +5,6 @@ import {replacePlugin} from 'rolldown/plugins';
 import serve from 'rollup-plugin-serve';
 import license from 'rollup-plugin-license';
 import emitEJS from 'rollup-plugin-emit-ejs';
-import {getBabelOutputPlugin} from '@rollup/plugin-babel';
 import {
     getPackagePath,
     getBuildInfo,
@@ -23,7 +22,7 @@ const appEnv = typeof process.env.APP_ENV !== 'undefined' ? process.env.APP_ENV 
 const watch = process.env.ROLLUP_WATCH === 'true';
 const buildFull = (!watch && appEnv !== 'test') || process.env.FORCE_FULL !== undefined;
 let doMinify = buildFull;
-let useBabel = buildFull;
+let transform = buildFull;
 let checkLicenses = buildFull;
 let treeshake = buildFull;
 let nodeEnv = buildFull ? 'production' : 'development';
@@ -142,6 +141,9 @@ img-src * blob: data:`;
 export default (async () => {
     let privatePath = await getDistPath(pkg.name);
     return {
+        transform: {
+            target: transform ? ['chrome106', 'firefox110', 'safari16'] : 'esnext',
+        },
         input:
             appEnv != 'test'
                 ? !whitelabel
@@ -431,22 +433,6 @@ Dependencies:
                         },
                     ],
                 })),
-            useBabel &&
-                getBabelOutputPlugin({
-                    compact: false,
-                    presets: [
-                        [
-                            '@babel/preset-env',
-                            {
-                                shippedProposals: true,
-                                modules: false,
-                                targets: {
-                                    esmodules: true,
-                                },
-                            },
-                        ],
-                    ],
-                }),
             watch
                 ? serve({
                       contentBase: '.',
