@@ -1,0 +1,37 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["jsdoc"],
+    "categories": {
+        "correctness": "error"
+    },
+    "env": {
+        "es2026": true,
+        "browser": true,
+        "mocha": true
+    },
+    "ignorePatterns": ["dist/", "vendor/**", "src/micromodal.es.js"],
+    "rules": {
+        "no-unused-vars": [
+            "error",
+            {
+                "args": "none"
+            }
+        ],
+        "jsdoc/check-access": "warn",
+        "jsdoc/check-property-names": "warn",
+        "jsdoc/check-tag-names": "warn",
+        "jsdoc/empty-tags": "warn",
+        "jsdoc/implements-on-classes": "warn",
+        "jsdoc/no-defaults": "warn",
+        "jsdoc/require-param": "warn",
+        "jsdoc/require-param-name": "warn",
+        "jsdoc/require-property": "warn",
+        "jsdoc/require-property-description": "warn",
+        "jsdoc/require-property-name": "warn",
+        "jsdoc/require-property-type": "warn",
+        "jsdoc/require-returns-type": "warn",
+        "jsdoc/require-throws-type": "warn",
+        "jsdoc/require-yields": "warn",
+        "jsdoc/require-yields-type": "warn"
+    }
+}

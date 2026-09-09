@@ -1111,7 +1111,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let currentPage = table ? table.getPage() : 1;
         if (this.groupId) {
             this.getListOfRequests().then(() => {
-                table ? table.setPage(currentPage) : null;
+                if (table) table.setPage(currentPage);
             });
         }
         this.showListView = true;

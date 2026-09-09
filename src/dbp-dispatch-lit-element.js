@@ -5,11 +5,13 @@ import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {html} from 'lit';
 import * as dispatchHelper from './utils';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
-import {IconButton, LoadingButton} from '@dbp-toolkit/common';
+import {IconButton} from '@dbp-toolkit/common';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {getReferenceNumberFromPDF} from './utils';
-import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
+
+/** @typedef {import('@dbp-toolkit/common').LoadingButton} LoadingButton */
+/** @typedef {import('@dbp-toolkit/tabulator-table').TabulatorTable} TabulatorTable */
 
 export default class DBPDispatchLitElement extends DBPLitElement {
     constructor() {
@@ -1851,7 +1853,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     async processCreateDispatchRequest() {
-        const createButton = /** @type  {LoadingButton} */ (this._('#create-btn'));
+        const createButton = /** @type {LoadingButton} */ (this._('#create-btn'));
         createButton.start();
 
         try {

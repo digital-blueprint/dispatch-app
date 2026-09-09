@@ -24,15 +24,12 @@
     },
     "devDependencies": {
         "@dbp-toolkit/dev-utils": "^0.1.0",
-        "@eslint/js": "^10.0.1",
         "@web/test-runner": "^1.0.0",
         "@web/test-runner-playwright": "^1.0.0",
         "chai": "^6.0.0",
-        "eslint": "^10.0.0",
-        "eslint-plugin-jsdoc": "^64.0.0",
-        "globals": "^17.0.0",
         "i18next-cli": "^1.9.0",
         "mocha": "^12.0.0",
+        "oxlint": "^1.81.0",
         "playwright": "^1.34.0",
         "playwright-core": "^1.21.0",
         "prettier": "^3.0.0",
@@ -60,10 +57,10 @@
     },
     "scripts": {
         "build": "rolldown -c rolldown.config.js",
-        "fix": "npm run eslint:fix && npm run prettier:fix && npm run i18next:fix",
-        "check": "npm run eslint && npm run prettier && npm run i18next",
-        "eslint:fix": "eslint \"**/*.{js,ts}\" --fix",
-        "eslint": "eslint \"**/*.{js,ts}\"",
+        "fix": "npm run oxlint:fix && npm run prettier:fix && npm run i18next:fix",
+        "check": "npm run oxlint && npm run prettier && npm run i18next",
+        "oxlint:fix": "oxlint --disable-nested-config --fix",
+        "oxlint": "oxlint --disable-nested-config",
         "i18next:fix": "i18next-cli extract",
         "i18next": "i18next-cli extract --ci --dry-run",
         "prettier:fix": "prettier \"**/*.{js,json,ts,md,yaml,yml}\" --write",
@@ -75,7 +72,6 @@
         "watch-custom": "rolldown -c rolldown.config.js --watch --environment APP_ENV:localCustom",
         "test": "rolldown -c rolldown.config.js --environment APP_ENV:test && web-test-runner",
         "test-full": "rolldown -c rolldown.config.js --environment FORCE_FULL,APP_ENV:test && web-test-runner",
-        "lint": "eslint .",
         "tsc": "tsc -p jsconfig.json"
     }
 }
