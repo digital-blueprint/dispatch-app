@@ -144,6 +144,11 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                 width: 100%;
             }
 
+            .filter-buttons {
+                width: 100%;
+                flex-grow: 1;
+            }
+
             .container,
             dbp-tabulator-table {
                 display: block;
@@ -184,7 +189,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                 top: -4px;
             }
 
-            @media only screen and (max-width: 1250px) {
+            @media only screen and (max-width: 1360px) {
                 .selected-buttons {
                     flex-direction: column;
                     align-items: flex-start;
@@ -192,12 +197,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
 
                 .edit-selection-buttons {
                     margin-left: 0;
-                }
-            }
-
-            @media only screen and (max-width: 1150px) {
-                .table-wrapper {
-                    gap: 1em;
+                    width: 100%;
                 }
 
                 .selected-buttons,
@@ -206,11 +206,6 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                 }
 
                 #extendable-searchbar {
-                    width: 100%;
-                }
-
-                .edit-selection-buttons {
-                    margin-left: 0;
                     width: 100%;
                 }
 
@@ -272,7 +267,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                 }
             }
 
-            @media only screen and (max-width: 400px) {
+            @media only screen and (max-width: 450px) {
                 .choose-and-create-btns {
                     align-items: flex-start;
                     flex-direction: column;
