@@ -37,7 +37,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
 
     update(changedProperties) {
         if (changedProperties.has('lang')) {
-            this._i18n.changeLanguage(this.lang);
+            void this._i18n.changeLanguage(this.lang);
         }
 
         super.update(changedProperties);
@@ -46,7 +46,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
     open(recipient = {}) {
         this.recipient = {...recipient};
         this.personSelectorIsDisabled = false;
-        this.updateComplete.then(async () => {
+        void this.updateComplete.then(async () => {
             const selector = this._('#recipient-selector');
             if (selector) {
                 await selector.reset();
@@ -102,7 +102,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
         this.recipient = {};
         this.personSelectorIsDisabled = false;
 
-        this.updateComplete.then(async () => {
+        void this.updateComplete.then(async () => {
             [
                 '#given-name',
                 '#family-name',

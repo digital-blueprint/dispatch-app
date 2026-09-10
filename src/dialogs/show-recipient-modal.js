@@ -43,7 +43,7 @@ export class DispatchShowRecipientModal extends ScopedElementsMixin(DBPLitElemen
 
     update(changedProperties) {
         if (changedProperties.has('lang')) {
-            this._i18n.changeLanguage(this.lang);
+            void this._i18n.changeLanguage(this.lang);
         }
 
         super.update(changedProperties);
@@ -51,7 +51,7 @@ export class DispatchShowRecipientModal extends ScopedElementsMixin(DBPLitElemen
 
     open(recipient = this.recipient) {
         this.recipient = {...(recipient || {})};
-        this.updateComplete.then(() => {
+        void this.updateComplete.then(() => {
             this._('#modal').open();
         });
     }

@@ -1,12 +1,19 @@
 {
     "compilerOptions": {
+        "allowJs": true,
         "checkJs": true,
+        "noEmit": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noImplicitAny": false,
+        "strictFunctionTypes": false,
+        "useUnknownInCatchVariables": false,
         "maxNodeModuleJsDepth": 0,
         "resolveJsonModule": true,
         "module": "esnext",
         "moduleResolution": "bundler",
         "target": "esnext"
     },
-    "include": ["src"],
+    "include": ["src/**/*"],
     "exclude": ["node_modules", "dist", "vendor"]
 }

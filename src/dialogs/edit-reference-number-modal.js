@@ -28,7 +28,7 @@ export class DispatchEditReferenceNumberModal extends ScopedElementsMixin(DBPLit
 
     update(changedProperties) {
         if (changedProperties.has('lang')) {
-            this._i18n.changeLanguage(this.lang);
+            void this._i18n.changeLanguage(this.lang);
         }
 
         super.update(changedProperties);
@@ -36,7 +36,7 @@ export class DispatchEditReferenceNumberModal extends ScopedElementsMixin(DBPLit
 
     open(referenceNumber = this.referenceNumber) {
         this.referenceNumber = referenceNumber || '';
-        this.updateComplete.then(() => {
+        void this.updateComplete.then(() => {
             const input = /** @type {HTMLInputElement} */ (this._('#reference-number-input'));
             if (input) {
                 input.value = this.referenceNumber;

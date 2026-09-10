@@ -186,7 +186,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         changedProperties.forEach((oldValue, propName) => {
             switch (propName) {
                 case 'lang':
-                    this._i18n.changeLanguage(this.lang);
+                    void this._i18n.changeLanguage(this.lang);
                     break;
             }
         });
@@ -207,7 +207,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         if (this.langDir) {
             this.loadingTranslations = true;
             const that = this;
-            setOverridesByGlobalCache(that._i18n, that).then(() => {
+            void setOverridesByGlobalCache(that._i18n, that).then(() => {
                 that.loadingTranslations = false;
                 that.requestUpdate();
             });
@@ -215,7 +215,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.loadingTranslations = false;
         }
 
-        this.updateComplete.then(() => {
+        void this.updateComplete.then(() => {
             this._a('.tabulator-table').forEach((table) => {
                 const tabulatorTable = /** @type {TabulatorTable} */ (table);
                 tabulatorTable.buildTable();
@@ -225,7 +225,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         });
     }
 
-    async _onCreateRequestButtonClicked(event) {
+    _onCreateRequestButtonClicked(event) {
         this.openFileSource();
     }
 
@@ -425,10 +425,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_edit.setAttribute('icon-name', 'pencil');
             btn_edit.setAttribute('aria-label', i18n.t('show-requests.edit-request-button-text'));
             btn_edit.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
-            btn_edit.addEventListener('click', async (event) => {
+            btn_edit.addEventListener('click', (event) => {
                 this.currentTable = table;
                 this.currentRowIndex = index;
-                this.editRequest(event, item);
+                void this.editRequest(event, item);
                 event.stopPropagation();
             });
             controls_div.appendChild(btn_edit);
@@ -440,8 +440,8 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                 i18n.t('show-requests.delete-request-button-text'),
             );
             btn_delete.setAttribute('title', i18n.t('show-requests.delete-request-button-text'));
-            btn_delete.addEventListener('click', async (event) => {
-                this.deleteRequest(table, event, item, index);
+            btn_delete.addEventListener('click', (event) => {
+                void this.deleteRequest(table, event, item, index);
                 event.stopPropagation();
             });
             controls_div.appendChild(btn_delete);
@@ -450,9 +450,9 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
             btn_submit.setAttribute('icon-name', 'send-diagonal');
             btn_submit.setAttribute('aria-label', i18n.t('show-requests.send-request-button-text'));
             btn_submit.setAttribute('title', i18n.t('show-requests.send-request-button-text'));
-            btn_submit.addEventListener('click', async (event) => {
+            btn_submit.addEventListener('click', (event) => {
                 this.currentItem = item;
-                this.submitRequest(table, event, item, index);
+                void this.submitRequest(table, event, item, index);
                 event.stopPropagation();
             });
             controls_div.appendChild(btn_submit);
@@ -816,7 +816,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                             resource-path="dispatch/groups"
                             value="${this.groupValue}"
                             @change=${(event) => {
-                                this.processSelectedSender(event);
+                                void this.processSelectedSender(event);
                             }}></dbp-resource-select>
                         <dbp-loading-button
                             id="create-btn"
@@ -1118,7 +1118,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                   let table = this._(
                                                       '#tabulator-table-created-requests',
                                                   );
-                                                  this.deleteRequest(
+                                                  void this.deleteRequest(
                                                       table,
                                                       event,
                                                       this.currentItem,
@@ -1138,7 +1138,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                               }"
                                               value="${i18n.t('show-requests.submit-button-text')}"
                                               @click="${(event) => {
-                                                  this.submitRequest(
+                                                  void this.submitRequest(
                                                       this.currentTable,
                                                       event,
                                                       this.currentItem,
@@ -1360,7 +1360,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                  button.start();
                                                                  this.currentRecipient = recipient;
                                                                  try {
-                                                                     this.fetchDetailedRecipientInformation(
+                                                                     void this.fetchDetailedRecipientInformation(
                                                                          recipient.identifier,
                                                                      ).then(() => {
                                                                          this._(
@@ -1396,7 +1396,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                   button.start();
                                                                   this.currentRecipient = recipient;
                                                                   try {
-                                                                      this.fetchDetailedRecipientInformation(
+                                                                      void this.fetchDetailedRecipientInformation(
                                                                           recipient.identifier,
                                                                       ).then(() => {
                                                                           this._(
@@ -1424,7 +1424,7 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
                                                                   this.currentItem.dateSubmitted
                                                               }"
                                                               @click="${(event) => {
-                                                                  this.deleteRecipient(
+                                                                  void this.deleteRecipient(
                                                                       event,
                                                                       recipient,
                                                                   );

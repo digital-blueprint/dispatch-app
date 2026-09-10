@@ -199,25 +199,25 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         changedProperties.forEach((oldValue, propName) => {
             switch (propName) {
                 case 'lang':
-                    this._i18n.changeLanguage(this.lang);
+                    void this._i18n.changeLanguage(this.lang);
                     if (this.mayReadMetadata) {
-                        this.updateComplete.then(() => {
-                            this.setupExportDropdown();
+                        void this.updateComplete.then(() => {
+                            void this.setupExportDropdown();
                         });
                     }
                     break;
                 case 'mayReadMetadata':
                     // Setup export dropdown when metadata permission changes
                     if (this.mayReadMetadata) {
-                        this.updateComplete.then(() => {
-                            this.setupExportDropdown();
+                        void this.updateComplete.then(() => {
+                            void this.setupExportDropdown();
                         });
                     }
                     break;
                 case 'routingUrl':
                 case 'auth':
                 case 'entryPointUrl':
-                    this.updateComplete.then(() => this.handleRoutingUrlChange());
+                    void this.updateComplete.then(() => this.handleRoutingUrlChange());
                     break;
             }
         });
@@ -250,7 +250,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         if (this.langDir) {
             this.loadingTranslations = true;
             const that = this;
-            setOverridesByGlobalCache(this._i18n, this).then(() => {
+            void setOverridesByGlobalCache(this._i18n, this).then(() => {
                 that.loadingTranslations = false;
                 that.requestUpdate();
             });
@@ -258,7 +258,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.loadingTranslations = false;
         }
 
-        this.updateComplete.then(() => {
+        void this.updateComplete.then(() => {
             // see: http://tabulator.info/docs/5.1
             this._a('.tabulator-table').forEach((table) => {
                 const tabulatorTable = /** @type {TabulatorTable} */ (table);
@@ -490,10 +490,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         }
         this.organizationSet = true;
 
-        this.getListOfRequests().then(() => {
-            this.currentTable = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
-            this.setTabulatorData(this.requestList);
-        });
+        await this.getListOfRequests();
+        this.currentTable = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
+        this.setTabulatorData(this.requestList);
     }
 
     /**
@@ -548,10 +547,10 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      * Builds an export-ready recipient object and enriches it with recipient details
      * @param {object} recipient
      * @param {object} request
-     * @param {string | undefined} organizationName
+     * @param {string} [organizationName]
      * @returns {Promise<object>}
      */
-    async buildExportRecipient(recipient, request, organizationName = undefined) {
+    async buildExportRecipient(recipient, request, organizationName) {
         const exportRecipient = {
             ...recipient,
             dispatchRequestIdentifier:
@@ -886,9 +885,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     i18n.t('show-requests.edit-request-button-text'),
                 );
                 editButton.setAttribute('title', i18n.t('show-requests.edit-request-button-text'));
-                editButton.addEventListener('click', async (event) => {
+                editButton.addEventListener('click', (event) => {
                     this.currentRowIndex = index.toString();
-                    this.editRequest(event, item);
+                    void this.editRequest(event, item);
                     event.stopPropagation();
                 });
                 controlsDiv.appendChild(editButton);
@@ -903,8 +902,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     'title',
                     i18n.t('show-requests.delete-request-button-text'),
                 );
-                deleteButton.addEventListener('click', async (event) => {
-                    this.deleteRequest(table, event, item, index);
+                deleteButton.addEventListener('click', (event) => {
+                    void this.deleteRequest(table, event, item, index);
                     event.stopPropagation();
                 });
                 controlsDiv.appendChild(deleteButton);
@@ -919,9 +918,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     'title',
                     i18n.t('show-requests.send-request-button-text'),
                 );
-                submitButton.addEventListener('click', async (event) => {
+                submitButton.addEventListener('click', (event) => {
                     this.currentItem = item;
-                    this.submitRequest(table, event, item, index);
+                    void this.submitRequest(table, event, item, index);
                     event.stopPropagation();
                 });
                 controlsDiv.appendChild(submitButton);
@@ -936,8 +935,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
                     'title',
                     i18n.t('show-requests.show-detailed-dispatch-order'),
                 );
-                detailsButton.addEventListener('click', async (event) => {
-                    this.editRequest(event, item);
+                detailsButton.addEventListener('click', (event) => {
+                    void this.editRequest(event, item);
                     event.stopPropagation();
                 });
                 controlsDiv.appendChild(detailsButton);
@@ -1013,7 +1012,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             return;
         }
 
-        this.openRequestByIdentifier(identifier);
+        void this.openRequestByIdentifier(identifier);
     }
 
     async openRequestByIdentifier(identifier) {
@@ -1041,9 +1040,11 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
             if (this.currentItem?.recipients) {
                 this.currentItem.recipients.forEach((element) => {
-                    this.fetchDetailedRecipientInformation(element.identifier).then((result) => {
-                        // TODO
-                    });
+                    void this.fetchDetailedRecipientInformation(element.identifier).then(
+                        (result) => {
+                            // TODO
+                        },
+                    );
                 });
             }
 
@@ -1110,7 +1111,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         let table = /** @type {TabulatorTable} */ (this._('#tabulator-table-orders'));
         let currentPage = table ? table.getPage() : 1;
         if (this.groupId) {
-            this.getListOfRequests().then(() => {
+            void this.getListOfRequests().then(() => {
                 if (table) table.setPage(currentPage);
             });
         }
@@ -1395,7 +1396,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.showListView &&
             this.groupId
         ) {
-            this.getListOfRequests();
+            void this.getListOfRequests();
         }
         let langs = {
             en: {

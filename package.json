@@ -30,13 +30,15 @@
         "i18next-cli": "^1.9.0",
         "mocha": "^12.0.0",
         "oxlint": "^1.81.0",
+        "oxlint-tsgolint": "^7.0.2001",
         "playwright": "^1.34.0",
         "playwright-core": "^1.21.0",
         "prettier": "^3.0.0",
         "rolldown": "1.2.7",
         "rollup-plugin-emit-ejs": "^3.1.0",
         "rollup-plugin-license": "^3.0.1",
-        "rollup-plugin-serve": "^3.0.0"
+        "rollup-plugin-serve": "^3.0.0",
+        "typescript": "^7.0.2"
     },
     "dependencies": {
         "@dbp-toolkit/app-shell": "^0.3.0",

@@ -31,7 +31,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
 
     update(changedProperties) {
         if (changedProperties.has('lang')) {
-            this._i18n.changeLanguage(this.lang);
+            void this._i18n.changeLanguage(this.lang);
         }
 
         super.update(changedProperties);
@@ -40,7 +40,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
     open(sender = this.sender) {
         this.sender = {...(sender || {})};
         this.selectedCountry = this.sender.senderAddressCountry || 'AT';
-        this.updateComplete.then(() => {
+        void this.updateComplete.then(() => {
             this._('#modal').open();
         });
     }

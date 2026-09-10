@@ -28,7 +28,7 @@ export class DispatchAddSubjectModal extends ScopedElementsMixin(DBPLitElement) 
 
     update(changedProperties) {
         if (changedProperties.has('lang')) {
-            this._i18n.changeLanguage(this.lang);
+            void this._i18n.changeLanguage(this.lang);
         }
 
         super.update(changedProperties);
@@ -36,7 +36,7 @@ export class DispatchAddSubjectModal extends ScopedElementsMixin(DBPLitElement) 
 
     open(subject = this.subject) {
         this.subject = subject || '';
-        this.updateComplete.then(() => {
+        void this.updateComplete.then(() => {
             const input = /** @type {HTMLInputElement} */ (this._('#subject-input'));
             if (input) {
                 input.value = this.subject;

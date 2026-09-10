@@ -9,16 +9,16 @@ export const getPDFFileBase64Content = (file) => {
 /**
  * Returns the content of the file
  * @param {File} file The file to read
- * @returns {string} The content
+ * @returns {Promise<string>} The content
  */
-export const readBinaryFileContent = async (file) => {
+export const readBinaryFileContent = (file) => {
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.onload = () => {
             resolve(reader.result);
         };
         reader.onerror = () => {
-            reject(reader.error);
+            reject(reader.error ?? new Error('Failed to read file'));
         };
         reader.readAsBinaryString(file);
     });
@@ -37,7 +37,7 @@ export const getReferenceNumberFromPDF = async (file) => {
         // Get the annotations for the page
         await page.getAnnotations().then(async (annotations) => {
             // Loop through the annotations
-            await commonUtils.asyncArrayForEach(annotations, async (annotation) => {
+            await commonUtils.asyncArrayForEach(annotations, (annotation) => {
                 // Check if the annotation is a business number, and we haven't found one yet
                 if (
                     referenceNumber === null &&

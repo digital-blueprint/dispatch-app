@@ -140,14 +140,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @returns {Promise<object>} response (error or result)
      */
     async httpGetAsync(url, options) {
-        let response = await fetch(url, options)
-            .then((result) => {
-                if (!result.ok) throw result;
-                return result;
-            })
-            .catch((error) => {
-                return error;
-            });
+        let response = await fetch(url, options).catch((error) => error);
 
         return response;
     }
@@ -555,7 +548,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         }
 
         if (this.singleFileProcessing && !this.requestCreated) {
-            this.processCreateDispatchRequest().then(() => {
+            void this.processCreateDispatchRequest().then(() => {
                 this.showDetailsView = true;
                 this.hasSubject = true;
                 this.hasSender = true;
@@ -594,7 +587,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         this.tableLoading = true;
         this.fileUploadFinished = false;
         if (!this.singleFileProcessing && !this.requestCreated) {
-            this.processCreateDispatchRequest().then(async () => {
+            void this.processCreateDispatchRequest().then(async () => {
                 this.showDetailsView = false;
                 this.showListView = true;
                 this.hasSubject = true;
@@ -774,7 +767,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param fileContentUrl
      * @param fileName
      */
-    async downloadFileClickHandler(fileContentUrl, fileName) {
+    downloadFileClickHandler(fileContentUrl, fileName) {
         let files = [];
         const arr = dispatchHelper.convertDataURIToBinary(fileContentUrl);
         const binaryFile = new File([arr], fileName, {
@@ -797,7 +790,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && response.status === 200) {
                 let fileContentUrl = responseBody['fileContentUrl'];
                 let fileName = 'DeliveryNotification';
-                await this.downloadFileClickHandler(fileContentUrl, fileName);
+                this.downloadFileClickHandler(fileContentUrl, fileName);
             } else {
                 send({
                     summary: 'Error',
@@ -1093,7 +1086,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             }
 
             this.currentItem.recipients.forEach((element) => {
-                this.fetchDetailedRecipientInformation(element.identifier).then((result) => {
+                void this.fetchDetailedRecipientInformation(element.identifier).then((result) => {
                     //TODO
                 });
             });
@@ -1263,8 +1256,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let controls_div = this.createScopedElement('div');
                     let btn_research = this.createScopedElement('dbp-icon-button');
                     btn_research.setAttribute('icon-name', 'keyword-research');
-                    btn_research.addEventListener('click', async (event) => {
-                        this.editRequest(event, request, index);
+                    btn_research.addEventListener('click', (event) => {
+                        void this.editRequest(event, request, index);
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_research);
@@ -1294,7 +1287,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             this.hasRecipients = false;
                             this.showDetailsView = false;
                         } else {
-                            this.getListOfRequests();
+                            void this.getListOfRequests();
                             this.clearAll();
                         }
                     }
@@ -1621,8 +1614,8 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     let controls_div = this.createScopedElement('div');
                     let btn_research = this.createScopedElement('dbp-icon-button');
                     btn_research.setAttribute('icon-name', 'keyword-research');
-                    btn_research.addEventListener('click', async (event) => {
-                        this.editRequest(event, selectedItems[i]);
+                    btn_research.addEventListener('click', (event) => {
+                        void this.editRequest(event, selectedItems[i]);
                         event.stopPropagation();
                     });
                     controls_div.appendChild(btn_research);
@@ -1654,7 +1647,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             this.hasRecipients = false;
                             this.showDetailsView = false;
                         } else {
-                            this.getListOfRequests();
+                            void this.getListOfRequests();
                             this.clearAll();
                         }
                     }
@@ -1756,7 +1749,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                             this.hasRecipients = false;
                             this.showDetailsView = false;
                         } else {
-                            this.getListOfRequests();
+                            void this.getListOfRequests();
                             this.clearAll();
                         }
                     }
@@ -1838,7 +1831,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             if (responseBody !== undefined && response.status === 200) {
                 let fileContentUrl = responseBody['contentUrl'];
                 let fileName = responseBody['name'];
-                await this.downloadFileClickHandler(fileContentUrl, fileName);
+                this.downloadFileClickHandler(fileContentUrl, fileName);
             } else {
                 send({
                     summary: 'Error',
@@ -1945,7 +1938,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     }
 
     // @TODO: never called?
-    async getCreatedRequests() {
+    getCreatedRequests() {
         if (this.createdRequestsList.length > 0) {
             this.tableLoading = true;
             this.requestList = this.parseListOfRequests(this.createdRequestsList);
@@ -2174,19 +2167,19 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     this._('#file-return-receipt').setAttribute('dialog-open', '');
                 }}"
                 @download-return-receipt="${(event) => {
-                    this._onDownloadFileClicked(
+                    void this._onDownloadFileClicked(
                         {target: event.detail.button},
                         event.detail.statusChange.identifier,
                     );
                 }}"
                 @view-return-receipt="${(event) => {
-                    this.showReturnReceiptFileViewer(
+                    void this.showReturnReceiptFileViewer(
                         {target: event.detail.button},
                         event.detail.statusChange,
                     );
                 }}"
                 @delete-return-receipt="${(event) => {
-                    this._onDeleteReceiptClicked(
+                    void this._onDeleteReceiptClicked(
                         {target: event.detail.button},
                         event.detail.statusChange,
                     );
@@ -2218,7 +2211,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                     type: dispatchHelper.getDataURIContentType(fileContentUrl),
                 });
 
-                this._('#file-viewer-modal').showPDF(binaryFile);
+                void this._('#file-viewer-modal').showPDF(binaryFile);
             } else {
                 send({
                     summary: 'Error',
@@ -2250,7 +2243,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 });
 
                 // Update statusChange in currentRecipient.
-                this.fetchDetailedRecipientInformation(this.currentRecipient.identifier);
+                void this.fetchDetailedRecipientInformation(this.currentRecipient.identifier);
             }
         } catch (error) {
             send({
@@ -2340,7 +2333,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                 type: 'success',
                 timeout: 10,
             });
-            this.fetchDetailedRecipientInformation(this.currentRecipient.identifier);
+            void this.fetchDetailedRecipientInformation(this.currentRecipient.identifier);
         } else {
             send({
                 summary: i18n.t('show-requests.return-receipt.file-upload-error-title'),
@@ -2476,7 +2469,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                               <dbp-icon-button
                                                   id="show-file-btn"
                                                   @click="${(event) => {
-                                                      this._onShowFileClicked(
+                                                      void this._onShowFileClicked(
                                                           event,
                                                           file.identifier,
                                                       );
@@ -2491,7 +2484,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                               <dbp-icon-button
                                                   id="download-file-btn"
                                                   @click="${(event) => {
-                                                      this._onDownloadRequestFileClicked(
+                                                      void this._onDownloadRequestFileClicked(
                                                           event,
                                                           file.identifier,
                                                       );
@@ -2515,7 +2508,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
                                                                     !this.mayWrite
                                                                 }"
                                                                 @click="${(event) => {
-                                                                    this.deleteFile(event, file);
+                                                                    void this.deleteFile(
+                                                                        event,
+                                                                        file,
+                                                                    );
                                                                 }}"
                                                                 aria-label="${i18n.t(
                                                                     'show-requests.delete-file-button-text',
