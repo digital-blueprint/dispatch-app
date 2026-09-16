@@ -4,7 +4,15 @@ import {Icon, IconButton, LoadingButton, ScopedElementsMixin} from '@dbp-toolkit
 import * as commonStyles from '@dbp-toolkit/common/styles';
 import * as dispatchStyles from '../styles.js';
 
+/** @typedef {import('../dbp-show-requests.js').ShowRequests} ShowRequests */
+
 export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
+    constructor() {
+        super();
+        /** @type {ShowRequests | null} */
+        this.controller = null;
+    }
+
     static get scopedElements() {
         return {
             'dbp-icon': Icon,
@@ -126,7 +134,11 @@ export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
                                           }"
                                           value="${i18n.t('show-requests.delete-button-text')}"
                                           @click="${(event) => {
-                                              c.deleteRequest(c.currentTable, event, c.currentItem);
+                                              void c.deleteRequest(
+                                                  c.currentTable,
+                                                  event,
+                                                  c.currentItem,
+                                              );
                                           }}"
                                           title="${i18n.t('show-requests.delete-button-text')}">
                                           <dbp-icon name="trash" aria-label="hidden"></dbp-icon>
@@ -144,7 +156,11 @@ export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
                                           }"
                                           value="${i18n.t('show-requests.submit-button-text')}"
                                           @click="${(event) => {
-                                              c.submitRequest(c.currentTable, event, c.currentItem);
+                                              void c.submitRequest(
+                                                  c.currentTable,
+                                                  event,
+                                                  c.currentItem,
+                                              );
                                           }}"
                                           title="${i18n.t('show-requests.submit-button-text')}">
                                           <dbp-icon
@@ -351,16 +367,18 @@ export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
                                                                   button.start();
                                                                   c.currentRecipient = recipient;
                                                                   try {
-                                                                      c.fetchDetailedRecipientInformation(
-                                                                          recipient.identifier,
-                                                                      ).then(() => {
-                                                                          c._(
-                                                                              '#show-recipient-modal',
-                                                                          ).open(
-                                                                              c.currentRecipient,
-                                                                          );
-                                                                          c.button = button;
-                                                                      });
+                                                                      void c
+                                                                          .fetchDetailedRecipientInformation(
+                                                                              recipient.identifier,
+                                                                          )
+                                                                          .then(() => {
+                                                                              c._(
+                                                                                  '#show-recipient-modal',
+                                                                              ).open(
+                                                                                  c.currentRecipient,
+                                                                              );
+                                                                              c.button = button;
+                                                                          });
                                                                   } catch {
                                                                       button.stop();
                                                                   } finally {
@@ -395,17 +413,21 @@ export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
                                                                                 c.currentRecipient =
                                                                                     recipient;
                                                                                 try {
-                                                                                    c.fetchDetailedRecipientInformation(
-                                                                                        recipient.identifier,
-                                                                                    ).then(() => {
-                                                                                        c._(
-                                                                                            '#edit-recipient-modal',
-                                                                                        ).open(
-                                                                                            c.currentRecipient,
+                                                                                    void c
+                                                                                        .fetchDetailedRecipientInformation(
+                                                                                            recipient.identifier,
+                                                                                        )
+                                                                                        .then(
+                                                                                            () => {
+                                                                                                c._(
+                                                                                                    '#edit-recipient-modal',
+                                                                                                ).open(
+                                                                                                    c.currentRecipient,
+                                                                                                );
+                                                                                                c.button =
+                                                                                                    button;
+                                                                                            },
                                                                                         );
-                                                                                        c.button =
-                                                                                            button;
-                                                                                    });
                                                                                 } finally {
                                                                                     button.stop();
                                                                                 }
@@ -426,7 +448,7 @@ export class ShowRequestsDetailView extends ScopedElementsMixin(LitElement) {
                                                                                 !c.mayWrite
                                                                             }"
                                                                             @click="${(event) => {
-                                                                                c.deleteRecipient(
+                                                                                void c.deleteRecipient(
                                                                                     event,
                                                                                     recipient,
                                                                                 );

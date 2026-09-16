@@ -15,7 +15,8 @@ export const readBinaryFileContent = (file) => {
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.onload = () => {
-            resolve(reader.result);
+            // readAsBinaryString always yields a string result
+            resolve(/** @type {string} */ (reader.result));
         };
         reader.onerror = () => {
             reject(reader.error ?? new Error('Failed to read file'));
@@ -78,7 +79,9 @@ export const getDataURIContentType = (dataURI) => {
 export function getGermanCountryList() {
     const selectedCountries = getGermanCountryMapping();
     const sortedCountries = Object.fromEntries(
-        Object.entries(selectedCountries).sort(([, a], [, b]) => a.localeCompare(b, 'de')),
+        Object.entries(selectedCountries).sort(([, a], [, b]) =>
+            (a ?? '').localeCompare(b ?? '', 'de'),
+        ),
     );
     return sortedCountries;
 }
@@ -86,7 +89,9 @@ export function getGermanCountryList() {
 export function getEnglishCountryList() {
     const selectedCountries = getEnglishCountryMapping();
     const sortedCountries = Object.fromEntries(
-        Object.entries(selectedCountries).sort(([, a], [, b]) => a.localeCompare(b, 'en')),
+        Object.entries(selectedCountries).sort(([, a], [, b]) =>
+            (a ?? '').localeCompare(b ?? '', 'en'),
+        ),
     );
     return sortedCountries;
 }

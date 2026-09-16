@@ -1,5 +1,12 @@
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
 
+/**
+ * @typedef {object} Person
+ * @property {string} [givenName] The given name of the person
+ * @property {string} [familyName] The family name of the person
+ * @property {{matriculationNumber?: string}} [localData] The local data of the person
+ */
+
 export class PersonResourceSelect extends ResourceSelect {
     constructor() {
         super();
@@ -43,7 +50,7 @@ export class PersonResourceSelect extends ResourceSelect {
 
     /**
      * @param {object} select
-     * @param {object} person
+     * @param {Person} person
      * @returns {string}
      */
     formatResource(select, person) {
@@ -52,7 +59,7 @@ export class PersonResourceSelect extends ResourceSelect {
             text += ` ${person.familyName}`;
         }
 
-        const matriculationNumber = person.localData?.matriculationNumber;
+        const matriculationNumber = person.localData?.matriculationNumber ?? '';
         if (PersonResourceSelect.isValidMatriculationNumber(matriculationNumber)) {
             text += ` (${matriculationNumber})`;
         }

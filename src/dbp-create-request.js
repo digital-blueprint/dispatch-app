@@ -10,7 +10,6 @@ import {
     Icon,
     MiniSpinner,
     InlineNotification,
-    ScopedElementsMixin,
     DBPLoginRequiredWarning,
 } from '@dbp-toolkit/common';
 import {CountrySelect} from '@dbp-toolkit/country-select';
@@ -28,7 +27,7 @@ import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
 import {DispatchAddRecipientModal} from './dialogs/add-recipient-modal.js';
 import {DispatchShowRecipientModal} from './dialogs/show-recipient-modal.js';
 
-class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
+class CreateRequest extends DBPDispatchLitElement {
     constructor() {
         super();
         this._i18n = createInstance();
@@ -71,6 +70,10 @@ class CreateRequest extends ScopedElementsMixin(DBPDispatchLitElement) {
         this.hasRecipients = false;
 
         this.requestCreated = false;
+        this.tempItem = {};
+        /** @type {string | null} */
+        this.tempValue = '';
+        this.tempChange = false;
         this.singleFileProcessing = false;
         this.createRequestsLoading = false;
         this.fileList = [];

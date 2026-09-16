@@ -5,7 +5,7 @@ import {FileSource, FileSink} from '@dbp-toolkit/file-handling';
 import {html} from 'lit';
 import * as dispatchHelper from './utils';
 import {ResourceSelect} from '@dbp-toolkit/resource-select';
-import {IconButton} from '@dbp-toolkit/common';
+import {IconButton, ScopedElementsMixin} from '@dbp-toolkit/common';
 import {humanFileSize} from '@dbp-toolkit/common/i18next';
 import {classMap} from 'lit/directives/class-map.js';
 import {getReferenceNumberFromPDF} from './utils';
@@ -13,7 +13,25 @@ import {getReferenceNumberFromPDF} from './utils';
 /** @typedef {import('@dbp-toolkit/common').LoadingButton} LoadingButton */
 /** @typedef {import('@dbp-toolkit/tabulator-table').TabulatorTable} TabulatorTable */
 
-export default class DBPDispatchLitElement extends DBPLitElement {
+/**
+ * @typedef {object} DispatchRequest
+ * @property {string} [identifier] The request identifier
+ * @property {object[]} [files] The attached files
+ * @property {object[]} [recipients] The request recipients
+ * @property {string} [referenceNumber] The reference number
+ * @property {string} [name] The subject/name of the request
+ * @property {string} [dateSubmitted] The submission date
+ * @property {string} [personIdentifier] The identifier of the person
+ * @property {string} [senderAddressCountry] The sender address country
+ * @property {string} [senderAddressLocality] The sender address locality
+ * @property {string} [senderBuildingNumber] The sender building number
+ * @property {string} [senderFullName] The sender full name
+ * @property {string} [senderOrganizationName] The sender organization name
+ * @property {string} [senderPostalCode] The sender postal code
+ * @property {string} [senderStreetAddress] The sender street address
+ */
+
+export default class DBPDispatchLitElement extends ScopedElementsMixin(DBPLitElement) {
     constructor() {
         super();
         this.isSessionRefreshed = false;
@@ -44,9 +62,37 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
         this.createdRequestsList = [];
 
+        /** @type {object} */
         this.tempItem = {};
-        this.tempValue = {};
+        /** @type {string | null} */
+        this.tempValue = '';
         this.tempChange = false;
+
+        // Access rights are set by the subclasses based on the selected resource
+        this.mayRead = false;
+        this.mayWrite = false;
+        this.mayReadMetadata = false;
+
+        this._loginStatus = '';
+        this._loginState = [];
+
+        this.currentFileIndex = 0;
+    }
+
+    /**
+     * Implemented by the subclasses to refresh the tabulator data
+     * @param {object[]} requests
+     */
+    setTabulatorData(requests) {
+        throw new Error('Not implemented');
+    }
+
+    /**
+     * Implemented by the subclasses to fetch the list of created dispatch requests
+     * @returns {Promise<object[]|null>}
+     */
+    getCreatedDispatchRequests() {
+        return Promise.reject(new Error('Not implemented'));
     }
 
     static get scopedElements() {
@@ -137,7 +183,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * Send a fetch to given url with given options
      * @param url
      * @param options
-     * @returns {Promise<object>} response (error or result)
+     * @returns {Promise<Response>} response (error or result)
      */
     async httpGetAsync(url, options) {
         let response = await fetch(url, options).catch((error) => error);
@@ -148,7 +194,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Gets the list of all dispatch requests of the current logged-in user
      * @param groupId
-     * @returns {Promise<object>} response
+     * @returns {Promise<Response>} response
      */
     async getListOfDispatchRequests(groupId) {
         const options = {
@@ -169,7 +215,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Gets the dispatch request of the current logged-in user with the given identifier
      * @param identifier
-     * @returns {Promise<object>} response
+     * @returns {Promise<Response>} response
      */
     async getDispatchRequest(identifier) {
         const options = {
@@ -188,7 +234,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Gets the dispatch recipient of the given ID
      * @param identifier
-     * @returns {Promise<object>} response
+     * @returns {Promise<Response>} response
      */
     async getDispatchRecipient(identifier) {
         const options = {
@@ -214,7 +260,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Sends a dispatch post request
-     * @returns {Promise<object>} response
+     * @returns {Promise<Response>} response
      */
     async sendCreateDispatchRequest() {
         const i18n = this._i18n;
@@ -253,7 +299,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Sends a delete dispatch request
      * @param identifier
-     * @returns {Promise<object>} response
+     * @returns {Promise<Response>} response
      */
     async sendDeleteDispatchRequest(identifier) {
         const options = {
@@ -274,7 +320,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * Updates (PATCHes) a dispatch request
      * @param identifier
      * @param body
-     * @returns {Promise<object>} response
+     * @returns {Promise<Response>} response
      */
     async sendPatchDispatchRequest(identifier, body) {
         const options = {
@@ -303,7 +349,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param senderStreetAddress
      * @param senderBuildingNumber
      * @param groupId
-     * @returns {Promise<object>} response
+     * @returns {Promise<Response>} response
      */
     async sendEditDispatchRequest(
         identifier,
@@ -333,7 +379,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
     /**
      * Sends a submit dispatch request
      * @param identifier
-     * @returns {Promise<object>} response
+     * @returns {Promise<Response>} response
      */
     async sendSubmitDispatchRequest(identifier) {
         let body = {};
@@ -364,7 +410,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
      * @param postalCode
      * @param addressLocality
      * @param streetAddress
-     * @returns {Promise<object>} response
+     * @returns {Promise<Response>} response
      */
     async sendAddRequestRecipientsRequest(
         id,
@@ -683,7 +729,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
             let resp = await this.getDispatchRequest(id);
             let responseBody = await resp.json();
-            if (responseBody !== undefined && response.status !== 403) {
+            if (responseBody !== undefined && resp.status !== 403) {
                 this.currentItem = responseBody;
             }
             this.currentFileIndex++;
@@ -810,7 +856,6 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         response['hydra:member'].forEach((item) => {
             list.push(item);
         });
-        list.sort(this.compareListItems);
         return list;
     }
 
@@ -1154,7 +1199,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
 
     /**
      * Returns if the request can be submitted or not. And if not, it shows a UI message.
-     * @param {object} request
+     * @param {DispatchRequest} request
      * @returns {boolean} if the request can be submitted or not
      */
     checkCanSubmit(request) {
@@ -2249,7 +2294,7 @@ export default class DBPDispatchLitElement extends DBPLitElement {
             send({
                 summary: 'Error',
                 body: i18n.t('show-requests.return-receipt.file-delete-error-text') + error,
-                type: 'error',
+                type: 'danger',
                 timeout: 0,
             });
         } finally {
@@ -2899,10 +2944,10 @@ export default class DBPDispatchLitElement extends DBPLitElement {
         const [datePart, timePart] = dateTimeString.split(' ');
 
         // Split the date into day, month, and year
-        const [day, month, year] = datePart.split('.');
+        const [day, month, year] = datePart.split('.').map(Number);
 
         // Split the time into hours and minutes
-        const [hours, minutes] = timePart.split(':');
+        const [hours, minutes] = timePart.split(':').map(Number);
 
         const dateObject = new Date(year, month - 1, day, hours, minutes);
         const timestamp = dateObject.getTime();

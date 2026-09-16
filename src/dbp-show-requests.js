@@ -1,6 +1,5 @@
 import {createInstance, setOverridesByGlobalCache} from './i18n';
 import {css, html} from 'lit';
-import {ScopedElementsMixin} from '@dbp-toolkit/common';
 import DBPDispatchLitElement from './dbp-dispatch-lit-element';
 import * as commonUtils from '@dbp-toolkit/common/utils';
 import * as commonStyles from '@dbp-toolkit/common/styles';
@@ -30,7 +29,23 @@ import {DispatchEditRecipientModal} from './dialogs/edit-recipient-modal.js';
 import {DispatchAddRecipientModal} from './dialogs/add-recipient-modal.js';
 import {DispatchShowRecipientModal} from './dialogs/show-recipient-modal.js';
 
-class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
+/** @typedef {import('lit').LitElement} LitElement */
+/** @typedef {import('lit').TemplateResult} TemplateResult */
+
+/**
+ * @typedef {object} ExportRequest
+ * @property {string} [dispatchRequestIdentifier] The dispatch request identifier
+ * @property {string} [identifier] The request identifier
+ * @property {string} [referenceNumber] The reference number
+ * @property {string} [dateSubmitted] The submission date
+ */
+
+/**
+ * @typedef {object} ExportRecipient
+ * @property {string} [identifier] The recipient identifier
+ */
+
+export class ShowRequests extends DBPDispatchLitElement {
     constructor() {
         super();
         this._i18n = createInstance();
@@ -188,11 +203,17 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         return null;
     }
 
+    /**
+     * @param {string} selector
+     * @returns {NodeListOf<Element>}
+     */
     _a(selector) {
-        return [
-            ...this.renderRoot.querySelectorAll(selector),
-            ...this._getViewRoots().flatMap((root) => [...root.querySelectorAll(selector)]),
-        ];
+        return /** @type {NodeListOf<Element>} */ (
+            /** @type {unknown} */ ([
+                ...this.renderRoot.querySelectorAll(selector),
+                ...this._getViewRoots().flatMap((root) => [...root.querySelectorAll(selector)]),
+            ])
+        );
     }
 
     update(changedProperties) {
@@ -231,7 +252,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
         // The views receive `.controller=${this}` which never changes identity, so we
         // must trigger their updates explicitly when relevant state on the controller changes.
         for (const selector of ['dbp-show-requests-list-view', 'dbp-show-requests-detail-view']) {
-            const view = this.renderRoot.querySelector(selector);
+            const view = /** @type {LitElement | null} */ (this.renderRoot.querySelector(selector));
             view?.requestUpdate?.();
         }
     }
@@ -327,7 +348,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             table.setFilter([filter_object]);
             return;
         } else {
-            const columns = table.getColumnsFields();
+            const columns = table.getColumnsFields() ?? [];
             let listOfFilters = [];
 
             for (let col of columns) {
@@ -343,8 +364,8 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      *
      */
     toggleMoreMenu() {
-        const menu = this.shadowRoot.querySelector('ul.extended-menu');
-        const menuStart = this.shadowRoot.querySelector('a.extended-menu-link');
+        const menu = this.renderRoot.querySelector('ul.extended-menu');
+        const menuStart = this.renderRoot.querySelector('a.extended-menu-link');
 
         if (menu === null || menuStart === null) {
             return;
@@ -372,7 +393,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
             this.initateOpenAdditionalMenu = false;
             return;
         }
-        const menu = this.shadowRoot.querySelector('ul.extended-menu');
+        const menu = this.renderRoot.querySelector('ul.extended-menu');
         if (menu && !menu.classList.contains('hidden')) {
             this.toggleMoreMenu();
         }
@@ -439,7 +460,7 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
     /**
      * Creates options for a select box of the
      * this.submissionColumns Array (all possible cols of active table)
-     * @returns {Array<html>} options
+     * @returns {Array<TemplateResult>} options
      */
     getTableHeaderOptions() {
         const i18n = this._i18n;
@@ -500,7 +521,9 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
      */
     async setupExportDropdown() {
         const i18n = this._i18n;
-        const listView = this.renderRoot.querySelector('dbp-show-requests-list-view');
+        const listView = /** @type {ShowRequestsListView | null} */ (
+            this.renderRoot.querySelector('dbp-show-requests-list-view')
+        );
         await listView?.updateComplete;
 
         const exportDropdown = this._('#export-dropdown');
@@ -545,12 +568,13 @@ class ShowRequests extends ScopedElementsMixin(DBPDispatchLitElement) {
 
     /**
      * Builds an export-ready recipient object and enriches it with recipient details
-     * @param {object} recipient
-     * @param {object} request
+     * @param {ExportRecipient} recipient
+     * @param {ExportRequest} request
      * @param {string} [organizationName]
      * @returns {Promise<object>}
      */
     async buildExportRecipient(recipient, request, organizationName) {
+        /** @type {Record<string, unknown>} */
         const exportRecipient = {
             ...recipient,
             dispatchRequestIdentifier:

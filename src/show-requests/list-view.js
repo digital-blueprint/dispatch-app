@@ -14,7 +14,18 @@ import {ResourceSelect} from '@dbp-toolkit/resource-select';
 import {TabulatorTable} from '@dbp-toolkit/tabulator-table';
 import * as dispatchStyles from '../styles.js';
 
+/** @typedef {import('../dbp-show-requests.js').ShowRequests} ShowRequests */
+
 export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
+    constructor() {
+        super();
+        /** @type {ShowRequests | null} */
+        this.controller = null;
+        this.exportLoading = false;
+        /** @type {object} */
+        this.options = {};
+    }
+
     static get scopedElements() {
         return {
             'dbp-select': DBPSelect,
@@ -306,7 +317,7 @@ export class ShowRequestsListView extends ScopedElementsMixin(LitElement) {
                         value="${c.groupValue}"
                         @change=${(event) => {
                             if (c.isLoggedIn() && !c.isLoading()) {
-                                c.processSelectedOrganization(event).then(() => {});
+                                void c.processSelectedOrganization(event);
                             }
                         }}></dbp-resource-select>
                     ${

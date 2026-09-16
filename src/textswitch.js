@@ -86,7 +86,7 @@ export class TextSwitch extends LitElement {
     }
 
     render() {
-        const onClick = function (e) {
+        const onClick = (e) => {
             this._active = e.target.id;
             this.name = this._active === BUTTON1 ? this.name1 : this.name2;
 
