@@ -21,6 +21,7 @@ export class DispatchEditReferenceNumberModal extends ScopedElementsMixin(DBPLit
 
     static get properties() {
         return {
+            ...super.properties,
             lang: {type: String},
             referenceNumber: {type: String},
         };

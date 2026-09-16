@@ -28,6 +28,7 @@ export class DispatchAddRecipientModal extends ScopedElementsMixin(DBPLitElement
 
     static get properties() {
         return {
+            ...super.properties,
             lang: {type: String},
             entryPointUrl: {type: String, attribute: 'entry-point-url'},
             recipient: {type: Object},

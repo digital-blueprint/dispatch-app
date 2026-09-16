@@ -24,6 +24,7 @@ export class DispatchEditSenderModal extends ScopedElementsMixin(DBPLitElement) 
 
     static get properties() {
         return {
+            ...super.properties,
             lang: {type: String},
             sender: {type: Object},
         };

@@ -21,6 +21,7 @@ export class DispatchAddSubjectModal extends ScopedElementsMixin(DBPLitElement) 
 
     static get properties() {
         return {
+            ...super.properties,
             lang: {type: String},
             subject: {type: String},
         };
